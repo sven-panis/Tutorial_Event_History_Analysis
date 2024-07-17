@@ -1,0 +1,99 @@
+---
+title: "packages"
+author: "Sven Panis"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This file installs packages.
+
+There is no need to do this after the first installation, as it should all be 
+controlled by renv(). 
+
+This file is just for Sven's benefit, so that he can see how he installed them.
+
+# install the libraries that we will be using #
+
+## install ##
+
+As I first created a public repo on Github (sven-panis/Tutorial_Event_History_Analysis) which I then cloned to a new R project (RStudo: File->New Project->Version Control->Git), I need to install and initialize renv myself.
+
+```{r}
+install.packages("renv")
+renv::init()
+```
+
+I then closed the project, reopened it, and added the following two lines to .Rprofile (so that git will not ignore the renv.lock file, and renv::snapshot() will recored everything):
+options(renv.settings.vcs.ignore.local = "FALSE") 
+renv::settings$snapshot.type("all") 
+
+
+Next, general packages for data wrangling and visualisation used in various scripts.
+
+```{r}
+install.packages(c("tidyverse", "RColorBrewer", "patchwork", "ggridges"))
+```
+
+Next, packages for model building in brms used mainly in models.Rmd and effects.Rmd
+files.
+
+```{r}
+install.packages("remotes")
+remotes::install_github("stan-dev/cmdstanr")
+library(cmdstanr)
+install_cmdstan(cores=11) 
+check_cmdstan_toolchain() 
+## in the above, set cores correctly for your machine and without a folder location
+## specified it just uses the default folder location. The default is fine for most
+## setups though. To set the folder, include: dir = "/path/.cmdstan"
+
+## you may also need to configure the toolchain, if you use a mac like I do:
+## https://github.com/stan-dev/rstan/wiki/Configuring-C---Toolchain-for-Mac
+## https://mac.thecoatlessprofessor.com/macrtools/
+
+
+install.packages("devtools")
+devtools::install_github("jmgirard/standist")
+# 
+install.packages(c("brms", "tidybayes", "bayesplot", "future"))
+```
+
+To build regression models in other packages such as lme4:
+
+```{r}
+#install.packages("lme4", "nlme")
+```
+
+Next, packages for papaja and manuscript writing
+
+```{r install-pkg}
+# install.packages(c("devtools", "remotes"))
+# 
+devtools::install_github("crsh/papaja")
+devtools::install_github("crsh/citr")
+# 
+install.packages("tinytex")
+tinytex::install_tinytex()
+# 
+# # and now some useful addins for writing .Rmd from R Studio word count
+devtools::install_github("benmarwick/wordcountaddin", type = "source", dependencies = TRUE)
+# 
+# # remedy for shortcuts in markdown writing
+remotes::install_github("ThinkR-open/remedy")
+# 
+# # grammar checking - cool...
+devtools::install_github("ropenscilabs/gramr")
+```
+
+Finally, use renv() to take a snapshot of installed packages and update the lock.file 
+
+```{r snapshot-renv}
+# take a snapshot and update the lock.file
+renv::snapshot() # this is only necessary when new packages or installed or packages are updated.
+```
