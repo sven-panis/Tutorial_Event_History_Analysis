@@ -1,0 +1,129 @@
+---
+title             : "A tutorial on Bayesian and Frequentist Event History Analysis for psychological time-to-event data"
+shorttitle        : "Tutorial on hazard modeling"
+
+author: 
+  - name          : "Sven Panis"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "ETH GLC, room G16.2, Gloriastrasse 37/39, 8006 Zürich"
+    email         : "sven.panis@hest.ethz.ch"
+    role: # Contributorship roles (e.g., CRediT, https://credit.niso.org/)
+      - "Writing - Original Draft Preparation"
+      - "Writing - Review & Editing"
+  - name          : "Richard Ramsey"
+    affiliation   : "1"
+    role:
+      - "Conceptualization"
+      - "Writing - Review & Editing"
+      - "Supervision"
+
+affiliation:
+  - id            : "1"
+    institution   : "ETH Zürich"
+
+authornote: |
+  Neural Control of Movement lab, Department of Health Sciences and Technology (D-HEST).
+
+  <!-- Enter author note here. -->
+
+abstract: |
+  Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. We discuss how to manage inter-individual differences, implications for experimental design, and various options when analysing time-to-event data using discrete-time survival analysis.  
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "response times, event history analysis, Bayesian regression models"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib", "ownreferences.bib"]
+
+floatsintext      : yes
+linenumbers       : yes
+draft             : no
+mask              : no
+
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+
+classoption       : "man"
+output            : papaja::apa6_pdf
+# output            : papaja::apa6_word
+editor_options: 
+  chunk_output_type: console
+header-includes:
+  - \raggedbottom
+---
+
+```{r setup, include = FALSE}
+pkg <- c("papaja", "citr", "tidyverse", "RColorBrewer", "patchwork")
+
+lapply(pkg, library, character.only = TRUE)
+
+r_refs(file = "r-references.bib")
+my_r_citation <- cite_r(file = "r-references.bib", footnote = TRUE)
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+```{r plot-settings}
+## theme settings for ggplot
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 18), 
+          title = element_text(size = 18),
+          legend.position = "bottom")
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+```{r global-chunk-settings}
+## set the figure options
+knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
+                      fig.align = "center") # initial version
+```
+
+
+# Introduction
+
+In experimental psychology, it is standard practice to analyse response times (RTs) using analysis-of-variance. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and model selection [@panisAnalyzingResponseTimes2020].
+
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+## Participants
+
+## Material
+
+## Procedure
+
+## Data analysis
+<!-- We used `r cite_r("r-references.bib")` for all our analyses. -->
+
+
+# Results
+
+We used `r my_r_citation$r` for creating.
+
+`r my_r_citation$pkgs` <!-- This creates the footnote -->
+
+
+# Discussion
+
+
+
+
+\newpage
+
+# References
+
+::: {#refs custom-style="Bibliography"}
+:::
