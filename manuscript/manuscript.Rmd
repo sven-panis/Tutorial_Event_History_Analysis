@@ -9,6 +9,7 @@ author:
     address       : "ETH GLC, room G16.2, Gloriastrasse 37/39, 8006 Zürich"
     email         : "sven.panis@hest.ethz.ch"
     role: # Contributorship roles (e.g., CRediT, https://credit.niso.org/)
+      - "Conceptualization"
       - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
   - name          : "Richard Ramsey"
@@ -93,7 +94,11 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 # Introduction
 
-In experimental psychology, it is standard practice to analyse response times (RTs) using analysis-of-variance. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and model selection [@panisAnalyzingResponseTimes2020].
+In experimental psychology, it is standard practice to analyse response times (RTs) using analysis-of-variance. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+
+# Tutorial 1: Calculating descriptive statistics using a life table
+
+
 
 
 # Methods
