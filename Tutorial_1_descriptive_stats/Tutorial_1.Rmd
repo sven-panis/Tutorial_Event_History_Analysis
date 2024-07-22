@@ -280,25 +280,25 @@ map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$
 # get the binsize in ms
 binsize    <- data_final$censored[[1]] %>% pull(bin_width) %>% max(na.rm=T)
 # extract the lifetable (column 7 in data_final) for condition 1 (neutral) for subject 6
-lifetable_neutral_s6 <- data_final[[7]][[6]] %>% 
-                        filter(condition=="neutral") %>% 
+lifetable_blank_s6 <- data_final[[7]][[6]] %>% 
+                        filter(condition=="blank") %>% 
                         mutate(bin = period*binsize,
                                events = event1) %>%
                         select(bin,risk_set,events,hazard,se_haz,survival,se_surv,ca,se_ca) 
 # get riskset for first bin
-riskset <- lifetable_neutral_s6 %>% select(risk_set) %>% slice(1) %>% pull()
+riskset <- lifetable_blank_s6 %>% select(risk_set) %>% slice(1) %>% pull()
 
 # create a row for time point 0
 row0 <- c(bin=0,risk_set=riskset,events=0,hazard=0,se_haz=0,survival=1,se_surv=0,ca=NA,se_ca=NA)
 # add new row
-lifetable_neutral_s6_complete <- lifetable_neutral_s6 %>%
+lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
                                  add_row(!!! row0) %>%
                                  arrange(bin)
-lifetable_neutral_s6_complete
+lifetable_blank_s6_complete
 ```
 
 ```{r save-single-lifetable}
-write_csv(lifetable_neutral_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
+write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
 ```
 
 ```{r create-file-hazard-modeling}
