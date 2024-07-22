@@ -29,7 +29,7 @@ authornote: |
   <!-- Enter author note here. -->
 
 abstract: |
-  Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. We discuss how to manage inter-individual differences, implications for experimental design, and various options when analysing time-to-event data using discrete-time survival analysis.  
+  Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across three tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. We discuss how to manage inter-individual differences, implications for experimental design, and select among various options when analysing time-to-event data using discrete-time survival analysis.  
   
   <!-- https://tinyurl.com/ybremelq -->
   
@@ -91,12 +91,47 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
                       fig.align = "center") # initial version
 ```
 
-
 # Introduction
 
-In experimental psychology, it is standard practice to analyse response times (RTs) using analysis-of-variance. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+In experimental psychology, it is still standard practice to analyse response times (RTs), saccade latencies, and fixation durations using analysis-of-variance. However, differences in means conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+In this tutorial we focus on a distributional method for analyzing time-to-event data that is known as discrete-time event history analysis (EHA), a.k.a. survival, hazard, duration, failure-time, and transition analysis [@singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @allisonSurvivalAnalysisUsing2010]. Across three tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4.
+
+To apply EHA, one must be able to define the event of interest (e.g., a button press, saccade onset, fixation offset), time point zero (e.g., target stimulus onset, fixation onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. 
+
+The shape of a distribution of waiting times can be described in multiple ways (Luce)
+Because waiting times can only increase, continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT $\leq$ t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT $>$ t) and the hazard rate function $\lambda$(t) = f(t)/S(t). The hazard rate function gives you the instantaneous rate of event occurrence at time point t, given that the event has not occurred yet. 
+
+Similarly, after dividing time in discrete, contiguous time bins indexed by t, discrete-time EHA focuses on the discrete-time survivor function S(t) = P(RT $>$ t) and the discrete-time hazard function h(t) = P(RT = t| RT $\geq$ t), and not on the probability mass function and the cumulative distribution function. The discrete-time hazard probability function gives you the probability that the event occurs (sometime) in bin t, given that the event has not occurred yet in previous bins.
+
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, ...
+Second...
+
+
+We focus on factorial within-subject designs in which a large number of measurements are taken for a relatively small set of participants. Such so-called small-*N* designs are ... (Smith and little)
+
+We used `r my_r_citation$r` for all reported analyses. Web links are printed in bold.
+
+`r my_r_citation$pkgs` <!-- This creates the footnote -->
 
 # Tutorial 1: Calculating descriptive statistics using a life table
+
+To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from @panisWhatShapingRT2016, available on [**ResearchGate**](https://www.researchgate.net/publication/304069212_What_Is_Shaping_RT_and_Accuracy_Distributions_Active_and_Selective_Response_Inhibition_Causes_the_Negative_Compatibility_Effect).
+In their first experiment, @panisWhatShapingRT2016 presented a double arrow for xx ms that pointed left or right as the target stimulus with an onset at time point zero in each trial. Participants had to indicate the direction in which the arrow pointed using their corresponding index finger. Response time and accuracy were recorded on each trial. Prime type (neutral, congruent, incongruent) and mask type were manipulated. Here we focus on the subset of trials in which no mask was presented. The xx-ms prime stimulus was a double arrow with onset at -xx ms for the congruent and incongruent prime conditions.
+
+
+
+
+
+
+
+
+
+
+
+# Tutorial 2: Fitting Bayesian hazard models
+
+
+# Tutorial 3: Fitting Frequentist hazard models
 
 
 
@@ -116,9 +151,6 @@ We report how we determined our sample size, all data exclusions (if any), all m
 
 # Results
 
-We used `r my_r_citation$r` for creating.
-
-`r my_r_citation$pkgs` <!-- This creates the footnote -->
 
 
 # Discussion
