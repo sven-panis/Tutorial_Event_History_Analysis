@@ -80,7 +80,7 @@ colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial")
 
 # create factor for condition (prime type)
 data_wr <- data_wr %>% mutate(condition = condition + 1,
-                              condition = factor(condition, levels = c(1,2,3), labels = c("neutral","congruent","incongruent")))
+                              condition = factor(condition, levels = c(1,2,3), labels = c("blank","congruent","incongruent")))
 summary(data_wr)
 ```
 
@@ -202,7 +202,7 @@ p2 <-df %>%
   geom_point(aes(y=survival), size=1, show.legend = F) +
   geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
   # add vertical lines at the median RTs in the plot of the survivor functions using geom_path(). Make sure you apply the same levels and labels for the factor condition as above on line 83!
-  geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("neutral","congruent","incongruent"))),
+  geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("blank","congruent","incongruent"))),
             data = data_medians, 
             linetype = 3, show.legend = F) +
   
@@ -256,7 +256,7 @@ pluck(data_final,4,1)
 print(pluck(data_final,4,1),n=30)
 
 # view lifetable (column 7) for each condition for subject 1
-pluck(data_final, 7, 1) %>% filter(condition=="neutral")
+pluck(data_final, 7, 1) %>% filter(condition=="blank")
 pluck(data_final, 7, 1) %>% filter(condition=="congruent")
 pluck(data_final, 7, 1) %>% filter(condition=="incongruent")
 
