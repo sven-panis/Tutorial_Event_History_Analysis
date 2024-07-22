@@ -22,12 +22,32 @@ If you want to see and work with the code, then:
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
 4. At this point, you can use the project with the same package versions that were stored in the renv.lock file.
 
-# Important files and folders
+# Important folders and files
 
-Folder manuscript contains the paper (.Rmd from papaja).
+Folder manuscript 
+- manuscript.Rmd (papaja Template)
+- manuscript.pdf
+- manuscript.tex
+- r-references.bib
+- ownreferences.bib
 
-Folder Tutorial1 is about creating descriptive statistics (setting up a life-table for each condition).
+Folder Tutorial_1_descriptive_stats
+- Tutorial_1.Rmd (creating descriptive statistics : setting up a life-table for each level of a single independent variable).
+- folder data
+- folder figures
+- folder tables
 
-Folder Tutorial2 is about inferential statistics (Bayesian discrete-time EHA).
+Folder Tutorial_2_Bayesian 
+- Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
+- folder model
+- folder effects
 
-Folder Tutorial3 is about inferential statistics (Frequentist discrete-time EHA).
+Folder Tutorial_3_frequentist 
+- Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
+- folder model
+
+Folder Tutorial_4_descriptive_stats_two_independent_variables
+- Tutorial_4.Rmd (creating descriptive stats when there are two independent variables)
+- folder figures
+
+
