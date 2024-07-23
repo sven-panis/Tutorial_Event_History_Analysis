@@ -1,5 +1,5 @@
 bin,risk_set,events,hazard,se_haz,survival,se_surv,ca,se_ca
-0,219,0,0,0,1,0,NA,NA
+0,219,NA,NA,NA,1,0,NA,NA
 40,219,0,0,0,1,0,NA,NA
 80,219,0,0,0,1,0,NA,NA
 120,219,0,0,0,1,0,NA,NA
