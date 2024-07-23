@@ -21,7 +21,7 @@ pkg <- c("tidyverse", "patchwork")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Read in the raw data from Panis and Schmidt (2016).
+# Read in the raw data from Panis and Schmidt (2016) - can be skipped.
 
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T)
@@ -30,7 +30,7 @@ tail(raw)
 glimpse(raw)
 ```
 
-# Do some wrangling to get a simpler data set.
+# Do some wrangling to get a simpler data set - can be skipped.
 
 ```{r wrangle-raw-data}
 # remove practice trials
@@ -289,7 +289,7 @@ lifetable_blank_s6 <- data_final[[7]][[6]] %>%
 riskset <- lifetable_blank_s6 %>% select(risk_set) %>% slice(1) %>% pull()
 
 # create a row for time point 0
-row0 <- c(bin=0,risk_set=riskset,events=0,hazard=0,se_haz=0,survival=1,se_surv=0,ca=NA,se_ca=NA)
+row0 <- c(bin=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,survival=1,se_surv=0,ca=NA,se_ca=NA)
 # add new row
 lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
                                  add_row(!!! row0) %>%
