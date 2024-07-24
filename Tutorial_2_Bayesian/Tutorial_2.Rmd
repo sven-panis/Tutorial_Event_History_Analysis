@@ -44,7 +44,7 @@ devtools::session_info("rstan")
 ```{r load-data}
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
 print(ptb_data,n=30)
-summary(ptb_data) # 26602 rows: 6 participants, 3 conditions, 15 periods, and event indicator (0/1)
+summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
 ```
 
 # Prepare the data set.
@@ -61,22 +61,14 @@ summary(ptb_data)
 ptb_data <- ptb_data %>% mutate(period_9 = period - 9,
                                 trial_c = (trial - 1000)/1000)
 
-# create dummy variables for each time period (to illustrate how to fit a general specification of TIME)
-ptb_data <- ptb_data %>% mutate(d6 = if_else(period == 6, 1, 0),
-                                d7 = if_else(period == 7, 1, 0),
-                                d8 = if_else(period == 8, 1, 0),
-                                d9 = if_else(period == 9, 1, 0),
-                                d10 = if_else(period == 10, 1, 0),
-                                d11 = if_else(period == 11, 1, 0),
-                                d12 = if_else(period == 12, 1, 0),
-                                d13 = if_else(period == 13, 1, 0),
-                                d14 = if_else(period == 14, 1, 0),
-                                d15 = if_else(period == 15, 1, 0))
-
 # remove unnecessary columns before fitting a model
-ptb_data <- ptb_data %>% select(-c(bl,tr,trial,period,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15)) # 12840 obs. of 5 variables
+ptb_data <- ptb_data %>% select(-c(bl,tr,trial,period)) # 12840 obs. of 5 variables
 head(ptb_data,n=17)
 summary(ptb_data)
+# 6 subjects
+# condition: blank (6401), congruent (2642), incongruent (3797)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
 ```
 
 # Set up priors, and fit the model with full random effects structure.
