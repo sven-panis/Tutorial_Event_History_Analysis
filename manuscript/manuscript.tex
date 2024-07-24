@@ -221,19 +221,19 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={A tutorial on Bayesian and Frequentist Event History Analysis for psychological time-to-event data},
+  pdftitle={A tutorial on Bayesian and Frequentist Event History Analyses for psychological time-to-event data},
   pdfauthor={Sven Panis1 \& Richard Ramsey1},
   pdflang={en-EN},
   pdfkeywords={response times, event history analysis, Bayesian regression models},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{A tutorial on Bayesian and Frequentist Event History Analysis for psychological time-to-event data}
+\title{A tutorial on Bayesian and Frequentist Event History Analyses for psychological time-to-event data}
 \author{Sven Panis\textsuperscript{1} \& Richard Ramsey\textsuperscript{1}}
 \date{}
 
 
-\shorttitle{Tutorial on hazard modeling}
+\shorttitle{Tutorial on hazard analysis}
 
 \authornote{
 
@@ -248,7 +248,7 @@ Correspondence concerning this article should be addressed to Sven Panis, ETH GL
 \affiliation{\vspace{0.5cm}\textsuperscript{1} ETH Zürich}
 
 \abstract{%
-Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. We discuss how to manage inter-individual differences, implications for experimental design, and how to select among various options when analysing time-to-event data using discrete-time survival analysis.
+Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. Along the way, we discuss how to manage inter-individual differences, implications for experimental design, and how to select among various options when analysing time-to-event data using discrete-time survival analysis.
 }
 
 
@@ -335,6 +335,19 @@ To set up the life tables and plots of the discrete-time functions h(t), S(t) an
 \normalsize
 
 Note that the censoring time should be a multiple of the bin width (both in ms). The censoring time should be a time point after which no informative responses are expected anymore. In experiments that implement a response deadline in each trial the censoring time can equal that deadline time point. Trials with a RT larger than the censoring time, or trials in which no response is emitted during the data collection period, are treated as right-censored observations in EHA. In other words, these trials are not discarded, because they contain the information that the event did not occur before the censoring time. Removing such trials before calculating the mean event time can introduce a sampling bias. The person-trial-bin oriented dataset has one row for each time bin of each trial that is at risk for event occurrence. The variable ``event'' in the person-trial-bin oriented data set indicates whether a response occurs (1) or not (0) for each bin.
+When plotting the data, some warning messages will be generated, like these:
+
+\begin{itemize}
+\tightlist
+\item
+  Removed 2 rows containing missing values or values outside the scale range (\texttt{geom\_line()}).
+\item
+  Removed 2 rows containing missing values or values outside the scale range (\texttt{geom\_point()}).
+\item
+  Removed 2 rows containing missing values or values outside the scale range (\texttt{geom\_segment()}).
+\end{itemize}
+
+The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored.
 One can now inspect different aspects, including the life table for a particular condition of a particular subject, and a plot of the different functions for a particular participant.
 
 Table 1 shows the life table for condition ``blank'' (no prime stimulus presented) - compare to Figure 1. A life table includes for each time bin, the risk set (number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), ca(t) and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
@@ -342,6 +355,10 @@ Table 1 shows the life table for condition ``blank'' (no prime stimulus presente
 Figure 1 displays the discrete-time hazard, survivor, and conditional accuracy functions for each prime condition for participant 6. By using discrete-time h(t) functions of event occurrence - in combination with ca(t) functions for two-choice tasks - one can provide an unbiased, time-varying, and probabilistic description of the latency and accuracy of responses based on all trials of any data set.
 
 For example, for participant 6, the estimated hazard values in bin (240,280{]} are 0.03, 0.17, and 0.22 for the blank, congruent, and incongruent prime conditions, respectively. In other words, when the waiting time has increased until \emph{240 ms} after target onset, then the conditional probability of response occurrence in the next 40 ms is more than five times larger for both prime-present conditions, compared to the blank prime condition.
+
+Furthermore, the estimated conditional accuracy values in bin (240,280{]} are 0.29, 1, and 0 for the blank, congruent, and incongruent prime conditions, respectively. In other words, if a response is emitted in bin (240,280{]}, then the probability that it is correct is estimated to be 0.29, 1, and 0 for the blank, congruent, and incongruent prime conditions, respectively.
+
+However, when the waiting time has increased until \emph{400 ms} after target onset, then the conditional probability of response occurrence in the next 40 ms is estimated to be 0.36, 0.25, and 0.07 for the blank, congruent, and incongruent prime conditions, respectively. And when a response does occur in bin (400,440{]}, then the probability that it is correct is estimated to be 0.98, 1, and 1 for the blank, congruent, and incongruent prime conditions, respectively.
 
 
 
@@ -352,7 +369,7 @@ For example, for participant 6, the estimated hazard values in bin (240,280{]} a
 \begin{center}
 \begin{threeparttable}
 
-\caption{\label{tab:life-table}This is the life table for condition blank of participant 6.}
+\caption{\label{tab:life-table}The life table for the blank prime condition of participant 6.}
 
 \begin{tabular}{lllllllll}
 \toprule
@@ -379,7 +396,7 @@ bin & \multicolumn{1}{c}{risk\_set} & \multicolumn{1}{c}{events} & \multicolumn{
 \end{tabular}
 
 \begin{tablenotes}[para]
-\normalsize{\textit{Note.} The column named ``bin'' indicates the endpoint of each time bin (in ms), and includes time point zero. se = standard error. ca = conditional accuracy.}
+\normalsize{\textit{Note.} The column named ``bin'' indicates the endpoint of each time bin (in ms), and includes time point zero. For example the first bin is (0,40{]} with the starting point excluded and the endpoint included. se = standard error. ca = conditional accuracy.}
 \end{tablenotes}
 
 \end{threeparttable}
@@ -395,34 +412,55 @@ bin & \multicolumn{1}{c}{risk\_set} & \multicolumn{1}{c}{events} & \multicolumn{
 
 }
 
-\caption{Discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of the passage of discrete waiting time.}\label{fig:eha-plot}
+\caption{Estimated discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of the passage of discrete waiting time.}\label{fig:eha-plot}
 \end{figure}
-
-Furthermore, the estimated conditional accuracy values in bin (240,280{]} are 0.29, 1, and 0 for the blank, congruent, and incongruent prime conditions, respectively. In other words, if a response is emitted in bin (240,280{]}, then the probability that it is correct is estimated to be 0.29, 1, and 0 for the blank, congruent, and incongruent prime conditions, respectively.
-
-However, when the waiting time has increased until \emph{400 ms} after target onset, then the conditional probability of response occurrence in the next 40 ms is estimated to be 0.36, 0.25, and 0.07 for the blank, congruent, and incongruent prime conditions, respectively. And when a response does occur in bin (400,440{]}, then the probability that it is correct is estimated to be 0.98, 1, and 1 for the blank, congruent, and incongruent prime conditions, respectively.
 
 These results show that this participant is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only later response are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. Also, in their second Experiment, Panis and Schmidt (2016) showed that the negative compatibility effect in the mask-present conditions is time-locked to mask onset. This example shows that a simple difference between two means fails to reveal the dynamic behavior people display in many experimental paradigms (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Schmidt, Panis, Wolkersdorfer, \& Vorberg, 2022). In other words, statistically controlling for the passage of time during data analysis is equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms. As we will show in Tutorials 2 and 3, statistical models for h(t) and ca(t) can each be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and response accuracy (1/0) in each bin of a selected time range, respectively.
 
 \section{Tutorial 2: Fitting Bayesian hazard models}\label{tutorial-2-fitting-bayesian-hazard-models}
 
+In this second tutorial we illustrate how to fit a Bayesian hazard regression model for the data set used in the first tutorial.
+
 \section{Tutorial 3: Fitting Frequentist hazard models}\label{tutorial-3-fitting-frequentist-hazard-models}
 
-\section{Methods}\label{methods}
+In this third tutorial we illustrate how to fit a frequentist hazard regression model for the data set used in the first tutorial.
 
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study.
+\section{Tutorial 4: Calculating descriptive statistics when there are two independent variables}\label{tutorial-4-calculating-descriptive-statistics-when-there-are-two-independent-variables}
 
-\subsection{Participants}\label{participants}
-
-\subsection{Material}\label{material}
-
-\subsection{Procedure}\label{procedure}
-
-\subsection{Data analysis}\label{data-analysis}
-
-\section{Results}\label{results}
+In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016).
 
 \section{Discussion}\label{discussion}
+
+\subsection{Individual differences}\label{individual-differences}
+
+\begin{itemize}
+\tightlist
+\item
+  role of response deadlines, low-level vs.~higher-level processes,
+\item
+  clustering algorithms based on h(t) and ca(t) data
+\item
+\end{itemize}
+
+\subsection{Cognitive psychophysiology and computational model selection}\label{cognitive-psychophysiology-and-computational-model-selection}
+
+\subsection{Power analysis}\label{power-analysis}
+
+\begin{itemize}
+\tightlist
+\item
+  example repo on github
+\end{itemize}
+
+\subsection{Preregistration}\label{preregistration}
+
+\begin{itemize}
+\tightlist
+\item
+  example preregistration for knot data
+\end{itemize}
+
+\section{Conclusions}\label{conclusions}
 
 \newpage
 
