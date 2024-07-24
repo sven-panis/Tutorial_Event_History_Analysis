@@ -1,7 +1,9 @@
 # Tutorial_Event_History_Analysis
-A tutorial on how to perform Bayesian and Frequentist discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, etc.
+
+A tutorial on how to perform descriptive, and inferential Bayesian and Frequentist discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, etc.
 
 # Intended audience
+
 This is mainly for experimental psychologists and cognitive neuroscientists.
 But other folks might also find it useful as a general way to analyse time-to-event data.
 
@@ -15,6 +17,7 @@ But other folks might also find it useful as a general way to analyse time-to-ev
 - The [papaja()](https://frederikaust.com/papaja_man/) package for writing reproducible manuscripts
 
 # What's the easiest way to access the project?
+
 If you want to see and work with the code, then:
 
 1. Clone or download the project from github to your local machine.
@@ -29,7 +32,7 @@ Folder manuscript
 - manuscript.pdf
 - manuscript.tex
 - r-references.bib
-- ownreferences.bib
+- extrareferences.bib
 
 Folder Tutorial_1_descriptive_stats
 - Tutorial_1.Rmd (creating descriptive statistics : setting up a life-table for each level of a single independent variable).
@@ -40,11 +43,11 @@ Folder Tutorial_1_descriptive_stats
 Folder Tutorial_2_Bayesian 
 - Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 - folder model
-- folder effects
+- folder figures
 
 Folder Tutorial_3_frequentist 
 - Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
-- folder model
+- folder figures
 
 Folder Tutorial_4_descriptive_stats_two_independent_variables
 - Tutorial_4.Rmd (creating descriptive stats when there are two independent variables)
