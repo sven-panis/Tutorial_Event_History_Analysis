@@ -24,7 +24,7 @@ lapply(pkg, library, character.only = TRUE)
 # Read in the raw data from Panis and Schmidt (2016) - can be skipped.
 
 ```{r read-raw-data}
-raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T)
+raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) # 9372 rows
 head(raw)
 tail(raw)
 glimpse(raw)
@@ -34,26 +34,31 @@ glimpse(raw)
 
 ```{r wrangle-raw-data}
 # remove practice trials
-data <- raw %>% filter(practice==0) # 9240 trials: 6 participants x 70 blocks x 22 trials-per-block
+data <- raw %>% filter(practice==0) # 9240 experimental trials: 6 participants x 70 blocks x 22 trials-per-block
 
 # remove unnecessary columns
 data <- data %>% select(-c(ss,practice,rd,form,task,primeduration,
                                              blankduration,maskduration,targetduration,
                                              void,target_dir,corresp,resperr))
-# remove trials with no response info
-sel = which(data$resp==0)
-data <- data[-c(sel),] # 9189 rows left
+# look at trials where resp==0
+data %>% filter(resp==0) 
+data %>% filter(resp==0) %>% print(n=51)
+
+# remove trials with no response info if rt < 800 (800 was the response deadline in each trial):
+# the 46 trials where rt >= 800 and resp==0 are trials in which the subject did not respond; these should not be deleted because they will be treated as right-censored observations in EHA!
+# the remaining 5 trials of subject 1 should be removed (for some technical reason the resp (1 or 2) was not recorded; perhaps (s)he pressed both buttons at the same time...)
+sel = which(data$resp==0 & data$rt < 800)
+data <- data[-c(sel),] # 9235 rows
 
 # keep only the no-mask trials
 data <- data %>% filter(mask_type == 0) %>%
-                 select(-mask_type) # 2737 rows left, and 8 variables
-
+                 select(-mask_type) # 2757 rows and 8 variables
 summary(data)
 # vp = Versuchsperson or subject
 # bl = block number
 # tr = trial number within block
-# prime_type: no prime (0), consistent prime (1), inconsistent prime (2)
-# resp = response left (1) or right (2)
+# prime_type: no prime or blank (0), consistent prime (1), inconsistent prime (2)
+# resp = no button (0), button left (1), button right (2) 
 # respac = accuracy
 # rt = response time
 # TrialNr = trial number within experiment
@@ -70,7 +75,7 @@ write_csv(data, "Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.c
 data_wr <- read_csv("Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
 head(data_wr)
 
-# change relevant variable names (to pid, trial, condition, rt, and acc)
+# change some variable names to required names (pid, trial, condition, rt, and acc)
 colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial") 
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
@@ -86,7 +91,7 @@ summary(data_wr)
 
 # Apply functional programming to set up life tables, and plot the discrete-time functions (h(t), S(t), and ca(t)).
 
-Load the functions. Make sure you specify the same levels and labels for factor condition in the function plot_eha (line 205) as above (line 83).
+Load the functions. Make sure you specify the same levels and labels for factor condition in the function plot_eha (line 210) as above (line 88).
 
 ```{r load-functions}
 # function censor creates censored observations and discrete response times (drt), given a user-defined censoring time (timeout) and bin width in ms
@@ -306,6 +311,7 @@ write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables
 input_modeling_hazard <- data_final %>% 
                          select(pid, ptb_data) %>%  unnest(ptb_data) %>%
                          select(pid,bl,tr,trial,condition,period,event)
+summary(input_modeling_hazard)
 ```
 
 ```{r save-file-hazard-modeling}
