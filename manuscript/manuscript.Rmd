@@ -1,7 +1,6 @@
 ---
 title             : "A tutorial on Bayesian and Frequentist Event History Analyses for psychological time-to-event data"
 shorttitle        : "Tutorial on hazard analysis"
-
 author: 
   - name          : "Sven Panis"
     affiliation   : "1"
@@ -18,35 +17,27 @@ author:
       - "Conceptualization"
       - "Writing - Review & Editing"
       - "Supervision"
-
 affiliation:
   - id            : "1"
     institution   : "ETH Zürich"
-
 authornote: |
   Neural Control of Movement lab, Department of Health Sciences and Technology (D-HEST).
-
   <!-- Enter author note here. -->
-
 abstract: |
   Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. To move beyond mean performance measures, various distributional analyses have been proposed. Here we focus on one particular distributional analysis known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. Along the way, we discuss how to manage inter-individual differences, implications for experimental design, and how to select among various options when analysing time-to-event data using discrete-time survival analysis.  
   
-  <!-- https://tinyurl.com/ybremelq -->
   
+  <!-- https://tinyurl.com/ybremelq -->
 keywords          : "response times, event history analysis, Bayesian regression models"
 wordcount         : "X"
-
 bibliography      : ["r-references.bib", "extrareferences.bib"]
-
 floatsintext      : yes
 linenumbers       : yes
 draft             : no
 mask              : no
-
 figurelist        : no
 tablelist         : no
 footnotelist      : no
-
 classoption       : "man"
 output            : papaja::apa6_pdf
 # output            : papaja::apa6_word
@@ -94,8 +85,8 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 # Introduction
 
-In experimental psychology, it is still standard practice to analyse response times (RTs), saccade latencies, and fixation durations using analysis-of-variance. However, differences in means conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
-In this tutorial we focus on a distributional method for analyzing time-to-event data that is known as discrete-time event history analysis (EHA), a.k.a. survival, hazard, duration, failure-time, and transition analysis [@singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @allisonSurvivalAnalysisUsing2010]. Across four tutorials that we make publicly available on Github and OSF, we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4.
+In experimental psychology, it is still standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating mean average performance across a series of trials. However, differences in means conceal when an experimental effect starts, how long it lasts, and whether its onset is time-locked to other events. Such information is useful not only for interpretation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+In this tutorial we focus on a distributional method for analyzing time-to-event data that is known as discrete-time event history analysis (EHA), a.k.a. survival, hazard, duration, failure-time, and transition analysis [@singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @allisonSurvivalAnalysisUsing2010]. Across four tutorials that we make publicly available on Github and the Open Science Framework (OSF), we illustrate how to calculate and interpret descriptive statistics, and how to implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4.
 
 To apply EHA, one must be able to define the event of interest (any qualitative change that can be situated in time, e.g., a button press, saccade onset, fixation offset), time point zero (e.g., target stimulus onset, fixation onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. 
 
