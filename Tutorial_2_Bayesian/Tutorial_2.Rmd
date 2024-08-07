@@ -75,17 +75,56 @@ summary(ptb_data)
 
 ```{r priors}
 priors <- c(
-  set_prior("normal(0, 1)", class = "b"), # for beta parameters 
-  set_prior("student_t(7.61, 0, 1.57)", class = "b", coef = "Intercept"), # flat prior for intercept on hazard scale
+  set_prior("normal(0, 1)", class = "b"), # for beta parameters when using logit link
+  
+  #set_prior("skew_normal(-0.5, .95,-4)", class = "b"), # for beta parameters when using cloglog link
+  
+  set_prior("student_t(7.61, 0, 1.57)", class = "b", coef = "Intercept"), # flat prior for intercept on hazard scale when using logit link; 
+  
+  #set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),   # weakly regularizing prior for intercept when using cloglog link (hazard values below .5 more likely than values above .5)
   set_prior("normal(0, 1)", class = "sd"), # for standard deviation of RE
   set_prior("lkj(2)", class = "cor") # for correlations between RE
 )
+
+inv_cloglog <- function(c){
+  1-exp(-exp(c))
+}
+cloglog <- function(p){
+  log(-log(1-p))
+}
+
+dat <- 
+  tibble(c1 = rnorm(1e5,0,1), # usa as weakly reguralizing prior for beta parameters (when using logit link)
+         c2 = rt(1e5,7.61)* 1.57) %>% # use as weakly reguralizing prior for interceptparameter (when using logit 
+  mutate(p1 = inv_logit_scaled(c1),
+         p2 = inv_logit_scaled(c2)) 
+
+plot(density(dat$c1))
+plot(density(dat$c2))
+plot(density(dat$p1))
+plot(density(dat$p2))
+
+# cloglog
+dat2 <- tibble(c1 = rnorm(1e5,-1,1.1), # cloglog intercept
+              c2 = rskew_normal(1e5, -0.5, sigma = .95, alpha = -4)) %>% # beta toward .6
+ 
+  mutate(p1 = inv_cloglog(c1),
+         p2 = inv_cloglog(c2)) 
+
+
+plot(density(dat2$c1))
+plot(density(dat2$c2))
+plot(density(dat2$p1))
+plot(density(dat2$p2))
+
+
+
 ```
 
 ```{r full-random-effects-model}
 plan(multicore)
 
-model_full_RE <-
+model_full_RE_newprior <-
    brm(data = ptb_data,
        family = binomial(link="cloglog"),
        event | trials(1) ~ 0 + Intercept + 
@@ -99,7 +138,7 @@ model_full_RE <-
        chains = 4, cores = 4, iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
        seed = 12, init = "0",
-       file = "Tutorial_2_Bayesian/models/model_full_RE")
+       file = "Tutorial_2_Bayesian/models/model_full_RE_newprior")
 
 # the formula above comes down to the following effects:
 # cloglog[h(t)]=Intercept+ ##the estimated cloglog[h(t)] in bin 9 for trial 1000 for reference condition "blank"
@@ -111,16 +150,22 @@ model_full_RE <-
 # trial_c:congruent:period_9 + trial_c:incongruent:period_9 ##how the linear effect of trial number changes linearly over TIME can differ for congruent and incongruent
 ```
 
-Model_full_RE took 3 hours to run.
+Model_full_RE took between 3 and 4 hours to run.
 
 ```{r check-model-full-RE}
 summary(model_full_RE)
 ```
 
+Fit a model that relaxes proportionality assumption.
 
+```{r}
+# remove unnecessary columns before fitting a model
+ptb_data <- ptb_data %>% select(-c(trial_c)) # 12840 obs. of 4 variables
+head(ptb_data,n=17)
+summary(ptb_data)
+```
 
-
-```{r full-random-effects-model}
+```{r cubic-random-effects-model}
 plan(multicore)
 
 model_cubic_RE <-
@@ -146,25 +191,65 @@ model_cubic_RE <-
 # incongruent+incongruent:period_9+incongruent:I(period_9^2)+incongruent:I(period_9^3) ##effect of incongruent interacts cubicly with TIME
 ```
 
-```{r check-model-full-RE}
+```{r check-model-cubic-RE}
 summary(model_cubic_RE)
 ```
+
+#### relax all ass
+
+```{r cubictime-quadtrial-model}
+plan(multicore)
+
+model_cubictime_quadtrial <-
+   brm(data = ptb_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + 
+                           condition*period_9*trial_c + 
+                           condition*period_9*I(trial_c^2) + 
+                           condition*I(period_9^2)*trial_c + 
+                           condition*I(period_9^2)*I(trial_c^2) +
+                           condition*I(period_9^3) +
+                      (1 + condition*period_9*trial_c +
+                           condition*period_9*I(trial_c^2) +
+                           condition*I(period_9^2)*trial_c +
+                           condition*I(period_9^2)*I(trial_c^2) +
+                           condition*I(period_9^3) | pid),
+       prior = priors,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_cubictime_quadtrial")
+
+# the formula above comes down to the following effects:
+# cloglog[h(t)]=Intercept+ ##the estimated cloglog[h(t)] in bin 9 for trial 1000 for reference condition "blank"
+# period_9+I(period_9^2)+I(period_9^3)+ ##a cubic specification of TIME for reference condition "blank"
+# congruent+congruent:period_9+congruent:I(period_9^2)+congruent:I(period_9^3)+ ##effect of congruent interacts cubicly with TIME
+# incongruent+incongruent:period_9+incongruent:I(period_9^2)+incongruent:I(period_9^3)+ ##effect of incongruent interacts cubicly with TIME
+# trial_c + trial_c:period_9 + ##linear effect of trial number in bin 9 can change linearly over TIME for "blank"
+# trial_c:congruent + trial_c:incongruent + ##linear effect of trial number in bin 9 can differ for congruent and incongruent
+# trial_c:congruent:period_9 + trial_c:incongruent:period_9 ##how the linear effect of trial number changes linearly over TIME can differ for congruent and incongruent
+```
+
+
 
 # plot hazard functions
 
 ```{r}
-
+model_full_RE <- readRDS("Tutorial_2_Bayesian/models/model_full_RE.rds") 
+model_full_RE_newprior <- readRDS("Tutorial_2_Bayesian/models/model_full_RE_newprior.rds") 
+fixef(model_full_RE)
+fixef(model_full_RE_newprior)
 ```
 
 
 # visualize posterior distributions of the effects of congruent and incongruent primes on hazard relative to blank prime, for each time bin in trial 1000, and for each time bin in trial 100.
 
 ```{r load-model}
-model_cubic_RE <- readRDS("Tutorial_2_Bayesian/models/model_cubic_RE.rds") 
+model_full_RE <- readRDS("Tutorial_2_Bayesian/models/model_full_RE.rds") 
 ```
 
 ```{r make-plot-effects}
-post <-as_draws_df(model_cubic_RE) %>% # 8000 draws x 299 variables
+post <-as_draws_df(model_full_RE) %>% # 8000 draws x 299 variables
    select(starts_with("b_")) %>%       # 8000 x 18
    expand_grid(period_9 = -3:6) %>%   
    mutate(period_9sq = period_9^2,
@@ -181,6 +266,7 @@ p1congruent <- post %>%
   geom_hline(yintercept=0, linetype="dashed", color = "red") +
   scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
                      limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-6,-4,-2,0,2,4,6), limits = c(-6,6)) +
   labs(title = "trial 1000", x = "time bin", y = "effect of congruent") +
   theme(panel.grid = element_blank(),
         axis.text.x = element_text(angle=90)) 
@@ -195,9 +281,15 @@ p2incongruent <- post %>%
   geom_hline(yintercept=0, linetype="dashed", color = "red") +
   scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
                      limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-6,-4,-2,0,2,4,6), limits = c(-6,6)) +
   labs(x = "time bin", y = "effect of incongruent") +
   theme(panel.grid = element_blank(),
         axis.text.x = element_text(angle=90)) 
+
+
+
+
+
 
 p1congruent + p2incongruent
 #(p1+p2+p3)/(p4+p5+p6)/(p7+p8+p9)/(p10+p11+p12)/(p13+p14+p15)
