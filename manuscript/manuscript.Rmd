@@ -58,10 +58,29 @@ header-includes:
 
 
 ```{r setup, include = FALSE}
-pkg <- c("papaja", "citr", "tidyverse", "RColorBrewer", "patchwork")
+# Tutorial 1 and 4
+pkg1 <- c("papaja", "citr", "tidyverse", "RColorBrewer", "patchwork")
 
-lapply(pkg, library, character.only = TRUE)
+lapply(pkg1, library, character.only = TRUE)
 
+# Tutorial 2
+pkg2 <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
+         "brms", "tidybayes", "bayesplot", "future", "parallel")
+
+lapply(pkg2, library, character.only = TRUE)
+
+options(brms.backend = "cmdstanr",
+        mc.cores = parallel::detectCores(),
+        future.fork.enable = TRUE,
+        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+
+supportsMulticore()
+detectCores()
+
+# Tutorial 3
+
+
+# R references
 r_refs(file = "r-references.bib")
 my_r_citation <- cite_r(file = "r-references.bib", footnote = TRUE)
 ```
@@ -101,7 +120,8 @@ To apply EHA, one must be able to define the event of interest (any qualitative 
 
 The shape of a distribution of waiting times can be described in multiple ways [@luceResponseTimesTheir1991]. Let RT be a continous random variable denoting a particular person's response time in a particular experimental condition. Because waiting times can only increase, continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT $\leq$ t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT $>$ t) and the hazard rate function $\lambda$(t) = f(t)/S(t). The hazard rate function gives you the instantaneous rate of event occurrence at time point t, given that the event has not occurred yet. 
 
-Similarly, after dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. Discrete-time EHA focuses on the discrete-time survivor function S(t) = P(RT $>$ t) and the discrete-time hazard function h(t) = P(RT = t| RT $\geq$ t), and not on the probability mass function and the cumulative distribution function. The discrete-time hazard probability function gives you the probability that the event occurs (sometime) in bin t, given that the event has not occurred yet in previous bins. For two-choice RT data, the discrete-time hazard function can be extended with the conditional accuracy function ca(t) = P(correct | RT = t), which gives you the probability that a response is correct given that it has been emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff function.
+Similarly, after dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. Discrete-time EHA focuses on the discrete-time hazard function h(t) = P(RT = t| RT $\geq$ t) and the discrete-time survivor function S(t) = P(RT $>$ t) = [1-h(t)].[1-h(t-1)].[1-h(t-2)]...[1-h(1)], and not on the probability mass function p(t) = h(t).S(t-1) and the cumulative distribution function F(t) = 1-S(t). The discrete-time hazard probability function gives you the probability that the event occurs (sometime) in bin t, given that the event has not occurred yet in previous bins. Unlike the hazard function, which assesses the unique risk associated with each time bin, the survivor function cumulates the bin-by-bin risks of event *non*occurrence.
+For two-choice RT data, the discrete-time hazard function can be extended with the conditional accuracy function ca(t) = P(correct | RT = t), which gives you the probability that a response is correct given that it has been emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff function.
 
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by @holdenDispersionResponseTimes2009, “probability density functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions” (p. 331).
 Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if F~A~(t) > F~B~(t) for all t, then both cumulative distribution functions are said to show a complete ordering. Townsend (1990) showed that a complete ordering on the hazard functions —$\lambda$~A~(t) > $\lambda$~B~(t) for all t— implies a complete ordering on both the cumulative distribution and survivor functions —F~A~(t) > F~B~(t) and S~A~(t) < S~B~(t)— which in turn implies an ordering on the mean latencies —mean A < mean B. In contrast, an ordering on two means does not imply a complete ordering on the corresponding F(t) and S(t) functions, and a complete ordering on these latter functions does not imply a complete ordering on the corresponding hazard functions. This means that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
@@ -111,7 +131,7 @@ Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first 
 
 We focus on factorial within-subject designs in which a large number of observations are made on a relatively small number of participants (small-*N* designs). This  approach  emphasizes  the  precision  and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018]. In contrast to the large-*N* design that averages across many participants without being able to scrutinize individual data patterns,  small-*N*  designs  retain  crucial  information  about  the  data  patterns  of  individual  observers.  This  is  of  great  advantage whenever participants differ systematically in their strategies or in the time-courses of their effects, so that blindly averaging them would lead to misleading data patterns. Indeed, @smithSmallBeautifulDefense2018 argue that, “if psychology is to be a mature quantitative science, then its primary theoretical aim should be to investigate systematic functional relationships as they are manifested at the individual participant level” (p. 2083). Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-*N* designs can have excellent power [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018].
 
-We used `r my_r_citation$r` for all reported analyses. Web links are printed in bold.
+We used `r my_r_citation$r` for all reported analyses. Web links are printed in bold. The content of this tutorial is mainly based on @allisonSurvivalAnalysisUsing2010, @singerAppliedLongitudinalData2003, @mcelreathStatisticalRethinkingBayesian2018, @kurzAppliedLongitudinalDataAnalysis2023, and @kurzStatisticalRethinkingSecondEd2023.
 
 `r my_r_citation$pkgs` <!-- This creates the footnote -->
 
@@ -315,9 +335,6 @@ For example, for participant 6, the estimated hazard values in bin (240,280] are
 
 Furthermore, the estimated conditional accuracy values in bin (240,280] are `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(ca) %>% slice(7) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(ca) %>% slice(7) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(ca) %>% slice(7) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. In other words, if a response is emitted in bin (240,280], then the probability that it is correct is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(ca) %>% slice(7) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(ca) %>% slice(7) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(ca) %>% slice(7) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively.
 
-  However, when the waiting time has increased until *400 ms* after target onset, then the conditional probability of response occurrence in the next 40 ms is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(hazard) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(hazard) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(hazard) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. And when a response does occur in bin (400,440], then the probability that it is correct is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(ca) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(ca) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(ca) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively.
- 
-
 (ref:life-table-caption) The life table for the blank prime condition of participant 6.
 
 (ref:life-note-caption) The column named "bin" indicates the endpoint of each time bin (in ms), and includes time point zero. For example the first bin is (0,40] with the starting point excluded and the endpoint included. se = standard error. ca = conditional accuracy.
@@ -339,21 +356,78 @@ apa_table(
 knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png")
 ```
 
+   However, when the waiting time has increased until *400 ms* after target onset, then the conditional probability of response occurrence in the next 40 ms is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(hazard) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(hazard) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(hazard) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. And when a response does occur in bin (400,440], then the probability that it is correct is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(ca) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(ca) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(ca) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively.
  
   These results show that this participant is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only later response are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. Also, in their second Experiment, @panisWhatShapingRT2016 showed that the negative compatibility effect in the mask-present conditions is time-locked to mask onset. This example shows that a simple difference between two means fails to reveal the dynamic behavior people display in many experimental paradigms [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022; @schmidtResponseInhibitionNegative2022]. In other words, statistically controlling for the passage of time during data analysis is equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms. As we will show in Tutorials 2 and 3, statistical models for h(t) and ca(t) can each be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and response accuracy (1/0) in each bin of a selected time range, respectively. 
 
 # Tutorial 2: Fitting Bayesian hazard models
 
-In this second tutorial we illustrate how to fit a Bayesian hazard regression model for the data set used in the first tutorial. 
+When you want to study how hazard depends on various predictors, you can fit regression models to the data [@singerAppliedLongitudinalData2003]. There are two analytic decisions one has to make. First, one has to select an analysis time range, i.e., a contiguous set of bins for which there is enough data for each participant. Second, one can choose the logit link function which transforms a (hazard) probability into the log of the odds ratio, or the complementary log-log (cloglog) link function, which yields the logarithm of the negated logarithm of the probability of event *non*occurrence. An important difference between these two link functions is that cloglog provides a discrete-time hazard model that has a built-in proportional hazards assumption, while logit provides a proportional odds assumption (see below). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose a specification of the effect of discrete TIME (i.e., the time bin index t). One can choose a general specification (one intercept per bin) or a functional specification, such as a polynomial one.
 
-model formula 
-analytic decisions: specification of the effect of TIME, 
+An example discrete-time hazard model with three predictors (TIME, X1, X2) and the cloglog link function can be written as follows:
 
-assumptions:
-- linearity: continuous variables (TIME, trial number) 
-- additivity:
-- proportionality: 
+cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~ONE + $\alpha$~2~(TIME-1) + $\alpha$~3~(TIME-1)$^2$] +                                    [$\beta$~1~X~1~ + $\beta$~2~X~2~ + $\beta$~3~X~2~(TIME-1)].
 
+The main predictor variable TIME is the time bin index t that is centered on value 1 in this example. The first set of terms within brackets, the alpha parameters multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X~i~ take on a value of zero). The second set of terms (the beta parameters) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X~1~ is to vertically shift the whole baseline cloglog-hazard function by $\beta$~1~ cloglog-hazard units. However, if the predictor interacts linearly with time (see X~2~ in the example), then the effect of a 1 unit increase in X~2~ is to vertically shift the predicted cloglog-hazard in bin 1 by $\beta$~2~ cloglog-hazard units (when TIME-1 = 0), in bin 2 by $\beta$~2~ + $\beta$~3~ cloglog-hazard units (when TIME-1 = 1), and so forth. To interpret the effects of the predictors, the parameter estimates are exponentiated, resulting in a hazard ratio (due to the use of the cloglog link).
+
+In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software (after expanding the typical person-trial-oriented data set into a person-trial-bin-oriented data set (see Tutorial 1); @allisonSurvivalAnalysisUsing2010). When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
+
+In this second tutorial we illustrate how to fit a Bayesian hazard regression model for the masked response priming data set used in the first tutorial. 
+In general, there are three assumptions one can make or relax when adding experimental predictor variables: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
+
+First, we select the analysis range (200,600] and the cloglog link, and use a polynomial to specify the effect of TIME in the "blank" prime condition. Second, based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022] and because cognition is likely the behavior of a non-linear dynamical system [ref], we relax all three assumptions, as follows:
+
+\scriptsize
+```{r prepare-data, echo=T}
+# load data
+ptb_data <- read_csv("../Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+ptb_data <- ptb_data %>% filter(period > 5)
+# create factor condition, with "blank" as the reference level
+ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+# center discrete TIME (period) on bin 9, and trial on trial 1000
+ptb_data <- ptb_data %>% mutate(period_9 = period - 9,
+                                trial_c = (trial - 1000)/1000)
+# remove unnecessary columns before fitting a model
+ptb_data <- ptb_data %>% select(-c(bl,tr,trial,period)) # 12840 obs. of 5 variables
+```
+
+```{r set-priors, echo=T}
+priors <- c(
+  set_prior("normal(0, 1)", class = "b"), # for beta parameters 
+  set_prior("student_t(7.61, 0, 1.57)", class = "b", coef = "Intercept"), # flat prior for intercept on hazard scale
+  set_prior("normal(0, 1)", class = "sd"), # for standard deviation of RE
+  set_prior("lkj(2)", class = "cor") # for correlations between RE
+)
+```
+
+```{r fit-model, echo=T}
+plan(multicore)
+model_full_RE <-
+   brm(data = ptb_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + 
+                           condition*period_9*trial_c + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           (1 + condition*period_9*trial_c +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) | pid),
+       prior = priors,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "../Tutorial_2_Bayesian/models/model_full_RE")
+```
+\normalsize
+
+To test whether (centered) trial number affects behavior, we fit a model without the variable trial_c.
+
+Use WAIC to compare models.
+
+Plot the effects of congruent and incongruent for each time bin for the selected model.
+
+Plot the model-based hazard and survivor functions.
 
 
 
