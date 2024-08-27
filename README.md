@@ -42,7 +42,7 @@ Folder Tutorial_1_descriptive_stats
 
 Folder Tutorial_2_Bayesian 
 - Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
-- folder model
+- folder models
 - folder figures
 
 Folder Tutorial_3_frequentist 
