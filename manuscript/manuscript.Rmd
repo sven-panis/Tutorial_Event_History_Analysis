@@ -393,22 +393,22 @@ priors <- c(
 ```
 
 ```{r fit-model, echo=T}
-plan(multicore)
-model_full_RE <-
-   brm(data = ptb_data,
-       family = binomial(link="cloglog"),
-       event | trials(1) ~ 0 + Intercept + 
-                           condition*period_9*trial_c + 
-                           condition*I(period_9^2) + 
-                           condition*I(period_9^3) +
-                           (1 + condition*period_9*trial_c +
-                           condition*I(period_9^2) +
-                           condition*I(period_9^3) | pid),
-       prior = priors,
-       chains = 4, cores = 4, iter = 3000, warmup = 1000,
-       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
-       seed = 12, init = "0",
-       file = "../Tutorial_2_Bayesian/models/model_full_RE")
+#plan(multicore)
+#model_full_RE <-
+#   brm(data = ptb_data,
+#       family = binomial(link="cloglog"),
+#       event | trials(1) ~ 0 + Intercept + 
+#                           condition*period_9*trial_c + 
+#                           condition*I(period_9^2) + 
+#                           condition*I(period_9^3) +
+#                           (1 + condition*period_9*trial_c +
+#                           condition*I(period_9^2) +
+#                           condition*I(period_9^3) | pid),
+#       prior = priors,
+#       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+#       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+#       seed = 12, init = "0",
+#       file = "../Tutorial_2_Bayesian/models/model_full_RE")
 ```
 \normalsize
 
