@@ -71,6 +71,50 @@ summary(ptb_data)
 # trial_c: -0.999 to 0.540
 ```
 
+# Plot the logit and complementary log-log (cloglog) link functions
+
+```{r plot-links}
+probability <- (1:99999)/100000
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog    <- function(x) { return( log(-1*log(1-x)) )}
+
+cloglog_prob <- cloglog(probability)
+logit_prob <- logit(probability)
+dataplot <- cbind(probability,cloglog_prob,logit_prob)
+
+ggplot() +
+  geom_hline(yintercept=0, color="white") +
+  geom_line(data=dataplot,aes(y=logit_prob,x=probability,colour="logit"),linewidth=1) +
+  geom_line(data=dataplot,aes(y=cloglog_prob,x=probability,colour="cloglog"),linewidth=1) +
+  scale_color_manual(name = "Link function:", values = c("logit" = "darkblue", "cloglog" = "red")) +
+  geom_vline(xintercept = logistic(0), linetype="dotted", linewidth = 0.3) +   
+  geom_vline(xintercept = inverse_cloglog(0), linetype="dotted", linewidth = 0.3) +
+  annotate("text", x = logistic(0)-.02, y = -6, label = "logistic(0) = 0.5", angle = 90) +
+  annotate("text", x = inverse_cloglog(0)+.02, y = -6, label = "inverse_cloglog(0) = 0.6321", angle=90) +
+  scale_x_continuous(n.breaks=10, limits = c(0,1), ) +
+  labs(x = "Probability",
+        y = "logit or cloglog scale") +
+  theme(panel.grid = element_blank(),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14),
+      #  legend.position="top",
+        legend.text = element_text(size=14),
+      legend.position = "inside",
+        legend.position.inside=c(.2,.75),
+      legend.background = element_rect(fill="white") )
+```
+
+```{r save-plot-links}
+ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 12, height = 10, dpi = 600)
+```
+
+# Visualize different prior distributions on the logit and cloglog scales
+
+
+
+
 # Set up priors, and fit the model with full random effects structure.
 
 ```{r priors}
