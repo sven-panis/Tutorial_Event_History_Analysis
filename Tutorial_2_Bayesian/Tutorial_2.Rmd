@@ -78,7 +78,7 @@ probability <- (1:99999)/100000
 logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
 logit    <- function(x) { return( log(x/(1-x)) )}
 inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
-cloglog    <- function(x) { return( log(-1*log(1-x)) )}
+cloglog         <- function(x) { return( log(-1*log(1-x)) )}
 
 cloglog_prob <- cloglog(probability)
 logit_prob <- logit(probability)
@@ -112,6 +112,268 @@ ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 12, height = 10,
 
 # Visualize different prior distributions on the logit and cloglog scales
 
+To gain a sense of what prior logit values would approximate a uniform distriubution on the probability scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
+Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function).
+
+## Simulate, convert, and fit
+
+
+
+## Visualize prior distributions
+
+```{r}
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+invcloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog    <- function(x) { return( log(-1*log(1-x)) )}
+
+pr1 <- tibble(prior = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  mutate(p = logistic(prior)) %>% 
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-13, y=60000, label="N(0,4)",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l1 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("logistic") +
+  theme(panel.grid = element_blank())
+
+c1 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 4)) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("inverse cloglog")+
+  theme(panel.grid = element_blank())
+
+
+pr2 <- tibble(prior = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-6, y=60000, label="N(0,2)",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l2 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c2 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 2)) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# flat prior for logistic
+pr3 <- tibble(prior = rt(1e6, df = 7.61)* 1.57) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-4, y=100000, label="t(7.61)*1.57",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l3 <- tibble(log_odds = rt(1e6, df = 7.61)* 1.57) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c3 <- tibble(cloglog_prob = rt(1e6, df = 7.61)* 1.57) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  #geom_histogram(bins = 50) +
+  #scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# prior to .5
+pr4 <- tibble(prior = rnorm(1e6, mean = 0, sd = 1))%>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3, y=60000, label="N(0,1)",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l4 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 1))%>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  geom_vline(xintercept=logistic(0), color="red") +
+  theme(panel.grid = element_blank())
+
+c4 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 1)) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+ # geom_histogram(bins = 50) +
+#  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# flat on cloglog
+pr5 <- tibble(prior = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3, y=60000, label="skew_N(-0.59,1.26,-4.20)",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l5 <- tibble(log_odds = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20))%>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+#  geom_histogram(bins = 50) +
+#  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c5 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20)) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+
+# regu to invcloglog(0)
+pr6 <- tibble(prior = rskew_normal(1e6, mu=-0.2, sigma = .7, alpha = -2.20)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-1, y=60000, label="skew_N(-0.2,.7,-2.20)",
+              color="red", size=6) +
+  theme(panel.grid = element_blank())
+
+l6 <- tibble(log_odds = rskew_normal(1e6, mu=-0.2, sigma = .7, alpha = -2.20))%>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+ # geom_histogram(bins = 50) +
+#  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c6 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .7, alpha = -2.20)) %>% 
+  mutate(p = invcloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept=invcloglog(0), color = "red") +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+
+
+(l1 + pr1 + c1) / (l2 + pr2 + c2) / (l3 + pr3 + c3) / (l4 + pr4 + c4)/ (l5 + pr5 + c5) / (l6 + pr6 + c6)
+
+```
+
+
+```{r}
+ggsave("figures/plot_of_priors.png", width=9, height=10,dpi=300)
+```
+
+The log-odds Normal(0,1) gently regularizes p towards .5, but still allows for stronger values. This might be a good prior to use for the beta parameters. 
+
+
+
+
+
+N(0,4) make no sense for logit-hazard models.
+
+
+
+
+Compare three standard deviations.
+
+The log-odds Normal(0,1) gently regularizes p towards .5, but still allows for stronger values. This might be a good prior to use for the beta parameters. 
+
+
+The alpha parameters tend to drift toward the lower end of the probability range in general (i.e., they are typically below .5 in hazard space, also for RT studies). The log-odds Normal(0, 1.5) prior is nearly flat in probability space, but it does still push the mass away from the boundaries.
+
+
+```{r}
+set.seed(11)
+
+# generate draws from U(0,1)
+dat <- 
+  tibble(p = runif(1e5, 0, 1)) %>% 
+  mutate(g = logit(p),
+         c = cloglog(p)) 
+# display
+dat %>%   
+  ggplot(aes(x = c)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+plot(density(dat$c))
+
+# fit models
+fit11.11 <-
+  brm(data = dat,
+      family = student,
+      g ~ 1,
+      chains = 4, cores = 4,
+      file = "models/fit11.11")
+
+
+fit11.11b <-
+  brm(data = dat,
+      family = skew_normal(),
+      c ~ 1,
+      chains = 4, cores = 4,
+      file = "models/fit11.11b")
+
+fit11.11b2 <-
+  brm(data = dat,
+      family = student(),
+      c ~ 1,
+      chains = 4, cores = 4,
+      file = "models/fit11.11b2")
+
+```
+
+```{r}
+print(fit11.11)
+print(fit11.11b)
+print(fit11.11b2)
+
+
+pp_check(fit11.11b)
+```
+
+Now we can reverse the process. Here’s what it would look like if we simulated from the Student  
+t-distribution based on those posterior means and then converted the results into the probability metric.
+
+```{r}
+set.seed(11)
+
+
+# cloglog
+#library(sn)
+
+tibble(c = rskew_normal(1e8, mu=-0.59, sigma = 1.26, alpha = -4.20) ) %>% # simulate from skew-normal #distribution !!!!!!!! for intercept 
+#  !!!!!!!!!
+
+#tibble(c = rsn(1e6, xi=-1, omega = 1, alpha = -2) ) %>% # simulate from skew-normal distribution
+ 
+   mutate(p = invcloglog(c)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+
+```
 
 
 
