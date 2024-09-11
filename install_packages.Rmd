@@ -67,7 +67,7 @@ install.packages(c("brms", "tidybayes", "bayesplot", "future"))
 To build regression models in other packages such as lme4:
 
 ```{r}
-#install.packages("lme4", "nlme")
+install.packages("lme4", "nlme")
 ```
 
 Next, packages for papaja and manuscript writing
