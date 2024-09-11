@@ -188,6 +188,20 @@
       ],
       "Hash": "ca98390ad1cef2a5a609597b49d3d042"
     },
+    "VGAM": {
+      "Package": "VGAM",
+      "Version": "1.1-11",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "methods",
+        "splines",
+        "stats",
+        "stats4"
+      ],
+      "Hash": "0a347b0c06e87ad505699b7a6290abd2"
+    },
     "abind": {
       "Package": "abind",
       "Version": "1.4-5",
@@ -2582,6 +2596,25 @@
         "utils"
       ],
       "Hash": "1229a01b4ec059e9f2396724f2ec9010"
+    },
+    "standist": {
+      "Package": "standist",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "standist",
+      "RemoteUsername": "jmgirard",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "66892f4748a54e17cef90e6a355148e5ec7dae28",
+      "Requirements": [
+        "VGAM",
+        "assertthat",
+        "ggplot2",
+        "rstan",
+        "stringr"
+      ],
+      "Hash": "61301fdf173f139c2e2216202343612b"
     },
     "stringi": {
       "Package": "stringi",
