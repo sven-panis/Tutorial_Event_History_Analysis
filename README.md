@@ -1,6 +1,6 @@
 # Tutorial_Event_History_Analysis
 
-A tutorial on how to perform descriptive, and inferential Bayesian and Frequentist discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, etc.
+A tutorial on how to perform descriptive, and inferential Bayesian and Frequentist discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, perceptual dominance durations, etc.
 
 # Intended audience
 
@@ -27,6 +27,8 @@ If you want to see and work with the code, then:
 
 # Important folders and files
 
+- Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
+
 Folder manuscript 
 - manuscript.Rmd (papaja Template)
 - manuscript.pdf
@@ -46,8 +48,6 @@ Folder Tutorial_2_Bayesian
 - folder figures
 
 Folder Tutorial_3_frequentist 
-- Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
-- folder figures
 
 Folder Tutorial_4_descriptive_stats_two_independent_variables
 - Tutorial_4.Rmd (creating descriptive stats when there are two independent variables)

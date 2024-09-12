@@ -1,0 +1,163 @@
+---
+title: "Tutorial_3"
+author: "Sven Panis"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this file we build a Frequentist hazard regression model for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
+
+# Load the libraries that we will be using
+
+```{r load-pkg}
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+# Load the person-trial-bin data set that we saved in Tutorial 1.
+
+```{r load-data}
+ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
+print(ptb_data,n=30)
+summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
+```
+
+# Prepare the data set.
+
+```{r prepare-data}
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+ptb_data <- ptb_data %>% filter(period > 5)
+
+# create factor condition, with "blank" as the reference level
+ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
+ptb_data <- ptb_data %>% 
+        mutate(period_9 = period - 9,
+               trial_c = (trial - 1000)/1000)
+
+head(ptb_data,n=17)
+summary(ptb_data)
+# 6 subjects
+# condition: blank (6401), congruent (2642), incongruent (3797)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
+```
+
+# Fit a Frequentist generalized linear mixed model (cfr. Model_M3 in Tutorial 2)
+
+```{r get-data}
+M3_data <- ptb_data %>% select(pid, period_9, trial_c, condition, event)
+```
+
+```{r fit-model}
+model_M3_freq <- glmer(event ~ 1 + condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+              
+              # control parameters, data set, and complementary log-log link function
+              control = glmerControl(optimizer = c("bobyqa", "Nelder_Mead"),
+                                     optCtrl = list(maxfun=1000000)), 
+              data=M3_data, 
+              family=binomial(link="cloglog"))
+```
+
+3 hours...
+
+
+
+```{r inspect-model}
+summary(model_M3_freq)
+
+model_M3 <- readRDS("Tutorial_2_Bayesian/models/model_M3.rds")
+
+fixef(model_M3_freq)
+
+coef(model_M3_f)
+
+model_M3_f@beta
+
+
+summary(model_M3_freq)
+
+model_M3_freq@theta
+model_M3_freq@u
+
+model_M3_freq@flist
+
+save(model_M3_freq, file="Tutorial_3_Frequentist/model_M3_freq.RData")
+
+plot(1:16,fixef(model_M3_f),  ylim=c(-2,1), xaxis=NULL)
+axis(1,at=1:16,labels=names(fixef(model_M3_f)),)
+points(fixef(model_M3)[,1], col="red")
+points(fixef(model_M3_fr), col="green")
+points(fixef(model_M3_freq), col="blue")
+
+length(names(fixef(model_M3_f)))
+```
+
+```{r fit-model}
+model_M3_fr <- glmer(event ~ 1 + condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+              
+              # control parameters, data set, and complementary log-log link function
+              control = glmerControl(optimizer = c("nlminbwrap"),
+                                     optCtrl = list(maxfun=1000000)), 
+              data=M3_data, 
+              family=binomial(link="cloglog"))
+```
+
+```{r save-model}
+save(model_M3_fr, file="Tutorial_3_Frequentist/model_M3_fr.RData")
+```
+
+```{r fit-model}
+model_M3_f <- glmer(event ~ 1 + condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+              
+              # control parameters, data set, and complementary log-log link function
+              control = glmerControl(optimizer = c("nlminbwrap"),
+                                     optCtrl = list(maxfun=10000000)), 
+              data=M3_data, 
+              family=binomial(link="cloglog"))
+```
+
+```{r save-model}
+save(model_M3_f, file="Tutorial_3_Frequentist/model_M3_f.RData")
+```
