@@ -15,7 +15,7 @@ This Tutorial_1 file wrangles raw data from Experiment 1 of Panis and Schmidt (2
 
 # Load the libraries that we will be using. 
 
-```{r load-pkg}
+```{r load-pkg, results='hide'}
 pkg <- c("tidyverse", "patchwork")
 
 lapply(pkg, library, character.only = TRUE)
@@ -26,8 +26,8 @@ lapply(pkg, library, character.only = TRUE)
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) # 9372 rows
 head(raw)
-tail(raw)
-glimpse(raw)
+#tail(raw)
+#glimpse(raw)
 ```
 
 # Do some wrangling to get a simpler data set - can be skipped.
@@ -251,14 +251,12 @@ data_final <- data_nested %>%
 
 # Extract info, save plot for each subject, save a lifetable, create and save the person-trial-bin oriented data file for hazard modeling, and a data file for ca(t) modeling.
 
-```{r extract-info}
+```{r extract-info, warning=F}
 # view original data (column 2) for subject 1:
-pluck(data_final, 2, 1) # pluck() ignores the round(digits=2) function
-print(pluck(data_final, 2, 1), n=20)
+pluck(data_final, 2, 1) %>% print(n=20)
 
 # view person-trial-bin data set (column 4) for subject 1:
-pluck(data_final,4,1)
-print(pluck(data_final,4,1),n=30)
+pluck(data_final,4,1) %>% print(n=30)
 
 # view lifetable (column 7) for each condition for subject 1
 pluck(data_final, 7, 1) %>% filter(condition=="blank")
@@ -338,6 +336,68 @@ data_agg <- data_wr %>% mutate(oldtrial=trial,
                                oldpid=pid,
                                trial = 1:n(),
                                pid = 1)
+
+# function plot_eha_agg plots the hazard, survivor, and ca(t) functions for aggregated data.
+plot_eha_agg <- function(df,subj,haz_yaxis){ 
+  library(patchwork)
+  cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
+  binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
+  median_period <- extract_median(df)
+  n_conditions <- nlevels(df$condition)
+  data_median <- c()
+  for(i in 1:n_conditions){
+    data_median <- append(data_median, c(median_period[i], median_period[i]))
+  }
+  
+  data_medians <- tibble(period= data_median,
+                         survival = rep(c(.5, 0),n_conditions),
+                         condition = rep(1:n_conditions, each=2))
+# plot the hazard functions
+p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
+  geom_line(aes(y=hazard)) +
+  geom_point(aes(y=hazard), size=1) + labs(color="Condition") +
+  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
+  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
+                     limits = c(0,cutoff/binsize)) +
+  scale_y_continuous(limits = c(0,haz_yaxis)) +
+  labs(x="", y="h(t)", title = "Aggregated data (N=6)") +           # New info in title
+  theme(legend.background = element_rect(fill = "transparent"),
+        panel.grid = element_blank(),
+        legend.position = "top")
+# plot the survivor functions
+p2 <-df %>%
+  ggplot(aes(x=period, color=condition, group=condition)) +
+  geom_line(aes(y=survival), show.legend = F) +
+  geom_point(aes(y=survival), size=1, show.legend = F) +
+  geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
+  geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("blank","congruent","incongruent"))),
+            data = data_medians, 
+            linetype = 3, show.legend = F) +
+  
+  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
+                     limits=c(0,cutoff/binsize)) +
+  scale_y_continuous(limits = c(0,1)) +
+  labs(x="", y="S(t)",
+       colour="Condition") +
+  theme(panel.grid = element_blank())
+# plot the conditional accuracy functions
+p3 <-df %>%
+  ggplot(aes(x=period, color=condition, group=condition)) +
+  geom_line(aes(y=ca), show.legend = F) +
+  geom_point(aes(y=ca), size=1, show.legend = F) +
+  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
+  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
+                     limits=c(0,cutoff/binsize)) +
+  scale_y_continuous(limits = c(0,1)) +
+  labs(x="Time bin t's endpoint (ms)", y="ca(t)",
+       colour="Condition") +
+  theme(panel.grid = element_blank())
+
+p1/p2/p3
+}
+
+
+
 # apply functions
 data_agg_nested <- data_agg %>% group_nest(pid)
 data_agg_final <- data_agg_nested %>% 
@@ -346,8 +406,8 @@ data_agg_final <- data_agg_nested %>%
                      mutate(lifetable = map(ptb_data, setup_lt)) %>%      # create life tables without ca
                      mutate(condacc   = map(censored, calc_ca)) %>%       # calculate ca
                      mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    # create life tables with ca
-                     mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  # create plots 
+                     mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_agg,1))  # create plots 
 # view plot
-pluck(data_final, 8, 1)
+pluck(data_agg_final, 8, 1)
 ```
 
