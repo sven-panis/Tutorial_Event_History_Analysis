@@ -57,7 +57,7 @@ summary(ptb_data)
 M3_data <- ptb_data %>% select(pid, period_9, trial_c, condition, event)
 ```
 
-```{r fit-model}
+```{r fit-model, eval=F}
 model_M3_f <- glmer(event ~ 1 + condition*period_9 + 
                            condition*I(period_9^2) + 
                            condition*I(period_9^3) +
@@ -80,7 +80,7 @@ model_M3_f <- glmer(event ~ 1 + condition*period_9 +
 
 Model_M3_f took about 3 hours.
 
-```{r save-model}
+```{r save-model, eval=F}
 save(model_M3_f, file="Tutorial_3_Frequentist/model_M3_f.RData")
 ```
 
