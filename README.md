@@ -1,6 +1,6 @@
 # Tutorial_Event_History_Analysis
 
-A tutorial on how to perform descriptive, and inferential Bayesian and Frequentist discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, perceptual dominance durations, etc.
+A tutorial on how to perform descriptive, and inferential (Bayesian and Frequentist) discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments, such as response times, saccade latencies, fixation durations, perceptual dominance durations, etc.
 
 # Intended audience
 
@@ -25,9 +25,12 @@ If you want to see and work with the code, then:
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
 4. At this point, you can use the project with the same package versions that were stored in the renv.lock file.
 
-# Important folders and files
+# Important files and folders
 
+- Tutorial_1.Rmd (creating descriptive statistics when there is a single independent variable).
+- Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 - Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
+- Tutorial_4.Rmd (creating descriptive stats when there are two independent variables)
 
 Folder manuscript 
 - manuscript.Rmd (papaja Template)
@@ -37,20 +40,17 @@ Folder manuscript
 - extrareferences.bib
 
 Folder Tutorial_1_descriptive_stats
-- Tutorial_1.Rmd (creating descriptive statistics : setting up a life-table for each level of a single independent variable).
 - folder data
 - folder figures
 - folder tables
 
 Folder Tutorial_2_Bayesian 
-- Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 - folder models
 - folder figures
 
 Folder Tutorial_3_frequentist 
 
-Folder Tutorial_4_descriptive_stats_two_independent_variables
-- Tutorial_4.Rmd (creating descriptive stats when there are two independent variables)
-- folder figures
+Folder Tutorial_4_descriptive_2IV
+
 
 
