@@ -336,7 +336,7 @@ c7 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2
 ```
 
 
-```{r save-plot-priors}
+```{r save-plot-priors, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi=300)
 ```
 
@@ -376,7 +376,7 @@ priors_M1 <- c(
 
 ### Fit model M1
 
-```{r fit-model-M1}
+```{r fit-model-M1, eval=F}
 plan(multicore)
 
 model_M1 <-
@@ -423,7 +423,7 @@ priors_M2 <- c(
 
 ### Fit model M2
 
-```{r fit-model-M2}
+```{r fit-model-M2, eval=F}
 plan(multicore)
 
 model_M2 <-
@@ -470,7 +470,7 @@ priors_M3 <- c(
 
 ### Fit model M3
 
-```{r fit-model-M3}
+```{r fit-model-M3, eval=F}
 plan(multicore)
 
 model_M3 <- 
@@ -525,7 +525,7 @@ priors_M4 <- c(
 
 ### Fit model M4
 
-```{r fit-model-M4}
+```{r fit-model-M4, eval=F}
 plan(multicore)
 
 model_M4 <- 
@@ -552,24 +552,6 @@ model_M4 <-
 ```
 
 Model_M4 took about  8 hours to run.
-
-```{r check-model-M4}
-summary(model_M4)
-
-fixef(model_M4)[c("conditioncongruent", "conditionincongruent"), -2] %>% exp()
-
-
-# the formula above comes down to the following effects:
-# cloglog[h(t)]=Intercept+     ## the estimated cloglog[h(t)] in bin 9 for trial 1000 for reference condition "blank"
-# period_9+I(period_9^2)+I(period_9^3)+    ##a cubic specification of TIME for reference condition "blank"
-# congruent+congruent:period_9+congruent:I(period_9^2)+congruent:I(period_9^3)+      ##effect of congruent interacts cubicly with TIME
-# incongruent+incongruent:period_9+incongruent:I(period_9^2)+incongruent:I(period_9^3)+     ##effect of incongruent interacts cubicly with TIME
-# trial_c + trial_c:period_9 + ##linear effect of trial number in bin 9 can change linearly over TIME for "blank"
-# trial_c:congruent + trial_c:incongruent + ##linear effect of trial number in bin 9 can differ for congruent and incongruent
-# trial_c:congruent:period_9 + trial_c:incongruent:period_9 ##how the linear effect of trial number changes linearly over TIME can differ for congruent and incongruent
-```
-
-
 
 # Compare 4 models
 
@@ -625,7 +607,6 @@ loo(model_M4)$diagnostics %>%
 
 ## Visualize posterior distributions of the effects of congruent and incongruent primes on cloglog-hazard relative to blank prime, for each time bin in trial 1000.
 
-
 ```{r make-plot-effects}
 post <-as_draws_df(model_M4) %>% # 8000 draws x 715 variables
    select(starts_with("b_")) %>%       # 8000 x 31
@@ -667,7 +648,7 @@ p2incongruent <- post %>%
 p1congruent + p2incongruent
 ```
 
-```{r save-plot-effects}
+```{r save-plot-effects, eval=F}
 ggsave("figures/effects_con_incon_trial1000.png", width = 12, height = 16, dpi = 600)
 ```
 
