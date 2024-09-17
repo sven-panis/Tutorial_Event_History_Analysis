@@ -158,7 +158,7 @@ join_lt_ca <- function(df1,df2){df1 %>% left_join(df2, join_by(condition,period)
 extract_median <- function(df){
   above_pct50 <- df %>% 
       group_by(condition) %>%
-      filter(survival > .5) %>% 
+      filter(survival >= .5) %>% 
       slice(n()) # take last row
   below_pct50 <- df %>% 
       group_by(condition) %>%
