@@ -15,7 +15,7 @@ In this file we build a Frequentist hazard regression model for the first experi
 
 # Load the libraries that we will be using
 
-```{r load-pkg}
+```{r load-pkg, results='hide'}
 pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
 
 lapply(pkg, library, character.only = TRUE)
@@ -118,5 +118,9 @@ p1 <- p1 + scale_shape_manual(name = "Model",
          legend.position = "top",
          axis.text.x = element_text(angle=90)) 
 p1
+```
+
+```{r save-plot-estimates, eval=F}
+ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=10,dpi=300)
 ```
 
