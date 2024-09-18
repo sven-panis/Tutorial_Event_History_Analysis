@@ -25,7 +25,7 @@ authornote: |
   <!-- Enter author note here. -->
 abstract: |
   Time-to-event data such as response times, saccade latencies, and fixation durations are ubiquitous in experimental psychology. The orthodox method for analysing such data -- comparing means with analysis-of-variance -- is actually hiding a lot of information about psychological effects, such as their onset time and duration, and whether they are time-locked to stimuli. Such information can change key conclusions about psychological processes and can be revealed by using distributional measures.  
-  Here we provide a set of tutorials on how to implement one particular distributional method known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. We illustrate how one can calculate the descriptive statistics, and how one can implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. The R code is publicly available on Github and OSF, and can easily be adapted for other data sets. We further discuss how to manage inter-individual differences, implications for experimental design, and how to select among various options when analysing time-to-event data using discrete-time hazard analysis.  
+  Here we provide a set of tutorials on how to implement one particular distributional method known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis. We illustrate how one can calculate the descriptive statistics, and how one can implement Bayesian and frequentist regression models, using the R packages tidyverse, brms, and lme4. The R code is publicly available on Github and OSF, and can easily be adapted for other data sets. We  discuss possible link functions and prior distributions, how to manage inter-individual differences, implications for experimental design, and how to select among various options when analysing time-to-event data using discrete-time hazard analysis.  
   
   <!-- https://tinyurl.com/ybremelq -->
 keywords          : "response times, event history analysis, Bayesian regression models"
@@ -451,16 +451,22 @@ In this third tutorial we illustrate how to fit a frequentist hazard regression 
 
 # Tutorial 4: Calculating descriptive statistics when there are two independent variables
 
-In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016. 
+In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type.
+
 
 
 # Discussion
+
+We noticed that many researchers are still reluctant to abandon analysis-of-variance and switch to event history analysis when analysing time-to-event data. By providing this tutorial, we hope that researchers will start using hazard analysis more often.
+While we focused on within-subject factorial small-*N* designs, event history analysis has been developed to also encompass other designs.
+
+## Advantages of hazard functions
 
 
 
 ## Individual differences
 
-- role of response deadlines, low-level vs. higher-level processes, 
+- role of response deadlines, low-level vs. higher-level processes, overlap between distributions
 - clustering algorithms based on h(t) and ca(t) data
 - 
 
