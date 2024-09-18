@@ -199,7 +199,8 @@ p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
   labs(x="", y="h(t)", title = paste("Subject ", subj)) +
   theme(legend.background = element_rect(fill = "transparent"),
         panel.grid = element_blank(),
-        legend.position = "top")
+        legend.position = "top",
+        axis.text.x = element_text(angle=90))
 # plot the survivor functions
 p2 <-df %>%
   ggplot(aes(x=period, color=condition, group=condition)) +
@@ -216,7 +217,8 @@ p2 <-df %>%
   scale_y_continuous(limits = c(0,1)) +
   labs(x="", y="S(t)",
        colour="Condition") +
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90))
 # plot the conditional accuracy functions
 p3 <-df %>%
   ggplot(aes(x=period, color=condition, group=condition)) +
@@ -228,7 +230,8 @@ p3 <-df %>%
   scale_y_continuous(limits = c(0,1)) +
   labs(x="Time bin t's endpoint (ms)", y="ca(t)",
        colour="Condition") +
-  theme(panel.grid = element_blank())
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90))
 
 p1/p2/p3
 }
@@ -279,6 +282,21 @@ median_tb
 map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 6, height = 8, dpi = 600)
 ```
 
+Combine plots of 2 subjects.
+
+```{r plot-two-subjects}
+pa <- pluck(data_final, 8, 3)
+pb <- pluck(data_final, 8, 6)
+
+pa | pb 
+```
+
+```{r save-plot-two-subjects}
+ggsave("Tutorial_1_descriptive_stats/figures/Plot_subjects3and6_PanisSchmidt.png", width = 8, height=8, dpi=600)
+```
+
+Create a life table.
+
 ```{r create-single-lifetable}
 # get the binsize in ms
 binsize    <- data_final$censored[[1]] %>% pull(bin_width) %>% max(na.rm=T)
@@ -304,6 +322,8 @@ lifetable_blank_s6_complete
 write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
 ```
 
+Create input file for hazard models.
+
 ```{r create-file-hazard-modeling}
 # select the person-trial-bin data set for each subject, unnest them, and select relevant variables.
 input_modeling_hazard <- data_final %>% 
@@ -315,6 +335,8 @@ summary(input_modeling_hazard)
 ```{r save-file-hazard-modeling}
 write_csv(input_modeling_hazard, file="Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
 ```
+
+Create input file for ca(t) models.
 
 ```{r create-file-ca-modeling}
 # select the censored data set for each subject, unnest them, discard trials that are censored (RT > 600 or no response detected before the deadline), and select relevant variables. 
