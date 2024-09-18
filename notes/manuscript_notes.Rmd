@@ -25,16 +25,37 @@ At the end we can add this folder to .gitignore, so we don't need to post this o
 
 You say: To move beyond mean performance measures, various distributional analyses have been proposed.
 
-This makes complete sense. But I would say it differently. I would emphasise in a sentence or two why mean performance measures are limited, and thus highlight the benefit of non-mean measures. And maybe try to find simpler language for distributional measures. Again, it is completely precise and accurate, but I worry that most folks will read it and think "that aint anything I care about" when in actual fact it might be extremely relevant. So, in other words, I think the abstract needs a clearer hook for the generalist experimental psych reader. Something like ... mean avg measures (across trials) hide/obscure a lot of information about psychological processes, such as when psychological states occur in time. In contrast, blah blah approaches reveal how psych processes occur in specific time windows (etc. etc.). And this changes key conclusions about psych processes. Here we provide a tutorial on how to do this [[and then return to the details of the tutorial as you already state]]. Even though I have written a lot here, I expect the changes to the abstract to be small. I just wanted to try to make my point clear here to you. I hope that makes sense.
+This makes complete sense. But I would say it differently. I would emphasise in a sentence or two why mean performance measures are limited, and thus highlight the benefit of non-mean measures. 
+
+And maybe try to find simpler language for distributional measures. Again, it is completely precise and accurate, but I worry that most folks will read it and think "that aint anything I care about" when in actual fact it might be extremely relevant. 
+
+So, in other words, I think the abstract needs a clearer hook for the generalist experimental psych reader. Something like ... mean avg measures (across trials) hide/obscure a lot of information about psychological processes, such as when psychological states occur in time. In contrast, blah blah approaches reveal how psych processes occur in specific time windows (etc. etc.). And this changes key conclusions about psych processes. 
+
+Here we provide a tutorial on how to do this [[and then return to the details of the tutorial as you already state]]. Even though I have written a lot here, I expect the changes to the abstract to be small. I just wanted to try to make my point clear here to you. I hope that makes sense.
 
 
 ## Introduction ##
 
-I would slightly re-structure the introduction. I would use some subsections in the intro maybe also to organise ideas. The main change that I propose is to have a first section that provides the motivation in simple terms (non-modelling terms), as well as a roadmap for what is to come next in the rest of the paper, so that folks know what to expect. This is especially important for reviews/tutorials etc., since it doesn't follow the standard empirical paper approach i.e., intro, methods, results ... Then I would move all of the modelling stuff that is currently in the intro into an entirely new section. Here are some ideas on structure with example sections numbered...
+I would slightly re-structure the introduction. I would use some subsections in the intro maybe also to organise ideas. 
 
-1. motivation = means vs distribution/timewindow approach. Benefits etc. I would have a plot in this part of the intro. Just real or simulated raw data - like we discussed in our meeting on Monday for your future talk - bar plots of means between conditions juxtaposed with a distributional analysis across time. I think the visually hits home the basic point about how timing is important. Then all the modelling and lifetable stuff  that comes later is important as a method, but we get in there nice and early with a clear message on why it is so ubiquitous in exp psych (e.g., almost everyone plots mean RT, for example). So we make the benefit/value really clear, really early. 
+The main change that I propose is to have a first section that provides the motivation in simple terms (non-modelling terms), 
 
-2. Roadmap of the paper, which outlines what to expect. e.g., We first provide a brief overview of hazard models to orient the reader to the basic concepts and ideas that we will use through the paper. However, this will remain relatively short, and for detailed treatment, see blah blah REFs. And we *must* provide some figures here. Figures really help with stats stuff, because it brings more people in. Can you think of some figures to illustrate key modelling concepts? Or do you think the mean vs distribution figure above in point (1) will be enough? We then provide 4 different tutorials, each of which is written is R code and publicly available. The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can also analyse time to event data.... Tutorial 1 blah. 2 blah. 3 blah. 4 blah. Provide a sentence or two on each tutorial. 
+as well as a roadmap for what is to come next in the rest of the paper, so that folks know what to expect. This is especially important for reviews/tutorials etc., since it doesn't follow the standard empirical paper approach i.e., intro, methods, results ... 
+
+Then I would move all of the modelling stuff that is currently in the intro into an entirely new section. Here are some ideas on structure with example sections numbered...
+
+1. motivation = means vs distribution/timewindow approach. Benefits etc. 
+
+I would have a plot in this part of the intro. Just real or simulated raw data - like we discussed in our meeting on Monday for your future talk - bar plots of means between conditions juxtaposed with a distributional analysis across time. 
+
+I think the visually hits home the basic point about how timing is important. Then all the modelling and lifetable stuff  that comes later is important as a method, but we get in there nice and early with a clear message on why it is so ubiquitous in exp psych (e.g., almost everyone plots mean RT, for example). So we make the benefit/value really clear, really early. 
+
+2. Roadmap of the paper, which outlines what to expect. e.g., We first provide a brief overview of hazard models to orient the reader to the basic concepts and ideas that we will use through the paper. However, this will remain relatively short, and for detailed treatment, see blah blah REFs. 
+
+And we *must* provide some figures here. Figures really help with stats stuff, because it brings more people in. Can you think of some figures to illustrate key modelling concepts? Or do you think the mean vs distribution figure above in point (1) will be enough? 
+
+We then provide 4 different tutorials, each of which is written is R code and publicly available. The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can also analyse time to event data.... 
+Tutorial 1 blah. 2 blah. 3 blah. 4 blah. Provide a sentence or two on each tutorial. 
 
 
 ## Background on EHA analyses ##
