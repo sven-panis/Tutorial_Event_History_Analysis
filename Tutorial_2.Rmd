@@ -1,0 +1,808 @@
+---
+title: "Tutorial_2"
+author: "Sven Panis"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this file we plot priors for the logit and cloglog link functions, build Bayesian hazard regression models for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent), and visualize the posterior distributions of the effects of congruent and incongruent prime types, relative to blank prime trials for the selected model.
+
+# Load the libraries that we will be using
+
+```{r load-pkg}
+pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
+         "brms", "tidybayes", "bayesplot", "future", "parallel")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+# Set options. 
+
+```{r set-options}
+options(brms.backend = "cmdstanr",
+        mc.cores = parallel::detectCores(),
+        future.fork.enable = TRUE,
+        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+
+supportsMulticore()
+detectCores()
+```
+
+```{r check-info}
+packageVersion("cmdstanr")
+devtools::session_info("rstan")
+```
+
+# Load the person-trial-bin data set that we saved in Tutorial 1.
+
+```{r load-data}
+ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
+print(ptb_data,n=30)
+summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
+```
+
+# Prepare the data set.
+
+```{r prepare-data}
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+ptb_data <- ptb_data %>% filter(period > 5)
+
+# create factor condition, with "blank" as the reference level
+ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale; Add dummy variables for each bin.
+ptb_data <- ptb_data %>% 
+        mutate(period_9 = period - 9,
+               trial_c = (trial - 1000)/1000,
+               d6  = if_else(period == 6, 1, 0),
+               d7  = if_else(period == 7, 1, 0),
+               d8  = if_else(period == 8, 1, 0),
+               d9  = if_else(period == 9, 1, 0),
+               d10 = if_else(period == 10, 1, 0),
+               d11 = if_else(period == 11, 1, 0),
+               d12 = if_else(period == 12, 1, 0),
+               d13 = if_else(period == 13, 1, 0),
+               d14 = if_else(period == 14, 1, 0),
+               d15 = if_else(period == 15, 1, 0))
+
+head(ptb_data,n=17)
+summary(ptb_data)
+# 6 subjects
+# condition: blank (6401), congruent (2642), incongruent (3797)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
+```
+
+# Plot the logit and complementary log-log (cloglog) link functions
+
+```{r plot-links}
+probability <- (1:99999)/100000
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog         <- function(x) { return( log(-1*log(1-x)) )}
+
+cloglog_prob <- cloglog(probability)
+logit_prob <- logit(probability)
+dataplot <- cbind(probability,cloglog_prob,logit_prob)
+
+ggplot() +
+  geom_hline(yintercept=0, color="white") +
+  geom_line(data=dataplot,aes(y=logit_prob,x=probability,colour="logit"),linewidth=1) +
+  geom_line(data=dataplot,aes(y=cloglog_prob,x=probability,colour="cloglog"),linewidth=1) +
+  scale_color_manual(name = "Link function:", values = c("logit" = "darkblue", "cloglog" = "red")) +
+  geom_vline(xintercept = logistic(0), linetype="dotted", linewidth = 0.3) +   
+  geom_vline(xintercept = inverse_cloglog(0), linetype="dotted", linewidth = 0.3) +
+  annotate("text", x = logistic(0)-.02, y = -6, label = "logistic(0) = 0.5", angle = 90) +
+  annotate("text", x = inverse_cloglog(0)+.02, y = -6, label = "inverse_cloglog(0) = 0.6321", angle=90) +
+  scale_x_continuous(n.breaks=10, limits = c(0,1), ) +
+  labs(x = "Probability",
+        y = "logit or cloglog scale") +
+  theme(panel.grid = element_blank(),
+        axis.text=element_text(size=12),
+        axis.title=element_text(size=14),
+      #  legend.position="top",
+        legend.text = element_text(size=14),
+      legend.position = "inside",
+        legend.position.inside=c(.2,.75),
+      legend.background = element_rect(fill="white") )
+```
+
+```{r save-plot-links}
+ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 12, height = 10, dpi = 600)
+```
+
+# Visualize different prior distributions on the logit and cloglog scales
+
+To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
+Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function), to gain a sense of what prior cloglog values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale.
+
+## Simulate, convert, and fit
+
+```{r simulate-convert}
+set.seed(11)
+
+logit    <- function(x) { return( log(x/(1-x)) )}
+cloglog  <- function(x) { return( log(-1*log(1-x)) )}
+
+# generate draws from U(0,1) and convert
+dat <- 
+  tibble(p = runif(1e6, 0, 1)) %>% 
+  mutate(g = logit(p),
+         c = cloglog(p)) 
+# display
+dat %>%   
+  ggplot(aes(x = c)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+plot(density(dat$c))
+```
+
+```{r fit-skew-normal}
+# fit models
+fit_skewN <-
+  brm(data = dat,
+      family = skew_normal(),
+      c ~ 1,
+      chains = 4, cores = 4,
+      file = "Tutorial_2_Bayesian/models/fit_skewN")
+```
+
+```{r}
+summary(fit_skewN) 
+```
+
+Now we can reverse the process. We simulate from the skew-Normal distribution based on the posterior means for mu, sigma, and alpha, and then convert the results into the probability (i.e., discrete-time hazard) metric. 
+
+```{r check-results}
+set.seed(11)
+
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+
+tibble(c = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22) ) %>% 
+  mutate(p = inverse_cloglog(c)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+```
+
+## Visualize how seven prior distributions on the logit and/or cloglog scales look on the probability scale
+
+```{r plot-priors}
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog    <- function(x) { return( log(-1*log(1-x)) )}
+
+set.seed(23)
+
+# A N(0,4) prior on the logit and cloglog scales pushes mass to probabilities of 0 and 1
+pr1 <- tibble(prior = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-13, y=60000, label="N(0,4)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'A', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l1 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("logistic(prior)") +
+  theme(panel.grid = element_blank())
+
+c1 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 4)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("inverse_cloglog(prior)")+
+  theme(panel.grid = element_blank())
+
+# A N(0,2) prior on the logit and cloglog scales pushes mass to probabilities of 0 and/or 1
+pr2 <- tibble(prior = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-6, y=60000, label="N(0,2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'B', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l2 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c2 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# A student-t(df=7.61) prior with scale 1.57 on the logit scale approximates a uniform distribution on the probability scale. This might be a good prior to use for the alpha parameters or Intercept in a logit-hazard model.
+pr3 <- tibble(prior = rt(1e6, df = 7.61)* 1.57) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-12, y=140000, label="t(7.61)*1.57",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'C', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l3 <- tibble(log_odds = rt(1e6, df = 7.61)* 1.57) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c3 <- ggplot()
+
+# A Normal(0,1) prior on the logit scale gently regularizes p towards .5. This might be a good prior to use for the beta parameters in a logit-hazard model.
+pr4 <- tibble(prior = rnorm(1e6, mean = 0, sd = 1))%>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3, y=60000, label="N(0,1)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'D', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l4 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 1))%>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  geom_vline(xintercept=logistic(0), color="red") +
+  theme(panel.grid = element_blank())
+
+c4 <- ggplot()
+
+# A skew_Normal(-0.59,1.26,-4.22) prior on the cloglog scale approxiates a uniform distr. on the hazard scale. This uninformative prior might be good for the alpha parameters or Intercept in a cloglog-hazard model.
+pr5 <- tibble(prior = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-5.5, y=55000, label="skew_N(-0.59,1.26,-4.22)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'E', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l5 <- ggplot()
+
+c5 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# The skew_Normal(-1,1,-2) on the cloglog scale is a weakly informative prior for the alpha parameters or Intercept in a cloglog-hazard model because hazard values below .5 more likely than values above .5 in general.
+pr6 <- tibble(prior = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-5, y=55000, label="skew_N(-1,1,-2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'F', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l6 <- ggplot()
+
+c6 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# A skew_Normal(-0.2,0.71,-2.2) on the cloglog scale gently regularizes p towards .6321. This might be a good prior to use for the beta parameters in a cloglog-hazard model.
+pr7 <- tibble(prior = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3.2, y=55000, label="skew_N(-0.2,.71,-2.2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'G', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l7 <- ggplot()
+
+c7 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept=inverse_cloglog(0), color = "red") +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+(l1 + pr1 + c1) / (l2 + pr2 + c2) / (l3 + pr3 + c3) / (l4 + pr4 + c4)/ (l5 + pr5 + c5) / (l6 + pr6 + c6) / (l7 + pr7 + c7)
+```
+
+
+```{r save-plot-priors, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi=300)
+```
+
+
+# Fit 4 cloglog-hazard models. 
+
+## Model M1: general specification of TIME in the baseline condition (blank prime), and main effects of prime type, and trial number.
+
+### Prepare data for M1
+
+```{r data-M1}
+# remove unnecessary columns before fitting a model
+M1_data <- ptb_data %>% select(-c(bl,tr,trial,period, period_9,d9)) # 12840 obs. 
+head(M1_data)
+summary(M1_data)
+```
+
+### Set up priors for M1
+
+```{r priors-cloglog-M1}
+priors_M1 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),       # weakly informative prior for beta parameters when using cloglog link
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d6"),# weakly informative prior for alpha parameters when using cloglog link 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d7"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d8"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d10"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d11"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d12"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d13"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d14"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d15"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),
+  set_prior("normal(0, 1)", class = "sd"),                     # prior for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # prior for correlations between random effects
+)
+```
+
+### Fit model M1
+
+```{r fit-model-M1, eval=F}
+plan(multicore)
+
+model_M1 <-
+   brm(data = M1_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + d6 + d7 + d8 + Intercept + d10 + d11 + d12 + d13 + d14 + d15 + 
+         condition + trial_c +
+       
+                   (d6 + d7 + d8 + 1 + d10 + d11 + d12 + d13 + d14 + d15 + condition + trial_c | pid),
+       prior = priors_M1,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M1")
+```
+
+Model_M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+
+```{r check-model-M1}
+summary(model_M1)
+fixef(model_M1)
+```
+
+## Model M2: third-order polynomical specification of TIME in the baseline condition (blank prime), and main effects of prime types, and trial number.
+
+### Prepare data for M2
+
+```{r data-M2}
+# remove unnecessary columns before fitting a model
+M2_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15)) # 12840 obs. of 14 variables
+head(M2_data)
+```
+
+### Set up priors for M2
+
+```{r priors-cloglog-M2}
+priors_M2 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),       # weakly informative prior for beta parameters when using cloglog link
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),      # weakly informative prior for Intercept when using cloglog link
+  set_prior("normal(0, 1)", class = "sd"),                     # prior for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # prior for correlations between random effects
+)
+```
+
+### Fit model M2
+
+```{r fit-model-M2, eval=F}
+plan(multicore)
+
+model_M2 <-
+   brm(data = M2_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + period_9 + I(period_9^2) + I(period_9^3) + 
+                          condition + trial_c +
+                          (1 + period_9 + I(period_9^2) + I(period_9^3) + 
+                          condition + trial_c | pid),
+       prior = priors_M2,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M2")
+```
+
+Model_M2 took about 144 minutes to run.
+
+```{r check-model-M2}
+summary(model_M2)
+fixef(model_M2)
+```
+
+## Model M3: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax proportionality assumption for prime types, and trial number.
+
+### Prepare data for M3
+
+```{r data-M3}
+# remove unnecessary columns before fitting a model
+M3_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15)) # 12840 obs. of 14 variables
+head(M3_data)
+```
+
+### Set up priors for M3
+
+```{r priors-cloglog-M3}
+priors_M3 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),       # weakly informative prior for beta parameters when using cloglog link
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef="Intercept"),      # weakly informative prior for Intercept when using cloglog link
+  set_prior("normal(0, 1)", class = "sd"),                     # for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # for correlations between random effects
+)
+```
+
+### Fit model M3
+
+```{r fit-model-M3, eval=F}
+plan(multicore)
+
+model_M3 <- 
+   brm(data = M3_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + # Note that duplicate terms in the model formula are ignored
+                           condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+       prior = priors_M3,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M3")
+```
+
+Model_M3 took about 268 minutes to run.
+
+```{r check-model-M3}
+summary(model_M3)
+```
+
+## Model M4: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
+
+### Prepare data for M4
+
+```{r data-M4}
+# remove unnecessary columns before fitting a model
+M4_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15)) # 12840 obs. of 14 variables
+head(M4_data)
+```
+
+### Set up priors for M4
+
+```{r priors-cloglog-M4}
+priors_M4 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),       # weakly informative prior for beta parameters when using cloglog link
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef="Intercept"),      # weakly informative prior for Intercept when using cloglog link
+  set_prior("normal(0, 1)", class = "sd"),                     # for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # for correlations between random effects
+)
+```
+
+### Fit model M4
+
+```{r fit-model-M4, eval=F}
+plan(multicore)
+
+model_M4 <- 
+   brm(data = M4_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + # Note that duplicate terms in the model formula are ignored
+                          condition*period_9*trial_c + 
+                          condition*period_9*I(trial_c^2) + 
+                          condition*I(period_9^2)*trial_c +
+                          condition*I(period_9^2)*I(trial_c^2) +
+                          condition*I(period_9^3) +
+                          trial_c*I(period_9^3) +
+                          (1 +  condition*period_9*trial_c +
+                                condition*period_9*I(trial_c^2) + 
+                                condition*I(period_9^2)*trial_c +
+                                condition*I(period_9^2)*I(trial_c^2)  
+                                condition*I(period_9^3) +
+                                trial_c*I(period_9^3) | pid),
+       prior = priors_M4,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M4")
+```
+
+Model_M4 took about  8 hours to run.
+
+# Compare 4 models
+
+```{r}
+model_M1 <- readRDS("Tutorial_2_Bayesian/models/model_M1.rds")
+model_M2 <- readRDS("Tutorial_2_Bayesian/models/model_M2.rds")
+model_M3 <- readRDS("Tutorial_2_Bayesian/models/model_M3.rds")
+model_M4 <- readRDS("Tutorial_2_Bayesian/models/model_M4.rds")
+```
+
+Using WAIC and LOO for comparing nonnested models.
+
+```{r}
+model_M1  <- add_criterion(model_M1, c("loo", "waic"))
+model_M2  <- add_criterion(model_M2, c("loo", "waic"))
+model_M3  <- add_criterion(model_M3, c("loo", "waic"))
+model_M4  <- add_criterion(model_M4, c("loo", "waic"))
+```
+
+Compare all three models:
+
+```{r}
+loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "loo") %>% print(simplify = F)
+loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "waic") %>% print(simplify = F)
+```
+
+```{r}
+model_weights(model_M1, model_M2, model_M3, model_M4, weights = "loo") %>% round(digits = 3)
+
+model_weights(model_M1, model_M2, model_M3, model_M4, weights = "waic") %>% round(digits = 3)
+
+model_weights(model_M1, model_M2, model_M3, model_M4, weights = "stacking") %>% round(digits = 3)
+```
+
+# Plot effects for selected model M4
+
+## Pareto k estimates
+
+```{r}
+loo(model_M4)$diagnostics %>% 
+  data.frame() %>% 
+  # attach the `id` values
+  bind_cols(M4_data) %>% 
+  mutate(id = 1:n()) %>%
+  
+  ggplot(aes(x = id, y = pareto_k)) +
+  geom_point(alpha = 3/4) + 
+  geom_text(data = . %>% filter(pareto_k > .2),
+            aes(x = id + 2, label = id),
+            size = 3, hjust = 0) +
+  theme(panel.grid = element_blank())
+```
+
+## Visualize posterior distributions of the effects of congruent and incongruent primes on cloglog-hazard relative to blank prime, for each time bin in trial 1000.
+
+```{r make-plot-effects}
+post <-as_draws_df(model_M4) %>% # 8000 draws x 715 variables
+   select(starts_with("b_")) %>%       # 8000 x 31
+   expand_grid(period_9 = -3:6) %>%   
+   mutate(period_9sq = period_9^2,
+          period_9cu = period_9^3,
+          trial100 = -900/1000)  
+# effects for trial 1000
+p1congruent <- post %>% 
+  mutate(postdistr = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`) %>%
+  group_by(period_9) %>%
+  
+  ggplot(aes(x = period_9, y = postdistr)) +
+  stat_lineribbon(show.legend=T) +
+  scale_fill_brewer() +
+  geom_hline(yintercept=0, linetype="dashed", color = "red") +
+  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
+                     limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-6,-4,-2,0,2,4,6), limits = c(-6,6)) +
+  labs(title = "trial 1000", x = "time bin", y = "effect of congruent") +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90)) 
+
+p2incongruent <- post %>% 
+  mutate(postdistr = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
+  group_by(period_9) %>%
+  
+  ggplot(aes(x = period_9, y = postdistr)) +
+  stat_lineribbon(show.legend=F) +
+  scale_fill_brewer() +
+  geom_hline(yintercept=0, linetype="dashed", color = "red") +
+  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
+                     limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-6,-4,-2,0,2,4,6), limits = c(-6,6)) +
+  labs(x = "time bin", y = "effect of incongruent") +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90)) 
+
+p1congruent + p2incongruent
+```
+
+```{r save-plot-effects, eval=F}
+ggsave("figures/effects_con_incon_trial1000.png", width = 12, height = 16, dpi = 600)
+```
+
+
+
+```{r}
+post <-as_draws_df(model_M4) %>% # 8000 draws x 715 variables
+   select(starts_with("b_")) %>%       # 8000 x 31
+   expand_grid(period_9 = -3:6) %>%   
+   mutate(period_9sq = period_9^2,
+          period_9cu = period_9^3,
+          trial100 = -900/1000)  
+
+# effects for trial 1000
+plot_facet <- post %>% 
+  mutate(Congruent = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
+         Incongruent = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
+  
+  pivot_longer(cols=Congruent:Incongruent, names_to = "condition" ) %>%
+  select(condition, period_9, value) %>%
+ # mutate(value_hr = exp(value)) %>%
+  group_by(period_9) %>%
+  
+   ggplot(aes(x = period_9, y = value)) +
+  stat_lineribbon(show.legend=T) +
+  scale_fill_brewer() +
+  geom_hline(yintercept=0, linetype="dashed", color = "red") +
+  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
+                     limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-8,-6,-4,-2,0,2,4,6,8), limits = c(-8,8)) +
+  labs(x = "time bin", y = "cloglog-hazard") +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90),
+        panel.background = element_rect(fill="white", color="black"),
+        legend.position = "top") +
+  facet_wrap(~ condition)
+  
+plot_facet
+```
+
+# plot effects on hazard ratio scale
+
+```{r}
+plot_facet_hr <- post %>% 
+  mutate(Congruent = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
+         Incongruent = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
+  
+  pivot_longer(cols=Congruent:Incongruent, names_to = "condition" ) %>%
+  select(condition, period_9, value) %>%
+  mutate(value_hr = exp(value)) %>%
+  group_by(period_9) %>%
+  
+   ggplot(aes(x = period_9, y = value_hr)) +
+  stat_lineribbon(show.legend=T) +
+  scale_fill_brewer() +
+  geom_hline(yintercept=1, linetype="dashed", color = "red") +
+  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
+                     limits = c(-3,7)) +
+  scale_y_continuous( limits = c(0,40)) +
+  labs(x = "time bin", y = "hazard ratio") +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90),
+        panel.background = element_rect(fill="white",color="black"),
+        legend.position = "top") +
+  facet_wrap(~ condition)
+  
+plot_facet_hr
+
+```
+
+# Plot model-based predicted cloglog-hazard and hazard functions, for a single subject
+
+```{r select-pid}
+selected_subject = 6 # select pid here (1:6) manually
+```
+
+```{r help-function}
+make_fitted <- function(fit, scale, ...) {
+  
+  fitted(fit,
+         newdata = nd,
+         scale = scale,
+         ...) %>% 
+    data.frame() %>% 
+    bind_cols(nd)
+}
+```
+
+# Set up new data
+
+```{r}
+# define the `newdata`
+nd <- tibble(pid = 1:6) %>%
+  expand_grid(incon = 0:1,
+                con  = 0:1,
+                trial_c = c(-0.5,0,0.5),
+                period_9 = -3:6) %>%
+  filter(!(con ==1 & incon == 1)) %>%
+  mutate(Iperiod_9E2 = period_9^2,
+         Iperiod_9E3 = period_9^3,
+         Itrial_cE2 = trial_c^2,
+         condition = ifelse(con==1 & incon==0,"congruent",
+                     ifelse(con==0 & incon==1,"incongruent", "blank")),
+         condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
+```
+
+# First, on the cloglog-scale:
+
+```{r}
+make_fitted(model_M4, scale = "linear") %>% 
+  mutate(cond   = rep(rep(c("N","C","I"),each=30),6),
+         trial  = factor(trial_c,levels=c(-0.5,0.0,0.5),labels=c("trial 500","trial 1000","trial 1500")),
+         period = period_9+9) %>% 
+  filter(pid==selected_subject) %>% 
+  # plot
+  ggplot(aes(x = period, y = Estimate, ymin = Q2.5, ymax = Q97.5,
+             fill = condition, color = condition)) +
+  geom_ribbon(alpha = 1/5, linewidth = 0) +
+  geom_line() +
+  scale_fill_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_color_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_x_continuous("time bin endpoint", breaks = 6:15, limits = c(6, 15), labels=c(6:15)*40) +
+  ylab("fitted cloglog(hazard)") +
+  coord_cartesian(ylim = c(-5, 1)) +
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill="white",color="black"),
+        legend.position = "top",
+        axis.text.x = element_text(angle=90)) +
+  facet_wrap(~ trial)
+```
+
+# Second, on hazard scale:
+
+```{r}
+make_fitted(model_M4, scale = "response") %>% 
+  mutate(cond   = rep(rep(c("N","C","I"),each=30),6),
+         trial  = factor(trial_c,levels=c(-0.5,0.0,0.5),labels=c("trial 500","trial 1000","trial 1500")),
+         period = period_9+9) %>% 
+  filter(pid==selected_subject) %>% 
+  # plot
+  ggplot(aes(x = period, y = Estimate, ymin = Q2.5, ymax = Q97.5,
+             fill = condition, color = condition)) +
+  geom_ribbon(alpha = 1/5, linewidth = 0) +
+  geom_line() +
+  scale_fill_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_color_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_x_continuous("time bin endpoint", breaks = 6:15, limits = c(6, 15), labels=c(6:15)*40) +
+  ylab("fitted hazard") +
+  coord_cartesian(ylim = c(0, 1)) +
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill="white",color="black"),
+        legend.position = "top",
+        axis.text.x = element_text(angle=90)) +
+  facet_wrap(~ trial)
+```
+
+
