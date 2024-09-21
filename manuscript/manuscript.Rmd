@@ -393,30 +393,111 @@ In the case of a large-*N* design without repeated measurements, the parameters 
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In this tutorial we will fit four Bayesian multilevel models (i.e., generalized linear mixed models) to the data. We select the analysis range (200,600] and the cloglog link. The data is prepared as follows.
+In this tutorial we will fit four Bayesian multilevel models (i.e., generalized linear mixed models) to the person-trial-bin oriented data set that we created in Tutorial 1. We select the analysis range (200,600] and the cloglog link. The data is prepared as follows.
 
 \scriptsize
 ```{r prepare-data, echo=T}
 # load person-trial-bin oriented data set
-#ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
-# select analysis time range: (200,600] with 10 bins (time bin ranks t=6 to t=15) of 40 ms
-#ptb_data <- ptb_data %>% filter(period > 5)
+ptb_data <- read_csv("../Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
+
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+ptb_data <- ptb_data %>% filter(period > 5)
+
 # create factor condition, with "blank" as the reference level
-#ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
-# center discrete TIME (period) on bin 9, and trial on trial 1000
-#ptb_data <- ptb_data %>% mutate(period_9 = period - 9,
-  #                              trial_c = (trial - 1000)/1000)
-# remove unnecessary columns before fitting a model
-#ptb_data <- ptb_data %>% select(-c(bl,tr,trial,period)) # 12840 obs. of 5 variables
+ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale; Add dummy variables for each bin.
+ptb_data <- ptb_data %>% 
+        mutate(period_9 = period - 9,
+               trial_c = (trial - 1000)/1000,
+               d6  = if_else(period == 6, 1, 0),
+               d7  = if_else(period == 7, 1, 0),
+               d8  = if_else(period == 8, 1, 0),
+               d9  = if_else(period == 9, 1, 0),
+               d10 = if_else(period == 10, 1, 0),
+               d11 = if_else(period == 11, 1, 0),
+               d12 = if_else(period == 12, 1, 0),
+               d13 = if_else(period == 13, 1, 0),
+               d14 = if_else(period == 14, 1, 0),
+               d15 = if_else(period == 15, 1, 0))
 ```
 \normalsize
+
+## Prior distributions
+
+To get the posterior distribution of the parameters given the data, we need to specify the prior distribution of the parameters. The middle column of Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales. 
+
+(ref:descr-fig4-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
+
+```{r plot-priors, fig.cap = "(ref:descr-fig4-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/plot_of_priors.png")
+```
+
+While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 3 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability (i.e., discrete-time hazard) scale, as most mass is pushed to probabilities of 0 and 1.
+
+To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the beta parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
+
+To gain a sense of what prior *cloglog* values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale. 
+However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the alpha parameters or intercept(s) in a cloglog-hazard model. 
+A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, and a skewness of -2.2 might be a good weakly informative prior for the beta parameters in a cloglog-hazard model as it gently regularizes p towards .6321 (i.e., a zero effect on the cloglog scale). 
 
 ## Model 1: A general specification of TIME, and main effects of congruency and trial number
 
 For the first model, we use a general specification of TIME (i.e., one intercept per time bin) for the baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
+Before we fit model 1, we remove unnecessary columns from the data, and specify our priors. In the code of Tutorial 2, this is accomplished as follows.
+
+\scriptsize
+```{r data-M1, echo=T}
+# remove unnecessary columns before fitting a model
+M1_data <- ptb_data %>% select(-c(bl,tr,trial,period, period_9,d9))  
+
+# Specify priors
+priors_M1 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),       
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d6"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d7"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d8"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d10"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d11"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d12"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d13"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d14"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d15"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),
+  set_prior("normal(0, 1)", class = "sd"),        
+  set_prior("lkj(2)", class = "cor")            
+)
+```
+\normalsize
+
+We can now estimate our first Bayesion regression model, as follows.
+
+\scriptsize
+```{r fit-model-M1, echo=T, eval=F}
+plan(multicore)
+
+model_M1 <-
+   brm(data = M1_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + d6 + d7 + d8 + Intercept + d10 + d11 + d12 + d13 + d14 + d15 + 
+         condition + trial_c +
+       
+                   (d6 + d7 + d8 + 1 + d10 + d11 + d12 + d13 + d14 + d15 + condition + trial_c | pid),
+       prior = priors_M1,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M1")
+```
+\normalsize
+
+Estimating model_M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ## Model 2: A polynomial specification of TIME, and main effects of congruency and trial number
-, and use a polynomial to specify the effect of TIME in the "blank" prime condition.
+
+For the second model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
+
+
 
 
 ## Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption
@@ -458,9 +539,9 @@ In this final tutorial we illustrate how to calculate and plot the descriptive s
 
 We noticed that many researchers are still reluctant to abandon analysis-of-variance and switch to event history analysis when analyzing time-to-event data. By providing this tutorial, we hope that researchers will start using hazard analysis more often, due to the many advantages described below. While we focus here on within-subject, factorial, small-*N* designs, it is important to realize that event history analysis can be applied to other designs as well (large-*N* designs with only one measurement per subject, between-subject designs, etc.).
 
-## Advantages of hazard functions
+## Advantages of hazard analysis
 
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by @holdenDispersionResponseTimes2009, “probability density functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions” (p. 331; see also Figure 1 in ....) when one is interested in studying the detailed shape of a RT distribution.
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by @holdenDispersionResponseTimes2009, “probability density functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions” (p. 331) when one is interested in studying the detailed shape of a RT distribution (see also Figure 1 in ....).
 
 Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if F~A~(t) > F~B~(t) for all t, then both cumulative distribution functions are said to show a complete ordering. Townsend (1990) showed that a complete ordering on the hazard functions —$\lambda$~A~(t) > $\lambda$~B~(t) for all t— implies a complete ordering on both the cumulative distribution and survivor functions —F~A~(t) > F~B~(t) and S~A~(t) < S~B~(t)— which in turn implies an ordering on the mean latencies —mean A < mean B. In contrast, an ordering on two means does *not* imply a complete ordering on the corresponding F(t) and S(t) functions, and a complete ordering on these latter functions does *not* imply a complete ordering on the corresponding hazard functions. This means that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
 Thus, because the discrete-time hazard function identifies unique information about event occurrence in each bin, while F(t) accumulates the complements of the hazard estimates from the current and previous bins -- S(t) = P(RT $>$ t) = [1-h(t)].[1-h(t-1)].[1-h(t-2)]...[1-h(1)] --, instead of using delta-plots -- differences in quantiles from F(t)$^-1$ -- one can simply plot delta-h(t) functions (see ref).
@@ -474,7 +555,7 @@ Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first 
 ## Individual differences
 
 One important issue is that of possible individual differences in the overall location of the distribution, and the time course of psychological effects. For example, when you wait for a response of the participant on each trial, you allow the participant to have control over the trial duration, and some participants might respond only when they are confident that their emitted response will be correct. These issues can be avoided by introducing a (relatively short) response deadline in each trial, e.g., 600 ms for simple detection tasks, 1000 ms for more difficult discrimination tasks, or 2 s for tasks requiring extended high-level processing. Because EHA can deal in a straightforward fashion with right-censored observations (i.e., trials without an observed response), introducing a response deadline is recommended when designing RT experiments. Furthermore, introducing a response deadline and asking participants to respond before the deadline as much as possible, will also lead to individual distributions that overlap in time, which is important when selecting a common analysis time window when fitting hazard models.
-But even when using a response deadline, participants can differ qualitatively in the effects they display (refs). One way to deal with this is to run a clustering algorithm on the individual hazard estimates across all conditions. The obtained dendrogram can then be used to identify (hopefully big) clusters of participants that behave similarly, and to identify (hopefully small) clusters of participants with outlying behavioral patterns. One might then exclude the outlying participants before fitting a hazard model.
+But even when using a response deadline, participants can differ qualitatively in the effects they display (refs). One way to deal with this is to describe and interpret the different patterns. Another way is to run a clustering algorithm on the individual hazard estimates across all conditions. The obtained dendrogram can then be used to identify (hopefully big) clusters of participants that behave similarly, and to identify (hopefully small) clusters of participants with outlying behavioral patterns. One might then exclude the outlying participants before fitting a hazard model.
 
 ## Limitations
 
