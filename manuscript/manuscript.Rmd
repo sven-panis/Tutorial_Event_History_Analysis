@@ -371,9 +371,9 @@ knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_for_subjec
 
 # Tutorial 2: Fitting Bayesian hazard models
 
-In this second tutorial we illustrate how to fit a Bayesian hazard regression model to the masked response priming data set used in the first tutorial. Fitting (Bayesian or non-Bayesian) regression models to the data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
+In this second tutorial we illustrate how to fit Bayesian hazard regression models to the masked response priming data set used in the first tutorial. Fitting (Bayesian or non-Bayesian) regression models to the data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
-There are several analytic decisions one has to make. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable is binary, one has to select a link function (see Figure 3).
+There are several analytic decisions one has to make when fitting a hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable is binary, one has to select a link function (see Figure 3).
 
 (ref:descr-fig3-caption) The logit and cloglog link functions.
 
@@ -389,7 +389,7 @@ cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~ONE + $\alpha$~2~(TIME-9) + $\alp
 
 The main predictor variable TIME is the time bin index t that is centered on value 9 in this example. The first set of terms within brackets, the alpha parameters multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X~i~ take on a value of zero). The second set of terms (the beta parameters) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor variable. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X~1~ is to vertically shift the whole baseline cloglog-hazard function by $\beta$~1~ cloglog-hazard units. However, if the predictor interacts linearly with TIME (see X~2~ in the example), then the effect of a 1 unit increase in X~2~ is to vertically shift the predicted cloglog-hazard in bin 9 by $\beta$~2~ cloglog-hazard units (when TIME-9 = 0), in bin 10 by $\beta$~2~ + $\beta$~3~ cloglog-hazard units (when TIME-9 = 1), and so forth. To interpret the effects of a predictor,its $\beta$ parameter is exponentiated, resulting in a hazard ratio (due to the use of the cloglog link). When using the logit link, exponentiating a $\beta$ parameter results in an odds ratio.
 
-In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software (after expanding the typical person-trial-oriented data set into a person-trial-bin-oriented data set (see Tutorial 1); @allisonSurvivalAnalysisUsing2010). When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
+In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software (after expanding the typical person-trial-oriented data set into a person-trial-bin-oriented data set; @allisonSurvivalAnalysisUsing2010). When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
@@ -425,7 +425,7 @@ ptb_data <- ptb_data %>%
 
 ## Prior distributions
 
-To get the posterior distribution of the parameters given the data, we need to specify the prior distribution of the parameters. The middle column of Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales. 
+To get the posterior distribution of each parameters given the data, we need to specify the prior distribution of each parameter. The middle column of Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales. 
 
 (ref:descr-fig4-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
 
@@ -438,7 +438,7 @@ While a normal distribution with relatively large variance is often used as a we
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the beta parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
 To gain a sense of what prior *cloglog* values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale. 
-However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the alpha parameters or intercept(s) in a cloglog-hazard model. 
+However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model. 
 A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, and a skewness of -2.2 might be a good weakly informative prior for the beta parameters in a cloglog-hazard model as it gently regularizes p towards .6321 (i.e., a zero effect on the cloglog scale). 
 
 ## Model 1: A general specification of TIME, and main effects of congruency and trial number
@@ -447,7 +447,7 @@ For the first model, we use a general specification of TIME (i.e., one intercept
 Before we fit model 1, we remove unnecessary columns from the data, and specify our priors. In the code of Tutorial 2, this is accomplished as follows.
 
 \scriptsize
-```{r data-M1, echo=T}
+```{r data-priors-M1, echo=T}
 # remove unnecessary columns before fitting a model
 M1_data <- ptb_data %>% select(-c(bl,tr,trial,period, period_9,d9))  
 
@@ -491,49 +491,177 @@ model_M1 <-
 ```
 \normalsize
 
-Estimating model_M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ## Model 2: A polynomial specification of TIME, and main effects of congruency and trial number
 
-For the second model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
+For the second model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and again assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear. We first remove unncessary columns and specify our priors.
 
+\scriptsize
+```{r data-priors-M2, echo=T}
+# remove unnecessary columns
+M2_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15)) 
 
+# Specify priors
+priors_M2 <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),      
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),    
+  set_prior("normal(0, 1)", class = "sd"),            
+  set_prior("lkj(2)", class = "cor")                 
+)
+```
+\normalsize
 
+Now we can fit model 2.
+
+\scriptsize
+```{r fit-model-M2, eval=F, echo=T}
+plan(multicore)
+
+model_M2 <-
+   brm(data = M2_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + period_9 + I(period_9^2) + I(period_9^3) + 
+                          condition + trial_c +
+                          (1 + period_9 + I(period_9^2) + I(period_9^3) + 
+                          condition + trial_c | pid),
+       prior = priors_M2,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M2")
+```
+\normalsize
+
+Estimating model M2 took about 144 minutes.
 
 ## Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption
 
+For the third model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and relax the proportionality assumption for the predictor variables congruency (variable "condition") and trial number (variable "trial_c"). We use the same data set and priors as for model 2.
+
+\scriptsize
+```{r fit-model-M3, eval=F, echo=T}
+M3_data <- M2_data
+priors_M3 <- priors_M2
+plan(multicore)
+
+model_M3 <- 
+   brm(data = M3_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + # Note that duplicate terms in the model formula are ignored
+                           condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+       prior = priors_M3,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M3")
+```
+\normalsize
+
+Estimating model M3 took about 268 minutes.
 
 ## Model 4: A polynomial specification of TIME, and relaxing all three assumptions
 
-Based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022] and because cognition is likely the behavior of a non-linear dynamical system [ref], we relax all three assumptions in model 4.
+Based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022] and because cognition is likely the behavior of a non-linear dynamical system [ref], we relax all three assumptions in model 4. We use the same data set and priors as for model 2.
 
+\scriptsize 
+```{r fit-model-M4, eval=F, echo=T}
+M4_data <- M2_data
+priors_M4 <- priors_M2
+plan(multicore)
 
+model_M4 <- 
+   brm(data = M4_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + # Note that duplicate terms in the model formula are ignored
+                          condition*period_9*trial_c + 
+                          condition*period_9*I(trial_c^2) + 
+                          condition*I(period_9^2)*trial_c +
+                          condition*I(period_9^2)*I(trial_c^2) +
+                          condition*I(period_9^3) +
+                          trial_c*I(period_9^3) +
+                          (1 +  condition*period_9*trial_c +
+                                condition*period_9*I(trial_c^2) + 
+                                condition*I(period_9^2)*trial_c +
+                                condition*I(period_9^2)*I(trial_c^2)  
+                                condition*I(period_9^3) +
+                                trial_c*I(period_9^3) | pid),
+       prior = priors_M4,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M4")
+```
+\normalsize
 
- 
+Estimating model M4 took about 8 hours.
 
 ## Compare the models.
 
-Use WAIC to compare models (ref McElreath, Kurz)
+We can compare the four models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights [@mcelreathStatisticalRethinkingBayesian2018; @kurzAppliedLongitudinalDataAnalysis2023].
 
-## Plot congruency effects and subject-specific fits for the selected model 
+\scriptsize 
+```{r compare-models, echo=T}
+model_M1 <- readRDS("../Tutorial_2_Bayesian/models/model_M1.rds")
+model_M2 <- readRDS("../Tutorial_2_Bayesian/models/model_M2.rds")
+model_M3 <- readRDS("../Tutorial_2_Bayesian/models/model_M3.rds")
+model_M4 <- readRDS("../Tutorial_2_Bayesian/models/model_M4.rds")
 
+#model_M1  <- add_criterion(model_M1, c("loo", "waic"))
+#model_M2  <- add_criterion(model_M2, c("loo", "waic"))
+#model_M3  <- add_criterion(model_M3, c("loo", "waic"))
+#model_M4  <- add_criterion(model_M4, c("loo", "waic"))
+
+loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "loo") %>% print(simplify = F)
+loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "waic") %>% print(simplify = F)
+
+# model weights
+model_weights(model_M1, model_M2, model_M3, model_M4, weights = "loo") %>% round(digits = 3)
+
+model_weights(model_M1, model_M2, model_M3, model_M4, weights = "waic") %>% round(digits = 3)
+```
+\normalsize
+
+Clearly, both weighting schemes prefer model M4.
+
+## Plot congruency effects and subject-specific fits for model M4.
 
 Plot the effects of congruent and incongruent for each time bin for the selected model.
 
+Figure 5
+
 Plot the model-based hazard and survivor functions.
 
-
+Figure 6
 
 # Tutorial 3: Fitting Frequentist hazard models
 
 In this third tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in the first tutorial. 
 
+model and comparison and note on fitting
+
+Figure 7
 
 # Tutorial 4: Calculating descriptive statistics when there are two independent variables
 
-In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type.
+In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in tutorial 1, we simply present the sample-based functions for participant 6 in Figure 8. Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
 
+(ref:descr-fig8-caption) Estimated discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of prime type (blank, congruent, incongruent) and mask type (no mask, relevant, irrelevant, lines).
 
+```{r plot-2ivs, fig.cap = "(ref:descr-fig8-caption)", out.width='95%'}
+knitr::include_graphics("../Tutorial_4_descriptive_2IV/Plot_2IV_for_subject6_PanisSchmidt.png")
+```
 
 # Discussion
 
@@ -550,7 +678,7 @@ Third, EHA does not discard right-censored observations when estimating hazard f
 
 Fourth, hazard modeling allows incorporating time-varying explanatory covariates such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. (Allison, 2010). This is useful for linking physiological effects with behavioral effeccts when performing cognitive psychophysiology [@meyerModernMentalChronometry1988].
 
-Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models predict the same mean RTs as observed in the empirical data, but not necessarily the same detailed shape of the empirical RT distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data [@panisStudyingDynamicsVisual2020; @panisWhatShapingRT2016].
+Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data [@panisStudyingDynamicsVisual2020; @panisWhatShapingRT2016].
 
 ## Individual differences
 

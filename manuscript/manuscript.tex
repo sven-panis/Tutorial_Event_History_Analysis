@@ -296,7 +296,7 @@ For two-choice RT data, the discrete-time hazard function can be extended with t
 
 We focus on factorial within-subject designs in which a large number of observations are made on a relatively small number of participants (small-\emph{N} designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design (Baker et al., 2021; Smith \& Little, 2018). In contrast to the large-\emph{N} design that averages across many participants without being able to scrutinize individual data patterns, small-\emph{N} designs retain crucial information about the data patterns of individual observers. This is of great advantage whenever participants differ systematically in their strategies or in the time-courses of their effects, so that blindly averaging them would lead to misleading data patterns. Indeed, Smith and Little (2018) argue that, ``if psychology is to be a mature quantitative science, then its primary theoretical aim should be to investigate systematic functional relationships as they are manifested at the individual participant level'' (p.~2083). Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-\emph{N} designs can have excellent power (Baker et al., 2021; Smith \& Little, 2018).
 
-We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. Web links are printed in bold. The content of the tutorials is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Kurz (2023a), and Kurz (2023b).
+We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. Web links are printed in bold. The content of the tutorials is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Kurz (2023a), and Kurz (2023b).
 
 \section{Tutorial 1: Calculating descriptive statistics using a life table}\label{tutorial-1-calculating-descriptive-statistics-using-a-life-table}
 
@@ -442,9 +442,9 @@ Also, in their second Experiment, Panis and Schmidt (2016) showed that the negat
 
 \section{Tutorial 2: Fitting Bayesian hazard models}\label{tutorial-2-fitting-bayesian-hazard-models}
 
-In this second tutorial we illustrate how to fit a Bayesian hazard regression model to the masked response priming data set used in the first tutorial. Fitting (Bayesian or non-Bayesian) regression models to the data is important when you want to study how the shape of the hazard function depends on various predictors (Singer \& Willett, 2003).
+In this second tutorial we illustrate how to fit Bayesian hazard regression models to the masked response priming data set used in the first tutorial. Fitting (Bayesian or non-Bayesian) regression models to the data is important when you want to study how the shape of the hazard function depends on various predictors (Singer \& Willett, 2003).
 
-There are several analytic decisions one has to make. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable is binary, one has to select a link function (see Figure 3).
+There are several analytic decisions one has to make when fitting a hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable is binary, one has to select a link function (see Figure 3).
 
 
 
@@ -465,7 +465,7 @@ cloglog{[}h(t){]} = ln(-ln{[}1-h(t){]}) = {[}\(\alpha\)\textsubscript{1}ONE + \(
 
 The main predictor variable TIME is the time bin index t that is centered on value 9 in this example. The first set of terms within brackets, the alpha parameters multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X\textsubscript{i} take on a value of zero). The second set of terms (the beta parameters) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor variable. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X\textsubscript{1} is to vertically shift the whole baseline cloglog-hazard function by \(\beta\)\textsubscript{1} cloglog-hazard units. However, if the predictor interacts linearly with TIME (see X\textsubscript{2} in the example), then the effect of a 1 unit increase in X\textsubscript{2} is to vertically shift the predicted cloglog-hazard in bin 9 by \(\beta\)\textsubscript{2} cloglog-hazard units (when TIME-9 = 0), in bin 10 by \(\beta\)\textsubscript{2} + \(\beta\)\textsubscript{3} cloglog-hazard units (when TIME-9 = 1), and so forth. To interpret the effects of a predictor,its \(\beta\) parameter is exponentiated, resulting in a hazard ratio (due to the use of the cloglog link). When using the logit link, exponentiating a \(\beta\) parameter results in an odds ratio.
 
-In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software (after expanding the typical person-trial-oriented data set into a person-trial-bin-oriented data set (see Tutorial 1); Allison (2010)). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
+In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software (after expanding the typical person-trial-oriented data set into a person-trial-bin-oriented data set; Allison (2010)). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
@@ -505,7 +505,7 @@ In this tutorial we will fit four Bayesian multilevel models (i.e., generalized 
 
 \subsection{Prior distributions}\label{prior-distributions}
 
-To get the posterior distribution of the parameters given the data, we need to specify the prior distribution of the parameters. The middle column of Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales.
+To get the posterior distribution of each parameters given the data, we need to specify the prior distribution of each parameter. The middle column of Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales.
 
 
 
@@ -523,7 +523,7 @@ While a normal distribution with relatively large variance is often used as a we
 To gain a sense of what prior \emph{logit} values would approximate a uniform distribution on the probability scale, Kurz (2023a) simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to Kurz (2023a), such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the beta parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
 To gain a sense of what prior \emph{cloglog} values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale.
-However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the alpha parameters or intercept(s) in a cloglog-hazard model.
+However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model.
 A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, and a skewness of -2.2 might be a good weakly informative prior for the beta parameters in a cloglog-hazard model as it gently regularizes p towards .6321 (i.e., a zero effect on the cloglog scale).
 
 \subsection{Model 1: A general specification of TIME, and main effects of congruency and trial number}\label{model-1-a-general-specification-of-time-and-main-effects-of-congruency-and-trial-number}
@@ -584,35 +584,251 @@ We can now estimate our first Bayesion regression model, as follows.
 
 \normalsize
 
-Estimating model\_M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 \subsection{Model 2: A polynomial specification of TIME, and main effects of congruency and trial number}\label{model-2-a-polynomial-specification-of-time-and-main-effects-of-congruency-and-trial-number}
 
-For the second model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
+For the second model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and again assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear. We first remove unncessary columns and specify our priors.
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# remove unnecessary columns}
+\NormalTok{M2\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15)) }
+
+\CommentTok{\# Specify priors}
+\NormalTok{priors\_M2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \FunctionTok{set\_prior}\NormalTok{(}\StringTok{"skew\_normal({-}0.2,0.71,{-}2.2)"}\NormalTok{, }\AttributeTok{class =} \StringTok{"b"}\NormalTok{),      }
+  \FunctionTok{set\_prior}\NormalTok{(}\StringTok{"skew\_normal({-}1,1,{-}2)"}\NormalTok{, }\AttributeTok{class =} \StringTok{"b"}\NormalTok{, }\AttributeTok{coef =} \StringTok{"Intercept"}\NormalTok{),    }
+  \FunctionTok{set\_prior}\NormalTok{(}\StringTok{"normal(0, 1)"}\NormalTok{, }\AttributeTok{class =} \StringTok{"sd"}\NormalTok{),            }
+  \FunctionTok{set\_prior}\NormalTok{(}\StringTok{"lkj(2)"}\NormalTok{, }\AttributeTok{class =} \StringTok{"cor"}\NormalTok{)                 }
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+Now we can fit model 2.
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plan}\NormalTok{(multicore)}
+
+\NormalTok{model\_M2 }\OtherTok{\textless{}{-}}
+   \FunctionTok{brm}\NormalTok{(}\AttributeTok{data =}\NormalTok{ M2\_data,}
+       \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+\NormalTok{       event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+}\NormalTok{ period\_9 }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                          condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{+}
+\NormalTok{                          (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ period\_9 }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                          condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{|}\NormalTok{ pid),}
+       \AttributeTok{prior =}\NormalTok{ priors\_M2,}
+       \AttributeTok{chains =} \DecValTok{4}\NormalTok{, }\AttributeTok{cores =} \DecValTok{4}\NormalTok{, }\AttributeTok{iter =} \DecValTok{3000}\NormalTok{, }\AttributeTok{warmup =} \DecValTok{1000}\NormalTok{,}
+       \AttributeTok{control =} \FunctionTok{list}\NormalTok{(}\AttributeTok{adapt\_delta =} \FloatTok{0.999}\NormalTok{, }\AttributeTok{step\_size =} \FloatTok{0.04}\NormalTok{, }\AttributeTok{max\_treedepth =} \DecValTok{12}\NormalTok{),}
+       \AttributeTok{seed =} \DecValTok{12}\NormalTok{, }\AttributeTok{init =} \StringTok{"0"}\NormalTok{,}
+       \AttributeTok{file =} \StringTok{"Tutorial\_2\_Bayesian/models/model\_M2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+Estimating model M2 took about 144 minutes.
 
 \subsection{Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption}\label{model-3-a-polynomial-specification-of-time-and-relaxing-the-proportionality-assumption}
 
+For the third model, we use a third-order polynomial specification of TIME for the baseline condition (blank prime), and relax the proportionality assumption for the predictor variables congruency (variable ``condition'') and trial number (variable ``trial\_c''). We use the same data set and priors as for model 2.
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M3\_data }\OtherTok{\textless{}{-}}\NormalTok{ M2\_data}
+\NormalTok{priors\_M3 }\OtherTok{\textless{}{-}}\NormalTok{ priors\_M2}
+\FunctionTok{plan}\NormalTok{(multicore)}
+
+\NormalTok{model\_M3 }\OtherTok{\textless{}{-}} 
+   \FunctionTok{brm}\NormalTok{(}\AttributeTok{data =}\NormalTok{ M3\_data,}
+       \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+\NormalTok{       event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+} \CommentTok{\# Note that duplicate terms in the model formula are ignored}
+\NormalTok{                           condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{|}\NormalTok{ pid),}
+       \AttributeTok{prior =}\NormalTok{ priors\_M3,}
+       \AttributeTok{chains =} \DecValTok{4}\NormalTok{, }\AttributeTok{cores =} \DecValTok{4}\NormalTok{, }\AttributeTok{iter =} \DecValTok{3000}\NormalTok{, }\AttributeTok{warmup =} \DecValTok{1000}\NormalTok{,}
+       \AttributeTok{control =} \FunctionTok{list}\NormalTok{(}\AttributeTok{adapt\_delta =} \FloatTok{0.999}\NormalTok{, }\AttributeTok{step\_size =} \FloatTok{0.04}\NormalTok{, }\AttributeTok{max\_treedepth =} \DecValTok{12}\NormalTok{),}
+       \AttributeTok{seed =} \DecValTok{12}\NormalTok{, }\AttributeTok{init =} \StringTok{"0"}\NormalTok{,}
+       \AttributeTok{file =} \StringTok{"Tutorial\_2\_Bayesian/models/model\_M3"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+Estimating model M3 took about 268 minutes.
+
 \subsection{Model 4: A polynomial specification of TIME, and relaxing all three assumptions}\label{model-4-a-polynomial-specification-of-time-and-relaxing-all-three-assumptions}
 
-Based on previous work (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis et al., 2017; Panis \& Wagemans, 2009) and because cognition is likely the behavior of a non-linear dynamical system {[}ref{]}, we relax all three assumptions in model 4.
+Based on previous work (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis et al., 2017; Panis \& Wagemans, 2009) and because cognition is likely the behavior of a non-linear dynamical system {[}ref{]}, we relax all three assumptions in model 4. We use the same data set and priors as for model 2.
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M4\_data }\OtherTok{\textless{}{-}}\NormalTok{ M2\_data}
+\NormalTok{priors\_M4 }\OtherTok{\textless{}{-}}\NormalTok{ priors\_M2}
+\FunctionTok{plan}\NormalTok{(multicore)}
+
+\NormalTok{model\_M4 }\OtherTok{\textless{}{-}} 
+   \FunctionTok{brm}\NormalTok{(}\AttributeTok{data =}\NormalTok{ M4\_data,}
+       \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+\NormalTok{       event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+} \CommentTok{\# Note that duplicate terms in the model formula are ignored}
+\NormalTok{                          condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+} 
+\NormalTok{                          condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                          condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+}
+\NormalTok{                          condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                          condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                          trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                          (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{  condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+}
+\NormalTok{                                condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                                condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+}
+\NormalTok{                                condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)  }
+\NormalTok{                                condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                                trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{|}\NormalTok{ pid),}
+       \AttributeTok{prior =}\NormalTok{ priors\_M4,}
+       \AttributeTok{chains =} \DecValTok{4}\NormalTok{, }\AttributeTok{cores =} \DecValTok{4}\NormalTok{, }\AttributeTok{iter =} \DecValTok{3000}\NormalTok{, }\AttributeTok{warmup =} \DecValTok{1000}\NormalTok{,}
+       \AttributeTok{control =} \FunctionTok{list}\NormalTok{(}\AttributeTok{adapt\_delta =} \FloatTok{0.999}\NormalTok{, }\AttributeTok{step\_size =} \FloatTok{0.04}\NormalTok{, }\AttributeTok{max\_treedepth =} \DecValTok{12}\NormalTok{),}
+       \AttributeTok{seed =} \DecValTok{12}\NormalTok{, }\AttributeTok{init =} \StringTok{"0"}\NormalTok{,}
+       \AttributeTok{file =} \StringTok{"Tutorial\_2\_Bayesian/models/model\_M4"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+Estimating model M4 took about 8 hours.
 
 \subsection{Compare the models.}\label{compare-the-models.}
 
-Use WAIC to compare models (ref McElreath, Kurz)
+We can compare the four models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights (Kurz, 2023a; McElreath, 2018).
 
-\subsection{Plot congruency effects and subject-specific fits for the selected model}\label{plot-congruency-effects-and-subject-specific-fits-for-the-selected-model}
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_M1 }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../Tutorial\_2\_Bayesian/models/model\_M1.rds"}\NormalTok{)}
+\NormalTok{model\_M2 }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../Tutorial\_2\_Bayesian/models/model\_M2.rds"}\NormalTok{)}
+\NormalTok{model\_M3 }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../Tutorial\_2\_Bayesian/models/model\_M3.rds"}\NormalTok{)}
+\NormalTok{model\_M4 }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../Tutorial\_2\_Bayesian/models/model\_M4.rds"}\NormalTok{)}
+
+\CommentTok{\#model\_M1  \textless{}{-} add\_criterion(model\_M1, c("loo", "waic"))}
+\CommentTok{\#model\_M2  \textless{}{-} add\_criterion(model\_M2, c("loo", "waic"))}
+\CommentTok{\#model\_M3  \textless{}{-} add\_criterion(model\_M3, c("loo", "waic"))}
+\CommentTok{\#model\_M4  \textless{}{-} add\_criterion(model\_M4, c("loo", "waic"))}
+
+\FunctionTok{loo\_compare}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{criterion =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{(}\AttributeTok{simplify =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          elpd_diff se_diff elpd_loo se_elpd_loo p_loo   se_p_loo looic  
+## model_M4     0.0       0.0 -5094.4     62.9       127.6     4.2  10188.9
+## model_M3   -21.0      10.1 -5115.4     62.5        77.3     2.5  10230.8
+## model_M1  -254.9      24.4 -5349.3     64.8        72.7     1.7  10698.6
+## model_M2  -256.8      23.6 -5351.2     64.8        39.7     1.0  10702.5
+##          se_looic
+## model_M4   125.8 
+## model_M3   125.1 
+## model_M1   129.6 
+## model_M2   129.7
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{loo\_compare}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{criterion =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{print}\NormalTok{(}\AttributeTok{simplify =}\NormalTok{ F)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          elpd_diff se_diff elpd_waic se_elpd_waic p_waic  se_p_waic waic   
+## model_M4     0.0       0.0 -5092.8      62.9        125.9     4.0   10185.5
+## model_M3   -22.1      10.0 -5114.9      62.5         76.8     2.4   10229.7
+## model_M1  -256.3      24.3 -5349.1      64.8         72.5     1.6   10698.2
+## model_M2  -258.4      23.6 -5351.2      64.8         39.6     1.0   10702.4
+##          se_waic
+## model_M4   125.8
+## model_M3   125.1
+## model_M1   129.6
+## model_M2   129.7
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# model weights}
+\FunctionTok{model\_weights}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## model_M1 model_M2 model_M3 model_M4 
+##        0        0        0        1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{model\_weights}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## model_M1 model_M2 model_M3 model_M4 
+##        0        0        0        1
+\end{verbatim}
+
+\normalsize
+
+Clearly, both weighting schemes prefer model M4.
+
+\subsection{Plot congruency effects and subject-specific fits for model M4.}\label{plot-congruency-effects-and-subject-specific-fits-for-model-m4.}
 
 Plot the effects of congruent and incongruent for each time bin for the selected model.
 
+Figure 5
+
 Plot the model-based hazard and survivor functions.
+
+Figure 6
 
 \section{Tutorial 3: Fitting Frequentist hazard models}\label{tutorial-3-fitting-frequentist-hazard-models}
 
 In this third tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in the first tutorial.
 
+model and comparison and note on fitting
+
+Figure 7
+
 \section{Tutorial 4: Calculating descriptive statistics when there are two independent variables}\label{tutorial-4-calculating-descriptive-statistics-when-there-are-two-independent-variables}
 
-In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type.
+In this final tutorial we illustrate how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in tutorial 1, we simply present the sample-based functions for participant 6 in Figure 8. Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.95\linewidth,height=0.67\textheight,]{../Tutorial_4_descriptive_2IV/Plot_2IV_for_subject6_PanisSchmidt} 
+
+}
+
+\caption{Estimated discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of prime type (blank, congruent, incongruent) and mask type (no mask, relevant, irrelevant, lines).}\label{fig:plot-2ivs}
+\end{figure}
 
 \section{Discussion}\label{discussion}
 
@@ -629,7 +845,7 @@ Third, EHA does not discard right-censored observations when estimating hazard f
 
 Fourth, hazard modeling allows incorporating time-varying explanatory covariates such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. (Allison, 2010). This is useful for linking physiological effects with behavioral effeccts when performing cognitive psychophysiology (Meyer, Osman, Irwin, \& Yantis, 1988).
 
-Finally, as explained by Kelso, Dumas, and Tognoli (2013), it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models predict the same mean RTs as observed in the empirical data, but not necessarily the same detailed shape of the empirical RT distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data (Panis, Moran, et al., 2020; Panis \& Schmidt, 2016).
+Finally, as explained by Kelso, Dumas, and Tognoli (2013), it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data (Panis, Moran, et al., 2020; Panis \& Schmidt, 2016).
 
 \subsection{Individual differences}\label{individual-differences}
 
