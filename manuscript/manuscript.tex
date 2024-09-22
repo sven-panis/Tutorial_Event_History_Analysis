@@ -262,7 +262,8 @@ Here we provide a set of tutorials on how to implement one particular distributi
 \subsection{Means versus distributional shapes}\label{means-versus-distributional-shapes}
 
 In experimental psychology, it is still standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, how it evolves over increasing waiting time, and whether its onset is time-locked to other events. Such information is useful not only for interpretation of the effects, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020).
-As a simple illustration, Figure 1 shows three examples of how an observed difference in mean response times (RTs) between two experimental conditions conceals differences in the shapes of the underlying RT distributions.
+
+As a simple illustration, Figure 1 shows three examples of how an observed difference in mean response times (RTs) between two experimental conditions conceals differences in the shapes of the underlying RT distributions. In each example, the mean RT is lower in condition 2 compared to condition 1. However, the distributions in the first example show that the effect starts around 200 ms and is gone by 600 ms. In the second example, the effect starts around 400 ms and is gone by 800 ms. And in the third example, the effect reverses around 550 ms.
 
 
 
@@ -275,14 +276,12 @@ As a simple illustration, Figure 1 shows three examples of how an observed diffe
 \caption{Means versus distributional shapes.}\label{fig:plot1}
 \end{figure}
 
-In each example, the mean RT is lower in condition 2 compared to condition 1. However, the distributions in the first example show that the effect starts around 200 ms and is gone by 600 ms. In the second example, the effect starts around 400 ms and is gone by 800 ms. And in the third example, the effect reverses around 550 ms.
-
 \subsection{Outline of the paper}\label{outline-of-the-paper}
 
 In this paper we focus on a distributional method known as discrete-time event history analysis, a.k.a. hazard analysis, duration analysis, failure-time analysis, survival analysis, and transition analysis.
 We first provide a brief overview of hazard analysis to orient the reader to the basic concepts and ideas that we will use throughout the paper. However, this will remain relatively short, and for detailed treatment, see Singer and Willett (2003), Allison (1982), and Allison (2010).
 
-We then provide four different tutorials, each of which is written in R code and publicly available on Github and the Open Science Framework (OSF). The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can apply the analyses to their own time-to-event data sets. In Tutorial 1 we illustrate how to calculate the descriptive statistics for a published data set when there is one independent variable. The descriptive statistics are plotted, and we comment on their interpretation. In Tutorial 2 we illustrate how one can fit Bayesian hazard models to the data. After selecting the best of four models, we plot the model-based effects and the model fits for a few subjects. In Tutorial 3 we illustrate how to fit hazard models in a frequentist framework. We compare the model-based effects between Bayesian and frequentist approaches. In Tutorial 4 we illustrate how to calculate the descriptive statistics when there are two independent variables.
+We then provide four different tutorials, each of which is written in R code and publicly available on Github and the Open Science Framework (OSF). The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can apply the analyses to their own time-to-event data sets. In Tutorial 1 we illustrate how to calculate the descriptive statistics for a published data set when there is one independent variable. The descriptive statistics are plotted, and we comment on their interpretation. In Tutorial 2 we illustrate how one can fit Bayesian hazard models to the data. We discuss possible link functions, and plot the model-based effects of our predictors of interest. In Tutorial 3 we illustrate how to fit hazard models in a frequentist framework. Even though both frameworks generate similar parameter estimates, we note that model convergence is often not obtained in the frequentist framework. In Tutorial 4 we illustrate how to calculate the descriptive statistics when there are two independent variables.
 
 \section{Overview of hazard analysis}\label{overview-of-hazard-analysis}
 
@@ -296,7 +295,7 @@ For two-choice RT data, the discrete-time hazard function can be extended with t
 
 We focus on factorial within-subject designs in which a large number of observations are made on a relatively small number of participants (small-\emph{N} designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design (Baker et al., 2021; Smith \& Little, 2018). In contrast to the large-\emph{N} design that averages across many participants without being able to scrutinize individual data patterns, small-\emph{N} designs retain crucial information about the data patterns of individual observers. This is of great advantage whenever participants differ systematically in their strategies or in the time-courses of their effects, so that blindly averaging them would lead to misleading data patterns. Indeed, Smith and Little (2018) argue that, ``if psychology is to be a mature quantitative science, then its primary theoretical aim should be to investigate systematic functional relationships as they are manifested at the individual participant level'' (p.~2083). Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-\emph{N} designs can have excellent power (Baker et al., 2021; Smith \& Little, 2018).
 
-We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. Web links are printed in bold. The content of the tutorials is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Kurz (2023a), and Kurz (2023b).
+We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. Web links are printed in bold. The content of the tutorials is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Kurz (2023a), and Kurz (2023b).
 
 \section{Tutorial 1: Calculating descriptive statistics using a life table}\label{tutorial-1-calculating-descriptive-statistics-using-a-life-table}
 
@@ -799,21 +798,77 @@ Clearly, both weighting schemes prefer model M4.
 
 \subsection{Plot congruency effects and subject-specific fits for model M4.}\label{plot-congruency-effects-and-subject-specific-fits-for-model-m4.}
 
-Plot the effects of congruent and incongruent for each time bin for the selected model.
+Figure 5 shows the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial number 1000 for the selected model.
 
-Figure 5
 
-Plot the model-based hazard and survivor functions.
 
-Figure 6
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4effects_con_incon_trial1000} 
+
+}
+
+\caption{50/80/95 percentile intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in trial number 1000.}\label{fig:plot-prime-effects}
+\end{figure}
+
+Figure 6 shows the model-based hazard functions for each prime type for participant 6, in trial 500, 1000, and 1500.
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4effects_subject6} 
+
+}
+
+\caption{Model-based hazard functions for participant 6 in trial 500, 1000, and 1500.}\label{fig:plot-hazard-subject6}
+\end{figure}
 
 \section{Tutorial 3: Fitting Frequentist hazard models}\label{tutorial-3-fitting-frequentist-hazard-models}
 
-In this third tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in the first tutorial.
+In this third tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in the first tutorial. For illustration purposes, we only fitted model M3 using the function glmer() from the package lme4.
 
-model and comparison and note on fitting
+\scriptsize
 
-Figure 7
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model\_M3\_f }\OtherTok{\textless{}{-}} \FunctionTok{glmer}\NormalTok{(event }\SpecialCharTok{\textasciitilde{}} \DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
+\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{|}\NormalTok{ pid),}
+              
+              \CommentTok{\# control parameters, data set, and complementary log{-}log link function}
+              \AttributeTok{control =} \FunctionTok{glmerControl}\NormalTok{(}\AttributeTok{optimizer =} \FunctionTok{c}\NormalTok{(}\StringTok{"nlminbwrap"}\NormalTok{),}
+                                     \AttributeTok{optCtrl =} \FunctionTok{list}\NormalTok{(}\AttributeTok{maxfun=}\DecValTok{10000000}\NormalTok{)), }
+              \AttributeTok{data=}\NormalTok{M3\_data, }
+              \AttributeTok{family=}\FunctionTok{binomial}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+In Figure 7 we compere the parameter estimates of model M3 from brms() with those of glmer().
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_3_Frequentist/comparison} 
+
+}
+
+\caption{Parameter estimates for model M3 from brms() and glmer().}\label{fig:plot-comparison}
+\end{figure}
+
+Figure 7 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar. However, the random effects structure of model M3 was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in the last years.
 
 \section{Tutorial 4: Calculating descriptive statistics when there are two independent variables}\label{tutorial-4-calculating-descriptive-statistics-when-there-are-two-independent-variables}
 
@@ -854,12 +909,13 @@ But even when using a response deadline, participants can differ qualitatively i
 
 \subsection{Limitations}\label{limitations}
 
-One important limitation is that you need a relatively large number of trials per condition to estimate the hazard function with high temporal resolution. There is a tradeoff between the number of trials per condition and the temporal resolution (i.e., bin width) of the hazard function. We therefore recommend to design as many trials as possible per experimental condition given the available resources.
-Another limitation of multilevel hazard modeling is that it might take a long time to estimate the parameters.
+Compared to the orthodox method -- comparing means with ANOVA --, the most important limitation of multilevel hazard modeling is that it might take a long time to estimate the parameters.
+Another issue that might initially look as a limitation is that you need a relatively large number of trials per condition to estimate the hazard function with high temporal resolution. However, as nature does not reveal itself easily, obtaining insight into behavioral dynamics simply requires more data per condition than is usually collected under the orthodox method. In general, there is a tradeoff between the number of trials per condition and the temporal resolution (i.e., bin width) of the hazard function; We therefore recommend to design as many trials as possible per experimental condition given the available resources.
 
 \subsection{Extensions}\label{extensions}
 
-The hazard models in this tutorial assume that there is one event of interest. However, in certain situations, more than one event of interest might exist. For example, \ldots{} - multi-state hazard models refs
+The hazard models in this tutorial assume that there is one event of interest. For RT data, this event consitutes a single transition between an ``idle'' state and a ``responded'' state. However, in certain situations, more than one event of interest might exist. For example, an individual might transition back and forth between a ``healthy'' state and a ``depression'' state, before being absorbed in a final ``death'' state. When you have data on the timing of these transitions, one can apply multi-state models which generalize survival analysis to transitions between three or more states (refs).
+Also, the predictor variables in this tutorial are time-invariant, i.e., their value did not change over the course of a trial. Another extension is to include time-varying predictors, i.e., predictors whose value can change across the time bins within a trial.
 
 \section{Conclusions}\label{conclusions}
 
