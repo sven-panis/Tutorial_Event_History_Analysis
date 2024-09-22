@@ -655,7 +655,7 @@ plot_facet
 ```
 
 ```{r save-plot-effects, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M4effects_con_incon_trial1000.png", width = 12, height = 12, dpi = 600)
+ggsave("Tutorial_2_Bayesian/figures/M4effects_con_incon_trial1000.png", width = 12, height = 12, dpi = 300)
 ```
 
 # plot effects on hazard ratio scale
@@ -774,4 +774,7 @@ make_fitted(model_M4, scale = "response") %>%
   facet_wrap(~ trial)
 ```
 
+```{r save-plot-fit-hazard, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M4effects_subject6.png", width = 10, height = 10, dpi = 300)
+```
 
