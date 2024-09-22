@@ -121,6 +121,6 @@ p1
 ```
 
 ```{r save-plot-estimates, eval=F}
-ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=10,dpi=300)
+ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=8,dpi=300)
 ```
 
