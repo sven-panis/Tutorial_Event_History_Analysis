@@ -1,0 +1,1084 @@
+---
+title: "sims"
+author: "Rich"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This file simulates the data used in Figure 1 of the manuscript and then creates some plots.
+
+# load the libraries that we will be using #
+
+## load ##
+
+```{r load-pkg}
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "truncnorm", "faux", "ggpmisc")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+## plot settings ##
+
+theme settings for ggplot
+
+```{r plot-settings}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"),
+          legend.position = "bottom")
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+# section 1 #
+
+## create a baseline hazard function ##
+
+set up and plot a user-defined discrete-time hazard function.
+This hazard function takes on a reasonable shape for speeded rt tasks.
+The shape serves as a reference point that other effects simulated conditions can be compared against.
+
+```{r}
+## define some variables
+followup <- 1000 # length of data collection period in ms for each trial
+nr_bins  <- 10
+bin_width <- followup/nr_bins
+bin_endpoints <- (1:nr_bins)*bin_width
+
+## define the hazard function at each of 10 time bins
+hazard_cond1 <- c(0, 0.02, 0.08, 0.19, 0.42, 0.52, 0.43, 0.41, 0.41, 0.39)
+
+## create a df
+data_h <- tibble(
+  hazard = hazard_cond1, 
+  time = bin_endpoints
+  )
+
+## a quick plot to take a look
+p1.1 <- ggplot(data_h, aes(x = time, y = hazard)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous(breaks = bin_endpoints) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("endpoints of discrete time bins (ms)") +
+  ylab("discrete-time hazard probability")
+p1.1
+```
+
+# section 2 #
+
+## create a function that can simulate hazrad functions between conditions ##
+
+this is to simplify as much as possible and to use it to illustrate one key message. e.g., mean conceals what time reveals
+
+Just two conditions. 
+
+### first, let's do it step-by-step (without a function) to check the process ###
+
+define parameters
+
+```{r}
+subj_n = 10
+rep_n = 200
+cond_n = 2
+haz_n = 10
+bin_n = 10
+hazard_cond1 <- c(0, 0.02, 0.08, 0.19, 0.42, 0.52, 0.43, 0.41, 0.41, 0.39)
+hazard_cond2 <- hazard_cond1*c(1, 1, 1, 1, 1, 0.5, 0.3, 0.2, 0.2, 0.2)
+hazard <- c(hazard_cond1, hazard_cond2)
+```
+
+setup the data 
+
+```{r}
+# make it reproducible
+set.seed(1)
+
+# set up data structure
+dat_test <- add_random(subj = subj_n, rep = rep_n) %>% 
+  add_within("subj", condition = c("cond1", "cond2")) %>%
+  add_contrast("condition", "treatment", add_cols = TRUE, colnames = c("contrast")) %>%
+  add_within("subj", bin = 1:bin_n) %>% 
+  mutate(hazf = rep(hazard, length.out = subj_n * rep_n * bin_n * cond_n),
+         event = rbinom(n(), 1, hazf)) %>% 
+  group_by(subj, rep, condition) %>%
+  mutate(cumsum = cumsum(event),
+         outcomel = event==1 & cumsum(event) < 2,
+         outcomen = if_else(event==1 & cumsum(event) == 1, 1,
+                     if_else(cumsum(event) >= 1, NA, 0))) %>% 
+  drop_na(outcomen) %>% 
+  ungroup()
+
+head(dat_test)
+str(dat_test)
+summary(dat_test)
+```
+
+take a look
+
+data check
+
+```{r}
+dat_test %>%
+  distinct(outcomel)
+
+dat_test %>%
+  tally(outcomel)
+
+dat_test %>%
+  distinct(outcomen)
+```
+
+plot 
+
+```{r}
+p2.1 <- ggplot(dat_test, aes(x = bin, y = hazf, colour = condition)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("time bins") +
+  ylab("discrete-time hazard probability")
+p2.1
+```
+
+create summary data
+
+at the pid level
+
+```{r}
+pid_dat_test <- dat_test %>% 
+  group_by(subj, condition, bin) %>% 
+  summarise(outcomen = mean(outcomen, na.rm=TRUE),
+            n=n())
+pid_dat_test
+```
+
+at the group level
+
+```{r}
+group_dat_test <- pid_dat_test %>% 
+  group_by(condition, bin) %>% 
+  summarise(group_outcomen = mean(outcomen, na.rm=TRUE),
+            n = n(),
+            group_sd = sd(outcomen, na.rm = TRUE),
+            sem = (group_sd/sqrt(n)))
+group_dat_test
+```
+
+plot pid and group summary data together
+
+```{r}
+p2.2 <- ggplot(group_dat_test, aes(x = bin, y = group_outcomen, 
+                   colour = condition, fill=condition)) +
+  geom_line(linewidth=1) + 
+  geom_point(size=3) +
+  geom_jitter(data=pid_dat_test, aes(y=outcomen), height=0, width = 0.1, alpha = 0.5) +
+  geom_errorbar(aes(ymin = group_outcomen-sem, ymax = group_outcomen+sem),
+                width=.2, linewidth=1) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(x="timebin",
+       y="probability")
+p2.2
+```
+
+
+### now write a function to simulate hazard data ###
+
+```{r}
+sim_haz <- function(subj_n = 10, rep_n = 200, bin_n = 10, cond_n = 2,  # these can be changed when calling the f
+               hazard_cond1 = c(0, 0.02, 0.08, 0.19, 0.42, 0.52, 0.43, 0.41, 0.41, 0.39),
+               hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 0.5, 0.3, 0.2, 0.2, 0.2),
+               hazard = c(hazard_cond1, hazard_cond2),   # 
+                ... # helps the function work with pmap() below
+                ) {
+
+  # set up data structure
+  data <- add_random(subj = subj_n, rep = rep_n) %>% 
+  add_within("subj", condition = c("cond1", "cond2")) %>%
+  add_contrast("condition", "treatment", add_cols = TRUE, colnames = c("contrast")) %>%
+  add_within("subj", bin = 1:bin_n) %>% 
+  mutate(hazf = rep(hazard, length.out = subj_n * rep_n * bin_n * cond_n),
+         event = rbinom(n(), 1, hazf)) %>% 
+  group_by(subj, rep, condition) %>%
+  mutate(cumsum = cumsum(event),
+         outcomel = event==1 & cumsum(event) < 2,
+         outcomen = if_else(event==1 & cumsum(event) == 1, 1,
+                     if_else(cumsum(event) >= 1, NA, 0))) %>% 
+  drop_na(outcomen) %>% 
+  ungroup()
+
+  # glimpse(data) # only use this when testing the code
+}
+```
+
+Here’s a quick example of how our function works. You can change these parameters
+and create some different data.
+
+```{r}
+sim_haz(subj_n = 20, rep_n = 200) # if you uncomment glimpse above,
+# it will let you glimpse the data that's generated. this is useful for checking / testing code purposes.
+```
+
+test it by varying the subj_n
+
+```{r}
+data_n10 <- sim_haz(subj_n = 10, rep_n = 200)
+data_n20 <- sim_haz(subj_n = 20, rep_n = 200)
+```
+
+data check 
+
+```{r}
+data_n10 %>%
+  distinct(subj, rep, condition)
+```
+
+a quick plot to check
+
+```{r}
+p2.3 <- ggplot(data_n10, aes(x = bin, y = hazf, colour = condition)) +
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("time bins") +
+  ylab("discrete-time hazard probability")
+p2.3
+```
+
+ok, this seems to work, as we would expect.
+
+# section 3 #
+
+## convert hazard data into rt data ##
+
+rt at the trial level
+
+use a truncated normal distribution to privude upper and lower bounds
+
+```{r}
+rt_dat_test <- data_n10 %>%
+  select(-contrast, -event, -cumsum, -outcomel) %>% 
+  mutate(u = bin*100,
+         l = u-100,
+         m = (l + u)/2) %>% 
+  filter(outcomen > 0) %>% 
+  group_by(subj, rep, condition, bin) %>% 
+  mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u))
+head(rt_dat_test)
+summary(rt_dat_test)
+```
+
+data check
+
+```{r}
+rt_dat_test %>% 
+  group_by(condition, bin) %>% 
+  summarise(min = min(rt),
+            max=max(rt),
+            mean=mean(rt))
+
+rt_dat_test %>% 
+  group_by(condition, bin) %>% 
+  tally()
+```
+
+this looks sensible.
+
+plot
+
+```{r}
+ggplot(rt_dat_test, aes(x=rt, colour = condition)) +
+   geom_density()
+
+rt_dat_test %>% 
+  mutate(bin = factor(bin)) %>% 
+  ggplot(aes(x=rt, colour = bin)) +
+  geom_density() +
+  facet_wrap(~condition)
+```
+
+create summary data per condition at the pid and group level for plotting mean comparisons
+
+at the pid level
+
+```{r}
+rt_dat_pid <- rt_dat_test %>%
+  group_by(subj, condition) %>% 
+  summarise(mean = mean(rt),
+            sd = sd(rt),
+            n = n(), # 
+            sem = (sd/sqrt(n)))
+rt_dat_pid
+```
+
+at the group level
+
+```{r}
+rt_dat_group <- rt_dat_test %>%
+  group_by(condition) %>% 
+  summarise(mean = mean(rt),
+            sd = sd(rt),
+            n = length(unique(subj)), # 
+            sem = (sd/sqrt(n)))
+rt_dat_group
+```
+
+violin plot
+
+```{r}
+p3.1 <- ggplot(rt_dat_pid, aes(x=condition, y = mean, 
+                             fill = condition, colour = condition)) +
+   geom_jitter(position=position_jitterdodge(dodge.width =1), 
+               alpha = 1, colour = "darkgrey") +
+   geom_violin(alpha = 0.7) +
+   geom_point(data = rt_dat_group, 
+             aes(y = mean), size = 3, position=pd2, colour="black") +
+   geom_errorbar(data = rt_dat_group,
+                aes(y = mean, ymin = mean-sem, ymax = mean +sem),
+                width=.2, position=pd2, colour = "black") +
+   geom_line(data = rt_dat_group, 
+            aes(y = mean, group=1),
+            position=pd2,  colour = "black") +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+   ggtitle("mean rt by condition") +
+   scale_y_continuous(limits = c(300, 600), breaks = seq(300, 600, 100)) +
+   ylab("mean rt (ms)")
+p3.1
+```
+
+plot together 
+
+```{r}
+p3.2 <- p3.1 / p2.2
+p3.2
+```
+
+# section 4 #
+
+## create functions to automate repeat processes ##
+
+These can then be used below to simulate, wrangle and plot the data
+
+### create a function to summarise hazard data ###
+
+at the pid level
+
+```{r}
+haz_pid <- function(df) {
+  df %>% 
+    group_by(subj, condition, bin) %>% 
+    summarise(outcomen = mean(outcomen, na.rm=TRUE),
+              n=n(),
+              .groups = "drop")
+}
+```
+
+at the group level
+
+```{r}
+haz_group <- function(df) {
+  df %>% 
+    group_by(condition, bin) %>% 
+    summarise(group_outcomen = mean(outcomen, na.rm=TRUE),
+              n = n(),
+              group_sd = sd(outcomen, na.rm = TRUE),
+              sem = (group_sd/sqrt(n)),
+              .groups = "drop")
+}
+```
+
+test them
+
+```{r}
+haz_pid_ftest <- haz_pid(data_n10)
+haz_pid_ftest
+
+haz_group_ftest <- haz_group(haz_pid_ftest)
+haz_group_ftest
+```
+
+### create a function to convert hazards into rt data ###
+
+```{r}
+rt_dat <- function(df) {
+  df %>%
+    select(-contrast, -event, -cumsum, -outcomel) %>% 
+    mutate(u = bin*100,
+         l = u-100,
+         m = (l + u)/2) %>% 
+    filter(outcomen > 0) %>% 
+    group_by(subj, rep, condition, bin) %>% 
+    mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u)) %>% 
+    ungroup()
+}
+```
+
+test it
+
+```{r}
+rt_dat_ftest <- rt_dat(data_n10)
+head(rt_dat_ftest)
+glimpse(rt_dat_ftest)
+```
+
+### create a function to summarise rt data ###
+
+at the pid level
+
+```{r}
+rt_pid <- function(df) {
+  df %>% 
+    group_by(subj, condition) %>% 
+    summarise(mean = mean(rt),
+            sd = sd(rt),
+            n = n(), # 
+            sem = (sd/sqrt(n)),
+            .groups = "drop")
+}
+```
+
+at the group level
+
+```{r}
+rt_group <- function(df) {
+  df %>% 
+    group_by(condition) %>% 
+    summarise(mean = mean(rt),
+              sd = sd(rt), 
+              n = length(unique(subj)),
+              sem = (sd/sqrt(n)),
+              .groups="drop")
+}
+```
+
+test them
+
+```{r}
+rt_pid_ftest <- rt_pid(rt_dat_ftest)
+rt_pid_ftest
+
+rt_group_ftest <- rt_group(rt_dat_ftest)
+rt_group_ftest
+```
+
+### create a function to plot the hazard data ###
+
+hazard plot function
+
+```{r}
+haz_plot <- function(df_pid, df_group) {
+  ggplot(df_group, aes(x = bin, y = group_outcomen, 
+                   colour = condition, fill=condition)) +
+  geom_line(linewidth=1) + 
+  geom_point(size=3) +
+  geom_jitter(data=df_pid, aes(y=outcomen), height=0, width = 0.1, alpha = 0.5) +
+  geom_errorbar(aes(ymin = group_outcomen-sem, ymax = group_outcomen+sem),
+                width=.2, linewidth=1) +
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(x="timebin",
+       y="probability")
+}
+```
+
+test it
+
+```{r}
+p_haz_test <- haz_plot(haz_pid_ftest, haz_group_ftest)
+p_haz_test
+```
+
+### create a function to plot the rt data ###
+
+mean rt plot function 
+
+```{r}
+rt_plot <- function(df_pid, df_group) {
+   ggplot(df_pid, aes(x=condition, y = mean, 
+                      fill = condition, colour = condition)) +
+   geom_jitter(position=position_jitterdodge(dodge.width =1), 
+               alpha = 1, colour = "darkgrey") +
+   geom_violin(alpha = 0.7) +
+   geom_point(data = df_group, 
+             aes(y = mean), size = 3, position=pd2, colour="black") +
+   geom_errorbar(data = df_group,
+                aes(y = mean, ymin = mean-sem, ymax = mean+sem),
+                width=.2, position=pd2, colour = "black") +
+   geom_line(data = df_group, 
+            aes(y = mean, group=1),
+            position=pd2,  colour = "black") +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+   theme(legend.position = "none") +
+   scale_y_continuous(limits = c(300, 600), breaks = seq(300, 600, 100)) +
+   ylab("mean rt (ms)")
+}
+```
+
+test it
+
+```{r}
+p_rt_test <- rt_plot(rt_pid_ftest, rt_group_ftest)
+p_rt_test
+```
+
+# section 5 #
+
+## use the function to simulate A=B for the mean, but then some different distributions ##
+
+simulate hazard data
+
+```{r}
+## make it reproducible
+set.seed(123)
+
+## mean rt = same, haz = same
+haz1 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+
+## mean rt = same, haz = later difference, B > A
+haz2 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 1, 1.8, 1.8, 1.5, 1))
+
+## mean rt = same, haz = later difference, A > B
+haz3 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 1, 0.2, 0.2, 0.5, 1))
+```
+
+create summary data
+
+```{r}
+haz1_pid <- haz_pid(haz1) %>% 
+  mutate(example = "example 1")
+haz1_pid
+
+haz1_group <- haz_group(haz1_pid) %>% 
+  mutate(example = "example 1")
+haz1_group
+
+haz2_pid <- haz_pid(haz2) %>% 
+  mutate(example = "example 2")
+haz2_pid
+
+haz2_group <- haz_group(haz2_pid) %>% 
+  mutate(example = "example 2")
+haz2_group
+
+haz3_pid <- haz_pid(haz3) %>% 
+  mutate(example = "example 3")
+haz3_pid
+
+haz3_group <- haz_group(haz3_pid) %>% 
+  mutate(example = "example 3")
+haz3_group
+```
+
+
+plot the hazard data
+
+```{r}
+p5.1 <- haz_plot(haz1_pid, haz1_group)
+p5.1
+
+p5.2 <- haz_plot(haz2_pid, haz2_group)
+p5.2
+
+p5.3 <- haz_plot(haz3_pid, haz3_group)
+p5.3
+```
+
+convert to rt
+
+```{r}
+## make it reproducible
+set.seed(123)
+
+rt1 <- rt_dat(haz1)
+head(rt1)
+  
+rt2 <- rt_dat(haz2)
+head(rt2)
+  
+rt3 <- rt_dat(haz3)
+head(rt3)
+```
+
+summarise the rt data
+
+```{r}
+rt1_pid <- summary_pid(rt1) %>%
+  mutate(example = "example 1")
+  
+rt1_group <- summary_group(rt1) %>% 
+  mutate(example = "example 1")
+
+
+rt2_pid <- summary_pid(rt2) %>% 
+  mutate(example = "example 2")
+
+rt2_group <- summary_group(rt2) %>% 
+  mutate(example = "example 2")
+
+
+rt3_pid <- summary_pid(rt3) %>% 
+  mutate(example = "example 3")
+
+rt3_group <- summary_group(rt3) %>% 
+  mutate(example = "example 3")
+```
+
+plot the rt data
+
+```{r}
+p5.4 <- rt_plot(rt1_pid, rt1_group)
+p5.4
+
+p5.5 <- rt_plot(rt2_pid, rt2_group)
+p5.5
+
+p5.6 <- rt_plot(rt3_pid, rt3_group)
+p5.6
+```
+
+## combine the data and plot together ##
+
+```{r}
+## hazard
+haz_pid_123 <- bind_rows(haz1_pid, haz2_pid, haz3_pid) %>% 
+  mutate(example=factor(example))
+head(haz_pid_123)
+
+haz_group_123 <- bind_rows(haz1_group, haz2_group, haz3_group) %>% 
+  mutate(example=factor(example))
+head(haz_group_123)
+
+## rt
+rt_pid_123 <- bind_rows(rt1_pid, rt2_pid, rt3_pid) %>% 
+  mutate(example=factor(example))
+head(rt_pid_123)
+
+rt_group_123 <- bind_rows(rt1_group, rt2_group, rt3_group) %>% 
+  mutate(example=factor(example))
+head(rt_group_123)
+```
+
+plot
+
+hazard
+
+```{r}
+p5.7 <- haz_plot(haz_pid_123, haz_group_123) +
+  facet_wrap(~example)
+p5.7
+```
+
+rt
+
+```{r}
+p5.8 <- rt_plot(rt_pid_123, rt_group_123) +
+  facet_wrap(~example)
+p5.8
+```
+
+combine plots
+
+```{r}
+p5.9 <- p5.8 / p5.7
+p5.9
+```
+
+
+# section 6 #
+
+## use the function to simulate A>B for the mean, but then some different distributions ##
+
+simulate hazard data
+
+```{r}
+## make it reproducible
+set.seed(456)
+
+## mean rt A>B, haz = early diff
+haz4 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 3, 3, 3, 2, 1, 1, 1, 1, 1))
+
+## mean rt A>B, haz = middle diff
+haz5 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 1, 1, 2.5, 1.7, 1.7, 1.2, 1, 1, 1))
+
+## mean rt A>B, haz = early diff and later reversal
+haz6 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 3, 3, 3, 2, 0.5, 0.4, 0.3, 0.2, 0.2))
+```
+
+create summary data
+
+```{r}
+haz4_pid <- haz_pid(haz4) %>% 
+  mutate(example = "example 4")
+haz4_pid
+
+haz4_group <- haz_group(haz4_pid) %>% 
+  mutate(example = "example 4")
+haz4_group
+
+haz5_pid <- haz_pid(haz5) %>% 
+  mutate(example = "example 5")
+haz5_pid
+
+haz5_group <- haz_group(haz5_pid) %>% 
+  mutate(example = "example 5")
+haz5_group
+
+haz6_pid <- haz_pid(haz6) %>% 
+  mutate(example = "example 6")
+haz6_pid
+
+haz6_group <- haz_group(haz6_pid) %>% 
+  mutate(example = "example 6")
+haz6_group
+```
+
+plot the hazard data
+
+```{r}
+p6.1 <- haz_plot(haz4_pid, haz4_group)
+p6.1
+
+p6.2 <- haz_plot(haz5_pid, haz5_group)
+p6.2
+
+p6.3 <- haz_plot(haz6_pid, haz6_group)
+p6.3
+```
+
+convert to rt
+
+```{r}
+## make it reproducible
+set.seed(456)
+
+rt4 <- rt_dat(haz4)
+head(rt4)
+  
+rt5 <- rt_dat(haz5)
+head(rt5)
+  
+rt6 <- rt_dat(haz6)
+head(rt6)
+```
+
+summarise the rt data
+
+```{r}
+rt4_pid <- summary_pid(rt4) %>%
+  mutate(example = "example 4")
+  
+rt4_group <- summary_group(rt4) %>% 
+  mutate(example = "example 4")
+
+
+rt5_pid <- summary_pid(rt5) %>% 
+  mutate(example = "example 5")
+
+rt5_group <- summary_group(rt5) %>% 
+  mutate(example = "example 5")
+
+
+rt6_pid <- summary_pid(rt6) %>% 
+  mutate(example = "example 6")
+
+rt6_group <- summary_group(rt6) %>% 
+  mutate(example = "example 6")
+```
+
+plot the rt data
+
+```{r}
+p6.4 <- rt_plot(rt4_pid, rt4_group)
+p6.4
+
+p6.5 <- rt_plot(rt5_pid, rt5_group)
+p6.5
+
+p6.6 <- rt_plot(rt6_pid, rt6_group)
+p6.6
+```
+
+## combine the data and plot together ##
+
+```{r}
+## hazard
+haz_pid_456 <- bind_rows(haz4_pid, haz5_pid, haz6_pid) %>% 
+  mutate(example=factor(example))
+head(haz_pid_456)
+
+haz_group_456 <- bind_rows(haz4_group, haz5_group, haz6_group) %>% 
+  mutate(example=factor(example))
+head(haz_group_456)
+
+## rt
+rt_pid_456 <- bind_rows(rt4_pid, rt5_pid, rt6_pid) %>% 
+  mutate(example=factor(example))
+head(rt_pid_456)
+
+rt_group_456 <- bind_rows(rt4_group, rt5_group, rt6_group) %>% 
+  mutate(example=factor(example))
+head(rt_group_456)
+```
+
+plot
+
+hazard
+
+```{r}
+p6.7 <- haz_plot(haz_pid_456, haz_group_456) +
+  facet_wrap(~example)
+p6.7
+```
+
+rt
+
+```{r}
+p6.8 <- rt_plot(rt_pid_456, rt_group_456) +
+  facet_wrap(~example)
+p6.8
+```
+
+combine plots
+
+```{r}
+p6.9 <- p6.8 / p6.7
+p6.9
+```
+
+big plot
+
+```{r}
+# p6.10 <- (p5.9 | p6.9) +
+#   plot_layout(axes = 'collect')
+# p6.10
+```
+
+
+# section 7 #
+
+## combine all examples into one df and plot ##
+
+### wrangle ###
+
+```{r}
+# haz
+haz_pid_all <- bind_rows(haz_pid_123, haz_pid_456) %>% 
+  mutate(example=factor(example))
+head(haz_pid_all)
+
+haz_group_all <- bind_rows(haz_group_123, haz_group_456) %>% 
+  mutate(example=factor(example))
+head(haz_group_all)
+
+## rt
+rt_pid_all <- bind_rows(rt_pid_123, rt_pid_456) %>% 
+  mutate(example=factor(example))
+head(rt_pid_all)
+
+rt_group_all <- bind_rows(rt_group_123, rt_group_456) %>% 
+  mutate(example=factor(example))
+head(rt_group_all)
+```
+
+### plot ###
+
+hazard
+
+```{r}
+p7.1 <- haz_plot(haz_pid_all, haz_group_all) +
+  facet_wrap(~example, nrow = 1)
+p7.1
+```
+
+rt
+
+```{r}
+p7.2 <- rt_plot(rt_pid_all, rt_group_all) +
+  facet_wrap(~example, nrow = 1)
+p7.2
+```
+
+combine plots
+
+```{r}
+p7.3 <- (p7.2 / p7.1) +
+  plot_annotation(tag_levels = 'A')
+p7.3
+
+ggsave("sims/figures/rt_haz.jpeg",
+       width = 12, height = 8, dpi=800)
+```
+
+
+## use patchwork to combine prior plots ##
+
+```{r}
+# p7.4 <- (p5.9 / p6.9) 
+#   # plot_annotation(tag_levels = 'A')
+# p7.4
+# 
+# ggsave("sims/figures/rt_haz_2.jpeg",
+#        width = 12, height = 8, dpi=800)
+```
+
+
+# section 8 #
+
+## try to inset rt within the hazard plot panels ##
+
+create a haz plot with two rows
+
+```{r}
+p8.1 <- haz_plot(haz_pid_all, haz_group_all) +
+  facet_wrap(~example, nrow = 2)
+p8.1
+```
+
+create a rt plot two rows
+
+```{r}
+p8.2 <- rt_plot(rt_pid_all, rt_group_all) +
+  facet_wrap(~example, nrow = 2)
+p8.2
+```
+
+now let's try using ggpmisc to inset rt within the haz plots
+
+## let's first try a simpler example ##
+
+the rt plot should be simpler and have smaller text, if it is going to be an inset plot
+
+let's create a couple of mean rt plots. and then facet by hazard.
+
+### create a function for simpler rt plots ###
+
+a simpler mean rt plot function 
+
+```{r}
+rt_plot_inset <- function(df_pid, df_group) {
+   ggplot(df_pid, aes(x=condition, y = mean, 
+                      fill = condition, colour = condition)) +
+   geom_jitter(position=position_jitterdodge(dodge.width =1), 
+               alpha = 1, colour = "darkgrey") +
+   geom_violin(alpha = 0.7) +
+   geom_point(data = df_group, 
+             aes(y = mean), size = 2, position=pd2, colour="black") +
+   geom_errorbar(data = df_group,
+                aes(y = mean, ymin = mean-sem, ymax = mean+sem),
+                width=.2, position=pd2, colour = "black") +
+   geom_line(data = df_group, 
+            aes(y = mean, group=1),
+            position=pd2,  colour = "black") +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+   scale_y_continuous(limits = c(300, 600), breaks = seq(300, 600, 100)) +
+   labs(y="",
+        x="") +
+   theme_bw() +
+   theme(legend.position = "none",
+         text = element_text(face = "bold"),
+         panel.background = element_blank(),
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank())
+}
+```
+
+test it
+
+```{r}
+p_rt_inset_test <- rt_plot_inset(rt_pid_ftest, rt_group_ftest)
+p_rt_inset_test
+```
+
+now create a df with the ggplot object in there, so it can be used later
+
+```{r}
+inset <- tibble(x = 0, y = 1,
+             plot = list(p_rt_inset_test))
+```
+
+combine it with a hazard plot
+
+using geom_plot
+
+```{r}
+p_haz_inset <- p2.2 +
+  geom_plot(data = inset, 
+            vp.width = 1/4,
+            aes(x, y, label = plot))
+p_haz_inset
+
+# ggsave("sims/figures/haz_inset.jpeg",
+#        width = 8, height = 8, dpi=800)
+```
+
+### now incorporate a facet ###
+
+create six examples of the simpler rt plots
+
+```{r}
+p8.1s <- rt_plot_inset(rt1_pid, rt1_group)
+p8.1s
+
+p8.2s <- rt_plot_inset(rt2_pid, rt2_group)
+p8.2s
+
+p8.3s <- rt_plot_inset(rt3_pid, rt3_group)
+p8.3s
+
+p8.4s <- rt_plot_inset(rt4_pid, rt4_group)
+p8.4s
+
+p8.5s <- rt_plot_inset(rt5_pid, rt5_group)
+p8.5s
+
+p8.6s <- rt_plot_inset(rt6_pid, rt6_group)
+p8.6s
+```
+
+create the inset data
+
+```{r}
+inset_facet <- tibble(x = rep(0, times = 6),
+                      y = rep(1, times = 6), 
+                      example = factor(c("example 1", "example 2", "example 3",
+                                     "example 4", "example 5", "example 6")),
+                      plot = list(p8.1s, p8.2s, p8.3s, p8.4s, p8.5s, p8.6s))
+```
+
+add the inset to the main plot
+
+```{r}
+p_haz_inset_facet <- p8.1 +
+  geom_plot(data = inset_facet,
+            vp.width = 1/3,
+            aes(x, y, label = plot))
+p_haz_inset_facet
+
+ggsave("sims/figures/haz_inset_facet.jpeg",
+       width = 14, height = 10, dpi=800)
+```
+
