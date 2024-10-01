@@ -75,3 +75,181 @@ The reason for keeping this section short is that we want to focus on a worked e
 
 
 
+# September 2024 #
+
+I received your draft and made a bunch of edits and the comments are below.
+I added my edits to git and made a commit, then pushed them back.
+
+## general stuff ##
+
+### functions ###
+
+maybe a function directory in supps?
+Each of your user-defined functions can be listed with a description of what it does. Like in an R package?
+
+### references ###
+
+I know why you have the issue with Bengtsson 2021 reference. For some reason, it is simply in your .bib file more than once. So there is some typo/bug that needs fixing so that the ref is only listed once.
+
+At least most of the the code works fine, it is just your .bib file that needs fixing.
+
+More generally, I'm not sure whether it is better to have the R package REFs in a footnote or in the main text as a paragraph. We can decide later on what works best.
+
+### terms ###
+
+we use the terms hazard and EHA interchangeably. We should pick one, define it and then stick to it. 
+
+For example, the first line of the section "overview of hazard analysis" starts with "To apply event history analysis"
+
+### formulas ###
+
+I think we should go "formula free" in the main text, and instead report formulas in supplementary materials. The reason is as I now make clear at the start of sectino 2:
+
+>For a comprehensive background context to hazard analysis, we recommend several excellent textbooks (REFs). Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this has been done many times before. Instead, we want to provide an intuition to how EHA works in general and in the context of experimental psychology. As such, we supply relevant equations in supplementary materials and refer to them in the text whenever relevant.
+
+I would also add as a general commwent that whenever we do insert formulas in text (in the future or in supplementary material here) we should number them and we should clearly define every part of the equation. 
+
+### big computational chunks in the manuscript ###
+
+I know one of the benefits of using Rmarkdown and papaja is that you can have seamless integration of code chunks and prose. However, I also value some efficiency and simplicity. So, for me, if a code chunk is simple and short e.g., simulate some easy data and plot, then I can see why it is nice to have it in. But when the code chunks get really big like the 'load-functions' chunk around line 256, I don't think it works as nicely. The reason I say this is at least twofold. 1) since we are providing the tutorials as separate .Rmd files and .html files, then the underlying code chunks and functions are of course available to everyone. So the main text can be the front-end window dressing to get folks to want to jump into and use the code. That means, we can just insert images from the tutorial folders, rather than have massive code chunks, which then make the manuscript.Rmd file unnecessarily long. 2) the second reason is that unless we use 'cache' function or eval=F, then it slows down the knit process considerably as a whole bunch of computations have to be performed every time we generate the pdf. And as a process of editing and revision, I like to be able to see how my edits change the output and I like to read the pdf as a doc to see how it flows. So, for that, I'd like to keep the manuscript file lightweight and easy to render. That means we keep all code chunks that actually compute stuff in the tutorials and then mainly just refer to .jpegs in the main text.
+
+Does that make sense?
+
+### tables ###
+
+tables 1 and 2, which I added, would be better and easier to read if they were either placed side-by-side or incorporated into one table. I'll leave that for you to figure out. You're welcome!!
+
+### summary of the steps involved ###
+
+for each tutorial, I think it would be nice to have a summary of the steps involved, as a roadmap.
+e.g., a list of the steps that need to be taken or a flowchart. I think it would be nice to see which chunky bits of stuff need to happen. Just an idea to ease the burden of information and give people a guide.
+
+
+## abstract ##
+
+I need to shorten it.
+
+## Tutorial 1 ##
+
+no need to cite research gate, just cite the paper and put the data on our GitHub project / OSF, so that it is available.
+
+### figure 4 - h(t), S(t), ca(t) ###
+
+the figure that shows all three panels.
+
+Can we add shading that highlights particular time-windows that we refer to in the text?
+I think that would help.
+
+And as we disucssed before, we need to be mindful that folks know exactly what eaxh panels add on its own and/or in combination with the other panels. 
+
+### unpack some statements a little more ###
+
+e.g., you say
+
+>Qualitatively similar results were obtained for the other five participants. These results go against the (often implicit) assumption that all observed responses are primed responses to the target stimulus.
+
+Extend this paragraph to make it crystal clear what we mean. Can we unpack the theoretical relevance and bring it back into how EHA is revealing?
+
+And why don't we show the group average data, rather than just PID 6? It seems odd to me without an explanation/justification. 
+
+
+### I removed the following text from this section ###
+
+>Also, in their second Experiment, @panisWhatShapingRT2016 showed that the negative compatibility effect in the mask-present conditions (see Tutorial 4) is time-locked to mask onset. This example shows that a simple difference between two means fails to reveal the dynamic behavior people display in many experimental paradigms [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022; @schmidtResponseInhibitionNegative2022]. In other words, statistically controlling for the passage of time during data analysis is equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms. 
+
+This is really interesting, but it doesn't seem to fit in this section. In this section, we just want to tell people how to wrangle and look at the data.
+
+Maybe in a later section we can add in this text to explain the significance or implications.
+
+It also read a little bit like we were making inferential claims from descriptive stats, so it shoudl wait until we get to a later tutorial maybe.
+
+
+### link function plot ###
+
+this can go in supps, as we are not writing a regression textbook.
+
+### this losing people and we need a way to simplify ###
+
+You say this...
+
+>An example (single-level) discrete-time hazard model with three predictors (TIME, X~1~, X~2~), the cloglog link function, and a third-order polynomial specification for TIME can be written as follows:
+
+>cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~ONE + $\alpha$~2~(TIME-9) + $\alpha$~3~(TIME-9)$^2$] +                                    [$\beta$~1~X~1~ + $\beta$~2~X~2~ + $\beta$~3~X~2~(TIME-9)].
+
+>The main predictor variable TIME is the time bin index t that is centered on value 9 in this example. The first set of terms within brackets, the alpha parameters multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X~i~ take on a value of zero). The second set of terms (the beta parameters) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor variable. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X~1~ is to vertically shift the whole baseline cloglog-hazard function by $\beta$~1~ cloglog-hazard units. However, if the predictor interacts linearly with TIME (see X~2~ in the example), then the effect of a 1 unit increase in X~2~ is to vertically shift the predicted cloglog-hazard in bin 9 by $\beta$~2~ cloglog-hazard units (when TIME-9 = 0), in bin 10 by $\beta$~2~ + $\beta$~3~ cloglog-hazard units (when TIME-9 = 1), and so forth. To interpret the effects of a predictor,its $\beta$ parameter is exponentiated, resulting in a hazard ratio (due to the use of the cloglog link). When using the logit link, exponentiating a $\beta$ parameter results in an odds ratio.
+
+>An example (single-level) discrete-time hazard model with a general specification for TIME (separate intercepts for each of six bins, where D1 to D6 are binary variables identifying each bin) and a single predictor (X~1~) can be written as follows:
+
+>cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~D1 + $\alpha$~2~D2 + $\alpha$~3~D3 + $\alpha$~4~D4 + $\alpha$~5~D5 + $\alpha$~6~D6] + [$\beta$~1~X~1~].
+
+But we need to bring people along, as that is our stated aim here, so this needs to go in supps. Then we can keep the main text accessible, without compromising on the underlying regression equations. But these have all been stated in introductory texts so it should not be front and centre for us. But it should be there for the interested reader and hence why supps is perfects.
+
+I also suggest we discuss how to interpret the results when we get to the results.
+
+
+### prior plot ###
+
+again, move this plot to supps. It is a beautiful plot and hard-won by you to get this right. But move it to supps and let people get on with their lives! If they want to see it, then they can. But we need to keep the flow and momentum in the main text.
+
+>To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
+
+>To gain a sense of what prior *cloglog* values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale. 
+However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model. 
+A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, and a skewness of -2.2 might be a good weakly informative prior for the non-intercept parameters in a cloglog-hazard model as it gently regularizes p towards .6321 (i.e., a zero effect on the cloglog scale). 
+
+
+### no need to output code for priors and such like ###
+
+people are not learning anything by you showing them the code that lists priors. Instead, give them an intuition about the general approach and then they can see the implementation in the raw tutorial code. e.g., explain the justification and approach to priors in simple, overview terms, and then let them read the code if they want to know how to set them.
+
+
+### avoid repetition in the model building steps ###
+
+for model 1 in Tutorial 2 - the first inferential model - we should outline the key steps. e.g., read in the data, set priors, build the model, evaluate the model via model comparison and parameter estimates. But, as I said in the previous subsection, there is no need to show code chunks for most fo these steps. Instead, I would focus on the general steps and procedures and let the tutorial .Rmd and .html files present the code. 
+
+Then, as we move to Model 2, we only mention what differs between models 1 and 2. And the same for the rest. This keeps it short. 
+
+And when we move on to the frequentist models with lme4, we should only say something like... the general process is similar, except there are no priors to set.
+
+Again, in the main text, we do not want to drowned people in implementation detail when we have a set of tutorials to do exactly that.
+
+
+### model building sections ###
+
+rather than output the code, which I've removed for the majority of instances, give some intuition on why we would want to specify formulas and models in this way. 
+
+e.g., why have time in a certain form and why build from model 1 through to 4. When you add or change something, say why that might be useful to explore. But don't make it overly complicated! 
+
+e.g., if time effects are not linear, which seems likely, then one may want to try different parameterisations of time...
+
+### model comparison ###
+
+you say:
+
+>Clearly, both weighting schemes prefer model M4.
+
+How is this clear? I don't think there are any plots or tables in the main text.
+
+### parameter plots ###
+
+let's have a paragraph on how we might interpret these plots.
+Can we have a table with summary data and quantiles, just to show how they might be interpreted and reported?
+
+
+### frequentist versus Bayesian plot ###
+
+I like the idea of comparing. That's nice. But let's improve the figure and include intervals as well as points.
+
+
+## Tutorial 4 ##
+
+>Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
+
+This needs explaining or removing.
+
+## Disucssion ##
+
+[[This para needs to be way shorter and easier to read or we get rid of it]]
+
+>Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if F~A~(t) > F~B~(t) for all t, then both cumulative distribution functions are said to show a complete ordering. Townsend (1990) showed that a complete ordering on the hazard functions —$\lambda$~A~(t) > $\lambda$~B~(t) for all t— implies a complete ordering on both the cumulative distribution and survivor functions —F~A~(t) > F~B~(t) and S~A~(t) < S~B~(t)— which in turn implies an ordering on the mean latencies —mean A < mean B. In contrast, an ordering on two means does *not* imply a complete ordering on the corresponding F(t) and S(t) functions, and a complete ordering on these latter functions does *not* imply a complete ordering on the corresponding hazard functions. This means that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
+As a result, instead of using delta-plots for RT -- differences in quantiles from F(t)$^-1$ -- one can simply plot delta-h(t) functions [see @panisHowCanWe2020].
