@@ -77,7 +77,7 @@ p1.1
 
 # section 2 #
 
-## create a function that can simulate hazrad functions between conditions ##
+## create a function that can simulate hazard functions between conditions ##
 
 this is to simplify as much as possible and to use it to illustrate one key message. e.g., mean conceals what time reveals
 
@@ -622,24 +622,24 @@ head(rt3)
 summarise the rt data
 
 ```{r}
-rt1_pid <- summary_pid(rt1) %>%
+rt1_pid <- rt_pid(rt1) %>%
   mutate(example = "example 1")
   
-rt1_group <- summary_group(rt1) %>% 
+rt1_group <- rt_group(rt1) %>% 
   mutate(example = "example 1")
 
 
-rt2_pid <- summary_pid(rt2) %>% 
+rt2_pid <- rt_pid(rt2) %>% 
   mutate(example = "example 2")
 
-rt2_group <- summary_group(rt2) %>% 
+rt2_group <- rt_group(rt2) %>% 
   mutate(example = "example 2")
 
 
-rt3_pid <- summary_pid(rt3) %>% 
+rt3_pid <- rt_pid(rt3) %>% 
   mutate(example = "example 3")
 
-rt3_group <- summary_group(rt3) %>% 
+rt3_group <- rt_group(rt3) %>% 
   mutate(example = "example 3")
 ```
 
@@ -787,24 +787,24 @@ head(rt6)
 summarise the rt data
 
 ```{r}
-rt4_pid <- summary_pid(rt4) %>%
+rt4_pid <- rt_pid(rt4) %>%
   mutate(example = "example 4")
   
-rt4_group <- summary_group(rt4) %>% 
+rt4_group <- rt_group(rt4) %>% 
   mutate(example = "example 4")
 
 
-rt5_pid <- summary_pid(rt5) %>% 
+rt5_pid <- rt_pid(rt5) %>% 
   mutate(example = "example 5")
 
-rt5_group <- summary_group(rt5) %>% 
+rt5_group <- rt_group(rt5) %>% 
   mutate(example = "example 5")
 
 
-rt6_pid <- summary_pid(rt6) %>% 
+rt6_pid <- rt_pid(rt6) %>% 
   mutate(example = "example 6")
 
-rt6_group <- summary_group(rt6) %>% 
+rt6_group <- rt_group(rt6) %>% 
   mutate(example = "example 6")
 ```
 
@@ -871,8 +871,9 @@ p6.9
 big plot
 
 ```{r}
-# p6.10 <- (p5.9 | p6.9) +
-#   plot_layout(axes = 'collect')
+# p6.10 <- (p5.9 / p6.9) +
+#   plot_layout(axes = 'collect',
+#               guides = 'collect')
 # p6.10
 ```
 
@@ -1079,6 +1080,253 @@ p_haz_inset_facet <- p8.1 +
 p_haz_inset_facet
 
 ggsave("sims/figures/haz_inset_facet.jpeg",
-       width = 14, height = 10, dpi=800)
+       width = 14, height = 10, dpi=1000)
+```
+
+
+# section 9 #
+
+## create a figure that illustrates hazard plus conditional accuracy ##
+
+### create the hazard data ###
+
+create hazard data
+
+```{r}
+## make it reproducible
+set.seed(7)
+
+## create the data
+haz7 <- sim_haz(subj_n = 10, rep_n = 400, 
+                hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 0.5, 0.3, 0.2, 0.2, 0.2))
+```
+
+calculate summary hazard data
+
+```{r}
+haz7_pid <- haz_pid(haz7)
+haz7_pid
+
+haz7_group <- haz_group(haz7_pid)
+haz7_group
+```
+
+plot hazard
+
+```{r}
+p9.1 <- haz_plot(haz7_pid, haz7_group) +
+  labs(title = "hazard") +
+  theme(legend.position = "none")
+p9.1
+
+## if you want to remove individual pid points for simplicity
+# p9.1 <- p9.1 %>%  
+#   remove_geom('point')
+# p9.1
+```
+
+### convert to rt data ###
+
+convert to rt data
+
+```{r}
+## make it reproducible
+set.seed(7)
+
+rt7 <- rt_dat(haz7)
+head(rt7)
+```
+
+calculate summary rt data
+
+```{r}
+rt7_pid <- rt_pid(rt7)
+rt7_pid
+
+rt7_group <- rt_group(rt7)
+rt7_group
+```
+
+simple plot rt
+
+```{r}
+# p9.2 <- rt_plot(rt7_pid, rt7_group)
+# p9.2
+
+p9.2 <- rt_plot_inset(rt7_pid, rt7_group)
+p9.2
+```
+
+### inset rt within the hazard plot ###
+
+create the inset data
+
+```{r}
+inset_hazrt <- tibble(
+  x = 1,
+  y = 0.9, 
+  plot = list(p9.2)
+)
+```
+
+and plot
+
+```{r}
+p9.3 <- p9.1 +
+  geom_plot(data = inset_hazrt,
+            vp.width = 1/3,
+            aes(x, y, label = plot))
+p9.3
+```
+
+### accuracy ###
+
+create some data
+
+```{r}
+acc <- tibble(
+  time = seq(1,10,1),
+  cond1 = rep(1,length = 10),
+  cond2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1)
+) %>% 
+  pivot_longer(-time,
+               names_to = "condition",
+               values_to = "accuracy") %>% 
+  mutate(condition = factor(condition))
+head(acc)
+```
+
+create group level summary data
+
+```{r}
+acc_group <- acc %>% 
+  group_by(condition) %>% 
+  summarise(group_accuracy = mean(accuracy, na.rm = TRUE),
+            n=n(),
+            group_sd=sd(accuracy, na.rm = TRUE),
+            sem = (group_sd/sqrt(n)),
+            .groups = "drop")
+acc_group
+```
+
+line plot per bin
+
+```{r}
+p9.4 <-ggplot(acc, aes(x = time, y = accuracy,
+                         colour = condition)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("timebin") +
+  ylab("probability") +
+  ggtitle("accuracy") 
+p9.4
+```
+
+mean average plot
+
+```{r}
+p9.5 <- ggplot(acc, aes(x=condition, y = accuracy, 
+                      fill = condition, colour = condition)) +
+   geom_jitter(position=position_jitterdodge(dodge.width =1),
+               alpha = 0.5) +
+   geom_violin(alpha = 0.7) +
+   geom_point(data = acc_group, 
+             aes(y = group_accuracy), size = 2, position=pd2, colour = "black") +
+   geom_errorbar(data = acc_group,
+                aes(y = group_accuracy, ymin = group_accuracy-sem, ymax = group_accuracy+sem),
+                width=.2, position=pd2, colour = "black") +
+   geom_line(data = acc_group, 
+            aes(y = group_accuracy, group=1),
+            position=pd2,  colour = "black") +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+   scale_y_continuous(limits = c(0, 1), breaks = seq(0,1,0.25)) +
+   labs(y="",
+        x="") +
+   theme_bw() +
+   theme(legend.position = "none",
+         text = element_text(face = "bold"),
+         panel.background = element_blank(),
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank())
+p9.5
+```
+
+inset mean acc within the acc plot
+
+create the inset data
+
+```{r}
+inset_acc <- tibble(
+  x = 1,
+  y = 0.9, 
+  plot = list(p9.5)
+)
+```
+
+and plot
+
+```{r}
+p9.6 <- p9.4 +
+  geom_plot(data = inset_acc,
+            vp.width = 1/3,
+            aes(x, y, label = plot))
+p9.6
+```
+
+## plot together ##
+
+```{r}
+p9.7 <- (p9.3 / p9.6) +
+  plot_layout(guides = 'collect',
+              axes = 'collect')
+p9.7
+
+## without inset
+# ggsave("sims/figures/haz_acc.jpeg",
+#        width = 8, height = 8, dpi=800)
+
+## with inset
+# ggsave("sims/figures/haz_acc_inset.jpeg",
+#        width = 8, height = 8, dpi=800)
+```
+
+It doesn't make sense to create the inset with this data because the bins (1:10) are just to illustrate the point rather than being tied to actual RTs, like in a real study where bin 3 may represent 250-300ms say.
+
+## create a figure that illustrates hazard and survivor functions ##
+
+create the data
+
+```{r}
+data_hs <- tibble(
+  timebin = seq(1,10,1),
+  hazard = c(0, 0.02, 0.08, 0.19, 0.42, 0.52, 0.43, 0.41, 0.41, 0.39),
+  survivor = c(1, 0.97, 0.91, 0.79, 0.61, 0.39, 0.22, 0.08, 0.04, 0.02)
+) %>% 
+  pivot_longer(-timebin,
+               names_to = "dv",
+               values_to = "probability") %>% 
+  mutate(dv = factor(dv))
+head(data_hs)
+```
+
+plot
+
+```{r}
+p9.7 <-ggplot(data_hs, aes(x = timebin, y = probability,
+                         colour = dv)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  ggtitle("hazard and survivor functions") 
+p9.7
+
+ggsave("sims/figures/haz_surv.jpeg",
+       width = 7, height = 5, dpi=800)
 ```
 
