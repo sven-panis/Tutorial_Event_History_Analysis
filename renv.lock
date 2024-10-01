@@ -682,6 +682,24 @@
       ],
       "Hash": "f20c47fd52fae58b4e377c37bb8c335b"
     },
+    "colourpicker": {
+      "Package": "colourpicker",
+      "Version": "1.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "htmltools",
+        "htmlwidgets",
+        "jsonlite",
+        "miniUI",
+        "shiny",
+        "shinyjs",
+        "utils"
+      ],
+      "Hash": "daec8f7d4ba89df06fe2c0802c3a9dac"
+    },
     "commonmark": {
       "Package": "commonmark",
       "Version": "1.9.1",
@@ -1034,6 +1052,26 @@
       ],
       "Hash": "273d0eafdca86e59a70a7c2f2bfe192d"
     },
+    "fontBitstreamVera": {
+      "Package": "fontBitstreamVera",
+      "Version": "0.1.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "f6068021eff4aba735a9b2353516636c"
+    },
+    "fontLiberation": {
+      "Package": "fontLiberation",
+      "Version": "0.1.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "f918c5e723f86f409912104d5b7a71d6"
+    },
     "fontawesome": {
       "Package": "fontawesome",
       "Version": "0.5.2",
@@ -1045,6 +1083,18 @@
         "rlang"
       ],
       "Hash": "c2efdd5f0bcd1ea861c2d4e2a883a67d"
+    },
+    "fontquiver": {
+      "Package": "fontquiver",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "fontBitstreamVera",
+        "fontLiberation"
+      ],
+      "Hash": "fc0f4226379e451057d55419fd31761e"
     },
     "forcats": {
       "Package": "forcats",
@@ -2792,6 +2842,31 @@
       ],
       "Hash": "54b26646816af9960a4c64d8ceec75d6"
     },
+    "shinyAce": {
+      "Package": "shinyAce",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "jsonlite",
+        "shiny",
+        "tools",
+        "utils"
+      ],
+      "Hash": "99b2ee37c4f174539b1b0d920b00d16c"
+    },
+    "shinyBS": {
+      "Package": "shinyBS",
+      "Version": "0.61.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "htmltools",
+        "shiny"
+      ],
+      "Hash": "e44255f073ecdc26ba6bc2ce3fcf174d"
+    },
     "shinyjs": {
       "Package": "shinyjs",
       "Version": "2.1.0",
@@ -2838,6 +2913,25 @@
         "methods"
       ],
       "Hash": "51f4ca9989e0de9782037e426298bee6"
+    },
+    "standist": {
+      "Package": "standist",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "standist",
+      "RemoteUsername": "jmgirard",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "66892f4748a54e17cef90e6a355148e5ec7dae28",
+      "Requirements": [
+        "VGAM",
+        "assertthat",
+        "ggplot2",
+        "rstan",
+        "stringr"
+      ],
+      "Hash": "61301fdf173f139c2e2216202343612b"
     },
     "stringi": {
       "Package": "stringi",
