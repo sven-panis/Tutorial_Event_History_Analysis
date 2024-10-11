@@ -39,7 +39,9 @@ figurelist        : no
 tablelist         : no
 footnotelist      : no
 classoption       : "man"
+appendix          : SupplementaryMaterial.Rmd
 output            : papaja::apa6_pdf
+
 # output            : papaja::apa6_word
 editor_options: 
   chunk_output_type: console
@@ -880,3 +882,11 @@ RT and accuracy distributions are a rich source of information on the time cours
 
 ::: {#refs custom-style="Bibliography"}
 :::
+
+\newpage
+
+
+
+```{r child = "SupplementaryMaterial.Rmd"}
+```
+
