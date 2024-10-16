@@ -112,6 +112,12 @@ data_final <- data_nested %>%
                      mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  # create plots 
 ```
 
+Save the calculations.
+
+```{r save-descr, eval=F}
+save(data_final, file="Tutorial_1_descriptive_stats/data/descr_stats_tut1a.Rdata")
+```
+
 # Extract info, save plot for each subject, save a lifetable, create and save the person-trial-bin oriented data file for hazard modeling, and a data file for ca(t) modeling.
 
 ```{r extract-info, warning=F}
