@@ -112,7 +112,7 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such mean-average comparisons have been the workhorse of experimental psychology over the last century, and have had a substantial impact of theory development and our understanding of the structure of cognition and brain function. However, differences in mean RT conceal when an experimental effect starts, how long it lasts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (insert REF). Such information is useful not only for interpretation of the effects, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
 
-As a simple illustration, Figure 1 shows the results of several simulated RT datasets, which show how mean-average comparisons between two conditions can conceal the shape of the underlying RT distributions. For instance, in examples 1-3, mean RT is always comparable between two conditions, while the distribution differs (Figure 1, top row). In contrast, in examples 4-6, mean RT is lower in condition 2 compared to condition 1, but the rt distribution differs in each case (Figure 1, bottom row). Therefore, a comparison of means would lead to a similar conclusion in examples 1-3, as well as examples 4-6, whereas a comparison of the distribution would lead to a different conclusion in every case.
+As a simple illustration, Figure 1 shows the results of several simulated RT datasets, which show how mean-average comparisons between two conditions can conceal the shape of the underlying RT distributions. For instance, in examples 1-3, mean RT is always comparable between two conditions, while the distribution differs (Figure 1, top row). In contrast, in examples 4-6, mean RT is lower in condition 2 compared to condition 1, but the RT distribution differs in each case (Figure 1, bottom row). Therefore, a comparison of means would lead to a similar conclusion in examples 1-3, as well as examples 4-6, whereas a comparison of the distribution would lead to a different conclusion in every case.
 
 (ref:descr-fig1-caption) Means versus distributional shapes for six different simulated dataset examples. For our purposes here, it is enough to know that the distributions plotted represent the probability of an event occurring in that timebin, given that it has not yet occurred. Insets show mean reaction time per condition.
 
@@ -121,7 +121,7 @@ knitr::include_graphics("../sims/figures/haz_inset_facet.jpeg")
 ```
 
 Why does this matter for research in psychology? Compared to the aggregation of data across trials, a distributional approach offers the possibility to reveal the timecourse of psychological states. As such, the approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to discriminate between different theoretical accounts of psychological and/or brain-based processes.
-For example, the distributions in Example 4 show that the effect starts around 200 ms and is gone by 600 ms. In contrast, in Example 5, the effect starts around 400 ms and is gone by 800 ms. And in the Example 6, the effect reverses around between 500 and 600 ms. What kind of theory or set of theories could account for such effects? Are there new auxiliary assumptions that theories need to adopt? And are there new experiments that need to be run to test the novel predictions that follow from these analyses? As we show later using concrete examples from past experimental data, for many psychological questions this "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes as well as adding a relatively under-used dimension to theory building toolkit.
+For example, the distributions in Example 4 show that the effect starts around 200 ms and is gone by 600 ms. In contrast, in Example 5, the effect starts around 400 ms and is gone by 800 ms. And in the Example 6, the effect reverses around between 500 and 600 ms. What kind of theory or set of theories could account for such effects? Are there new auxiliary assumptions that theories need to adopt? And are there new experiments that need to be run to test the novel predictions that follow from these analyses? As we show later using concrete examples from past experimental data, for many psychological questions this "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes as well as adding a relatively under-used dimension to our theory building toolkit.
 
 From a historical perspective, it is worth noting that the development of analytical tools that can estimate or predict when events will occur is not a new endeavour.
 Indeed, hundreds of years ago, analytical methods were developed to predict time to death (REFs).
@@ -137,12 +137,12 @@ We then provide four different tutorials, each of which is written in the R prog
 
 In Tutorial 1, we illustrate how to process or "wrangle" a previously published RT dataset to calculate descriptive statistics when there is one independent variable. The descriptive statistics are plotted, and we comment on their interpretation. In Tutorial 2, we illustrate how one can fit Bayesian multi-level regression hazard models to the data using the R package brms. We discuss possible link functions, and plot the model-based effects of our predictors of interest. In Tutorial 3, we illustrate how to fit the same type of regression hazard models in a frequentist framework using the R package lme4. We then briefly compare and contrast these inferential frameworks when applied to EHA. In Tutorial 4, we provide a generalisation of the approach to illustrate one might descriptive statistics when using a more complex design, such as when there are two independent variables.  
 
-In summary, even though event history analyses is a widely used statistical tool and there already exist many excellent reviews (REFs) and tutorials (REFs) on its general use-cases, we are not aware of any tutorials that are aimed at psychological time-to-event data, and which provide worked examples of the key data processing and multi-level regression modelling steps. 
+In summary, even though event history analyses is a widely used statistical tool and there already exist many excellent reviews (REFs) and tutorials [@allisonSurvivalAnalysisUsing2010] on its general use-cases, we are not aware of any tutorials that are aimed at psychological time-to-event data, and which provide worked examples of the key data processing and multi-level regression modelling steps. 
 Thereofore, our ultimate goal is twofold: first, we want to convince readers of the many benefits of using hazard analysis when dealing with time-to-event data with a focus on psychological time-to-event data, and second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform hazard analysis.
 
 # 2. A brief introduction to hazard analysis
 
-For a comprehensive background context to hazard analysis, we recommend several excellent textbooks (REFs). Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in supplementary materials and then refer to them in the text whenever relevant.
+For a comprehensive background context to hazard analysis, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003]. Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in supplementary materials and then refer to them in the text whenever relevant.
 
 ## 2.1 Basic features of hazard analysis 
 
@@ -210,35 +210,35 @@ Functional programming basically means you don't write your own loops but instea
 
 ## 3.2 Inferential statistical approach 
 
-Our lab adopts a estimation approach to multi-level regression (Kruschke & Liddel, 2018; Winter, 2019), which is heavily influenced by Bayesian approach as suggested by Richard McElreath (McElreath, 2020; Kurz, 202?). We also use a "keep it maximal" approach to specifying varying (or random) effects (Barr et al., 2013). This means that wherever possible we include varying intercepts and slopes per pid. 
+Our lab adopts a estimation approach to multi-level regression (Kruschke & Liddel, 2018; Winter, 2019), which is heavily influenced by Bayesian approach as suggested by Richard McElreath (McElreath, 2020; Kurz, 202?). We also use a "keep it maximal" approach to specifying varying (or random) effects (Barr et al., 2013). This means that wherever possible we include varying intercepts and slopes per participant 
 To make inferences, we use two main approaches. We compare models of different complexity, using information criteria, such as WAIC or LOO, to evaluate out-of-sample predictive accuracy. We also take the most complex model and evaluate key parameters of interest using point and interval estimates.  
 
 # 4. Tutorials
 
-[[provide a short summary of the aims and scope of each tutorial, as well as the links between them]]. Additionally, to further simplify the process for other users, the tutorials rely on a set of our own user-defined functions that make sub-processes easier to autmate, such as data wrangling and plotting functions.
+Tutorials 1a and 1b show how to calculate and plot the descriptive statistics when there are one and two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively.
+Tutorials 3a and 3b show how to implement multilevel models for hazard and conditional accuracy in the frequentist framework, respectively.
+Additionally, to further simplify the process for other users, the tutorials rely on a set of our own custom functions that make sub-processes easier to autmate, such as data wrangling and plotting functions.
 
 Then a list of tutorials:
 
-1a. Wrangle raw data and descriptive stats (T1).
-1b.
+1a. Wrangle raw data and descriptive stats for one independent variable.
+1b. Wrangle raw data and descriptive stats for two independent variables.
 
-2a.
-2b.
+2a. Bayesian multilevel modeling for h(t)
+2b. Bayesian multilevel modeling for ca(t)
 
-3a.
-3b.
-
-Inferential stats (T2 and T3).
+3a. Frequentist multilevel modeling for h(t)
+3b. Frequentist multilevel modeling for ca(t)
 
 Generalisation (T4). Should this be online in Supps?? It would make the main text shorter and simpler, but make it no less available. We could just have a sentence at the end of T1, which says that we provide a generalisation and extension in T4, which is in Supps.
 
 Plannng (T5) - if we get a simulation and power analysis script working, which we are happy with then we could include it here.
 
-## 4.1 Tutorial 1: Calculating descriptive statistics using a life table
+## 4.1 Tutorial 1a: Calculating descriptive statistics using a life table
 
 ### 4.1.1 Data wrangling aims 
 
-Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions. Second, we want to produce two different datasets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as 'person-trial' data (Table 1) and 'person-trial-bin' data (Table 2). The 'person-trial' data will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. In contrast, the 'person-trial-bin' data has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the 'person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occured after the timewindow of interest. Likewise, the event could occur in bin 1 there would only be 1 row of data for that trial.
+Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions. Second, we want to produce two different datasets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as 'person-trial' data (Table 1) and 'person-trial-bin' data (Table 2). The 'person-trial' data will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. In contrast, the 'person-trial-bin' data has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the 'person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occured after the timewindow of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial.
 
 ```{r}
 ## make it reproducible
@@ -290,12 +290,14 @@ apa_table(
 )
 ```
 
+
+
 ### 4.1.2 A real data wrangling example 
 
 To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from @panisWhatShapingRT2016.
 In their first experiment, @panisWhatShapingRT2016 presented a double arrow for 94 ms that pointed left or right as the target stimulus with an onset at time point zero in each trial. Participants had to indicate the direction in which the double arrow pointed using their corresponding index finger, within 800 ms after target onset. Response time and accuracy were recorded on each trial. Prime type (blank, congruent, incongruent) and mask type were manipulated. Here we focus on the subset of trials in which no mask was presented. The 13-ms prime stimulus was a double arrow with onset at -187 ms for the congruent (same direction as target) and incongruent (opposite direction as target) prime conditions.
 
-There are several data wrangling steps to be taken. First, we need to load the data before (a) supply required column names, and (b) specify the factor condition with the correct levels and labels.
+There are several data wrangling steps to be taken. First, we need to load the data before we (a) supply required column names, and (b) specify the factor condition with the correct levels and labels.
 
 The required column names are as follows:
 
@@ -305,7 +307,7 @@ The required column names are as follows:
 * "rt", indicating the response times in ms;
 * "acc", indicating the accuracies (1/0).
 
-In the code of Tutorial 1, this is accomplished as follows.
+In the code of Tutorial 1a, this is accomplished as follows.
 
 \scriptsize
 ```{r setup-data-tut1, echo=TRUE}
@@ -317,151 +319,10 @@ data_wr <- data_wr %>%
 ```
 \normalsize
 
-```{r load-functions, echo=F}
-# function censor creates censored observations and discrete response times (drt), given a user-defined censoring time (timeout) and bin width in ms
-censor <- function(df, timeout, bin_width){
-  if(!(timeout %% bin_width == 0)){
-    return("The censoring time must be a multiple of the bin width!")
-  }
-  if(timeout < 0 | bin_width < 0){
-    return("Both timeout and bin_width must be larger than 0!")
-  }
-  df %>% mutate(right_censored = 0,
-                rtc = ifelse(rt > timeout, timeout, rt) %>% round(digits=2), # censored response times
-                right_censored = ifelse(rtc == timeout,1,right_censored), # 1 = right censored observation, 0 = observed rt
-                drt = ceiling(rtc/bin_width), # drt = discrete response time
-                cens_time = timeout, bin_width = bin_width) # save both user-defined parameters for plotting
-}
-
-# function ptb creates a person-trial-bin oriented data set
-ptb <- function(df){
-  df %>% uncount(weights = drt) %>% # create drt rows per trial
-         group_by(trial) %>% 
-         mutate(period = 1:n()) %>% # create time bin (or time period) ranks within each trial
-         mutate(event = if_else(period == max(period) & right_censored == 0, 1, 0)) %>% # event = 1 indicates response occurrence
-         ungroup()
-}
-
-# function setup_lt sets up a life table for each level of condition (1 independent variable)
-setup_lt <- function(ptb){
-  ptb %>% mutate(event = str_c("event", event)) %>%
-          group_by(condition,period) %>% 
-          count(event) %>% 
-          ungroup() %>% 
-          pivot_wider(names_from = event,
-                      values_from = n) %>% 
-          mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
-                 event1 = ifelse(is.na(event1),0,event1),
-                 risk_set = event0 + event1) %>% # define the risk set
-          mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
-          mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4)) %>% # standard error for hazard
-          group_by(condition) %>%
-          mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
-                 term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
-                 se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
-          ungroup() 
-}
-
-# function calc_ca calculates the conditional accuracies 
-calc_ca <- function(df){
-  df %>% filter(right_censored==0) %>%
-         group_by(condition,drt,cens_time,bin_width) %>%
-         summarize(ca = mean(acc) %>% round(digits = 2),
-                   n = n(),
-                   .groups = 'drop') %>%
-         ungroup() %>%
-         mutate(period = drt,
-                se_ca = sqrt((ca * (1-ca)) / n) %>% round(digits = 3)) %>%
-         select(-drt)
-}
-
-# function join_lt_ca joins the conditional accuracies to the life tables
-join_lt_ca <- function(df1,df2){df1 %>% left_join(df2, join_by(condition,period))}
-
-# function extract_median is used to extract the S(t).50 quantiles (i.e., the estimated median RTs)
-extract_median <- function(df){
-  above_pct50 <- df %>% 
-      group_by(condition) %>%
-      filter(survival > .5) %>% 
-      slice(n()) # take last row
-  below_pct50 <- df %>% 
-      group_by(condition) %>%
-      filter(survival < .5) %>% 
-      slice(1) # take first row
-  # pull period above
-  period_above <- pull(above_pct50, period)
-  # pull survivor function values
-  survival_above <- pull(above_pct50, survival)
-  survival_below <- pull(below_pct50, survival)
-  # estimate median by interpolation
-  median_period <- period_above+((survival_above-.5)/(survival_above-survival_below))*((period_above+1)-period_above)
-}
-
-# function plot_eha plots the hazard, survivor, and ca(t) functions, when there is one independent variable
-plot_eha <- function(df,subj,haz_yaxis){ # set the upper limit of the y-axis for the hazard functions to haz_yaxis == 1 when plotting the data of individual subjects (see line 244)
-  library(patchwork)
-  cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
-  binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
-  median_period <- extract_median(df)
-  n_conditions <- nlevels(df$condition)
-  data_median <- c()
-  for(i in 1:n_conditions){
-    data_median <- append(data_median, c(median_period[i], median_period[i]))
-  }
-  
-  data_medians <- tibble(period= data_median,
-                         survival = rep(c(.5, 0),n_conditions),
-                         condition = rep(1:n_conditions, each=2))
-# plot the hazard functions
-p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
-  geom_line(aes(y=hazard)) +
-  geom_point(aes(y=hazard), size=1) + labs(color="Condition") +
-  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
-  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                     limits = c(0,cutoff/binsize)) +
-  scale_y_continuous(limits = c(0,haz_yaxis)) +
-  labs(x="", y="h(t)", title = paste("Subject ", subj)) +
-  theme(legend.background = element_rect(fill = "transparent"),
-        panel.grid = element_blank(),
-        legend.position = "top")
-# plot the survivor functions
-p2 <-df %>%
-  ggplot(aes(x=period, color=condition, group=condition)) +
-  geom_line(aes(y=survival), show.legend = F) +
-  geom_point(aes(y=survival), size=1, show.legend = F) +
-  geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
-  # add vertical lines at the median RTs in the plot of the survivor functions using geom_path(). Make sure you apply the same levels and labels for the factor condition as above on line 83!
-  geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("blank","congruent","incongruent"))),
-            data = data_medians, 
-            linetype = 3, show.legend = F) +
-  
-  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                     limits=c(0,cutoff/binsize)) +
-  scale_y_continuous(limits = c(0,1)) +
-  labs(x="", y="S(t)",
-       colour="Condition") +
-  theme(panel.grid = element_blank())
-# plot the conditional accuracy functions
-p3 <-df %>%
-  ggplot(aes(x=period, color=condition, group=condition)) +
-  geom_line(aes(y=ca), show.legend = F) +
-  geom_point(aes(y=ca), size=1, show.legend = F) +
-  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
-  scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                     limits=c(0,cutoff/binsize)) +
-  scale_y_continuous(limits = c(0,1)) +
-  labs(x="Time bin t's endpoint (ms)", y="ca(t)",
-       colour="Condition") +
-  theme(panel.grid = element_blank())
-
-p1/p2/p3
-}
-```
-
 Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t) and ca(t). To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our function "censor()", as follows.
 
 \scriptsize
-```{r nest-apply-functions-tut1, echo = TRUE}
+```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
 data_nested <- data_wr %>% group_nest(pid)
 data_final <- data_nested %>% 
   mutate(censored  = map(data, censor, 600, 40)) %>%   # ! user input: censoring time, and bin width
@@ -487,6 +348,10 @@ One can now inspect different aspects, including the life table for a particular
 Table 3 shows the life table for condition "blank" (no prime stimulus presented) - compare to Figure 1. A life table includes for each time bin, the risk set (number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), ca(t) and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
 
 Figure 4 displays the discrete-time hazard, survivor, and conditional accuracy functions for each prime condition for participant 6. By using discrete-time h(t) functions of event occurrence - in combination with ca(t) functions for two-choice tasks - one can provide an unbiased, time-varying, and probabilistic description of the latency and accuracy of responses based on all trials of any data set. 
+
+```{r load-data}
+load("../Tutorial_1_descriptive_stats/data/descr_stats_tut1a.Rdata") # loads data_final
+```
 
 For example, for participant 6, the estimated hazard values in bin (240,280] are `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(hazard) %>% slice(7) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(hazard) %>% slice(7) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(hazard) %>% slice(7) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. In other words, when the waiting time has increased until *240 ms* after target onset, then the conditional probability of response occurrence in the next 40 ms is more than five times larger for both prime-present conditions, compared to the blank prime condition. 
 
@@ -519,11 +384,23 @@ knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_for_subjec
   
 At this point, we have calculated, summarised and plotted descriptive statistics for the key variables in EHA. As we will show in Tutorials 2 and 3, statistical models for h(t) can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) in each bin of a selected time range. As suchm multi-level regression is what we tuen to in the next tutorials. 
 
-## 4.2 Tutorial 2: Fitting Bayesian hazard models
+## 4.2 Tutorial 1b: Generalising to a more complex design
+
+So far in this paper, we have use a simple experimental design, which involved one condition with two levels. But psychological experiments are often more complex, with crossed factorial designs with more conditions and more than two levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
+
+To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for participant 6 in Figure 8. Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
+
+(ref:descr-fig8-caption) Sample-based discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of prime type (blank, congruent, incongruent) and mask type (no mask, relevant, irrelevant, lines).
+
+```{r plot-2ivs, fig.cap = "(ref:descr-fig8-caption)", out.width='95%'}
+knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject6_PanisSchmidt.png")
+```
+
+## 4.3 Tutorial 2a: Fitting Bayesian hazard models
 
 In this second tutorial, we illustrate how to fit Bayesian hazard regression models to the masked response priming data set used in the first tutorial. Fitting (Bayesian or non-Bayesian) regression models to the data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
-### 4.2.1 Hazard model considerations 
+### 4.3.1 Hazard model considerations 
 
 There are several analytic decisions one has to make when fitting a hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable is binary, one has to select a link function (see Supps). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose a specification of the effect of discrete TIME (i.e., the time bin index t). One can choose a general specification (one intercept per bin) or a functional specification, such as a polynomial one (compare model 1 with models 2, 3, and 4 below). We provide relevant example regression formulas in supplementary materials.
 
@@ -561,13 +438,13 @@ ptb_data <- ptb_data %>%
 ```
 \normalsize
 
-### 4.2.2 Prior distributions
+### 4.3.2 Prior distributions
 
 To get the posterior distribution of each parameters given the data, we need to specify a prior distribution for each parameter. The middle column of Supplementary Figure 4 shows seven examples of prior distributions on the logit and/or cloglog scales.
 
 While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 3 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability (i.e., discrete-time hazard) scale, as most mass is pushed to probabilities of 0 and 1.
 
-### 4.2.3 Model 1: A general specification of TIME, and main effects of congruency and trial number
+### 4.3.3 Model 1: A general specification of TIME, and main effects of congruency and trial number
 
 [[Here let's give some intuition on why we would want to setup the model like this]]
 
@@ -621,7 +498,7 @@ model_M1 <-
 
 Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
-### 4.2.4 Model 2: A polynomial specification of TIME, and main effects of congruency and trial number
+### 4.3.4 Model 2: A polynomial specification of TIME, and main effects of congruency and trial number
 
 [[Here let's give some intuition on why we would want to modify the formula and model features]]
 
@@ -665,7 +542,7 @@ For the second model, we use a third-order polynomial specification of TIME for 
 
 Estimating model M2 took about 144 minutes.
 
-### 4.2.5 Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption
+### 4.3.5 Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption
 
 [[Here let's give some intuition on why we would want to modify the formula and model features]]
 
@@ -703,7 +580,7 @@ For the third model, we use a third-order polynomial specification of TIME for t
 
 Estimating model M3 took about 268 minutes.
 
-### 4.2.6 Model 4: A polynomial specification of TIME, and relaxing all three assumptions
+### 4.3.6 Model 4: A polynomial specification of TIME, and relaxing all three assumptions
 
 Based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022], we relax all three assumptions in model 4. We use the same data set and priors as for model 2.
 
@@ -739,7 +616,7 @@ Based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemp
 
 Estimating model M4 took about 8 hours.
 
-### 4.2.7 Compare the models.
+### 4.3.7 Compare the models.
 
 We can compare the four models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights [@mcelreathStatisticalRethinkingBayesian2018; @kurzAppliedLongitudinalDataAnalysis2023].
 
@@ -767,7 +644,7 @@ We can compare the four models using the Widely Applicable Information Criterion
 
 Clearly, both weighting schemes prefer model M4. 
 
-### 4.2.8 Evaluate parameter estimates
+### 4.3.8 Evaluate parameter estimates
 
 Figure 5 shows the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial number 1000 for the selected model.
 
@@ -788,7 +665,13 @@ knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_subject6.png")
 
 [[let's have a paragraph on how we might interpret these plots.]]
 
-## 4.3 Tutorial 3: Fitting Frequentist hazard models
+
+## 4.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
+
+
+
+
+## 4.5 Tutorial 3a: Fitting Frequentist hazard models
 
 In this third tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in the first tutorial. For illustration purposes, we only fitted model M3 using the function glmer() from the package lme4. 
 
@@ -825,17 +708,9 @@ knitr::include_graphics("../Tutorial_3_Frequentist/comparison.png")
 
 Figure 7 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar. However, the random effects structure of model M3 was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorial 2 took several hours to build.
 
-## 4.4 Tutorial 4: Generalising to a more complex design
+## 4.6 Tutorial 3b: Fitting Frequentist conditional accuracy models
 
-So far in this paper, we have use a simple experimental design, which involved one condition with two levels. But psychological experiments are often more complex, with crossed factorial designs with more conditions and more than two levels. The purpose of Tutorial 4, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
-To this end, Tutorial 4 illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1, we simply present the sample-based functions for participant 6 in Figure 8. Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
-
-(ref:descr-fig8-caption) Sample-based discrete-time hazard, survivor, and conditional accuracy functions for participant 6, as a function of prime type (blank, congruent, incongruent) and mask type (no mask, relevant, irrelevant, lines).
-
-```{r plot-2ivs, fig.cap = "(ref:descr-fig8-caption)", out.width='95%'}
-knitr::include_graphics("../Tutorial_4_descriptive_2IV/Plot_2IV_for_subject6_PanisSchmidt.png")
-```
 
 # 5. Discussion
 
