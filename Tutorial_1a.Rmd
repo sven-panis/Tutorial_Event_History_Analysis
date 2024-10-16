@@ -1,5 +1,5 @@
 ---
-title: "Tutorial_1"
+title: "Tutorial_1a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
 output: html_document
@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This Tutorial_1 file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, when there is one independent variable.
+This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, when there is one independent variable.
 
 # Load the libraries that we will be using. 
 
@@ -137,22 +137,9 @@ median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% list_rbi
 median_tb
 ```
 
-```{r save-plots}
+```{r save-plots, eval=F}
 # save the plot for each subject
 map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 6, height = 8, dpi = 600)
-```
-
-Combine plots of 2 subjects.
-
-```{r plot-two-subjects}
-pa <- pluck(data_final, 8, 3)
-pb <- pluck(data_final, 8, 6)
-
-pa | pb 
-```
-
-```{r save-plot-two-subjects}
-ggsave("Tutorial_1_descriptive_stats/figures/Plot_subjects3and6_PanisSchmidt.png", width = 8, height=8, dpi=600)
 ```
 
 Create a life table.
@@ -178,7 +165,7 @@ lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
 lifetable_blank_s6_complete
 ```
 
-```{r save-single-lifetable}
+```{r save-single-lifetable, eval=F}
 write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
 ```
 
@@ -192,7 +179,7 @@ input_modeling_hazard <- data_final %>%
 summary(input_modeling_hazard)
 ```
 
-```{r save-file-hazard-modeling}
+```{r save-file-hazard-modeling, eval=F}
 write_csv(input_modeling_hazard, file="Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
 ```
 
@@ -206,7 +193,7 @@ input_modeling_ca <- data_final %>%
                      select(pid,bl,tr,trial,condition,acc,drt)
 ```
 
-```{r save-file-ca-modeling}
+```{r save-file-ca-modeling, eval=F}
 write_csv(input_modeling_ca, file="Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
 ```
 
@@ -232,7 +219,7 @@ data_agg_final <- data_agg_nested %>%
                      mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_agg,1))  # create plots 
 ```
 
-```{r agg-plot}
+```{r agg-plot, warning=F}
 # view plot
 pluck(data_agg_final, 8, 1)
 ```
