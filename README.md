@@ -31,9 +31,9 @@ If you want to see and work with the code, then:
 
 - Tutorial_1b.Rmd (descriptives for 2 independent variables).
 
-- Tutorial_2a.RMD (generating inferential statistics : Bayesian discrete-time EHA).
+- Tutorial_2a.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 
-- Tutorial_2b.RMD (generating inferential statistics : Bayesian discrete-time conditional accuracy models).
+- Tutorial_2b.Rmd (generating inferential statistics : Bayesian discrete-time conditional accuracy models).
 
 - Tutorial_3a.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
 
