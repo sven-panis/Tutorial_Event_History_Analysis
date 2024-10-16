@@ -27,30 +27,44 @@ If you want to see and work with the code, then:
 
 # Important files and folders
 
-- Tutorial_1.Rmd (creating descriptive statistics when there is a single independent variable).
-- Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
-- Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
-- Tutorial_4.Rmd (creating descriptive stats when there are two independent variables).
+- Tutorial_1a.Rmd (creating descriptive statistics when there is a single independent variable).
 
-Folder manuscript 
-- manuscript.Rmd (papaja Template)
-- manuscript.pdf
-- manuscript.tex
-- r-references.bib
-- extrareferences.bib
+- Tutorial_1b.Rmd (descriptives for 2 independent variables).
 
-Folder Tutorial_1_descriptive_stats
-- folder data
-- folder figures
-- folder tables
+- Tutorial_2a.RMD (generating inferential statistics : Bayesian discrete-time EHA).
 
-Folder Tutorial_2_Bayesian 
-- folder models
-- folder figures
+- Tutorial_2b.RMD (generating inferential statistics : Bayesian discrete-time conditional accuracy models).
 
-Folder Tutorial_3_Frequentist 
+- Tutorial_3a.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
 
-Folder Tutorial_4_descriptive_2IV
+- Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy models).
+
+- Folder manuscript 
+manuscript.Rmd (papaja Template)
+manuscript.pdf
+manuscript.tex
+r-references.bib
+extrareferences.bib
+SupplementaryMaterial.Rmd
+
+- Folder sims (code for Figure 1)
+sims.Rmd
+folder figures
+
+- Folder Tutorial_1_descriptive_stats
+folder data
+folder figures
+folder tables
+
+- Folder Tutorial_2_Bayesian 
+folder models
+folder figures
+
+- Folder Tutorial_3_Frequentist 
+
+- Folder renv
+
+- Folder notes
 
 
 
