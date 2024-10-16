@@ -2,24 +2,50 @@
 
 ## A. Definitions of discrete-time hazard, surivor, and conditional accuracy functions
 
-The shape of a distribution of waiting times can be described in multiple ways [@luceResponseTimesTheir1991]. 
+The shape of a distribution of waiting times can be described in multiple ways [@luceResponseTimesTheir1991]. After dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. 
+Discrete-time EHA focuses on the discrete-time hazard function 
 
-After dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. Discrete-time EHA focuses on the discrete-time hazard function h(t) = P(RT = t| RT $\geq$ t) and the discrete-time survivor function S(t) = P(RT $>$ t) = [1-h(t)].[1-h(t-1)].[1-h(t-2)]...[1-h(1)], and not on the probability mass function P(t) = P(RT = t) = h(t).S(t-1) nor the cumulative distribution function F(t) = 1-S(t). The discrete-time hazard probability gives you the probability that the event occurs (sometime) in bin t, given that the event has not occurred yet in previous bins. Unlike the discrete-time hazard function, which assesses the unique risk of event occurrencce associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the probability that the event occurs afer bin t.
+\noindent h(t) = P(RT = t| RT $\geq$ t)   \hfill  (1)
 
-For two-choice RT data, the discrete-time hazard function can be extended with the discrete-time conditional accuracy function ca(t) = P(correct | RT = t), which gives you the probability that a response is correct given that it has been emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff function.
+\noindent and the discrete-time survivor function 
+
+\noindent S(t) = P(RT $>$ t) = [1-h(t)].[1-h(t-1)].[1-h(t-2)]...[1-h(1)]  \hfill  (2)
+
+\noindent and not on the probability mass function 
+
+\noindent P(t) = P(RT = t) = h(t).S(t-1)  \hfill  (3)
+
+\noindent nor the cumulative distribution function 
+
+\noindent F(t) = 1-S(t) = P(RT $\leq$ t).   \hfill  (4)  
+
+The discrete-time hazard probability gives you the probability that the event occurs (sometime) in bin t, given that the event has not occurred yet in previous bins. Unlike the discrete-time hazard function, which assesses the unique risk of event occurrencce associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the probability that the event occurs afer bin t.
+
+For two-choice RT data, the discrete-time hazard function can be extended with the discrete-time conditional accuracy function 
+
+\noindent ca(t) = P(correct | RT = t)   \hfill  (5)
+
+which gives you the probability that a response is correct given that it has been emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff function.
 
 When time is treated as a continuous variable, let RT be a continous random variable denoting a particular person's response time in a particular experimental condition. Because waiting times can only increase, continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT $\leq$ t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT $>$ t) and the hazard rate function $\lambda$(t) = f(t)/S(t). The hazard rate function gives you the instantaneous rate of event occurrence at time point t, given that the event has not occurred yet. 
 
 ## B. Custom functions for descriptive discrete-time hazard analysis
 
-We defined a few custom functions that we list here.
+We defined 13 custom functions that we list here. 
 
-### Identifying right-censored data and calculating the time bin index
-
-### 
-
-
-
+* censor(df,timeout,bin_width)
+* ptb(df)
+* setup_lt(ptb)
+* setup_lt_2IV(ptb)
+* calc_ca(df)
+* calc_ca_2IV(df)
+* join_lt_ca(df1,df2)
+* join_lt_ca_2IV(df1,df2)
+* extract_median(df)
+* extract_median_2IV(df)
+* plot_eha(df,subj,haz_yaxis)
+* plot_eha_2IV(df,subj,haz_yaxis)
+* plot_eha_agg(df,subj,haz_yaxis)
 
 ## C. Link functions
 
@@ -41,13 +67,11 @@ An example (single-level) discrete-time hazard model with a general specificatio
 
 cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~D1 + $\alpha$~2~D2 + $\alpha$~3~D3 + $\alpha$~4~D4 + $\alpha$~5~D5 + $\alpha$~6~D6] + [$\beta$~1~X~1~].
 
-
 ## E. Prior distributions
 
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
 
-	
 (ref:descr-fig4-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
 
 ```{r plot-priors, fig.cap = "(ref:descr-fig4-caption)", out.width='80%'}
