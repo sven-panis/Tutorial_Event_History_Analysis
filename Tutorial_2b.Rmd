@@ -1,0 +1,131 @@
+---
+title: "Tutorial_2b"
+author: "sven panis"
+date: "2024-10-18"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accuracy data.
+
+# Load the libraries that we will be using
+
+```{r load-pkg, results='hide'}
+pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
+         "brms", "tidybayes", "bayesplot", "future", "parallel")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+# Set options. 
+
+```{r set-options, results='hide'}
+options(brms.backend = "cmdstanr",
+        mc.cores = parallel::detectCores(),
+        future.fork.enable = TRUE,
+        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+
+supportsMulticore()
+detectCores()
+```
+
+```{r check-info, results='hide'}
+packageVersion("cmdstanr")
+devtools::session_info("rstan")
+```
+
+# Load the person-trial data set that we saved in Tutorial 1a.
+
+```{r load-data}
+ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
+print(ca_data,n=30)
+summary(ca_data) # 2683 rows: 6 participants, trial, 3 conditions, 15 periods, and acc
+```
+
+# Prepare the data set.
+
+```{r prepare-data}
+# select analysis time range: (200,600]
+ca_data <- ca_data %>% filter(drt > 5)
+
+# create factor condition, with "blank" as the reference level
+ca_data <- ca_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
+ca_data <- ca_data %>% 
+        mutate(period_9 = drt - 9,
+               trial_c = (trial - 1000)/1000)
+
+head(ca_data,n=17)
+summary(ca_data)
+# 6 subjects
+# condition: blank (1303), congruent (668), incongruent (626)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
+```
+
+# Fit model  M4_ca: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
+
+## Prepare data for M4_ca
+
+```{r data-M4-ca}
+# remove unnecessary columns before fitting a model
+M4_ca_data <- ca_data %>% select(-c(bl,tr,trial,drt)) # 2597 rows
+head(M4_ca_data)
+```
+
+### Set up priors for M4_ca
+
+```{r priors-cloglog-M4-ca}
+priors_M4_ca <- c(
+  set_prior("normal(0,1)", class = "b"),       # weakly informative prior for beta parameters when using logit link
+  set_prior("student_t(7.61, 0, 1.57)", class = "b", coef="Intercept"),      # weakly informative prior for Intercept when using logit link
+  set_prior("normal(0, 1)", class = "sd"),                     # for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # for correlations between random effects
+)
+```
+
+### Fit model M4_ca
+
+```{r fit-model-M4-ca, eval=F}
+plan(multicore)
+
+model_M4_ca <- 
+   brm(data = M4_ca_data,
+       family = binomial(link="logit"),
+       acc | trials(1) ~ 0 + Intercept +
+                          condition*period_9*trial_c + 
+                          condition*period_9*I(trial_c^2) + 
+                          condition*I(period_9^2)*trial_c +
+                          condition*I(period_9^2)*I(trial_c^2) +
+                          condition*I(period_9^3) +
+                          trial_c*I(period_9^3) +
+                          (1 +  condition*period_9*trial_c +
+                                condition*period_9*I(trial_c^2) + 
+                                condition*I(period_9^2)*trial_c +
+                                condition*I(period_9^2)*I(trial_c^2) +
+                                condition*I(period_9^3) +
+                                trial_c*I(period_9^3) | pid),
+       prior = priors_M4_ca,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000, 
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 14),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M4_ca")
+```
+
+Model_M4_ca took about 7 hours to run.
+
+```{r check-model-M4-ca, eval=F}
+model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
+summary(model_M4_ca)
+```
+
+# Display effects
+
+
+
