@@ -1,6 +1,6 @@
 # Tutorial_Event_History_Analysis
 
-A set of tutorials on how to perform descriptive, and inferential (Bayesian and Frequentist) discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
+A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
 
