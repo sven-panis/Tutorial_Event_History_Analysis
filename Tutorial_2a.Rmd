@@ -39,7 +39,7 @@ packageVersion("cmdstanr")
 devtools::session_info("rstan")
 ```
 
-# Load the person-trial-bin data set that we saved in Tutorial 1.
+# Load the person-trial-bin data set that we saved in Tutorial 1a.
 
 ```{r load-data}
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
@@ -546,7 +546,7 @@ model_M4 <-
                           (1 +  condition*period_9*trial_c +
                                 condition*period_9*I(trial_c^2) + 
                                 condition*I(period_9^2)*trial_c +
-                                condition*I(period_9^2)*I(trial_c^2)  
+                                condition*I(period_9^2)*I(trial_c^2)  +
                                 condition*I(period_9^3) +
                                 trial_c*I(period_9^3) | pid),
        prior = priors_M4,
