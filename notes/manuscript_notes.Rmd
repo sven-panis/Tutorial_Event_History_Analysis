@@ -87,6 +87,9 @@ I added my edits to git and made a commit, then pushed them back.
 maybe a function directory in supps?
 Each of your user-defined functions can be listed with a description of what it does. Like in an R package?
 
+-> Our custom functions are now located in the file custom_functions.R.
+The functions are also listed in the supplementary material.
+
 ### references ###
 
 I know why you have the issue with Bengtsson 2021 reference. For some reason, it is simply in your .bib file more than once. So there is some typo/bug that needs fixing so that the ref is only listed once.
@@ -115,6 +118,8 @@ I know one of the benefits of using Rmarkdown and papaja is that you can have se
 
 Does that make sense?
 
+-> Big code chunks are removed.
+
 ### tables ###
 
 tables 1 and 2, which I added, would be better and easier to read if they were either placed side-by-side or incorporated into one table. I'll leave that for you to figure out. You're welcome!!
@@ -136,6 +141,8 @@ no need to cite research gate, just cite the paper and put the data on our GitHu
 ### figure 4 - h(t), S(t), ca(t) ###
 
 the figure that shows all three panels.
+
+-> I added the probability mass function P(t) for each condition.
 
 Can we add shading that highlights particular time-windows that we refer to in the text?
 I think that would help.
@@ -246,6 +253,8 @@ I like the idea of comparing. That's nice. But let's improve the figure and incl
 >Note the negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
 
 This needs explaining or removing.
+
+->
 
 ## Disucssion ##
 
