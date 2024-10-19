@@ -652,13 +652,40 @@ Clearly, both weighting schemes prefer model M4.
 
 ### 4.3.8 Evaluate parameter estimates
 
-Figure 5 shows the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial number 1000 for the selected model.
+Figure 5 shows the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial numbers 500, 1000, and 1500 for the selected model.
 
 (ref:descr-fig5-caption) 50/80/95 percentile intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in trial number 1000.
 
 ```{r plot-prime-effects, fig.cap = "(ref:descr-fig5-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_con_incon_trial1000.png")
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials.png")
 ```
+
+Tabel X shows the mean point estimates and the upper and lower limits of the 95% highest density intervals for each bin 
+
+```{r}
+int_tab <- read_csv("../Tutorial_2_Bayesian/tables/effects_intervals_table.csv")
+```
+
+
+(ref:int-table-caption) Point and interval estimates.
+
+(ref:int-table-note-caption) The posterior distributions of the effects of congruent and incongruent primes relative to no primes are summarized by point estimates and the lower and upper ...
+
+
+```{r int-table}
+apa_table(
+  int_tab,
+  caption = "(ref:int-table-caption)",
+  note = "(ref:int-table-note-caption)",
+  placement = "H",
+  font_size = "scriptsize",
+  longtable = TRUE,
+  repeat_header = TRUE
+)
+```
+
+
+
 
 Figure 6 shows the model-based hazard functions for each prime type for participant 6, in trial 500, 1000, and 1500.
 
