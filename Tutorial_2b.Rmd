@@ -127,7 +127,7 @@ summary(model_M4_ca)
 
 # Display effects
 
-```{r}
+```{r load-model-M4-ca}
 model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
 ```
 
@@ -302,9 +302,9 @@ test %>% print(n=60)
 write_csv(test, file="Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
 ```
 
-# plot effects on hazard ratio scale
+# plot effects on odds ratio scale
 
-```{r haz-ratio}
+```{r odds-ratio}
 plot_facet_hr <- post %>% 
   mutate(Congruent = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
          Incongruent = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
@@ -395,7 +395,7 @@ make_fitted(model_M4_ca, scale = "linear") %>%
 
 # Second, on ca(t) scale:
 
-```{r subject-hazard}
+```{r subject-ca}
 make_fitted(model_M4_ca, scale = "response") %>% 
   mutate(cond   = rep(rep(c("N","C","I"),each=30),6),
          trial  = factor(trial_c,levels=c(-0.5,0.0,0.5),labels=c("trial 500","trial 1000","trial 1500")),

@@ -114,7 +114,7 @@ ggplot() +
       legend.background = element_rect(fill="white") )
 ```
 
-```{r save-plot-links}
+```{r save-plot-links, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 8, height = 8, dpi = 300)
 ```
 
