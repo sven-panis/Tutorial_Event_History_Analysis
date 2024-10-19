@@ -228,7 +228,7 @@ plot_facet
 ```
 
 ```{r save-plot-effects, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
+ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
 ```
 
 # calculate point and interval estimates, and hazard ratios
@@ -299,7 +299,7 @@ test %>% print(n=60)
 ```
 
 ```{r save-table-interval-estimates, eval=F}
-write_csv(test, file="Tutorial_2_Bayesian/tables/effects_intervals_table.csv")
+write_csv(test, file="Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
 ```
 
 # plot effects on hazard ratio scale
@@ -419,7 +419,7 @@ make_fitted(model_M4_ca, scale = "response") %>%
 ```
 
 ```{r save-plot-fit-hazard, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M4effects_subject6.png", width = 10, height = 10, dpi = 300)
+ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_subject6.png", width = 10, height = 10, dpi = 300)
 ```
 
 
