@@ -25,9 +25,9 @@ For two-choice RT data, the discrete-time hazard function can be extended with t
 
 \noindent ca(t) = P(correct | RT = t)   \hfill  (5)
 
-which gives you the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
+\noindent which gives you the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
 
-The survivor function provides a context for the hazard function, as S(t-1) = P(RT > t-1) = P(RT >= t) tells you on how many percent of the trials the estimate h(t) = .. is based. The probability mass function provides a context for the conditional accuracy function, as P(t) tells you on how many percent of the trials the estimate ca(t) is based.
+The survivor function provides a context for the hazard function, as S(t-1) = P(RT > t-1) = P(RT $\geq$ t) tells you on how many percent of the trials the estimate h(t) = P(RT = t| RT $\geq$ t) is based. The probability mass function provides a context for the conditional accuracy function, as P(t) = P(RT = t) tells you on how many percent of the trials the estimate ca(t) = P(correct | RT = t) is based.
 
 When time is treated as a continuous variable, let RT be a continous random variable denoting a particular person's response time in a particular experimental condition. Because waiting times can only increase, continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT $\leq$ t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT $>$ t) and the hazard rate function $\lambda$(t) = f(t)/S(t). The hazard rate function gives you the instantaneous *rate* of event occurrence at time point t, given that the event has not occurred yet. 
 
@@ -49,11 +49,16 @@ We defined 13 custom functions that we list here.
 * plot_eha_2IV(df,subj,haz_yaxis) : create plots of the discrete-time functions (2 independent variables)
 * plot_eha_agg(df,subj,haz_yaxis) : create 1 plot for aggregated data (1 independent variable)
 
+When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc_ca() and join_lt_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha().
+When you want to analyse simple RT data from a detection experiment with two independent variables, the functions calc_ca_2IV() and join_lt_ca_2IV() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha_2IV().
+
 ## C. Link functions
 
-(ref:descr-fig3-caption) The logit and cloglog link functions.
+Popular link functions include the logit link and the complementary log-log link, as shown in Figure 11.
+
+(ref:descr-plot11-caption) The logit and cloglog link functions.
  
-```{r plot-link-functions, fig.cap = "(ref:descr-fig3-caption)", out.width='80%'}
+```{r plot-link-functions, fig.cap = "(ref:descr-plot11-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/linkfunctions.png")
 ```
 
@@ -74,9 +79,9 @@ cloglog[h(t)] = ln(-ln[1-h(t)]) =  [$\alpha$~1~D1 + $\alpha$~2~D2 + $\alpha$~3~D
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
 
-(ref:descr-fig4-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
+(ref:descr-plot12-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
 
-```{r plot-priors, fig.cap = "(ref:descr-fig4-caption)", out.width='80%'}
+```{r plot-priors, fig.cap = "(ref:descr-plot12-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/plot_of_priors.png")
 ```
 
