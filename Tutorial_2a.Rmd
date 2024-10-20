@@ -679,13 +679,13 @@ plot_facet <- effects %>%
   group_by(period_9) %>%
   
   ggplot(aes(x = period_9, y = value)) +
-  stat_lineribbon(show.legend=T) +
+  stat_lineribbon(point_interval = mean_hdi,.width = c(0.5, 0.8, 0.95),show.legend=T) +
   scale_fill_brewer() +
   geom_hline(yintercept=0, linetype="dashed", color = "red") +
   scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
                      limits = c(-3,6)) +
   scale_y_continuous(breaks = c(-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12), limits = c(-12,12)) +
-  labs(x = "time bin", y = "cloglog-hazard") +
+  labs(x = "time bin endpoint", y = "cloglog-hazard") +
   theme(panel.grid = element_blank(),
         axis.text.x = element_text(angle=90),
         panel.background = element_rect(fill="white", color="black"),
