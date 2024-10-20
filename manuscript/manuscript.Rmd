@@ -219,12 +219,12 @@ Additionally, to further simplify the process for other users, the tutorials rel
 
 Our list of tutorials is as follows:
 
-1a. Wrangle raw data and descriptive stats for one independent variable.
-1b. Wrangle raw data and descriptive stats for two independent variables.
-2a. Bayesian multilevel modeling for h(t)
-2b. Bayesian multilevel modeling for ca(t)
-3a. Frequentist multilevel modeling for h(t)
-3b. Frequentist multilevel modeling for ca(t)
+* 1a. Wrangle raw data and descriptive stats for one independent variable.
+* 1b. Wrangle raw data and descriptive stats for two independent variables.
+* 2a. Bayesian multilevel modeling for h(t)
+* 2b. Bayesian multilevel modeling for ca(t)
+* 3a. Frequentist multilevel modeling for h(t)
+* 3b. Frequentist multilevel modeling for ca(t)
 
 Plannng (T4) - if we get a simulation and power analysis script working, which we are happy with then we could include it here.
 
@@ -676,7 +676,7 @@ Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first 
 ## 5.2 Model complexity versus interpretability
 
 Models for discrete-time h(t) and ca(t) can quickly become very complex when adding more than 1 time scale, due to many higher-order interactions. 
-For example, model M4 contains two time scales as covariates: the passage of time on the across-bin or within-trial time scale (variable period_9), and the passage of time on the across-trial or within-experiment time scale (variable trial_c). When trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (across-bin or within-trial, across-trial or within-block, across-block or within-session, and across-session or within-experiment).
+For example, model M4 contains two time scales as covariates: the passage of time on the across-bin or within-trial time scale (variable period_9), and the passage of time on the across-trial or within-experiment time scale (variable trial_c). However, when trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (across-bin or within-trial, across-trial or within-block, across-block or within-session, and across-session or within-experiment).
 From a theoretical perspective, adding more than 1 time scale is important to capture plasticity (e.g., proactive control) and other learning effects that play out on such longer time scales (across-trials, across-blocks, across-sessions), and that are probably present in each experiment in general.
 From a practical perspective, therefore, it might be interesting for interpretational purposes to limit the number of experimental variables, because adding time scales quickly increases model complexity.  
 
@@ -686,7 +686,7 @@ One important issue is that of possible individual differences in the overall lo
 
 But even when using a response deadline, participants can differ qualitatively in the effects they display [see @panisHowCanWe2020]. One way to deal with this is to describe and interpret the different patterns. Another way is to run a clustering algorithm on the individual hazard estimates across all conditions. The obtained dendrogram can then be used to identify a (hopefully big) cluster of participants that behave similarly, and to identify a (hopefully small) cluster of participants with outlying behavioral patterns. One might then exclude the outlying participants before fitting a hazard model.
 
-Another approach: fit models to individual subjects and describe prevalence...
+Another approach: fit models to individual subjects and describe prevalence...REF
 
 ## 5.4 Limitation(s)
 
@@ -694,17 +694,16 @@ Compared to the orthodox method -- comparing mean-averages between conditions --
 
 Another issue is that you need a relatively large number of trials per condition to estimate the hazard function with high temporal resolution. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. Finally, there is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process (Baker et al., 2021).
 
-We did not discuss continuous-time hazard analysis. As indicated by --allison -- learning discrete-time methods first will help in learning continuous-time methods. Given that RT is typically treated as a continuous variable, it is possible that continuous-time methods will ultimately prevail. However, they require much more data to estimate the continuous-time hazard (rate) function well. Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological time-to-event data sets for which there are less than ~200 trials per condition per experiment.
+We did not discuss continuous-time hazard analysis. As indicated by @allisonSurvivalAnalysisUsing2010, learning discrete-time methods first will help in learning continuous-time methods. Given that RT is typically treated as a continuous variable, it is possible that continuous-time methods will ultimately prevail. However, they require much more data to estimate the continuous-time hazard (rate) function well. Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological time-to-event data sets for which there are less than ~200 trials per condition per experiment.
 
 ## 5.5 Extensions
 
 The hazard models in this tutorial assume that there is one event of interest. For RT data, this event constitutes a single transition between an "idle" state and a "responded" state. However, in certain situations, more than one event of interest might exist. For example, in a medical or health-related context, an individual might transition back and forth between a "healthy" state and a "depressed" state, before a final "death" state. When you have data on the timing of these transitions, one can apply multi-state models, which generalize survival analysis to transitions between three or more states [@SteeleF2004].
-Also, the predictor variables in this tutorial are time-invariant, i.e., their value did not change over the course of a trial. Thus, another extension is to include time-varying predictors, i.e., predictors whose value can change across the time bins within a trial (REF). [[give a concrete example for this latter point]]
+Also, the predictor variables in this tutorial are time-invariant, i.e., their value did not change over the course of a trial. Thus, another extension is to include time-varying predictors, i.e., predictors whose value can change across the time bins within a trial [@@allisonSurvivalAnalysisUsing2010]. For example, when gaze position is tracked during a visual search trial, the gaze-target distance will vary during a trial when the eyes move around before a manual response is given; shorter gaze-target distances should be associated with a higher hazard of response occurrence.  
 
 # 6. Conclusions
 
 RT and accuracy distributions are a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing event history analysis and investigating the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
-
 
 \newpage
 
@@ -715,8 +714,5 @@ RT and accuracy distributions are a rich source of information on the time cours
 
 \newpage
 
-
-
 ```{r child = "SupplementaryMaterial.Rmd"}
 ```
-
