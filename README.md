@@ -1,6 +1,6 @@
 # Tutorial_Event_History_Analysis
 
-A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
+A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
 
@@ -59,12 +59,13 @@ folder tables
 - Folder Tutorial_2_Bayesian 
 folder models
 folder figures
+folder tables
 
 - Folder Tutorial_3_Frequentist 
 
 - Folder renv
 
-- Folder notes
+
 
 
 
