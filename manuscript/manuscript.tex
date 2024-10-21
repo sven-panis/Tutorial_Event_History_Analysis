@@ -703,7 +703,7 @@ In this tutorial we will fit four Bayesian multilevel models (i.e., generalized 
 
 To get the posterior distribution of each model parameter given the data, we need to specify a prior distribution for each parameter. The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions on the logit and/or cloglog scales.
 
-While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 9 show prior distributions on the logit and cloglog scale that we use instead.
+While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 12 show prior distributions on the logit and cloglog scale that we use instead.
 
 \subsubsection{4.3.3 Model 1: A general specification of TIME, and main effects of congruency and trial number}\label{model-1-a-general-specification-of-time-and-main-effects-of-congruency-and-trial-number}
 
@@ -1447,7 +1447,7 @@ cloglog{[}h(t){]} = ln(-ln{[}1-h(t){]}) = {[}\(\alpha\)\textsubscript{1}D1 + \(\
 
 \subsection{E. Prior distributions}\label{e.-prior-distributions}
 
-To gain a sense of what prior \emph{logit} values would approximate a uniform distribution on the probability scale, Kurz (2023a) simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to Kurz (2023a), such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
+To gain a sense of what prior \emph{logit} values would approximate a uniform distribution on the probability scale, Kurz (2023a) simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 12 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to Kurz (2023a), such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
 
 

@@ -442,7 +442,7 @@ ptb_data <- ptb_data %>%
 
 To get the posterior distribution of each model parameter given the data, we need to specify a prior distribution for each parameter. The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions on the logit and/or cloglog scales.
 
-While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 9 show prior distributions on the logit and cloglog scale that we use instead.
+While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 12 show prior distributions on the logit and cloglog scale that we use instead.
 
 ### 4.3.3 Model 1: A general specification of TIME, and main effects of congruency and trial number
 
