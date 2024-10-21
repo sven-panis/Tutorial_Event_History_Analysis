@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2024-10-20" />
+<meta name="date" content="2024-10-21" />
 
 <title>Tutorial_3a</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Tutorial_3a</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2024-10-20</h4>
+<h4 class="date">2024-10-21</h4>
 
 </div>
 
@@ -546,6 +546,25 @@ Tutorial 2)</h1>
               family=binomial(link=&quot;cloglog&quot;))</code></pre>
 <p>Model_M3_f took about 3 hours.</p>
 <pre class="r"><code>save(model_M3_f, file=&quot;Tutorial_3_Frequentist/model_M3_f.RData&quot;)</code></pre>
+<p>Fixed effects:</p>
+<pre class="r"><code>load(&quot;Tutorial_3_Frequentist/model_M3_f.RData&quot;)
+fixef(model_M3_f)</code></pre>
+<pre><code>##                        (Intercept)                 conditioncongruent 
+##                       -0.897770912                        0.226505880 
+##               conditionincongruent                           period_9 
+##                       -1.131435284                        0.780623542 
+##                      I(period_9^2)                      I(period_9^3) 
+##                       -0.221059756                        0.014569668 
+##                            trial_c        conditioncongruent:period_9 
+##                        0.185555335                       -0.422508698 
+##      conditionincongruent:period_9   conditioncongruent:I(period_9^2) 
+##                       -0.280108136                        0.142885476 
+## conditionincongruent:I(period_9^2)   conditioncongruent:I(period_9^3) 
+##                        0.240574600                       -0.015259974 
+## conditionincongruent:I(period_9^3)                   period_9:trial_c 
+##                       -0.028627765                        0.113744453 
+##              I(period_9^2):trial_c              I(period_9^3):trial_c 
+##                        0.010746592                       -0.009078796</code></pre>
 </div>
 <div id="compare-mle-estimates-from-model_m3_f-with-the-posterior-mean-estimates-from-model_m3" class="section level1">
 <h1>Compare MLE estimates from model_M3_f with the posterior mean

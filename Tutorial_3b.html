@@ -548,6 +548,25 @@ Tutorial 2)</h1>
               family=binomial(link=&quot;logit&quot;))</code></pre>
 <p>Model_M3_ca_f took about 15 minutes to fit.</p>
 <pre class="r"><code>save(model_M3_ca_f, file=&quot;Tutorial_3_Frequentist/model_M3_ca_f.RData&quot;)</code></pre>
+<p>Fixed effects:</p>
+<pre class="r"><code>load(&quot;Tutorial_3_Frequentist/model_M3_ca_f.RData&quot;)
+fixef(model_M3_ca_f)</code></pre>
+<pre><code>##                        (Intercept)                 conditioncongruent 
+##                         2.73474869                         3.79759556 
+##               conditionincongruent                           period_9 
+##                        -1.26200551                         1.27114008 
+##                      I(period_9^2)                      I(period_9^3) 
+##                         0.64794227                         0.16621358 
+##                            trial_c        conditioncongruent:period_9 
+##                        -0.37389580                        -1.49395707 
+##      conditionincongruent:period_9   conditioncongruent:I(period_9^2) 
+##                         1.78446014                         0.02682987 
+## conditionincongruent:I(period_9^2)   conditioncongruent:I(period_9^3) 
+##                        -1.11212267                        -0.29163767 
+## conditionincongruent:I(period_9^3)                   period_9:trial_c 
+##                        -0.16002216                        -0.47641227 
+##              I(period_9^2):trial_c              I(period_9^3):trial_c 
+##                         0.17224317                        -0.01353049</code></pre>
 </div>
 
 
