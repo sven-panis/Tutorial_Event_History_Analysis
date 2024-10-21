@@ -84,6 +84,14 @@ Model_M3_f took about 3 hours.
 save(model_M3_f, file="Tutorial_3_Frequentist/model_M3_f.RData")
 ```
 
+Fixed effects:
+
+```{r effects-M3-f}
+load("Tutorial_3_Frequentist/model_M3_f.RData")
+fixef(model_M3_f)
+```
+
+
 # Compare MLE estimates from model_M3_f with the posterior mean estimates from model_M3
 
 ```{r load-models}

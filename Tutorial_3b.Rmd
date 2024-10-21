@@ -84,3 +84,9 @@ Model_M3_ca_f took about 15 minutes to fit.
 save(model_M3_ca_f, file="Tutorial_3_Frequentist/model_M3_ca_f.RData")
 ```
 
+Fixed effects:
+
+```{r effects-M3-f}
+load("Tutorial_3_Frequentist/model_M3_ca_f.RData")
+fixef(model_M3_ca_f)
+```
