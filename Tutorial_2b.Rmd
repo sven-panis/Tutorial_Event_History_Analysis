@@ -231,7 +231,7 @@ plot_facet
 ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
 ```
 
-# calculate point and interval estimates, and hazard ratios
+## calculate point and interval estimates, and hazard ratios
 
 ```{r table-interval-estimates}
 int_c_500 <- effects %>%
@@ -302,37 +302,7 @@ test %>% print(n=60)
 write_csv(test, file="Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
 ```
 
-# plot effects on odds ratio scale
-
-```{r odds-ratio}
-plot_facet_hr <- post %>% 
-  mutate(Congruent = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
-         Incongruent = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
-  
-  pivot_longer(cols=Congruent:Incongruent, names_to = "condition" ) %>%
-  select(condition, period_9, value) %>%
-  mutate(value_hr = exp(value)) %>%
-  group_by(period_9) %>%
-  
-   ggplot(aes(x = period_9, y = value_hr)) +
-  stat_lineribbon(show.legend=T) +
-  scale_fill_brewer() +
-  geom_hline(yintercept=1, linetype="dashed", color = "red") +
-  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
-                     limits = c(-3,7)) +
-  scale_y_continuous( limits = c(0,40)) +
-  labs(x = "time bin", y = "hazard ratio") +
-  theme(panel.grid = element_blank(),
-        axis.text.x = element_text(angle=90),
-        panel.background = element_rect(fill="white",color="black"),
-        legend.position = "top") +
-  facet_wrap(~ condition)
-  
-plot_facet_hr
-
-```
-
-# Plot model-based predicted logit-ca(t) and ca(t) functions, for a single subject
+## Plot model-based predicted logit-ca(t) and ca(t) functions, for a single subject
 
 ```{r select-pid}
 selected_subject = 6 # select pid here (1:6) manually
@@ -350,7 +320,7 @@ make_fitted <- function(fit, scale, ...) {
 }
 ```
 
-# Set up new data
+### Set up new data
 
 ```{r new-data}
 # define the `newdata`
@@ -368,7 +338,7 @@ nd <- tibble(pid = 1:6) %>%
          condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
 ```
 
-# First, on the logit-scale:
+### First, on the logit-scale:
 
 ```{r subject-logit}
 make_fitted(model_M4_ca, scale = "linear") %>% 
@@ -393,7 +363,7 @@ make_fitted(model_M4_ca, scale = "linear") %>%
   facet_wrap(~ trial)
 ```
 
-# Second, on ca(t) scale:
+### Second, on ca(t) scale:
 
 ```{r subject-ca}
 make_fitted(model_M4_ca, scale = "response") %>% 

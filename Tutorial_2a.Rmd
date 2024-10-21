@@ -593,8 +593,6 @@ loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "waic") %>% prin
 model_weights(model_M1, model_M2, model_M3, model_M4, weights = "loo") %>% round(digits = 3)
 
 model_weights(model_M1, model_M2, model_M3, model_M4, weights = "waic") %>% round(digits = 3)
-
-model_weights(model_M1, model_M2, model_M3, model_M4, weights = "stacking") %>% round(digits = 3)
 ```
 
 # Plot effects for selected model M4
@@ -699,7 +697,7 @@ plot_facet
 ggsave("Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
 ```
 
-# calculate point and interval estimates, and hazard ratios
+## calculate point and interval estimates, and hazard ratios
 
 ```{r table-interval-estimates}
 int_c_500 <- effects %>%
@@ -770,37 +768,8 @@ test %>% print(n=60)
 write_csv(test, file="Tutorial_2_Bayesian/tables/effects_intervals_table.csv")
 ```
 
-# plot effects on hazard ratio scale
 
-```{r haz-ratio}
-plot_facet_hr <- post %>% 
-  mutate(Congruent = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
-         Incongruent = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) %>%
-  
-  pivot_longer(cols=Congruent:Incongruent, names_to = "condition" ) %>%
-  select(condition, period_9, value) %>%
-  mutate(value_hr = exp(value)) %>%
-  group_by(period_9) %>%
-  
-   ggplot(aes(x = period_9, y = value_hr)) +
-  stat_lineribbon(show.legend=T) +
-  scale_fill_brewer() +
-  geom_hline(yintercept=1, linetype="dashed", color = "red") +
-  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
-                     limits = c(-3,7)) +
-  scale_y_continuous( limits = c(0,40)) +
-  labs(x = "time bin", y = "hazard ratio") +
-  theme(panel.grid = element_blank(),
-        axis.text.x = element_text(angle=90),
-        panel.background = element_rect(fill="white",color="black"),
-        legend.position = "top") +
-  facet_wrap(~ condition)
-  
-plot_facet_hr
-
-```
-
-# Plot model-based predicted cloglog-hazard and hazard functions, for a single subject
+## Plot model-based predicted cloglog-hazard and hazard functions, for a single subject
 
 ```{r select-pid}
 selected_subject = 6 # select pid here (1:6) manually
@@ -818,7 +787,7 @@ make_fitted <- function(fit, scale, ...) {
 }
 ```
 
-# Set up new data
+### Set up new data
 
 ```{r new-data}
 # define the `newdata`
@@ -836,7 +805,7 @@ nd <- tibble(pid = 1:6) %>%
          condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
 ```
 
-# First, on the cloglog-scale:
+### First, on the cloglog-scale:
 
 ```{r subject-cloglog}
 make_fitted(model_M4, scale = "linear") %>% 
@@ -861,7 +830,7 @@ make_fitted(model_M4, scale = "linear") %>%
   facet_wrap(~ trial)
 ```
 
-# Second, on hazard scale:
+### Second, on hazard scale:
 
 ```{r subject-hazard}
 make_fitted(model_M4, scale = "response") %>% 
