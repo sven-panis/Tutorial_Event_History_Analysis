@@ -609,7 +609,7 @@ knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_subject6.png")
 
 ## 4.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
 
-In this fourth tutorial, we illustrate how to fit a Bayesian regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, and (b) we use the logit link function. For illustration purposes, we only fitted the effects of model M4 (see Tutorial 2a).
+In this fourth tutorial, we illustrate how to fit a Bayesian regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. For illustration purposes, we only fitted the effects of model M4 (see Tutorial 2a).
 
 To make inferences from the parameter estimates in model M4_ca, we summarize the draws from the posterior distributions of the effect of congruent and incongruent primes relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
 
