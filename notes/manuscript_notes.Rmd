@@ -131,7 +131,7 @@ Does that make sense?
 
 tables 1 and 2, which I added, would be better and easier to read if they were either placed side-by-side or incorporated into one table. I'll leave that for you to figure out. You're welcome!!
 
--> still to do.
+-> Still to do... It does not seem straightforward to place apa tables side by side. For now, I kept them separate and placed text between them.  
 
 ### summary of the steps involved ###
 
