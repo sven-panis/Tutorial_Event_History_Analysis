@@ -588,8 +588,14 @@ apa_table(
 )
 ```
 
-Interpretation...
+Based on Figure 6 and Table 4, we see that at the beginning of the experiment (trial 500), congruent and incongruent primes have a positive effect in time bin (200,240] on cloglog-hazard, relative to the cloglog-estimate in the baseline condition (no prime; red striped lines in Figure 6). For example, the hazard ratio shows that the hazard of response occurrence for congruent primes is estimated to be 8.82 times higher than that for no-prime trials, in bin (200,240] of trial 500. Incongruent primes also have a negative effect on cloglog-hazard in bins (320,360], (360,400], and (400,440]. For example, in bin (320,360], the hazard ratio shows that the hazard of response occurrence for incongruent prime is estimated to be .34 times smaller than that for no-prime trials. While the early positive effects reflect responses to the prime stimulus, the later negative effect for incongruent primes likely reflects response competition between the prime-triggered response (e.g., left) and target-triggered response (e.g., right)
 
+In the middle of the experiment (trial 1000), congruent and incongruent primes have positive effects in bins (200,240] and (240,280], while incongruent primes again have negative effects in bins (320,360], (360,400], and (400,440]. Due to practice, the primes generate a higher hazard of response occurrence for 80 ms (compared to 40 ms at the beginning of the experiment).
+
+Towards the end of the experiment (trial 1500), both congruent and incongruent primes have positive and negative effects. Positive effects are present in bins (200,240] and (240,280]. Incongruent primes again have negative effects in bins (320,360], (360,400], and (400,440], and congruent primes now also have negative effects in bins (360,400] and (400,440].
+These results show that the effect of prime-target congruency changes not only on the across-bin/within-trial time scale (variable period_9), but also on the across-trial/within-experiment time scale (variable trial_c). The fact that congruent primes generate negative effects for 80 ms (compared to no-prime trials) towards the end of the experiment, while incongruent primes generate negative effects for 120 ms throughout the experiment, strongly suggests the involvement of two separate cognitive processes. 
+
+@panisWhatShapingRT2016 distinguished between response competition effects and cognitive control effects. While response competition is present in the incongruent trials throughout the experiment, @panisWhatShapingRT2016 argued that a cognitive control process is also involved, such as active top-down inhibition of the prime-triggered response. In other words, people learn that the premature prime-triggered response has to be actively inhibited in order to respond to the target stimulus. This inhibitory effect becomes visible in the congruent (compared to no-prime) trials towards the end of the experiment, while it might be masked by the inhibitory effect of response competition in the incongruent trials.
 
 To conclude this Tutorial 2a, Figure 7 shows the model-based hazard functions for each prime type for participant 6, in trial 500, 1000, and 1500.
 
@@ -635,9 +641,16 @@ apa_table(
 )
 ```
 
-Interpretation...
+Based on Figure 8 and Table 5, we see that throughout the experiment (trials 500, 1000, and 1500), congruent primes have a positive effect on logit-ca(t) in time bins (200,240], (240,280], (280,320], and (320,360], relative to the logit-ca(t) estimates in the baseline condition (no prime; red striped lines in Figure 8). For example, the odds ratio for congruent primes in bin (320,360] in trial 500 shows that the odds of a correct response are estimated to be 8.89 times higher than the odds of a correct response when there is no prime. 
+Incongruent primes have a negative effect on logit-ca(t) in time bins (200,240], (240,280], and (280,320] throughout the experiment, relative to the logit-ca(t) estimates in the baseline condition (no prime; red striped lines).
 
-plot 9 ca(t) 
+To conclude this Tutorial 2b, Figure 9 shows the model-based ca(t) functions for each prime type for participant 6, in trial 500, 1000, and 1500.
+
+(ref:descr-plot9-caption) Model-based ca(t) functions for participant 6 in trial 500, 1000, and 1500.
+
+```{r plot-ca-subject6, fig.cap = "(ref:descr-plot9-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4_ca_effects_subject6.png")
+```
 
 ## 4.5 Tutorial 3a: Fitting Frequentist hazard models
 
