@@ -142,7 +142,7 @@ Thereofore, our ultimate goal is twofold: first, we want to convince readers of 
 
 # 2. A brief introduction to hazard analysis
 
-For a comprehensive background context to hazard analysis, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003]. Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material and then refer to them in the text whenever relevant.
+For a comprehensive background context to hazard analysis, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003]. Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material (part D) and then refer to them in the text whenever relevant.
 
 ## 2.1 Basic features of hazard analysis 
 
@@ -232,7 +232,7 @@ Plannng (T4) - if we get a simulation and power analysis script working, which w
 
 ### 4.1.1 Data wrangling aims 
 
-Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions. Second, we want to produce two different datasets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as 'person-trial' data (Table 1) and 'person-trial-bin' data (Table 2). The 'person-trial' data will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. In contrast, the 'person-trial-bin' data has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the 'person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred in that bin. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occurred after the time window of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial in the person-trial-bin data set.
+Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions about the timecourse of psychological processes. Second, we want to produce two different data sets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as 'person-trial' data and 'person-trial-bin' data. The 'person-trial' data (Table 1) will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. This data set is used when fitting conditional accuracy models. 
 
 ```{r}
 ## make it reproducible
@@ -271,9 +271,13 @@ apa_table(
 )
 ```
 
+
+
+In contrast, the 'person-trial-bin' data (Table 2) has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the 'person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred in that bin. This data set is used when fitting hazard models. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occurred after the time window of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial in the person-trial-bin data set.
+
 (ref:ha-data-table-caption) Data structure for 'person-trial-bin' data
 
-(ref:ha-data-note-caption) The first 2 trials for participant 1 are shown. These data are simulated and for illustrative purposes only.
+(ref:ha-data-note-caption) The first 2 trials for participant 1 from Table 1 are shown. The width of the time bins is 100 ms. These data are simulated and for illustrative purposes only.
 
 ```{r ha-data-table}
 apa_table(
@@ -283,6 +287,11 @@ apa_table(
   placement = "H"
 )
 ```
+
+
+
+
+
 
 ### 4.1.2 A real data wrangling example 
 

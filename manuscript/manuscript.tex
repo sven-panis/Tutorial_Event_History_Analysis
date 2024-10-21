@@ -298,7 +298,7 @@ Thereofore, our ultimate goal is twofold: first, we want to convince readers of 
 
 \section{2. A brief introduction to hazard analysis}\label{a-brief-introduction-to-hazard-analysis}
 
-For a comprehensive background context to hazard analysis, we recommend several excellent textbooks (Singer \& Willett, 2003). Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material and then refer to them in the text whenever relevant.
+For a comprehensive background context to hazard analysis, we recommend several excellent textbooks (Singer \& Willett, 2003). Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how EHA works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material (part D) and then refer to them in the text whenever relevant.
 
 \subsection{2.1 Basic features of hazard analysis}\label{basic-features-of-hazard-analysis}
 
@@ -354,7 +354,7 @@ Unlocking the temporal states of cognitive processes can be revealing in and of 
 
 \subsubsection{2.2.2 Implications for designing experiments}\label{implications-for-designing-experiments}
 
-Performing hazard analyses in experimental psychology has implications for how experiments are designed. Indeed, if trials are categorised as a function of when they occur, then each timebin will only include a subset of the total number of trials. For example, let's consider an experiment where each participant performs 2 conditions and there are 100 trial repetitions per condition. Those 100 trials must be distributed in some manner across the chosen number of bins.
+Performing hazard analyses in experimental psychology has implications for how experiments are designed. Indeed, if trials are categorised as a function of when responses occur, then each timebin will only include a subset of the total number of trials. For example, let's consider an experiment where each participant performs 2 conditions and there are 100 trial repetitions per condition. Those 100 trials must be distributed in some manner across the chosen number of bins.
 
 In such experimental designs, since the number of trials per condition are spread across bins, it is important to have a relatively large number of trial repetitions per participant and per condition. Accordingly, experimental designs using this approach typically focus on factorial, within-subject designs, in which a large number of observations are made on a relatively small number of participants (so-called small-\emph{N} designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design (Baker et al., 2021; Smith \& Little, 2018).
 
@@ -385,12 +385,21 @@ Additionally, to further simplify the process for other users, the tutorials rel
 
 Our list of tutorials is as follows:
 
-1a. Wrangle raw data and descriptive stats for one independent variable.
-1b. Wrangle raw data and descriptive stats for two independent variables.
-2a. Bayesian multilevel modeling for h(t)
-2b. Bayesian multilevel modeling for ca(t)
-3a. Frequentist multilevel modeling for h(t)
-3b. Frequentist multilevel modeling for ca(t)
+\begin{itemize}
+\tightlist
+\item
+  1a. Wrangle raw data and descriptive stats for one independent variable.
+\item
+  1b. Wrangle raw data and descriptive stats for two independent variables.
+\item
+  2a. Bayesian multilevel modeling for h(t)
+\item
+  2b. Bayesian multilevel modeling for ca(t)
+\item
+  3a. Frequentist multilevel modeling for h(t)
+\item
+  3b. Frequentist multilevel modeling for ca(t)
+\end{itemize}
 
 Plannng (T4) - if we get a simulation and power analysis script working, which we are happy with then we could include it here.
 
@@ -398,7 +407,7 @@ Plannng (T4) - if we get a simulation and power analysis script working, which w
 
 \subsubsection{4.1.1 Data wrangling aims}\label{data-wrangling-aims}
 
-Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions. Second, we want to produce two different datasets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as `person-trial' data (Table 1) and `person-trial-bin' data (Table 2). The `person-trial' data will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. In contrast, the `person-trial-bin' data has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the `person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred in that bin. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occurred after the time window of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial in the person-trial-bin data set.
+Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions about the timecourse of psychological processes. Second, we want to produce two different data sets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as `person-trial' data and `person-trial-bin' data. The `person-trial' data (Table 1) will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. This data set is used when fitting conditional accuracy models.
 
 
 
@@ -438,6 +447,8 @@ pid & \multicolumn{1}{c}{trial} & \multicolumn{1}{c}{condition} & \multicolumn{1
 
 \end{table}
 
+In contrast, the `person-trial-bin' data (Table 2) has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the `person-trial-bin' dataset generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred in that bin. This data set is used when fitting hazard models. It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occurred after the time window of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial in the person-trial-bin data set.
+
 
 
 
@@ -467,7 +478,7 @@ pid & \multicolumn{1}{c}{trial} & \multicolumn{1}{c}{condition} & \multicolumn{1
 \end{tabular}
 
 \begin{tablenotes}[para]
-\normalsize{\textit{Note.} The first 2 trials for participant 1 are shown. These data are simulated and for illustrative purposes only.}
+\normalsize{\textit{Note.} The first 2 trials for participant 1 from Table 1 are shown. The width of the time bins is 100 ms. These data are simulated and for illustrative purposes only.}
 \end{tablenotes}
 
 \end{threeparttable}
@@ -629,7 +640,7 @@ So far in this paper, we have use a simple experimental design, which involved o
 
 To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for participant 6 in Figure 5.
 
-Compared to the no-mask condition (column 1 in Figure 5), there is a negative compatibility effect in the hazard and conditional accuracy functions when a (relevant, irrelevant, or lines) mask is present.
+In the no-mask condition (column 1 in Figure 5), we observe a positive compatibility effect in the hazard and ca(t) functions, as congruent primes temporarily generate higher values for hazard and conditional accuracy compared to incongruent primes. However, when a (relevant, irrelevant, or lines) mask is present (columns 2-4), there is a negative compatibility effect in the hazard and conditional accuracy functions, as congruent primes temporarily generate \emph{lower} values for hazard and conditional accuracy compared to incongruent primes.
 
 
 
@@ -726,7 +737,7 @@ Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18
 
 \subsubsection{4.3.4 Model 2: A polynomial specification of TIME, and main effects of congruency and trial number}\label{model-2-a-polynomial-specification-of-time-and-main-effects-of-congruency-and-trial-number}
 
-When the shape of the hazard function is rather smooth, one can fit a more parsimonious model by using a polynomial specification of TIME. For our second example model, we thus use a third-order polynomial specification of TIME for the baseline condition (blank prime), and again assume that the effects of prime-target congruency and centered trial number are proportional and additive, and that the effect of trial number is linear. The model formula for model M2 looks as follows.
+When the shape of the hazard function is rather smooth, as it is here for RT data, one can fit a more parsimonious model by using a polynomial specification of TIME. For our second example model, we thus use a third-order polynomial specification of TIME for the baseline condition (blank prime), and again assume that the effects of prime-target congruency and centered trial number are proportional and additive, and that the effect of trial number is linear. The model formula for model M2 looks as follows.
 
 \scriptsize
 
@@ -745,7 +756,7 @@ Because TIME is centered on bin 9, and trial number on trial 1000, the Intercept
 
 \subsubsection{4.3.5 Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption}\label{model-3-a-polynomial-specification-of-time-and-relaxing-the-proportionality-assumption}
 
-So far, we assumed that the effect of our predictors condition and centered trial number are the same in each time bin. However, the descriptive plots suggest that the effect of condition can vary across time bins.
+So far, we assumed that the effect of our predictors condition and centered trial number are the same in each time bin. However, the descriptive plots suggest that the effect of condition can vary across time bins. Previous research has indeed shown that psychological effects typically change over time (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis et al., 2017; Panis \& Wagemans, 2009).
 For the third model, we thus use a third-order polynomial specification of TIME for the baseline condition (blank prime), and relax the proportionality assumption for the predictor variables prime-target congruency (variable ``condition'') and centered trial number (variable ``trial\_c'').
 
 \scriptsize
@@ -836,7 +847,7 @@ Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M
 
 To make inferences from the parameter estimates in model M4, we summarize the draws from the posterior distributions of the effect of congruent and incongruent primes relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
 
-Figure 6 shows one point (mean) and three highest density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial numbers 500, 1000, and 1500.
+Figure 6 shows one point (mean) and three highest posterior density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial numbers 500, 1000, and 1500.
 
 
 
@@ -846,10 +857,10 @@ Figure 6 shows one point (mean) and three highest density interval (50/80/95\%) 
 
 }
 
-\caption{Means and 50/80/95\% highest density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-effects}
+\caption{Means and 50/80/95\% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-effects}
 \end{figure}
 
-Table 4 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongurent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% highest density interval. Also, by exponentiating the mean we obtain an effect size in terms of a hazard ratio.
+Table 4 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongurent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of a hazard ratio.
 
 
 
@@ -865,7 +876,7 @@ Table 4 shows the summaries of the draws from the posterior distributions of the
 \scriptsize{
 
 \begin{longtable}{lllllll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
-\caption{\label{tab:int-table}Point and interval estimates, and hazard ratios.}\\
+\caption{\label{tab:int-table}Point and 95\% highest posterior density interval estimates, and hazard ratios.}\\
 \toprule
 bin\_endpoint & \multicolumn{1}{c}{condition} & \multicolumn{1}{c}{mean} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper} & \multicolumn{1}{c}{.width} & \multicolumn{1}{c}{hazard ratio}\\
 \midrule
@@ -966,7 +977,7 @@ In this fourth tutorial, we illustrate how to fit a Bayesian regression model to
 
 To make inferences from the parameter estimates in model M4\_ca, we summarize the draws from the posterior distributions of the effect of congruent and incongruent primes relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
 
-Figure 8 shows one point (mean) and three highest density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes on logit-ca, for each time bin in trial numbers 500, 1000, and 1500.
+Figure 8 shows one point (mean) and three highest posteriror density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes on logit-ca, for each time bin in trial numbers 500, 1000, and 1500.
 
 
 
@@ -976,10 +987,10 @@ Figure 8 shows one point (mean) and three highest density interval (50/80/95\%) 
 
 }
 
-\caption{Means and 50/80/95\% highest density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-ca-effects}
+\caption{Means and 50/80/95\% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-ca-effects}
 \end{figure}
 
-Table 5 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongurent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower limits of the 95\% highest density interval. Also, by exponentiating the mean we obtain an effect size in terms of an odds ratio.
+Table 5 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongruent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of an odds ratio.
 
 
 
@@ -995,7 +1006,7 @@ Table 5 shows the summaries of the draws from the posterior distributions of the
 \scriptsize{
 
 \begin{longtable}{lllllll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
-\caption{\label{tab:int-ca-table}Point and interval estimates, and odds ratios.}\\
+\caption{\label{tab:int-ca-table}Point and 95\% highest posterior density interval estimates, and odds ratios.}\\
 \toprule
 bin\_endpoint & \multicolumn{1}{c}{condition} & \multicolumn{1}{c}{mean} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper} & \multicolumn{1}{c}{.width} & \multicolumn{1}{c}{odds ratio}\\
 \midrule
@@ -1081,7 +1092,7 @@ plot 9 ca(t)
 
 \subsection{4.5 Tutorial 3a: Fitting Frequentist hazard models}\label{tutorial-3a-fitting-frequentist-hazard-models}
 
-In this fifth tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in Tutorial 1a. For illustration purposes, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS. The resulting hazard model is called M3\_f.
+In this fifth tutorial we illustrate how to fit a multilevel hazard regression model in the frequentist framework, for the data set used in Tutorial 1a. The general process is similar to that in Tutorial 2a, except that there are no priors to set. For illustration purposes, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS. The resulting hazard model is called M3\_f.
 
 In Figure 10 we compare the parameter estimates of model M3 from brm() with those of model M3\_f from glmer().
 
@@ -1096,7 +1107,7 @@ In Figure 10 we compare the parameter estimates of model M3 from brm() with thos
 \caption{Parameter estimates for model M3 from brm() and model M3\_f from glmer().}\label{fig:plot-comparison}
 \end{figure}
 
-Figure 10 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar. However, the random effects structure of model M3 was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a and 2b took several hours to build.
+Figure 10 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar. However, the random effects structure of model M3\_f was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a and 2b took several hours to build.
 
 \subsection{4.6 Tutorial 3b: Fitting Frequentist conditional accuracy models}\label{tutorial-3b-fitting-frequentist-conditional-accuracy-models}
 
@@ -1108,13 +1119,11 @@ This main motivation for writing this paper is the observation that event histor
 
 \subsection{5.1 Advantages of hazard analysis}\label{advantages-of-hazard-analysis}
 
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by Holden, Van Orden, and Turvey (2009), ``probability density functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions'' (p.~331) when one is interested in studying the detailed shape of a RT distribution (see also Figure 1 in Panis, Schmidt, et al., 2020). Therefore, {[}{[}why should people care? What is the functional relevance for exp psych and researchers?{]}{]}
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by Holden, Van Orden, and Turvey (2009), ``probability density functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions'' (p.~331) when one is interested in studying the detailed shape of a RT distribution (see also Figure 1 in Panis, Schmidt, et al., 2020). Therefore, when the goal is to study how psychological effects change over time, hazard functions are preferred.
 
-{[}{[}This para needs to be way shorter and easier to read or we get rid of it{]}{]}
-Second, because RT distributions may differ from one another in multiple ways, Townsend (1990) developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if F\textsubscript{A}(t) \textgreater{} F\textsubscript{B}(t) for all t, then both cumulative distribution functions are said to show a complete ordering. Townsend (1990) showed that a complete ordering on the hazard functions ---\(\lambda\)\textsubscript{A}(t) \textgreater{} \(\lambda\)\textsubscript{B}(t) for all t--- implies a complete ordering on both the cumulative distribution and survivor functions ---F\textsubscript{A}(t) \textgreater{} F\textsubscript{B}(t) and S\textsubscript{A}(t) \textless{} S\textsubscript{B}(t)--- which in turn implies an ordering on the mean latencies ---mean A \textless{} mean B. In contrast, an ordering on two means does \emph{not} imply a complete ordering on the corresponding F(t) and S(t) functions, and a complete ordering on these latter functions does \emph{not} imply a complete ordering on the corresponding hazard functions. This means that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A \textless{} mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t \textgreater{} 300 ms, or only for t \textless{} 500 ms), or they may cross each other one or more times.
-As a result, instead of using delta-plots for RT -- differences in quantiles from F(t)\(^-1\) -- one can simply plot delta-h(t) functions (see Panis, 2020).
+Second, because RT distributions may differ from one another in multiple ways, Townsend (1990) developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if h\textsubscript{A}(t) \textgreater{} h\textsubscript{B}(t) for all t, then both hazard functions are said to show a complete ordering. Townsend (1990) concluded that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A \textless{} mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t \textgreater{} 300 ms, or only for t \textless{} 500 ms), or they may cross each other one or more times.
 
-Third, EHA does not discard right-censored observations when estimating hazard functions, that is, trials for which we do not observe a response during the data collection period in a trial so that we only know that the RT must be larger than some value (i.e., the response deadline). This is important because although a few right-censored observations are inevitable in most RT tasks, a lot of right-censored observations are expected in experiments on masking, the attentional blink, and so forth. In other words, by using EHA you can analyze RT data from experiments that typically do not measure response times. As a result, EHA can also deal with long RTs in experiments without a response deadline, which are typically treated as outliers and are discarded before calculating a mean. This orthodox procedure can lead to a sampling bias, however, which results in underestimation of the mean. By introducting a fixed censoring time for all trials at the end of the analysis time window, trials with long RTs are not discarded but contribute to the risk set of each bin.
+Third, EHA does not discard right-censored observations when estimating hazard functions, that is, trials for which we do not observe a response during the data collection period in a trial so that we only know that the RT must be larger than some value (i.e., the response deadline). This is important because although a few right-censored observations are inevitable in most RT tasks, a lot of right-censored observations are expected in experiments on masking, the attentional blink, and so forth. In other words, by using EHA you can analyze RT data from experiments that typically do not measure response times. As a result, EHA can also deal with long RTs in experiments without a response deadline, which are typically treated as outliers and are discarded before calculating a mean. This orthodox procedure can lead to a sampling bias, however, which results in underestimation of the mean. By introducing a fixed censoring time for all trials at the end of the analysis time window, trials with long RTs are not discarded but contribute to the risk set of each bin.
 
 Fourth, hazard modeling allows incorporating time-varying explanatory covariates such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. (Allison, 2010). This is useful for linking physiological effects with behavioral effeccts when performing cognitive psychophysiology (Meyer, Osman, Irwin, \& Yantis, 1988).
 
@@ -1122,7 +1131,7 @@ Finally, as explained by Kelso, Dumas, and Tognoli (2013), it is crucial to firs
 
 \subsection{5.2 Model complexity versus interpretability}\label{model-complexity-versus-interpretability}
 
-Models for discrete-time h(t) and ca(t) can quickly become very complex when adding more than 1 time scale, due to many higher-order interactions.
+Models for discrete-time h(t) and ca(t) can quickly become very complex when adding more than 1 time scale, due to the many possible higher-order interactions.
 For example, model M4 contains two time scales as covariates: the passage of time on the across-bin or within-trial time scale (variable period\_9), and the passage of time on the across-trial or within-experiment time scale (variable trial\_c). However, when trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (across-bin or within-trial, across-trial or within-block, across-block or within-session, and across-session or within-experiment).
 From a theoretical perspective, adding more than 1 time scale is important to capture plasticity (e.g., proactive control) and other learning effects that play out on such longer time scales (across-trials, across-blocks, across-sessions), and that are probably present in each experiment in general.
 From a practical perspective, therefore, it might be interesting for interpretational purposes to limit the number of experimental variables, because adding time scales quickly increases model complexity.
@@ -1146,11 +1155,11 @@ We did not discuss continuous-time hazard analysis. As indicated by Allison (201
 \subsection{5.5 Extensions}\label{extensions}
 
 The hazard models in this tutorial assume that there is one event of interest. For RT data, this event constitutes a single transition between an ``idle'' state and a ``responded'' state. However, in certain situations, more than one event of interest might exist. For example, in a medical or health-related context, an individual might transition back and forth between a ``healthy'' state and a ``depressed'' state, before a final ``death'' state. When you have data on the timing of these transitions, one can apply multi-state models, which generalize survival analysis to transitions between three or more states (Steele, Goldstein, \& Browne, 2004).
-Also, the predictor variables in this tutorial are time-invariant, i.e., their value did not change over the course of a trial. Thus, another extension is to include time-varying predictors, i.e., predictors whose value can change across the time bins within a trial (@ Allison, 2010). For example, when gaze position is tracked during a visual search trial, the gaze-target distance will vary during a trial when the eyes move around before a manual response is given; shorter gaze-target distances should be associated with a higher hazard of response occurrence.
+Also, the predictor variables in this tutorial are time-invariant, i.e., their value did not change over the course of a trial. Thus, another extension is to include time-varying predictors, i.e., predictors whose value can change across the time bins within a trial (@ Allison, 2010). For example, when gaze position is tracked during a visual search trial, the gaze-target distance will vary during a trial when the eyes move around before a manual response is given; shorter gaze-target distances should be associated with a higher hazard of response occurrence. Note that the effect of a time-varying predictor (e.g., an occipital EEG signal) can itself vary over time.
 
 \section{6. Conclusions}\label{conclusions}
 
-RT and accuracy distributions are a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing event history analysis and investigating the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
+RT and accuracy distributions are a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. Statistically controlling for the passage of time during data analysis is thus equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing event history analysis and investigating the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
 
 \newpage
 
