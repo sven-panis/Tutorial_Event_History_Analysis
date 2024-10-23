@@ -241,7 +241,7 @@ A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, an
 
 people are not learning anything by you showing them the code that lists priors. Instead, give them an intuition about the general approach and then they can see the implementation in the raw tutorial code. e.g., explain the justification and approach to priors in simple, overview terms, and then let them read the code if they want to know how to set them.
 
--> I removed the code that lists priors. I kept the model code for M1, and the model formula for models M2 to M4.
+-> I removed the code that lists priors. I kept the model code for M1, and the model formulas for models M2 to M4.
 
 ### avoid repetition in the model building steps ###
 
@@ -288,7 +288,7 @@ Can we have a table with summary data and quantiles, just to show how they might
 
 I like the idea of comparing. That's nice. But let's improve the figure and include intervals as well as points.
 
--> to do.
+-> to do. Which intervals should we plot for the frequentist approach?
 
 
 ## Tutorial 4 ##
@@ -309,3 +309,31 @@ As a result, instead of using delta-plots for RT -- differences in quantiles fro
 
 -> I simplified the text to this:
 Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if h~A~(t) > h~B~(t) for all t, then both hazard functions are said to show a complete ordering. Townsend (1990) concluded that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
+
+
+# 23 oktober 2024
+
+Still to do:
+- combine tables showing person-trial and person-trial-period data sets.
+
+- REF for time-to-death (line 127 in ms.)
+
+- REF for reviews and tutorials on EHA (line 140)
+
+- REF for regression (line 145)
+
+- change paragraph (delete it and refer to suppl. material?), and add error bars to Figure 2? (line 162)
+
+- update section 3 and add REFs (line 200-215)
+
+- REF sampling bias (line 332)
+
+- REF for package MASS (line 665)
+
+- REF for prevalence (line 710)
+
+-frequentist versus Bayesian plot: which intervals should we plot for the frequentist model?
+
+- summary of steps involved in tutorials
+
+
