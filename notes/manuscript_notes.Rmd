@@ -314,26 +314,25 @@ Second, because RT distributions may differ from one another in multiple ways, @
 # 23 oktober 2024
 
 Still to do:
-- combine tables showing person-trial and person-trial-period data sets.
+- combine tables showing person-trial and person-trial-period data sets
+- REF for regression (line 145) 
+- update section 3 and add REFs (line 200-215) 
 
-- REF for time-to-death (line 127 in ms.)
 
-- REF for reviews and tutorials on EHA (line 140)
 
-- REF for regression (line 145)
 
-- change paragraph (delete it and refer to suppl. material?), and add error bars to Figure 2? (line 162)
+- REF for time-to-death (line 127 in ms.) : Done
+- REF for reviews and tutorials on EHA (line 140) : Done
+- change paragraph (delete it and refer to suppl. material?), and add error bars to Figure 2? (line 162): Done (no error bars added, but I refer to suppl. material)
+- REF sampling bias (line 332): Instead of adding a REF, I rephrased the sentence.
+- REF for package MASS (line 665) : Done
+- REF for prevalence (line 710) : Done
+-frequentist versus Bayesian plot with intervals: Done
+- summary of steps involved in tutorials: Done.
+- check odds ratio rounding : Done 
+(added to apa_table(): format.args = list(
+       digits = c(0, 2,2,2,2,2,5),
+        decimal.mark = ".", big.mark = ""))
 
-- update section 3 and add REFs (line 200-215)
-
-- REF sampling bias (line 332)
-
-- REF for package MASS (line 665)
-
-- REF for prevalence (line 710)
-
--frequentist versus Bayesian plot: which intervals should we plot for the frequentist model?
-
-- summary of steps involved in tutorials
 
 
