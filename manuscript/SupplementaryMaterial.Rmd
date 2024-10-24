@@ -43,8 +43,8 @@ We defined 13 custom functions that we list here.
 * calc_ca_2IV(df) : estimate the conditional accuraies when there are 2 independent variables
 * join_lt_ca(df1,df2) : add the ca(t) estimates to the life tables (1 independent variable)
 * join_lt_ca_2IV(df1,df2) : add the ca(t) estimates to the life tables (2 independent variables)
-* extract_median(df) : estimate quantiles S(t).50 (1 independent variable)
-* extract_median_2IV(df) : estimate quantiles S(t).50 (2 independent variables)
+* extract_median(df) : estimate quantiles S(t)~.50~ (1 independent variable)
+* extract_median_2IV(df) : estimate quantiles S(t)~.50~ (2 independent variables)
 * plot_eha(df,subj,haz_yaxis) : create plots of the discrete-time functions (1 independent variable)
 * plot_eha_2IV(df,subj,haz_yaxis) : create plots of the discrete-time functions (2 independent variables)
 * plot_eha_agg(df,subj,haz_yaxis) : create 1 plot for aggregated data (1 independent variable)
