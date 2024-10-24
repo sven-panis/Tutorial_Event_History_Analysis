@@ -62,6 +62,8 @@ install.packages("devtools")
 devtools::install_github("jmgirard/standist")
 # 
 install.packages(c("brms", "tidybayes", "bayesplot", "future"))
+
+install.packages("broom.mixed")
 ```
 
 To build regression models in other packages such as lme4:
