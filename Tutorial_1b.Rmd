@@ -11,9 +11,15 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial_1b illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, for the data of Experiment 1 of Panis and Schmidt (2016) when there are TWO independent variables (here: mask type and prime type).
+Tutorial 1b illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, for the data of Experiment 1 of Panis and Schmidt (2016) when there are TWO independent variables (here: mask type and prime type).
 
-# Load the libraries that we will be using. 
+Content:
+1. Load libraries
+2. Read and wrangle data
+3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
+4. Extract info (life table, plots, ...)
+
+# 1. Load the libraries that we will be using. 
 
 ```{r load-pkg}
 pkg <- c("tidyverse", "patchwork")
@@ -21,14 +27,16 @@ pkg <- c("tidyverse", "patchwork")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Read in the raw data from Panis and Schmidt (2016).
+# 2. Read and wrangle data
+
+Read in the raw data from Panis and Schmidt (2016).
 
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) # 9372 rows
 head(raw)
 ```
 
-# Do some wrangling.
+Do some wrangling.
 
 ```{r wrangle-raw-data}
 # remove practice trials
@@ -60,7 +68,7 @@ summary(data_wr)
 # TrialNr = trial number within experiment
 ```
 
-# Change variable names, and create factors.
+Change variable names, and create factors.
 
 ```{r create-names-and-factors}
 # change some variable names to required names (pid, trial, condition1, condition2, rt, and acc)
@@ -80,7 +88,7 @@ data_wr <- data_wr %>% mutate(condition1 = condition1 + 1, # avoid level "0"
 summary(data_wr)
 ```
 
-# Apply functional programming to set up life tables, and plot the discrete-time functions (h(t), S(t), P(t), and ca(t)).
+# 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
 
 Load the functions. Make sure you rename, and specify the same levels and labels for factors condition1 and condition2 in the function plot_eha_2IV as above.
 
@@ -103,7 +111,7 @@ data_final <- data_nested %>%
                      mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV,1))  # create plots for 2 independent variables
 ```
 
-# Extract info, and save plot for each subject
+# 4. Extract info (life table, plots, ...)
 
 ```{r extract-info, warning=F}
 # view original data (column 2 in data_final) for subject 1:
@@ -125,6 +133,8 @@ median_rt  <- modify_depth(median_bin,1,~.x*binsize)
 median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% list_rbind(names_to = "pid")
 median_tb %>% print(n=6*12)
 ```
+
+Save the plots.
 
 ```{r save-plots, warning=F, eval=F}
 # save the plot for each subject

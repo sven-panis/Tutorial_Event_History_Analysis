@@ -13,7 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
 
-# Load the libraries that we will be using
+Content:
+1. Load libraries.
+2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
+
+# 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
 pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
@@ -21,7 +26,7 @@ pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Load the data set for ca(t) modeling that we saved in Tutorial 1a.
+# 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
 
 ```{r load-data-ca}
 ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
@@ -29,7 +34,7 @@ print(ca_data,n=30)
 summary(ca_data) # 2683 rows
 ```
 
-# Prepare the data set.
+Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600]
@@ -51,11 +56,13 @@ summary(ca_data)
 # trial_c: -0.999 to 0.540
 ```
 
-# Fit a Frequentist generalized linear mixed model (cfr. Model_M3 in Tutorial 2)
+# 3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
 
 ```{r get-data}
 M3_ca_data <- ca_data %>% select(pid, period_9, trial_c, condition, acc)
 ```
+
+Model_M3_ca_f contains the same effects as Model_M3 in Tutorial 2a.
 
 ```{r fit-model, eval=F}
 model_M3_ca_f <- glmer(acc ~ 1 + condition*period_9 + 
@@ -84,9 +91,7 @@ Model_M3_ca_f took about 15 minutes to fit.
 save(model_M3_ca_f, file="Tutorial_3_Frequentist/model_M3_ca_f.RData")
 ```
 
-Fixed effects:
-
 ```{r effects-M3-f}
 load("Tutorial_3_Frequentist/model_M3_ca_f.RData")
-fixef(model_M3_ca_f)
+summary(model_M3_ca_f)
 ```

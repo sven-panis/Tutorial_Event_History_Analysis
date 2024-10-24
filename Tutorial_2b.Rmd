@@ -13,7 +13,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accuracy data.
 
-# Load the libraries that we will be using
+Content:
+1. Load libraries.
+2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+3. Fit a conditional accuracy model.
+4. Display effects for the conditional accuracy model.
+
+# 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
@@ -22,7 +28,7 @@ pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork",
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Set options. 
+Set options. 
 
 ```{r set-options, results='hide'}
 options(brms.backend = "cmdstanr",
@@ -39,7 +45,7 @@ packageVersion("cmdstanr")
 devtools::session_info("rstan")
 ```
 
-# Load the person-trial data set that we saved in Tutorial 1a.
+# 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
 
 ```{r load-data}
 ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
@@ -47,7 +53,7 @@ print(ca_data,n=30)
 summary(ca_data) # 2683 rows: 6 participants, trial, 3 conditions, 15 periods, and acc
 ```
 
-# Prepare the data set.
+Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600]
@@ -69,9 +75,11 @@ summary(ca_data)
 # trial_c: -0.999 to 0.540
 ```
 
-# Fit model  M4_ca: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
+# 3. Fit a conditional accuracy model.
 
-## Prepare data for M4_ca
+We fit a single model "M4_ca": We use a third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
+
+## Prepare data for M4_ca.
 
 ```{r data-M4-ca}
 # remove unnecessary columns before fitting a model
@@ -79,7 +87,7 @@ M4_ca_data <- ca_data %>% select(-c(bl,tr,trial,drt)) # 2597 rows
 head(M4_ca_data)
 ```
 
-### Set up priors for M4_ca
+### Set up priors for M4_ca.
 
 ```{r priors-cloglog-M4-ca}
 priors_M4_ca <- c(
@@ -90,7 +98,7 @@ priors_M4_ca <- c(
 )
 ```
 
-### Fit model M4_ca
+### Fit model M4_ca.
 
 ```{r fit-model-M4-ca, eval=F}
 plan(multicore)
@@ -125,7 +133,7 @@ model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
 summary(model_M4_ca)
 ```
 
-# Display effects
+# 4. Display effects for the conditional accuracy model.
 
 ```{r load-model-M4-ca}
 model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
@@ -231,7 +239,7 @@ plot_facet
 ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
 ```
 
-## calculate point and interval estimates, and hazard ratios
+## calculate point and interval estimates, and odds ratios.
 
 ```{r table-interval-estimates}
 int_c_500 <- effects %>%
@@ -302,7 +310,7 @@ test %>% print(n=60)
 write_csv(test, file="Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
 ```
 
-## Plot model-based predicted logit-ca(t) and ca(t) functions, for a single subject
+## Plot model-based predicted logit-ca(t) and ca(t) functions, for a single subject.
 
 ```{r select-pid}
 selected_subject = 6 # select pid here (1:6) manually
@@ -320,7 +328,7 @@ make_fitted <- function(fit, scale, ...) {
 }
 ```
 
-### Set up new data
+### Set up new data.
 
 ```{r new-data}
 # define the `newdata`
@@ -338,7 +346,7 @@ nd <- tibble(pid = 1:6) %>%
          condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
 ```
 
-### First, on the logit-scale:
+### First, on the logit-ca(t) scale.
 
 ```{r subject-logit}
 make_fitted(model_M4_ca, scale = "linear") %>% 
@@ -363,7 +371,7 @@ make_fitted(model_M4_ca, scale = "linear") %>%
   facet_wrap(~ trial)
 ```
 
-### Second, on ca(t) scale:
+### Second, on the ca(t) scale.
 
 ```{r subject-ca}
 make_fitted(model_M4_ca, scale = "response") %>% 
@@ -391,6 +399,3 @@ make_fitted(model_M4_ca, scale = "response") %>%
 ```{r save-plot-fit-hazard, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_subject6.png", width = 10, height = 10, dpi = 300)
 ```
-
-
-

@@ -13,7 +13,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, when there is one independent variable.
 
-# Load the libraries that we will be using. 
+Content:
+1. Load libraries
+2. Read and wrangle data
+3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
+4. Extract info (life table, plots, ...) and create data files for fitting hazard and conditional accuracy models
+5. Optional: set up life tables and make plots for data aggregated across participants
+
+# 1. Load the libraries that we will be using. 
 
 ```{r load-pkg, results='hide'}
 pkg <- c("tidyverse", "patchwork")
@@ -21,7 +28,9 @@ pkg <- c("tidyverse", "patchwork")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Read in the raw data from Panis and Schmidt (2016) - can be skipped.
+# 2. Read and wrangle data
+
+Read in the raw data from Panis and Schmidt (2016) - can be skipped.
 
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) # 9372 rows
@@ -30,7 +39,7 @@ head(raw)
 #glimpse(raw)
 ```
 
-# Do some wrangling to get a simpler data set - can be skipped.
+Do some wrangling to get a simpler data set - can be skipped.
 
 ```{r wrangle-raw-data}
 # remove practice trials
@@ -69,7 +78,7 @@ summary(data)
 write_csv(data, "Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
 ```
 
-# Read in simpler data file, change variable names, and create factors.
+Read in simpler data file, change variable names, and create factors.
 
 ```{r read-wrangled-data}
 data_wr <- read_csv("Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
@@ -89,7 +98,7 @@ data_wr <- data_wr %>% mutate(condition = condition + 1,
 summary(data_wr)
 ```
 
-# Apply functional programming to set up life tables, and plot the discrete-time functions (h(t), S(t), and ca(t)).
+# 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
 
 Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function plot_eha (line 118 in custom_functions.R) as above (line 88 in Tutorial_1a).
 
@@ -118,7 +127,7 @@ Save the calculations.
 save(data_final, file="Tutorial_1_descriptive_stats/data/descr_stats_tut1a.Rdata")
 ```
 
-# Extract info, save plot for each subject, save a lifetable, create and save the person-trial-bin oriented data file for hazard modeling, and a data file for ca(t) modeling.
+# 4. Extract info (life table, plots, ...) and create data files for fitting hazard and conditional accuracy models
 
 ```{r extract-info, warning=F}
 # view original data (column 2) for subject 1:
@@ -142,6 +151,8 @@ median_rt  <- modify_depth(median_bin,1,~.x*binsize)
 median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% list_rbind(names_to = "pid")
 median_tb
 ```
+
+Save the plots.
 
 ```{r save-plots, eval=F}
 # save the plot for each subject
@@ -175,7 +186,7 @@ lifetable_blank_s6_complete
 write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
 ```
 
-Create input file for hazard models.
+Create input file for fitting hazard models.
 
 ```{r create-file-hazard-modeling}
 # select the person-trial-bin data set for each subject, unnest them, and select relevant variables.
@@ -189,7 +200,7 @@ summary(input_modeling_hazard)
 write_csv(input_modeling_hazard, file="Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
 ```
 
-Create input file for ca(t) models.
+Create input file for fitting ca(t) models.
 
 ```{r create-file-ca-modeling}
 # select the censored data set for each subject, unnest them, discard trials that are censored (RT > 600 or no response detected before the deadline), and select relevant variables. 
@@ -203,7 +214,9 @@ input_modeling_ca <- data_final %>%
 write_csv(input_modeling_ca, file="Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
 ```
 
-# Optional: Create single plot for data aggregated across subjects. This is only recommended when all subjects show the same qualitative patterns.
+# 5. Optional: set up life tables and make plots for data aggregated across participants 
+
+Note: This is only recommended when all subjects show the same qualitative patterns.
 
 ```{r agg-data}
 # create single subject number, and unique trial number

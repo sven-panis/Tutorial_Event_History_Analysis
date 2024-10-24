@@ -13,7 +13,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this Tutorial 2a we plot priors for the logit and cloglog link functions, build Bayesian hazard regression models for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent), and visualize the posterior distributions of the effects of congruent and incongruent prime types, relative to blank prime trials for the selected model.
 
-# Load the libraries that we will be using
+Content:
+1. Load libraries.
+2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
+3. Plot the logit and complementary log-log (cloglog) link functions.
+4. Visualize different prior distributions on the logit and cloglog scales.
+5. Fit hazard models.
+6. Compare models using loo and waic.
+7. Display effects for the selected model.
+
+# 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
@@ -22,7 +31,7 @@ pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork",
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# Set options. 
+Set options. 
 
 ```{r set-options, results='hide'}
 options(brms.backend = "cmdstanr",
@@ -39,7 +48,7 @@ packageVersion("cmdstanr")
 devtools::session_info("rstan")
 ```
 
-# Load the person-trial-bin data set that we saved in Tutorial 1a.
+# 2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
 
 ```{r load-data}
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
@@ -47,7 +56,7 @@ print(ptb_data,n=30)
 summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
 ```
 
-# Prepare the data set.
+Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
@@ -79,7 +88,7 @@ summary(ptb_data)
 # trial_c: -0.999 to 0.540
 ```
 
-# Plot the logit and complementary log-log (cloglog) link functions
+# 3. Plot the logit and complementary log-log (cloglog) link functions.
 
 ```{r plot-links}
 probability <- (1:99999)/100000
@@ -118,12 +127,12 @@ ggplot() +
 ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 8, height = 8, dpi = 300)
 ```
 
-# Visualize different prior distributions on the logit and cloglog scales
+# 4. Visualize different prior distributions on the logit and cloglog scales.
 
 To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
 Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function), to gain a sense of what prior cloglog values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale.
 
-## Simulate, convert, and fit
+## Simulate, convert, and fit.
 
 ```{r simulate-convert}
 set.seed(11)
@@ -142,12 +151,10 @@ dat %>%
   geom_histogram(bins = 50) +
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank())
-
-plot(density(dat$c))
 ```
 
 ```{r fit-skew-normal, eval=F}
-# fit models
+# fit model
 fit_skewN <-
   brm(data = dat,
       family = skew_normal(),
@@ -176,7 +183,7 @@ tibble(c = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22) ) %>%
   theme(panel.grid = element_blank())
 ```
 
-## Visualize how seven prior distributions on the logit and/or cloglog scales look on the probability scale
+## Visualize how seven prior distributions on the logit and/or cloglog scales look on the probability scale.
 
 ```{r plot-priors}
 logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
@@ -336,13 +343,11 @@ c7 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2
 (l1 + pr1 + c1) / (l2 + pr2 + c2) / (l3 + pr3 + c3) / (l4 + pr4 + c4)/ (l5 + pr5 + c5) / (l6 + pr6 + c6) / (l7 + pr7 + c7)
 ```
 
-
 ```{r save-plot-priors, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi=300)
 ```
 
-
-# Fit 4 cloglog-hazard models. 
+# 5. Fit hazard models.
 
 ## Model M1: general specification of TIME in the baseline condition (blank prime), and main effects of prime type, and trial number.
 
@@ -375,7 +380,7 @@ priors_M1 <- c(
 )
 ```
 
-### Fit model M1
+### Fit model M1.
 
 ```{r fit-model-M1, eval=F}
 plan(multicore)
@@ -404,7 +409,7 @@ fixef(model_M1)
 
 ## Model M2: third-order polynomical specification of TIME in the baseline condition (blank prime), and main effects of prime types, and trial number.
 
-### Prepare data for M2
+### Prepare data for M2.
 
 ```{r data-M2}
 # remove unnecessary columns before fitting a model
@@ -412,7 +417,7 @@ M2_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, 
 head(M2_data)
 ```
 
-### Set up priors for M2
+### Set up priors for M2.
 
 ```{r priors-cloglog-M2}
 priors_M2 <- c(
@@ -423,7 +428,7 @@ priors_M2 <- c(
 )
 ```
 
-### Fit model M2
+### Fit model M2.
 
 ```{r fit-model-M2, eval=F}
 plan(multicore)
@@ -452,7 +457,7 @@ fixef(model_M2)
 
 ## Model M3: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax proportionality assumption for prime types, and trial number.
 
-### Prepare data for M3
+### Prepare data for M3.
 
 ```{r data-M3}
 # remove unnecessary columns before fitting a model
@@ -460,7 +465,7 @@ M3_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, 
 head(M3_data)
 ```
 
-### Set up priors for M3
+### Set up priors for M3.
 
 ```{r priors-cloglog-M3}
 priors_M3 <- c(
@@ -471,7 +476,7 @@ priors_M3 <- c(
 )
 ```
 
-### Fit model M3
+### Fit model M3.
 
 ```{r fit-model-M3, eval=F}
 plan(multicore)
@@ -509,7 +514,7 @@ summary(model_M3)
 
 ## Model M4: third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
 
-### Prepare data for M4
+### Prepare data for M4.
 
 ```{r data-M4}
 # remove unnecessary columns before fitting a model
@@ -517,7 +522,7 @@ M4_data <- ptb_data %>% select(-c(bl,tr,trial,period, d6, d7, d8, d9, d10, d11, 
 head(M4_data)
 ```
 
-### Set up priors for M4
+### Set up priors for M4.
 
 ```{r priors-cloglog-M4}
 priors_M4 <- c(
@@ -528,7 +533,7 @@ priors_M4 <- c(
 )
 ```
 
-### Fit model M4
+### Fit model M4.
 
 ```{r fit-model-M4, eval=F}
 plan(multicore)
@@ -556,15 +561,14 @@ model_M4 <-
        file = "Tutorial_2_Bayesian/models/model_M4")
 ```
 
-Model_M4 took about  8 hours to run.
+Model_M4 took about 8 hours to run.
 
 ```{r check-model-M4, eval=F}
 model_M4 <- readRDS("Tutorial_2_Bayesian/models/model_M4.rds")
 summary(model_M4)
 ```
 
-
-# Compare 4 models
+# 6. Compare models using loo and waic.
 
 ```{r compare-models}
 model_M1 <- readRDS("Tutorial_2_Bayesian/models/model_M1.rds")
@@ -582,7 +586,7 @@ model_M3  <- add_criterion(model_M3, c("loo", "waic"))
 model_M4  <- add_criterion(model_M4, c("loo", "waic"))
 ```
 
-Compare all three models:
+Compare all three models.
 
 ```{r loo-compare}
 loo_compare(model_M1, model_M2, model_M3, model_M4, criterion = "loo") %>% print(simplify = F)
@@ -595,9 +599,9 @@ model_weights(model_M1, model_M2, model_M3, model_M4, weights = "loo") %>% round
 model_weights(model_M1, model_M2, model_M3, model_M4, weights = "waic") %>% round(digits = 3)
 ```
 
-# Plot effects for selected model M4
+# 7. Display effects for the selected model (model_M4).
 
-## Pareto k estimates
+## Pareto k estimates.
 
 ```{r pareto}
 loo(model_M4)$diagnostics %>% 
@@ -697,7 +701,7 @@ plot_facet
 ggsave("Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
 ```
 
-## calculate point and interval estimates, and hazard ratios
+## calculate point and interval estimates, and hazard ratios.
 
 ```{r table-interval-estimates}
 int_c_500 <- effects %>%
@@ -768,8 +772,7 @@ test %>% print(n=60)
 write_csv(test, file="Tutorial_2_Bayesian/tables/effects_intervals_table.csv")
 ```
 
-
-## Plot model-based predicted cloglog-hazard and hazard functions, for a single subject
+## Plot model-based predicted cloglog-hazard and hazard functions, for a single subject.
 
 ```{r select-pid}
 selected_subject = 6 # select pid here (1:6) manually
@@ -787,7 +790,7 @@ make_fitted <- function(fit, scale, ...) {
 }
 ```
 
-### Set up new data
+### Set up new data.
 
 ```{r new-data}
 # define the `newdata`
@@ -805,7 +808,7 @@ nd <- tibble(pid = 1:6) %>%
          condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
 ```
 
-### First, on the cloglog-scale:
+### First, on the cloglog-scale.
 
 ```{r subject-cloglog}
 make_fitted(model_M4, scale = "linear") %>% 
@@ -830,7 +833,7 @@ make_fitted(model_M4, scale = "linear") %>%
   facet_wrap(~ trial)
 ```
 
-### Second, on hazard scale:
+### Second, on hazard scale.
 
 ```{r subject-hazard}
 make_fitted(model_M4, scale = "response") %>% 
@@ -858,4 +861,3 @@ make_fitted(model_M4, scale = "response") %>%
 ```{r save-plot-fit-hazard, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M4effects_subject6.png", width = 10, height = 10, dpi = 300)
 ```
-
