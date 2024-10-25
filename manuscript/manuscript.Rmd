@@ -203,13 +203,13 @@ Although the focus is on EHA/SAT, we also want to briefly comment on broader asp
 ## 3.1 Data science workflow and descriptive statistics
 
 Descriptive, data science workflow.
-Data wrangling via tidyverse principles and a functional programming approach (cite R4DS textbook here).
+Data wrangling via tidyverse principles and a functional programming approach [@wickhamDataScienceImport2023].
 Functional programming basically means you don't write your own loops but instead use functions that have been built and tested by others.
 [[more here, as necessary]].
 
 ## 3.2 Inferential statistical approach 
 
-Our lab adopts a estimation approach to multi-level regression (Kruschke & Liddel, 2018; Winter, 2019), which is heavily influenced by Bayesian approach as suggested by Richard McElreath (McElreath, 2020; Kurz, 202?). We also use a "keep it maximal" approach to specifying varying (or random) effects (Barr et al., 2013). This means that wherever possible we include varying intercepts and slopes per participant 
+Our lab adopts a estimation approach to multi-level regression [@kruschkeBayesianNewStatistics2018] ; Winter, 2019), which is heavily influenced by Bayesian approach as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2018] ; Kurz, 202?). We also use a "keep it maximal" approach to specifying varying (or random) effects [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant 
 To make inferences, we use two main approaches. We compare models of different complexity, using information criteria, such as WAIC or LOO, to evaluate out-of-sample predictive accuracy. We also take the most complex model and evaluate key parameters of interest using point and interval estimates.  
 
 # 4. Tutorials
