@@ -11,9 +11,10 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, when there is one independent variable.
+This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
 
 Content:
+
 1. Load libraries
 2. Read and wrangle data
 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)

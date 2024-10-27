@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 In this Tutorial 2a we plot priors for the logit and cloglog link functions, build Bayesian hazard regression models for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent), and visualize the posterior distributions of the effects of congruent and incongruent prime types, relative to blank prime trials for the selected model.
 
 Content:
+
 1. Load libraries.
 2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
 3. Plot the logit and complementary log-log (cloglog) link functions.

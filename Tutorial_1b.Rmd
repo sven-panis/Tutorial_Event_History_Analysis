@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Tutorial 1b illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, for the data of Experiment 1 of Panis and Schmidt (2016) when there are TWO independent variables (here: mask type and prime type).
 
 Content:
+
 1. Load libraries
 2. Read and wrangle data
 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)

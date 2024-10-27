@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
 
 Content:
+
 1. Load libraries.
 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
 3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).

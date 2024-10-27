@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2024-10-16" />
+<meta name="date" content="2024-10-27" />
 
 <title>Tutorial_1b</title>
 
@@ -352,18 +352,26 @@ display: none;
 
 <h1 class="title toc-ignore">Tutorial_1b</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2024-10-16</h4>
+<h4 class="date">2024-10-27</h4>
 
 </div>
 
 
-<p>Tutorial_1b illustrates how to use functional programming to set up
+<p>Tutorial 1b illustrates how to use functional programming to set up
 life tables, and plot the discrete-time hazard, survivor, and
 conditional accuracy functions, for the data of Experiment 1 of Panis
 and Schmidt (2016) when there are TWO independent variables (here: mask
 type and prime type).</p>
+<p>Content:</p>
+<ol style="list-style-type: decimal">
+<li>Load libraries</li>
+<li>Read and wrangle data</li>
+<li>Apply functional programming to set up life tables and plot the
+discrete-time functions h(t), S(t), ca(t), and P(t)</li>
+<li>Extract info (life table, plots, …)</li>
+</ol>
 <div id="load-the-libraries-that-we-will-be-using." class="section level1">
-<h1>Load the libraries that we will be using.</h1>
+<h1>1. Load the libraries that we will be using.</h1>
 <pre class="r"><code>pkg &lt;- c(&quot;tidyverse&quot;, &quot;patchwork&quot;)
 
 lapply(pkg, library, character.only = TRUE)</code></pre>
@@ -387,8 +395,9 @@ lapply(pkg, library, character.only = TRUE)</code></pre>
 ##  [7] &quot;readr&quot;     &quot;tidyr&quot;     &quot;tibble&quot;    &quot;ggplot2&quot;   &quot;tidyverse&quot; &quot;stats&quot;    
 ## [13] &quot;graphics&quot;  &quot;grDevices&quot; &quot;datasets&quot;  &quot;utils&quot;     &quot;methods&quot;   &quot;base&quot;</code></pre>
 </div>
-<div id="read-in-the-raw-data-from-panis-and-schmidt-2016." class="section level1">
-<h1>Read in the raw data from Panis and Schmidt (2016).</h1>
+<div id="read-and-wrangle-data" class="section level1">
+<h1>2. Read and wrangle data</h1>
+<p>Read in the raw data from Panis and Schmidt (2016).</p>
 <pre class="r"><code>raw &lt;- read_delim(file=&quot;Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt&quot;, delim=&quot;\t&quot;,col_names=T) # 9372 rows</code></pre>
 <pre><code>## Rows: 9372 Columns: 22
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -411,9 +420,7 @@ lapply(pkg, library, character.only = TRUE)</code></pre>
 ## # ℹ 12 more variables: maskduration &lt;chr&gt;, targetduration &lt;chr&gt;, void &lt;dbl&gt;,
 ## #   target_dir &lt;dbl&gt;, mask_type &lt;dbl&gt;, prime_type &lt;dbl&gt;, corresp &lt;dbl&gt;,
 ## #   resp &lt;dbl&gt;, respac &lt;dbl&gt;, resperr &lt;dbl&gt;, rt &lt;dbl&gt;, TrialNr &lt;dbl&gt;</code></pre>
-</div>
-<div id="do-some-wrangling." class="section level1">
-<h1>Do some wrangling.</h1>
+<p>Do some wrangling.</p>
 <pre class="r"><code># remove practice trials
 data_wr &lt;- raw %&gt;% filter(practice==0) # 9240 experimental trials: 6 participants x 70 blocks x 22 trials-per-block
 
@@ -529,9 +536,7 @@ summary(data_wr)</code></pre>
 # respac = accuracy
 # rt = response time
 # TrialNr = trial number within experiment</code></pre>
-</div>
-<div id="change-variable-names-and-create-factors." class="section level1">
-<h1>Change variable names, and create factors.</h1>
+<p>Change variable names, and create factors.</p>
 <pre class="r"><code># change some variable names to required names (pid, trial, condition1, condition2, rt, and acc)
 colnames(data_wr) &lt;- c(&quot;pid&quot;,&quot;bl&quot;,&quot;tr&quot;,&quot;condition1&quot;, &quot;condition2&quot;,&quot;resp&quot;,&quot;acc&quot;,&quot;rt&quot;,&quot;trial&quot;) 
 # pid to indicate column with unique person IDs
@@ -569,9 +574,9 @@ summary(data_wr)</code></pre>
 ##  3rd Qu.:1155.0  
 ##  Max.   :1540.0</code></pre>
 </div>
-<div id="apply-functional-programming-to-set-up-life-tables-and-plot-the-discrete-time-functions-ht-st-pt-and-cat." class="section level1">
-<h1>Apply functional programming to set up life tables, and plot the
-discrete-time functions (h(t), S(t), P(t), and ca(t)).</h1>
+<div id="apply-functional-programming-to-set-up-life-tables-and-plot-the-discrete-time-functions-ht-st-cat-and-pt" class="section level1">
+<h1>3. Apply functional programming to set up life tables and plot the
+discrete-time functions h(t), S(t), ca(t), and P(t)</h1>
 <p>Load the functions. Make sure you rename, and specify the same levels
 and labels for factors condition1 and condition2 in the function
 plot_eha_2IV as above.</p>
@@ -588,8 +593,8 @@ data_final &lt;- data_nested %&gt;%
                      mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca_2IV)) %&gt;%  # add ca to lifetables for 2 independent variables
                      mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV,1))  # create plots for 2 independent variables</code></pre>
 </div>
-<div id="extract-info-and-save-plot-for-each-subject" class="section level1">
-<h1>Extract info, and save plot for each subject</h1>
+<div id="extract-info-life-table-plots" class="section level1">
+<h1>4. Extract info (life table, plots, …)</h1>
 <pre class="r"><code># view original data (column 2 in data_final) for subject 1:
 pluck(data_final, 2, 1) %&gt;% print(n=20)</code></pre>
 <pre><code>## # A tibble: 1,535 × 8
@@ -761,6 +766,7 @@ median_tb %&gt;% print(n=6*12)</code></pre>
 ## 70     6 10         459.
 ## 71     6 11         469.
 ## 72     6 12         435.</code></pre>
+<p>Save the plots.</p>
 <pre class="r"><code># save the plot for each subject
 map2(paste0(&quot;Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject&quot;, data_final$pid, &quot;_PanisSchmidt.png&quot;), data_final$plot, ggsave, width = 12, height = 10, dpi = 300)</code></pre>
 </div>
