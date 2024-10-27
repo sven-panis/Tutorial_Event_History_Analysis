@@ -248,7 +248,7 @@ pr3 <- tibble(prior = rt(1e6, df = 7.61)* 1.57) %>%
   ggplot(aes(x = prior)) +
   geom_histogram(bins = 50) +
   scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-12, y=140000, label="t(7.61)*1.57",
+  annotate(geom="text", x=-12, y=140000, label="t(7.61,0,1.57)",
               color="red", size=6) +
   annotate(geom = 'text', label = 'C', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
   theme(panel.grid = element_blank())
