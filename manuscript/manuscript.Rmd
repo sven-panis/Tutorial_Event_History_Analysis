@@ -142,7 +142,7 @@ Thereofore, our ultimate goal is twofold: first, we want to convince readers of 
 
 # 2. A brief introduction to event history analysis
 
-For a comprehensive background context to event history analysis, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003]. Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how event history analysis works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material (part D) and then refer to them in the text whenever relevant.
+For a comprehensive background context to event history analysis, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010]. Likewise, for general introduction to understanding regression equations, we recommend several introductory level textbooks (REFs). Our focus here is not on providing a detailed account of the underlying regression equations, since this topics has been comprehensively covered many times before. Instead, we want to provide an intuition to how event history analysis works in general as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material (part D) and then refer to them in the text whenever relevant.
 
 ## 2.1 Basic features of event history analysis 
 
@@ -515,7 +515,7 @@ Note that duplicate terms in the model formula are ignored. Estimating model M3 
 
 ### 4.3.6 Model 4: A polynomial specification of TIME, and relaxing all three assumptions
 
-Based on previous work [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022] we expect nonlinear effects of trial number on the hazard of response occurrence. We thus relax all three assumptions in model 4. We add a squared term for the continuous predictor centered trial number -- I(trial_c^2) -- and include interaction terms.
+Based on previous work [e.g., @panisHowCanWe2020] we expect nonlinear effects of trial number on the hazard of response occurrence. We thus relax all three assumptions in model 4. We add a squared term for the continuous predictor centered trial number -- I(trial_c^2) -- and include interaction terms. For example, how the effect of congruent primes changes across time bins within a trial might change across the trials within an experiment. 
 
 \scriptsize  
 ```{r fit-model-M4, eval=F, echo=T} 
