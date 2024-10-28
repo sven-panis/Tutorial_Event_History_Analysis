@@ -138,7 +138,7 @@ tables 1 and 2, which I added, would be better and easier to read if they were e
 for each tutorial, I think it would be nice to have a summary of the steps involved, as a roadmap.
 e.g., a list of the steps that need to be taken or a flowchart. I think it would be nice to see which chunky bits of stuff need to happen. Just an idea to ease the burden of information and give people a guide.
 
--> still to do.
+-> I added a content list at the start of each Tutorial_x.Rmd file.
 
 ## abstract ##
 
