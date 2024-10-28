@@ -87,19 +87,27 @@ I added my edits to git and made a commit, then pushed them back.
 maybe a function directory in supps?
 Each of your user-defined functions can be listed with a description of what it does. Like in an R package?
 
+-> Our custom functions are now located in the file custom_functions.R.
+The functions are also listed in the supplementary material.
+
 ### references ###
 
 I know why you have the issue with Bengtsson 2021 reference. For some reason, it is simply in your .bib file more than once. So there is some typo/bug that needs fixing so that the ref is only listed once.
 
 At least most of the the code works fine, it is just your .bib file that needs fixing.
 
+-> The .bib file is generated automatically. I have solved the problem by adding the argument "append=F" to the function r_refs().
+
 More generally, I'm not sure whether it is better to have the R package REFs in a footnote or in the main text as a paragraph. We can decide later on what works best.
+
+-> ok.
 
 ### terms ###
 
 we use the terms hazard and EHA interchangeably. We should pick one, define it and then stick to it. 
-
 For example, the first line of the section "overview of hazard analysis" starts with "To apply event history analysis"
+
+-> I agree, but we are also discussing SAT analyses. I had a reviewer once who insisted that SAT is different from EHA. So we could talk about EHA/SAT analyses perhaps?
 
 ### formulas ###
 
@@ -109,21 +117,28 @@ I think we should go "formula free" in the main text, and instead report formula
 
 I would also add as a general commwent that whenever we do insert formulas in text (in the future or in supplementary material here) we should number them and we should clearly define every part of the equation. 
 
+-> all equations and formulas are moved to the supplementary material. Equations are numbered.
+
 ### big computational chunks in the manuscript ###
 
 I know one of the benefits of using Rmarkdown and papaja is that you can have seamless integration of code chunks and prose. However, I also value some efficiency and simplicity. So, for me, if a code chunk is simple and short e.g., simulate some easy data and plot, then I can see why it is nice to have it in. But when the code chunks get really big like the 'load-functions' chunk around line 256, I don't think it works as nicely. The reason I say this is at least twofold. 1) since we are providing the tutorials as separate .Rmd files and .html files, then the underlying code chunks and functions are of course available to everyone. So the main text can be the front-end window dressing to get folks to want to jump into and use the code. That means, we can just insert images from the tutorial folders, rather than have massive code chunks, which then make the manuscript.Rmd file unnecessarily long. 2) the second reason is that unless we use 'cache' function or eval=F, then it slows down the knit process considerably as a whole bunch of computations have to be performed every time we generate the pdf. And as a process of editing and revision, I like to be able to see how my edits change the output and I like to read the pdf as a doc to see how it flows. So, for that, I'd like to keep the manuscript file lightweight and easy to render. That means we keep all code chunks that actually compute stuff in the tutorials and then mainly just refer to .jpegs in the main text.
 
 Does that make sense?
 
+-> Yes, the big code chunks are removed.
+
 ### tables ###
 
 tables 1 and 2, which I added, would be better and easier to read if they were either placed side-by-side or incorporated into one table. I'll leave that for you to figure out. You're welcome!!
+
+-> Still to do... It does not seem straightforward to place apa tables side by side. For now, I kept them separate and placed text between them.  
 
 ### summary of the steps involved ###
 
 for each tutorial, I think it would be nice to have a summary of the steps involved, as a roadmap.
 e.g., a list of the steps that need to be taken or a flowchart. I think it would be nice to see which chunky bits of stuff need to happen. Just an idea to ease the burden of information and give people a guide.
 
+-> I added a content list at the start of each Tutorial_x.Rmd file.
 
 ## abstract ##
 
@@ -133,9 +148,13 @@ I need to shorten it.
 
 no need to cite research gate, just cite the paper and put the data on our GitHub project / OSF, so that it is available.
 
+-> ok.
+
 ### figure 4 - h(t), S(t), ca(t) ###
 
 the figure that shows all three panels.
+
+-> I added the probability mass function P(t) for each condition.
 
 Can we add shading that highlights particular time-windows that we refer to in the text?
 I think that would help.
@@ -150,8 +169,15 @@ e.g., you say
 
 Extend this paragraph to make it crystal clear what we mean. Can we unpack the theoretical relevance and bring it back into how EHA is revealing?
 
+-> I added the following text:
+These results go against the (often implicit) assumption that all observed responses are primed responses to the target stimulus. Instead, the distributional data show that early responses are triggered exclusively by the prime stimulus, while only later responses reflect primed responses to the target stimulus.
+
 And why don't we show the group average data, rather than just PID 6? It seems odd to me without an explanation/justification. 
 
+-> I added the following text:
+It is important to visually inspect the functions first for each participant, in order to identify possible cheaters (e.g., a flat conditional accuracy function at .5 indicates (s)he was only guessing), outlying individuals, and/or different groups with qualitatively different behavior. 
+
+When participants show qualitatively the same distributional patterns, on might consider to aggregate their data and make one plot (see Tutorial_1a.Rmd).
 
 ### I removed the following text from this section ###
 
@@ -159,14 +185,22 @@ And why don't we show the group average data, rather than just PID 6? It seems o
 
 This is really interesting, but it doesn't seem to fit in this section. In this section, we just want to tell people how to wrangle and look at the data.
 
+-> ok.
+
 Maybe in a later section we can add in this text to explain the significance or implications.
+
+-> I added the following text to the conclusion:
+Statistically controlling for the passage of time during data analysis is thus equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms.
 
 It also read a little bit like we were making inferential claims from descriptive stats, so it shoudl wait until we get to a later tutorial maybe.
 
+-> I agree.
 
 ### link function plot ###
 
 this can go in supps, as we are not writing a regression textbook.
+
+-> Done.
 
 ### this losing people and we need a way to simplify ###
 
@@ -184,12 +218,17 @@ You say this...
 
 But we need to bring people along, as that is our stated aim here, so this needs to go in supps. Then we can keep the main text accessible, without compromising on the underlying regression equations. But these have all been stated in introductory texts so it should not be front and centre for us. But it should be there for the interested reader and hence why supps is perfects.
 
+-> The example regression equations are moved to the supplementary material.
+
 I also suggest we discuss how to interpret the results when we get to the results.
 
+-> Done.
 
 ### prior plot ###
 
 again, move this plot to supps. It is a beautiful plot and hard-won by you to get this right. But move it to supps and let people get on with their lives! If they want to see it, then they can. But we need to keep the flow and momentum in the main text.
+
+-> Done.
 
 >To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 4 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
@@ -202,6 +241,7 @@ A skew-normal distribution with a mean of -0.2, a standard deviation of 0.71, an
 
 people are not learning anything by you showing them the code that lists priors. Instead, give them an intuition about the general approach and then they can see the implementation in the raw tutorial code. e.g., explain the justification and approach to priors in simple, overview terms, and then let them read the code if they want to know how to set them.
 
+-> I removed the code that lists priors. I kept the model code for M1, and the model formulas for models M2 to M4.
 
 ### avoid repetition in the model building steps ###
 
@@ -209,7 +249,11 @@ for model 1 in Tutorial 2 - the first inferential model - we should outline the 
 
 Then, as we move to Model 2, we only mention what differs between models 1 and 2. And the same for the rest. This keeps it short. 
 
+-> I agree.
+
 And when we move on to the frequentist models with lme4, we should only say something like... the general process is similar, except there are no priors to set.
+
+-> Done.
 
 Again, in the main text, we do not want to drowned people in implementation detail when we have a set of tutorials to do exactly that.
 
@@ -218,6 +262,8 @@ Again, in the main text, we do not want to drowned people in implementation deta
 
 rather than output the code, which I've removed for the majority of instances, give some intuition on why we would want to specify formulas and models in this way. 
 
+-> Done.
+
 e.g., why have time in a certain form and why build from model 1 through to 4. When you add or change something, say why that might be useful to explore. But don't make it overly complicated! 
 
 e.g., if time effects are not linear, which seems likely, then one may want to try different parameterisations of time...
@@ -225,20 +271,24 @@ e.g., if time effects are not linear, which seems likely, then one may want to t
 ### model comparison ###
 
 you say:
-
 >Clearly, both weighting schemes prefer model M4.
 
 How is this clear? I don't think there are any plots or tables in the main text.
+
+-> I added the output of the model_weights() functions to section 4.3.7. 
 
 ### parameter plots ###
 
 let's have a paragraph on how we might interpret these plots.
 Can we have a table with summary data and quantiles, just to show how they might be interpreted and reported?
 
+-> I added that table in Tutorials 2a and 2b.
 
 ### frequentist versus Bayesian plot ###
 
 I like the idea of comparing. That's nice. But let's improve the figure and include intervals as well as points.
+
+-> to do. Which intervals should we plot for the frequentist approach?
 
 
 ## Tutorial 4 ##
@@ -247,9 +297,42 @@ I like the idea of comparing. That's nice. But let's improve the figure and incl
 
 This needs explaining or removing.
 
+-> I added the following text:
+In the no-mask condition (column 1 in Figure 5), we observe a positive compatibility effect in the hazard and ca(t) functions, as congruent primes temporarily generate higher values for hazard and conditional accuracy compared to incongruent primes. However, when a (relevant, irrelevant, or lines) mask is present (columns 2-4), there is a negative compatibility effect in the hazard and conditional accuracy functions, as congruent primes temporarily generate *lower* values for hazard and conditional accuracy compared to incongruent primes.
+
 ## Disucssion ##
 
 [[This para needs to be way shorter and easier to read or we get rid of it]]
 
 >Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if F~A~(t) > F~B~(t) for all t, then both cumulative distribution functions are said to show a complete ordering. Townsend (1990) showed that a complete ordering on the hazard functions —$\lambda$~A~(t) > $\lambda$~B~(t) for all t— implies a complete ordering on both the cumulative distribution and survivor functions —F~A~(t) > F~B~(t) and S~A~(t) < S~B~(t)— which in turn implies an ordering on the mean latencies —mean A < mean B. In contrast, an ordering on two means does *not* imply a complete ordering on the corresponding F(t) and S(t) functions, and a complete ordering on these latter functions does *not* imply a complete ordering on the corresponding hazard functions. This means that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
 As a result, instead of using delta-plots for RT -- differences in quantiles from F(t)$^-1$ -- one can simply plot delta-h(t) functions [see @panisHowCanWe2020].
+
+-> I simplified the text to this:
+Second, because RT distributions may differ from one another in multiple ways, @townsendTruthConsequencesOrdinal1990 developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if h~A~(t) > h~B~(t) for all t, then both hazard functions are said to show a complete ordering. Townsend (1990) concluded that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A < mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t > 300 ms, or only for t < 500 ms), or they may cross each other one or more times.
+
+
+# 23 oktober 2024
+
+Still to do:
+- combine tables showing person-trial and person-trial-period data sets
+- REF for regression (line 145) 
+- update section 3 and add REFs (line 200-215) 
+
+
+
+
+- REF for time-to-death (line 127 in ms.) : Done
+- REF for reviews and tutorials on EHA (line 140) : Done
+- change paragraph (delete it and refer to suppl. material?), and add error bars to Figure 2? (line 162): Done (no error bars added, but I refer to suppl. material)
+- REF sampling bias (line 332): Instead of adding a REF, I rephrased the sentence.
+- REF for package MASS (line 665) : Done
+- REF for prevalence (line 710) : Done
+-frequentist versus Bayesian plot with intervals: Done
+- summary of steps involved in tutorials: Done.
+- check odds ratio rounding : Done 
+(added to apa_table(): format.args = list(
+       digits = c(0, 2,2,2,2,2,5),
+        decimal.mark = ".", big.mark = ""))
+
+
+

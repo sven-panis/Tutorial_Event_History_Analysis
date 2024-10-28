@@ -1,6 +1,6 @@
 # Tutorial_Event_History_Analysis
 
-A set of tutorials on how to perform descriptive, and inferential (Bayesian and Frequentist) discrete-time Event History Analyses (EHA) for time-to-event data from psychological experiments. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
+A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
 
@@ -27,30 +27,45 @@ If you want to see and work with the code, then:
 
 # Important files and folders
 
-- Tutorial_1.Rmd (creating descriptive statistics when there is a single independent variable).
-- Tutorial_2.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
-- Tutorial_3.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
-- Tutorial_4.Rmd (creating descriptive stats when there are two independent variables).
+- Tutorial_1a.Rmd (creating descriptive statistics when there is a single independent variable).
 
-Folder manuscript 
-- manuscript.Rmd (papaja Template)
-- manuscript.pdf
-- manuscript.tex
-- r-references.bib
-- extrareferences.bib
+- Tutorial_1b.Rmd (descriptives for 2 independent variables).
 
-Folder Tutorial_1_descriptive_stats
-- folder data
-- folder figures
-- folder tables
+- Tutorial_2a.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 
-Folder Tutorial_2_Bayesian 
-- folder models
-- folder figures
+- Tutorial_2b.Rmd (generating inferential statistics : Bayesian discrete-time conditional accuracy models).
 
-Folder Tutorial_3_Frequentist 
+- Tutorial_3a.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
 
-Folder Tutorial_4_descriptive_2IV
+- Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy models).
+
+- Folder manuscript 
+manuscript.Rmd (papaja Template)
+manuscript.pdf
+manuscript.tex
+r-references.bib
+extrareferences.bib
+SupplementaryMaterial.Rmd
+
+- Folder sims (code for Figure 1)
+sims.Rmd
+folder figures
+
+- Folder Tutorial_1_descriptive_stats
+folder data
+folder figures
+folder tables
+
+- Folder Tutorial_2_Bayesian 
+folder models
+folder figures
+folder tables
+
+- Folder Tutorial_3_Frequentist 
+
+- Folder renv
+
+
 
 
 

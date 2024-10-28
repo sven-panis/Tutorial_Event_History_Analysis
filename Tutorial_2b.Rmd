@@ -1,0 +1,402 @@
+---
+title: "Tutorial_2b"
+author: "sven panis"
+date: "2024-10-18"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accuracy data.
+
+Content:
+
+1. Load libraries.
+2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+3. Fit a conditional accuracy model.
+4. Display effects for the conditional accuracy model.
+
+# 1. Load the libraries that we will be using.
+
+```{r load-pkg, results='hide'}
+pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
+         "brms", "tidybayes", "bayesplot", "future", "parallel")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+Set options. 
+
+```{r set-options, results='hide'}
+options(brms.backend = "cmdstanr",
+        mc.cores = parallel::detectCores(),
+        future.fork.enable = TRUE,
+        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+
+supportsMulticore()
+detectCores()
+```
+
+```{r check-info, results='hide'}
+packageVersion("cmdstanr")
+devtools::session_info("rstan")
+```
+
+# 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+
+```{r load-data}
+ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
+print(ca_data,n=30)
+summary(ca_data) # 2683 rows: 6 participants, trial, 3 conditions, 15 periods, and acc
+```
+
+Prepare the data set.
+
+```{r prepare-data}
+# select analysis time range: (200,600]
+ca_data <- ca_data %>% filter(drt > 5)
+
+# create factor condition, with "blank" as the reference level
+ca_data <- ca_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
+ca_data <- ca_data %>% 
+        mutate(period_9 = drt - 9,
+               trial_c = (trial - 1000)/1000)
+
+head(ca_data,n=17)
+summary(ca_data)
+# 6 subjects
+# condition: blank (1303), congruent (668), incongruent (626)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
+```
+
+# 3. Fit a conditional accuracy model.
+
+We fit a single model "M4_ca": We use a third-order polynomical specification of TIME in the baseline condition (blank prime), and relax all assumptions for prime types, and trial number.
+
+## Prepare data for M4_ca.
+
+```{r data-M4-ca}
+# remove unnecessary columns before fitting a model
+M4_ca_data <- ca_data %>% select(-c(bl,tr,trial,drt)) # 2597 rows
+head(M4_ca_data)
+```
+
+### Set up priors for M4_ca.
+
+```{r priors-cloglog-M4-ca}
+priors_M4_ca <- c(
+  set_prior("normal(0,1)", class = "b"),       # weakly informative prior for beta parameters when using logit link
+  set_prior("student_t(7.61, 0, 1.57)", class = "b", coef="Intercept"),      # weakly informative prior for Intercept when using logit link
+  set_prior("normal(0, 1)", class = "sd"),                     # for standard deviation of random effects
+  set_prior("lkj(2)", class = "cor")                           # for correlations between random effects
+)
+```
+
+### Fit model M4_ca.
+
+```{r fit-model-M4-ca, eval=F}
+plan(multicore)
+
+model_M4_ca <- 
+   brm(data = M4_ca_data,
+       family = binomial(link="logit"),
+       acc | trials(1) ~ 0 + Intercept +
+                          condition*period_9*trial_c + 
+                          condition*period_9*I(trial_c^2) + 
+                          condition*I(period_9^2)*trial_c +
+                          condition*I(period_9^2)*I(trial_c^2) +
+                          condition*I(period_9^3) +
+                          trial_c*I(period_9^3) +
+                          (1 +  condition*period_9*trial_c +
+                                condition*period_9*I(trial_c^2) + 
+                                condition*I(period_9^2)*trial_c +
+                                condition*I(period_9^2)*I(trial_c^2) +
+                                condition*I(period_9^3) +
+                                trial_c*I(period_9^3) | pid),
+       prior = priors_M4_ca,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000, 
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 14),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M4_ca")
+```
+
+Model_M4_ca took about 7 hours to run.
+
+```{r check-model-M4-ca, eval=F}
+model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
+summary(model_M4_ca)
+```
+
+# 4. Display effects for the conditional accuracy model.
+
+```{r load-model-M4-ca}
+model_M4_ca <- readRDS("Tutorial_2_Bayesian/models/model_M4_ca.rds")
+```
+
+## Pareto k estimates
+
+```{r pareto}
+loo(model_M4_ca)$diagnostics %>% 
+  data.frame() %>% 
+  # attach the `id` values
+  bind_cols(M4_ca_data) %>% 
+  mutate(id = 1:n()) %>%
+  
+  ggplot(aes(x = id, y = pareto_k)) +
+  geom_point(alpha = 3/4) + 
+  geom_text(data = . %>% filter(pareto_k > .2),
+            aes(x = id + 2, label = id),
+            size = 3, hjust = 0) +
+  theme(panel.grid = element_blank())
+```
+
+## Visualize posterior distributions of the effects of congruent and incongruent primes on logit-ca(t) relative to blank prime, for each time bin in trials 500, 1000, and 1500.
+
+```{r post-distr}
+get_variables(model_M4_ca)[1:31]
+
+post <-as_draws_df(model_M4_ca) %>% # 8000 draws x 715 variables
+   select(starts_with("b_")) %>%       # 8000 x 31
+   expand_grid(period_9 = -3:6) %>%   
+   mutate(period_9sq = period_9^2,
+          period_9cu = period_9^3,
+          trial500 = -500/1000,
+          trial500sq = trial500^2,
+          trial1500 = 500/1000,
+          trial1500sq = trial1500^2)  
+
+# effects for trials 500, 1000, and 1500
+effects <- post %>% 
+  mutate(`congruent trial 1500` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3` +
+            trial1500 * `b_conditioncongruent:trial_c` + trial1500sq * `b_conditioncongruent:Itrial_cE2` +
+            period_9 * trial1500 * `b_conditioncongruent:period_9:trial_c` +
+            period_9sq * trial1500 * `b_conditioncongruent:trial_c:Iperiod_9E2` +
+            period_9 * trial1500sq * `b_conditioncongruent:period_9:Itrial_cE2` +
+            period_9sq * trial1500sq * `b_conditioncongruent:Itrial_cE2:Iperiod_9E2`, 
+         
+         `incongruent trial 1500` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + 
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3` +
+            trial1500 * `b_conditionincongruent:trial_c` + trial1500sq * `b_conditionincongruent:Itrial_cE2` +
+            period_9 * trial1500 * `b_conditionincongruent:period_9:trial_c` +
+            period_9sq * trial1500 * `b_conditionincongruent:trial_c:Iperiod_9E2` +
+            period_9 * trial1500sq * `b_conditionincongruent:period_9:Itrial_cE2` +
+            period_9sq * trial1500sq * `b_conditionincongruent:Itrial_cE2:Iperiod_9E2`,
+    
+         `congruent trial 500` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3` +
+            trial500 * `b_conditioncongruent:trial_c` + trial500sq * `b_conditioncongruent:Itrial_cE2` +
+            period_9 * trial500 * `b_conditioncongruent:period_9:trial_c` +
+            period_9sq * trial500 * `b_conditioncongruent:trial_c:Iperiod_9E2` +
+            period_9 * trial500sq * `b_conditioncongruent:period_9:Itrial_cE2` +
+            period_9sq * trial500sq * `b_conditioncongruent:Itrial_cE2:Iperiod_9E2`, 
+         
+         `incongruent trial 500` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` +
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3` +
+            trial500 * `b_conditionincongruent:trial_c` + trial500sq * `b_conditionincongruent:Itrial_cE2` +
+            period_9 * trial500 * `b_conditionincongruent:period_9:trial_c` +
+            period_9sq * trial500 * `b_conditionincongruent:trial_c:Iperiod_9E2` +
+            period_9 * trial500sq * `b_conditionincongruent:period_9:Itrial_cE2` +
+            period_9sq * trial500sq * `b_conditionincongruent:Itrial_cE2:Iperiod_9E2`, 
+    
+         `congruent trial 1000` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
+          
+         `incongruent trial 1000` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` +
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) 
+```
+
+```{r plot-effects}
+plot_facet <- effects %>%
+  pivot_longer(cols=`congruent trial 1500`:`incongruent trial 1000`, names_to = "condition" ) %>%
+  select(condition, period_9, value) %>%
+  group_by(period_9) %>%
+  
+  ggplot(aes(x = period_9, y = value)) +
+  stat_lineribbon(point_interval = mean_hdi,.width = c(0.5, 0.8, 0.95),show.legend=T) +
+  scale_fill_brewer() +
+  geom_hline(yintercept=0, linetype="dashed", color = "red") +
+  scale_x_continuous(breaks = c(-3:6), labels=c(((-3:6)+9)*40),
+                     limits = c(-3,6)) +
+  scale_y_continuous(breaks = c(-50,-40,-30,-20,-10,0,10,20,30,40,50), limits = c(-50,50)) +
+  labs(x = "time bin", y = "logit-ca") +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle=90),
+        panel.background = element_rect(fill="white", color="black"),
+        legend.position = "top") +
+  facet_wrap(~ factor(condition,levels=c("congruent trial 500","congruent trial 1000","congruent trial 1500","incongruent trial 500","incongruent trial 1000","incongruent trial 1500")))
+  
+plot_facet
+```
+
+```{r save-plot-effects, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials.png", width = 8, height = 8, dpi = 300)
+```
+
+## calculate point and interval estimates, and odds ratios.
+
+```{r table-interval-estimates}
+int_c_500 <- effects %>%
+  select(`congruent trial 500`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`congruent trial 500`),
+         mean = `congruent trial 500`,
+         condition = "c500") %>%
+  select(bin_endpoint,condition, mean, .lower, .upper, .width, `odds ratio`)
+
+int_i_500 <- effects %>%
+  select(`incongruent trial 500`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`incongruent trial 500`),
+         mean = `incongruent trial 500`,
+         condition = "i500") %>%
+  select(bin_endpoint, condition,mean, .lower, .upper, .width, `odds ratio`)
+
+int_c_1000 <- effects %>%
+  select(`congruent trial 1000`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`congruent trial 1000`),
+         mean = `congruent trial 1000`,
+         condition = "c1000" ) %>%
+  select(bin_endpoint,condition,mean, .lower, .upper, .width, `odds ratio`)
+
+int_i_1000 <- effects %>%
+  select(`incongruent trial 1000`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`incongruent trial 1000`),
+         mean = `incongruent trial 1000`,
+         condition = "i1000") %>%
+  select(bin_endpoint, condition,mean, .lower, .upper, .width,`odds ratio`)
+
+int_c_1500 <- effects %>%
+  select(`congruent trial 1500`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`congruent trial 1500`),
+         mean = `congruent trial 1500`,
+         condition = "c1500" ) %>%
+  select(bin_endpoint, condition, mean, .lower, .upper, .width, `odds ratio`)
+
+int_i_1500 <- effects %>%
+  select(`incongruent trial 1500`, period_9) %>%
+  group_by(period_9) %>%
+  mean_hdi() %>%
+  mutate(bin_endpoint = (period_9 + 9)*40,
+        `odds ratio` = exp(`incongruent trial 1500`),
+         mean = `incongruent trial 1500`,
+         condition = "i1500") %>%
+  select(bin_endpoint, condition,mean, .lower, .upper, .width,  `odds ratio`)
+
+test <- rbind(int_c_500, int_c_1000, int_c_1500,int_i_500,int_i_1000, int_i_1500)
+test %>% print(n=60)
+```
+
+```{r save-table-interval-estimates, eval=F}
+write_csv(test, file="Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
+```
+
+## Plot model-based predicted logit-ca(t) and ca(t) functions, for a single subject.
+
+```{r select-pid}
+selected_subject = 6 # select pid here (1:6) manually
+```
+
+```{r help-function}
+make_fitted <- function(fit, scale, ...) {
+  
+  fitted(fit,
+         newdata = nd,
+         scale = scale,
+         ...) %>% 
+    data.frame() %>% 
+    bind_cols(nd)
+}
+```
+
+### Set up new data.
+
+```{r new-data}
+# define the `newdata`
+nd <- tibble(pid = 1:6) %>%
+  expand_grid(incon = 0:1,
+                con  = 0:1,
+                trial_c = c(-0.5,0,0.5),
+                period_9 = -3:6) %>%
+  filter(!(con ==1 & incon == 1)) %>%
+  mutate(Iperiod_9E2 = period_9^2,
+         Iperiod_9E3 = period_9^3,
+         Itrial_cE2 = trial_c^2,
+         condition = ifelse(con==1 & incon==0,"congruent",
+                     ifelse(con==0 & incon==1,"incongruent", "blank")),
+         condition = factor(condition, levels=c("blank" ,"congruent","incongruent"))) 
+```
+
+### First, on the logit-ca(t) scale.
+
+```{r subject-logit}
+make_fitted(model_M4_ca, scale = "linear") %>% 
+  mutate(cond   = rep(rep(c("N","C","I"),each=30),6),
+         trial  = factor(trial_c,levels=c(-0.5,0.0,0.5),labels=c("trial 500","trial 1000","trial 1500")),
+         period = period_9+9) %>% 
+  filter(pid==selected_subject) %>% 
+  # plot
+  ggplot(aes(x = period, y = Estimate, ymin = Q2.5, ymax = Q97.5,
+             fill = condition, color = condition)) +
+  geom_ribbon(alpha = 1/5, linewidth = 0) +
+  geom_line() +
+  scale_fill_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_color_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_x_continuous("time bin endpoint", breaks = 6:15, limits = c(6, 15), labels=c(6:15)*40) +
+  ylab("fitted logit(ca)") +
+  coord_cartesian(ylim = c(-20, 20)) +
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill="white",color="black"),
+        legend.position = "top",
+        axis.text.x = element_text(angle=90)) +
+  facet_wrap(~ trial)
+```
+
+### Second, on the ca(t) scale.
+
+```{r subject-ca}
+make_fitted(model_M4_ca, scale = "response") %>% 
+  mutate(cond   = rep(rep(c("N","C","I"),each=30),6),
+         trial  = factor(trial_c,levels=c(-0.5,0.0,0.5),labels=c("trial 500","trial 1000","trial 1500")),
+         period = period_9+9) %>% 
+  filter(pid==selected_subject) %>% 
+  # plot
+  ggplot(aes(x = period, y = Estimate, ymin = Q2.5, ymax = Q97.5,
+             fill = condition, color = condition)) +
+  geom_ribbon(alpha = 1/5, linewidth = 0) +
+  geom_line() +
+  scale_fill_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_color_viridis_d(NULL, option = "A", end = .6, direction = -1) +
+  scale_x_continuous("time bin endpoint", breaks = 6:15, limits = c(6, 15), labels=c(6:15)*40) +
+  ylab("fitted ca(t)") +
+  coord_cartesian(ylim = c(0, 1)) +
+  theme(panel.grid = element_blank(),
+        panel.background = element_rect(fill="white",color="black"),
+        legend.position = "top",
+        axis.text.x = element_text(angle=90)) +
+  facet_wrap(~ trial)
+```
+
+```{r save-plot-fit-hazard, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M4_ca_effects_subject6.png", width = 10, height = 10, dpi = 300)
+```

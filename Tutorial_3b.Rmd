@@ -1,0 +1,98 @@
+---
+title: "Tutorial_3b"
+author: "sven panis"
+date: "2024-10-18"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
+
+Content:
+
+1. Load libraries.
+2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
+
+# 1. Load the libraries that we will be using.
+
+```{r load-pkg, results='hide'}
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
+
+lapply(pkg, library, character.only = TRUE)
+```
+
+# 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+
+```{r load-data-ca}
+ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
+print(ca_data,n=30)
+summary(ca_data) # 2683 rows
+```
+
+Prepare the data set.
+
+```{r prepare-data}
+# select analysis time range: (200,600]
+ca_data <- ca_data %>% filter(drt > 5)
+
+# create factor condition, with "blank" as the reference level
+ca_data <- ca_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+
+# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
+ca_data <- ca_data %>% 
+        mutate(period_9 = drt - 9,
+               trial_c = (trial - 1000)/1000)
+
+head(ca_data,n=17)
+summary(ca_data)
+# 6 subjects
+# condition: blank (1303), congruent (668), incongruent (626)
+# period_9: -3 to 6
+# trial_c: -0.999 to 0.540
+```
+
+# 3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
+
+```{r get-data}
+M3_ca_data <- ca_data %>% select(pid, period_9, trial_c, condition, acc)
+```
+
+Model_M3_ca_f contains the same effects as Model_M3 in Tutorial 2a.
+
+```{r fit-model, eval=F}
+model_M3_ca_f <- glmer(acc ~ 1 + condition*period_9 + 
+                           condition*I(period_9^2) + 
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) +
+                           (1 + condition*period_9 +
+                           condition*I(period_9^2) +
+                           condition*I(period_9^3) +
+                           trial_c*period_9 + 
+                           trial_c*I(period_9^2) + 
+                           trial_c*I(period_9^3) | pid),
+              
+              # control parameters, data set, and complementary log-log link function
+              control = glmerControl(optimizer = c("nlminbwrap"),
+                                     optCtrl = list(maxfun=10000000)), 
+              data=M3_ca_data, 
+              family=binomial(link="logit"))
+```
+
+Model_M3_ca_f took about 15 minutes to fit.
+
+```{r save-model, eval=F}
+save(model_M3_ca_f, file="Tutorial_3_Frequentist/model_M3_ca_f.RData")
+```
+
+```{r effects-M3-f}
+load("Tutorial_3_Frequentist/model_M3_ca_f.RData")
+summary(model_M3_ca_f)
+```
