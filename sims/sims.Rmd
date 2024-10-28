@@ -267,7 +267,7 @@ ok, this seems to work, as we would expect.
 
 rt at the trial level
 
-use a truncated normal distribution to privude upper and lower bounds
+use a truncated normal distribution to provide upper and lower bounds
 
 ```{r}
 rt_dat_test <- data_n10 %>%
