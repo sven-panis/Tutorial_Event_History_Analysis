@@ -267,7 +267,7 @@ ok, this seems to work, as we would expect.
 
 rt at the trial level
 
-use a truncated normal distribution to provide upper and lower bounds
+use a uniform distribution to provide upper and lower bounds
 
 ```{r}
 rt_dat_test <- data_n10 %>%
@@ -277,7 +277,8 @@ rt_dat_test <- data_n10 %>%
          m = (l + u)/2) %>% 
   filter(outcomen > 0) %>% 
   group_by(subj, rep, condition, bin) %>% 
-  mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u))
+  # mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u))
+  mutate(rt = runif(n=1, min=l, max=u))
 head(rt_dat_test)
 summary(rt_dat_test)
 ```
@@ -423,7 +424,7 @@ rt_dat <- function(df) {
          m = (l + u)/2) %>% 
     filter(outcomen > 0) %>% 
     group_by(subj, rep, condition, bin) %>% 
-    mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u)) %>% 
+    mutate(rt = runif(n=1, min=l, max=u)) %>% 
     ungroup()
 }
 ```
@@ -958,6 +959,15 @@ p8.1 <- haz_plot(haz_pid_all, haz_group_all) +
 p8.1
 ```
 
+re-plot with 2 columns, rather than 2 rows, and re-order the facets so that 1-3 are in col1
+
+```{r}
+p8.1b <- haz_plot(haz_pid_all, haz_group_all) +
+  facet_wrap(~fct_relevel(example,'example 1','example 4','example 2','example 5',
+                          'example 3', 'example 6'), ncol = 2)
+p8.1b
+```
+
 create a rt plot two rows
 
 ```{r}
@@ -965,6 +975,15 @@ p8.2 <- rt_plot(rt_pid_all, rt_group_all) +
   facet_wrap(~example, nrow = 2)
 p8.2
 ```
+
+re-plot rt with 2 columns, rather than 2 rows
+
+```{r}
+p8.2b <- rt_plot(rt_pid_all, rt_group_all) +
+  facet_wrap(~example, ncol = 2)
+p8.2b
+```
+
 
 now let's try using ggpmisc to inset rt within the haz plots
 
@@ -1072,15 +1091,30 @@ inset_facet <- tibble(x = rep(0, times = 6),
 
 add the inset to the main plot
 
+with two rows
+
 ```{r}
-p_haz_inset_facet <- p8.1 +
+# p_haz_inset_facet <- p8.1 +
+#   geom_plot(data = inset_facet,
+#             vp.width = 1/3,
+#             aes(x, y, label = plot))
+# p_haz_inset_facet
+# 
+# ggsave("sims/figures/haz_inset_facet.jpeg",
+#        width = 14, height = 10, dpi=1000)
+```
+
+with two columns
+
+```{r}
+p_haz_inset_facet <- p8.1b +
   geom_plot(data = inset_facet,
             vp.width = 1/3,
             aes(x, y, label = plot))
 p_haz_inset_facet
 
 ggsave("sims/figures/haz_inset_facet.jpeg",
-       width = 14, height = 10, dpi=1000)
+       width = 10, height = 12, dpi=1000)
 ```
 
 
@@ -1097,7 +1131,7 @@ create hazard data
 set.seed(7)
 
 ## create the data
-haz7 <- sim_haz(subj_n = 10, rep_n = 400, 
+haz7 <- sim_haz(subj_n = 10, rep_n = 400,
                 hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, 1, 0.5, 0.3, 0.2, 0.2, 0.2))
 ```
 
@@ -1295,6 +1329,8 @@ p9.7
 ```
 
 It doesn't make sense to create the inset with this data because the bins (1:10) are just to illustrate the point rather than being tied to actual RTs, like in a real study where bin 3 may represent 250-300ms say.
+
+# section 10 #
 
 ## create a figure that illustrates hazard and survivor functions ##
 
