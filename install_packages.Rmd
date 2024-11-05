@@ -40,6 +40,13 @@ Next, general packages for data wrangling and visualisation used in various scri
 install.packages(c("tidyverse", "RColorBrewer", "patchwork", "ggridges"))
 ```
 
+Next, packages for simulation (Figures 1, 2, and 3)
+
+```{r}
+install.packages(c("faux","ggpmisc","truncnorm"))
+```
+
+
 Next, packages for model building in brms used mainly in models.Rmd and effects.Rmd
 files.
 
