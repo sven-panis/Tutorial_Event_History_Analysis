@@ -1366,3 +1366,182 @@ ggsave("sims/figures/haz_surv.jpeg",
        width = 7, height = 5, dpi=800)
 ```
 
+# Section 11: Simulate hazard data for 1 subject, 1 condition, 200 trials, and plot empirical hazard and survivor functions with error bars (Figure 2)
+
+## Simulate hazard data based on user-defined hazard function
+
+```{r}
+## make it reproducible
+set.seed(7)
+
+
+## apply function sim_haz
+data_single <- sim_haz(subj_n = 1, rep_n = 200) %>%
+               filter(condition == "cond1") %>%
+               mutate(period = bin,
+                      trial = str_sub(rep, start=6, end=6)) %>%
+               select(-c("contrast","cumsum","outcomel","outcomen","bin","rep")) 
+head(data_single, n=20)
+```
+
+## set up life table
+
+```{r}
+lifetable <- data_single %>%
+    mutate(event = str_c("event", event)) %>%
+    group_by(condition,period) %>% 
+    count(event) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = event,
+                values_from = n) %>% 
+    mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
+           event1 = ifelse(is.na(event1),0,event1),
+           risk_set = event0 + event1) %>% # define the risk set
+    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
+    mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4), # standard error for hazard
+           pmass = event1/max(risk_set),
+           se_pmass = sqrt((pmass * (1 - pmass)) / max(risk_set))) %>% 
+    group_by(condition) %>%
+    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
+           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
+           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
+    ungroup() 
+```
+
+## wrangle life table for plotting
+
+```{r}
+minimallt <- lifetable %>% select(period,condition, hazard, se_haz, survival, se_surv) %>%
+  pivot_longer(cols = c(hazard,survival),
+               names_to = "dv",
+               values_to = "probability") %>%
+  mutate(se = ifelse(dv=="hazard", se_haz, se_surv))
+```
+
+## plot hazard and survivor functions
+
+```{r}
+p11.1 <-ggplot(minimallt, aes(x = period, y = probability,
+                         colour = dv)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  geom_linerange(aes(ymin=probability-se, ymax=probability+se), show.legend = F) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  ggtitle("hazard and survivor functions") +
+  xlab("timebin")
+p11.1
+
+ggsave("sims/figures/haz_surv_single.jpeg",
+       width = 7, height = 5, dpi=800)
+```
+
+
+# Section 12 (Figure 3): plot of hazard and ca(t) for 2 conditions with error bars
+
+## hazard
+
+### generate data set
+
+```{r}
+## make it reproducible
+set.seed(8)
+
+## apply function sim_haz
+data_single2 <- sim_haz(subj_n = 1, rep_n = 2000) %>%
+               mutate(period = bin,
+                      trial = str_sub(rep, start=6, end=6)) %>%
+               select(-c("contrast","cumsum","outcomel","outcomen","bin","rep")) 
+head(data_single2, n=20)
+```
+
+### set up life table
+
+```{r}
+lifetable2 <- data_single2 %>%
+    mutate(event = str_c("event", event)) %>%
+    group_by(condition,period) %>% 
+    count(event) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = event,
+                values_from = n) %>% 
+    mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
+           event1 = ifelse(is.na(event1),0,event1),
+           risk_set = event0 + event1) %>% # define the risk set
+    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
+    mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4), # standard error for hazard
+           pmass = event1/max(risk_set),
+           se_pmass = sqrt((pmass * (1 - pmass)) / max(risk_set))) %>% 
+    group_by(condition) %>%
+    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
+           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
+           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
+    ungroup() 
+```
+
+### plot hazard functions
+
+```{r}
+p12.1 <-ggplot(lifetable2, aes(x = period, y = hazard,
+                         colour = condition)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  ggtitle("hazard")  +
+  xlab("timebin") + ylab("probability")
+p12.1
+```
+
+## accuracy 
+
+create some data
+
+```{r}
+acc <- tibble(
+  time = seq(1,10,1),
+  cond1 = rep(1,length = 10),
+  cond2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1)
+) %>% 
+  pivot_longer(-time,
+               names_to = "condition",
+               values_to = "accuracy") %>% 
+  mutate(condition = factor(condition))
+head(acc,n=20)
+```
+
+line plot per bin
+
+```{r}
+p12.2 <-ggplot(acc, aes(x = time, y = accuracy,
+                         colour = condition)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("timebin") +
+  ylab("probability") +
+  ggtitle("conditional accuracy") 
+p12.2
+```
+
+Combine plots
+
+```{r}
+p12.3 <- (p12.1 / p12.2) +
+  plot_layout(guides = 'collect',
+              axes = 'collect')
+p12.3
+
+ggsave("sims/figures/haz_acc_single.jpeg",
+       width = 7, height = 5, dpi=800)
+
+```
+
+
+
+
