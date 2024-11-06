@@ -1449,11 +1449,17 @@ ggsave("sims/figures/haz_surv_single.jpeg",
 set.seed(8)
 
 ## apply function sim_haz
-data_single2 <- sim_haz(subj_n = 1, rep_n = 2000) %>%
+data_single2 <- sim_haz(subj_n = 1, rep_n = 1000) %>%
                mutate(period = bin,
-                      trial = str_sub(rep, start=6, end=6)) %>%
-               select(-c("contrast","cumsum","outcomel","outcomen","bin","rep")) 
+                      trial = as.integer(str_sub(rep, start=4, end=7)),
+                      condition = factor(condition, labels=c("congruent","incongruent"))) %>%
+               select(-c("contrast","cumsum","outcomel","outcomen","bin","rep"))  %>%
+               mutate(acc = ifelse(period<6 & condition=="incongruent",0,1),
+                      acc = ifelse(period==6 & condition=="incongruent" & trial < 500,0,acc)) 
 head(data_single2, n=20)
+summary(data_single2)
+
+
 ```
 
 ### set up life table
@@ -1480,6 +1486,20 @@ lifetable2 <- data_single2 %>%
     ungroup() 
 ```
 
+## add ca(t)
+
+```{r}
+ca <- data_single2 %>% 
+    group_by(condition,period) %>%
+    summarize(ca = mean(acc) %>% round(digits = 2),
+              n = n(),
+              .groups = 'drop') %>%
+    ungroup() %>%
+    mutate(se_ca = sqrt((ca * (1-ca)) / n) %>% round(digits = 3)) 
+ca
+```
+
+
 ### plot hazard functions
 
 ```{r}
@@ -1492,7 +1512,7 @@ p12.1 <-ggplot(lifetable2, aes(x = period, y = hazard,
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
   ggtitle("hazard")  +
-  xlab("timebin") + ylab("probability")
+  xlab("timebin") + ylab("probability") + guides(color=guide_legend(title="prime type"))
 p12.1
 ```
 
@@ -1503,8 +1523,8 @@ create some data
 ```{r}
 acc <- tibble(
   time = seq(1,10,1),
-  cond1 = rep(1,length = 10),
-  cond2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1)
+  congruent = rep(1,length = 10),
+  incongruent = c(0, 0, 0, 0, 0, .5, 1, 1, 1, 1)
 ) %>% 
   pivot_longer(-time,
                names_to = "condition",
@@ -1516,16 +1536,18 @@ head(acc,n=20)
 line plot per bin
 
 ```{r}
-p12.2 <-ggplot(acc, aes(x = time, y = accuracy,
+p12.2 <-ggplot(ca, aes(x = period, y = ca,
                          colour = condition)) +
   geom_line(linewidth = 1) +
   geom_point(size=3) +
+  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
   scale_colour_brewer(palette = "Dark2") + 
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
   xlab("timebin") +
   ylab("probability") +
-  ggtitle("conditional accuracy") 
+  ggtitle("conditional accuracy") + 
+  guides(color=guide_legend(title="prime type"))
 p12.2
 ```
 
@@ -1538,7 +1560,7 @@ p12.3 <- (p12.1 / p12.2) +
 p12.3
 
 ggsave("sims/figures/haz_acc_single.jpeg",
-       width = 7, height = 5, dpi=800)
+       width = 7, height = 6, dpi=800)
 
 ```
 
