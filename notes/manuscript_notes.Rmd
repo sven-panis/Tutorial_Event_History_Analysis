@@ -410,7 +410,7 @@ Again, I'm not sure we can leave people hanging like this. Instead, I would mayb
 
 This should be clearly explained or removed. 
 
--> I clearly explained it..... todo
+-> changed to: Note that duplicate terms across the interaction terms in the model formula (e.g., condition) are ignored. 
 
 
 
@@ -419,13 +419,15 @@ This should be clearly explained or removed.
 
 -> ok.
 
+
+
 - can we say why we have the following sentence?
 
 >For illustration purposes, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4.
 
 Were they too complex to fit or something else?
 
--> I expected problems with fitting the very complex model M4. But even M3 has problems.
+-> I expected problems with fitting the very complex model M4. I added this info.
 
 
 ## regressions references ##
@@ -434,16 +436,20 @@ Gelman, A., Hill, J., & Vehtari, A. (2021). Regression and Other Stories. Cambri
 
 Winter, B. (2019). Statistics for Linguists: An Introduction Using R. Routledge.
 
--> added in 
+-> done.
 
 ## table 1 and table 2 ##
 
 Personally, I think having Tables 1 and 2 separately is fine. Let's leave it for now.
 
+-> ok.
+
 ## figure 1 ##
 
 I changed the layout of figure 1 as I thought it was easier to see.
 I also changed the way RT data were generated to a uniform distribution.
+
+-> ok.
 
 ## figure 3 ##
 
@@ -451,7 +457,8 @@ I tried to insert a little more explanation as to why the joint consideration of
 One problem I had, however, is that if I calculate mean average RT from these hazards, then there is no difference in RT. I guess if we want to visually illustrate the differences it might be nice to have an insert plot showing the typical interferece measure of mean RT and then the distribution plots.
 However, it might also be better just to keep this super simple and make the point that we do at the moment, which is that both together help guide inferences. And let's worry less about plotting mean RT in this figure.
 
--> I prefer the last option. I created a new figure 3.
+-> I prefer the last option. I created a new figure 3 and added info to its caption.
+
 
 ## life tables ##
 
@@ -525,7 +532,7 @@ mutate(period_9 = period - 9,
 And I also wonder. Should this even be in the main text, given that it is in the tutorial?
 I'm not sure. But it doesn't strike me as overly important to have the repetition or redundancy, and we have a long paper already. So folks might just get tired of having to figure out more stuff when they don't need to if they only want to read along. What do you think?
 
--> I think it is important for naive readers to get an idea of how the variables in the models presented later are calculated. 
+-> I think it is important for naive readers to get an idea of how the variables in the model formulas presented later are calculated. 
 
 
 ## model building ##
@@ -547,13 +554,15 @@ The full tables can be in SUpps if you feel it is necessary.
 
 2. remove the .width column. just say in the legend 95% quantiles.
 
--> Done todo
+->  todo
 
 3. split c500 and i500 into two columns. e.g, trial =500, condition = con or inc but in two separate columns.
 
--> done todo
+->  todo
 
 4. Round to two dp.
+
+-> todo
 
 5. And what's going on with some of those hazard values and odds ratio values? Is it just because one value could be so small that the ratio can be absolutely massive? It just seems odd without any explanation? e.g., take a look at the odds ratio column in table 5.
 
@@ -569,7 +578,7 @@ some things are not clear, such as:
 - model_M1. 
 --The use of 0 and Intercept needs explaining.
 
--> done.
+-> todo
 
 --adapt_delta is high. I rarely have to go above 0.99. Does the model not look right if this is set lower? This could be a sign that the model is not a suitable structure.
 
@@ -580,11 +589,12 @@ some things are not clear, such as:
 
 -- Although condition is defined earlier. I would make it clear in this section what condition means, as it is super important.
 
--> Done... todo
+-> todo
 
 - model_M2
 -- clearly define what period_9 means.
 
+-> todo
 
 -- It seems to me that you have quadratic and 3rd order terms, but you only mention 3rd order in the text.
 
@@ -595,7 +605,7 @@ some things are not clear, such as:
 They seem to be missing from section 4.3.7. 
 They would be useful in combinartion with model weights.
 
--> todo.  Done....
+-> todo.  
 
 ## psychological / cognitive interpretation ##
 
@@ -732,3 +742,9 @@ There are several benefits of doing so.
 I've created a new sub-section in sectino 2 and added a sumamry paragraph that points the reader to the supplementary materials for the details.
 
 3) We can add something else into the discussion that is more relevant to our aim here. I have tried to add in a section on common use-cases for exp psych folks. It might not quite work or fit in yet, but the motivation was something like this. You may want to use it if you are interested in the timeline of effects. But you may also need to use it from a counfound/technical/method perspective because it might qualify inferences made from mean-average comparisons. The reason is just to make it clear that you need not be interested in temporal states to find this useful on a methodological/analytical perspective.
+
+# comments Sven 6 nov
+
+1. Figure 1: connect the points per subject?
+
+2. 
