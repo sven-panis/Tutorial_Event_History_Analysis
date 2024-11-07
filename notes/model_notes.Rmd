@@ -1,0 +1,176 @@
+---
+title: "model_notes"
+author: "Rich"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This file is a way to provide feedback on draft versions of the models that were built as part of the tutorials.
+
+# November 4th 2024 #
+
+## a few minor points and/or questions ##
+
+1. Model formula. 
+
+I get the 0 + ... logic in general, when you do not want an overall intercept and/or when you want to manually set the intercept somewhere. 
+But I'm curious about the setup that you have when you use 0 + Intercept, when "Intercept" is a column in a dataframe with all values being "1". Isn't that just the same as setting 1 + ... whatever else ?  
+Do you see what I mean? As I understand it (but I may be confused), you are saying zero but then setting the intercept at 1 anyway, which just seems odd to me. Why not just set it at 1, like normal?
+
+## interpreting parameter estimates and interval values ##
+
+- I understand, as it is currently written, how to interpret and use the information in the model comparison section.
+e.g., out of 4 models, model 4 is more accurate at making out-of-sample predictions. 
+This means that whatever model 4 brings in addition to the other models, it helps make out-of-sample predictions more accurate.
+In this case, model 4 adds a dimension of experiment time interacting with condition (and maybe other stuff also).
+So this means that condition effects appear to vary by the time of the experiment or testing session.
+
+Ok, so far so good.
+
+What I am finding a little harder to understand in a quantitative sense is the size and precision of key effects of interest, which relate to condition * timebin * trial time interactions.
+For a comparison, if we had a simple gaussian model with a factorial design (one condition, with two levels: inc vs con), we could estimate the size, direction and interval width of key parameters of interest. e.g., the factor condition  (inc > con) leads to an increase in reaction time by 30ms [20,40] with 95% quantiles in square brackets. This would be our key effect size. And we could report it and make an inference about it. Others could power new studies based on these reported effect sizes etc.
+
+Of course, when model parameters are reported in different units to those that might be intuitive as effect sizes, such as cloglog values, one needs to transform them first to hazard values or ratios. But, when models get really complex (like in EHA), then one single parameter (even after transformation) is hard to interpret on its own, because the effect size of interest is a product of many different and possibly interacting parameters. 
+
+And, as I understand things, this is where posterior predictions comes in. 
+Posterior predictions are generated from all of the parameters in the model.
+And as they are generated for every draw in the posterior distribution, you get a distribution of predicted values, which can be summarised using tidybayes etc., to produce point and interval estimates, as well as plots of the posterior predictions distributions. 
+
+I say all of this to provide background context for understanding section 4.3.8.
+The top row of Figure 5 shows that the middle timebins within a trial (400, 440, say) become more negative (compared to neutral) later in the experiment (trial 1500).
+Statements like that reflect a 3-way interaction: condition * timebin * trial number.
+But to show that quantitatively we would need the difference between these 3 factors to be displayed and interval estimates provided. 
+Does this make sense?
+We would need the difference scores between panel 1500 computed from panel 500 and the difference of panel 1000 computed from 500.
+Otherwise, as I understand it, we are just showing numerical differences at each trial numbers (500, 1000 and 1500) rather than computing the differences between those trial numbers. 
+
+Now, if I return to your model specification, you have several condition * timebin * trial number interactions that reflect linear, quadratic and cubic treatments of time. So, focussing on any one of these could be misleading to the overall picture. And hence why posterior predictions are useful because they use all of the parameters.
+
+So, at this stage, my question and comment is as follows: in these situations it feels like posterior predictions PLUS paired contrasts between conditions/columns in the posterior would be really useful and possibly even essential to make an inference of the type we want to. e.g., we need to quantify how much and with what level of precision (interval width) the difference between con and blank changes over the experiment. 
+
+If we do not do this, then I worry that we are falling into the trap of the below paper:
+
+https://www.tandfonline.com/doi/abs/10.1198/000313006X152649
+
+
+Now, given how tremendously complicated these models are, I may be confused on many levels. 
+
+However, what is absolutely certain is that we need to be clear on how one would make an inference about the effect of condition over two time scales (within trial and across trials). 
+And at the moment, we have not quantified this in terms of an effect size and an associated interval width. 
+Instead, we have done model comparison and plotted some parameter estimates per levels of the design, which produce interval widths for condition vs neutral across timbin. But we have not produced relevant comparisons across trial number.
+
+I hope this makes some sense. 
+Of course, we can discuss this also, if that's easier.
+
+
+As an illustration of what I think I mean (!), if we take Figure 6 (Model-based hazard functions).
+If this figure was for the group average (rather than only pid 6).
+Then we could compute a difference score for each timebin of con compared to neutral, as well as inc compared to neutral.
+That's all good.
+But we would then need to calculate the difference of these differences between 1000 and 500 and between 1500 and 500.
+At least we would need to compute these if we wanted to quantify how much trial number impacts the size of the condition differences when compared to neutral. 
+
+
+## different ways to calculate posterior predicitons / effects of interest ##
+
+Ok, I hope that the prior comment above makes sense. 
+
+And to follow-up on this prior comment, I have now done some more digging and made some calculations using model_M4 and the tidybayes add_epred_draws() function.
+
+And in addition, I looked at your code for calculating estimates in Tutorial_2a.
+
+I have a bunch of code that I will share with you, but here I will just provide a summary. I think I have come to an interim conclusion, which is as follows...
+
+the below code chunk is your code from Tutorial_2a for calculating effects by manually adding parameters from the model together.
+
+```{r post-distr}
+#get_variables(model_M4)[1:31]
+
+post <-as_draws_df(model_M4) %>% # 8000 draws x 715 variables
+   select(starts_with("b_")) %>%       # 8000 x 31
+   expand_grid(period_9 = -3:6) %>%   
+   mutate(period_9sq = period_9^2,
+          period_9cu = period_9^3,
+          trial500 = -500/1000,
+          trial500sq = trial500^2,
+          trial1500 = 500/1000,
+          trial1500sq = trial1500^2)  
+
+# effects for trials 500, 1000, and 1500
+effects <- post %>% 
+  mutate(`congruent trial 1500` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3` +
+            trial1500 * `b_conditioncongruent:trial_c` + trial1500sq * `b_conditioncongruent:Itrial_cE2` +
+            period_9 * trial1500 * `b_conditioncongruent:period_9:trial_c` +
+            period_9sq * trial1500 * `b_conditioncongruent:Iperiod_9E2:trial_c` +
+            period_9 * trial1500sq * `b_conditioncongruent:period_9:Itrial_cE2` +
+            period_9sq * trial1500sq * `b_conditioncongruent:Iperiod_9E2:Itrial_cE2`, 
+         
+         `incongruent trial 1500` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` + 
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3` +
+            trial1500 * `b_conditionincongruent:trial_c` + trial1500sq * `b_conditionincongruent:Itrial_cE2` +
+            period_9 * trial1500 * `b_conditionincongruent:period_9:trial_c` +
+            period_9sq * trial1500 * `b_conditionincongruent:Iperiod_9E2:trial_c` +
+            period_9 * trial1500sq * `b_conditionincongruent:period_9:Itrial_cE2` +
+            period_9sq * trial1500sq * `b_conditionincongruent:Iperiod_9E2:Itrial_cE2`,
+    
+         `congruent trial 500` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3` +
+            trial500 * `b_conditioncongruent:trial_c` + trial500sq * `b_conditioncongruent:Itrial_cE2` +
+            period_9 * trial500 * `b_conditioncongruent:period_9:trial_c` +
+            period_9sq * trial500 * `b_conditioncongruent:Iperiod_9E2:trial_c` +
+            period_9 * trial500sq * `b_conditioncongruent:period_9:Itrial_cE2` +
+            period_9sq * trial500sq * `b_conditioncongruent:Iperiod_9E2:Itrial_cE2`, 
+         
+         `incongruent trial 500` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` +
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3` +
+            trial500 * `b_conditionincongruent:trial_c` + trial500sq * `b_conditionincongruent:Itrial_cE2` +
+            period_9 * trial500 * `b_conditionincongruent:period_9:trial_c` +
+            period_9sq * trial500 * `b_conditionincongruent:Iperiod_9E2:trial_c` +
+            period_9 * trial500sq * `b_conditionincongruent:period_9:Itrial_cE2` +
+            period_9sq * trial500sq * `b_conditionincongruent:Iperiod_9E2:Itrial_cE2`, 
+    
+         `congruent trial 1000` = b_conditioncongruent + period_9 * `b_conditioncongruent:period_9` + 
+            period_9sq * `b_conditioncongruent:Iperiod_9E2` + period_9cu * `b_conditioncongruent:Iperiod_9E3`,
+          
+         `incongruent trial 1000` = b_conditionincongruent + period_9 * `b_conditionincongruent:period_9` +
+            period_9sq * `b_conditionincongruent:Iperiod_9E2` + period_9cu * `b_conditionincongruent:Iperiod_9E3`) 
+```
+
+
+And I *think* this is fine, although it is very hard to check and VERY VERY easy to make mistakes, given the long-winded nature of the term names and the complexity of the model. 
+
+As I understand things, another way to go would be as follows:
+
+note: dat_M4 is just the data that you used in model_M4
+e.g., 
+
+```{r}
+# dat_M4 <- as_tibble(model_M4$data)
+```
+
+and now use add_epred_draws()
+
+```{r}
+epreds <- dat_M4 %>% 
+  data_grid(pid, condition,
+            period_9 = seq(from = -3, to = 6, by = 1),
+            trial_c = c(-0.5, 0, 0.5)) %>%
+  add_epred_draws(model_M4) %>% 
+  ungroup()
+head(epreds)
+```
+
+This just uses add_epred_draws instead of calculating by hand.
+To my mind, this is far safer and more reliable/robust and a hell of a lot more compact.
+
+Once you have these predictions, you can wrangle and compare contrasts, plot, and summarise as you normally would using tidybayes functions.
+
+I will share the code so that you can take a look.
+
+
+
