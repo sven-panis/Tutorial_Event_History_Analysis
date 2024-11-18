@@ -2,7 +2,12 @@
 title: "Tutorial_2a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: united
 editor_options: 
   chunk_output_type: console
 ---
@@ -11,17 +16,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this Tutorial 2a we plot priors for the logit and cloglog link functions, build Bayesian hazard regression models for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent), and visualize the posterior distributions of the effects of congruent and incongruent prime types, relative to blank prime trials for the selected model.
-
-Content:
-
-1. Load libraries.
-2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
-3. Plot the logit and complementary log-log (cloglog) link functions.
-4. Visualize different prior distributions on the logit and cloglog scales.
-5. Fit hazard models.
-6. Compare models using loo and waic.
-7. Display effects for the selected model.
+Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (prime = blank, congruent, or incongruent). We compare models using WAIC and LOO, and interpret parameter estimates for one model. 
+We also plot the logit and cloglog link functions, and illustrate how various prior distributions on the logit and cloglog scales look on the original probability (i.e., hazard) scale. 
 
 # 1. Load the libraries that we will be using.
 
@@ -49,308 +45,149 @@ packageVersion("cmdstanr")
 devtools::session_info("rstan")
 ```
 
+theme settings for ggplot
+
+```{r plot-settings, results='hide'}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"),
+          legend.position = "bottom")
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
 # 2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
 
 ```{r load-data}
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
 print(ptb_data,n=30)
-summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
+summary(ptb_data) # 26602 rows: 6 participants, trial (experiment-wise), 3 conditions, 15 periods, and event indicator (0/1)
 ```
 
-Prepare the data set.
+Wrangle the data set. 
 
-```{r prepare-data}
-# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
-ptb_data <- ptb_data %>% filter(period > 5)
-
-# create factor condition, with "blank" as the reference level
-ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
-
-# center TIME (period) on bin 9, and trial on trial 1000 and rescale; Add dummy variables for each bin.
+```{r wrangle-data}
 ptb_data <- ptb_data %>% 
-        mutate(period_9 = period - 9,
-               trial_c = (trial - 1000)/1000,
-               d6  = if_else(period == 6, 1, 0),
-               d7  = if_else(period == 7, 1, 0),
-               d8  = if_else(period == 8, 1, 0),
-               d9  = if_else(period == 9, 1, 0),
-               d10 = if_else(period == 10, 1, 0),
-               d11 = if_else(period == 11, 1, 0),
-               d12 = if_else(period == 12, 1, 0),
-               d13 = if_else(period == 13, 1, 0),
-               d14 = if_else(period == 14, 1, 0),
-               d15 = if_else(period == 15, 1, 0))
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+  filter(period > 5) %>%
+  
+# create categorical predictor for TIME named "timebin" with index coding
+  mutate(timebin = factor(period,levels=c(6:15)),
+# create continuous predictor for TIME named "period_9", centered on bin 9,
+         period_9 = period - 9,
+# create binary variables "dummys" to indicate each bin in the analysis
+         d6  = if_else(period == 6, 1, 0),
+         d7  = if_else(period == 7, 1, 0),
+         d8  = if_else(period == 8, 1, 0),
+         d9  = if_else(period == 9, 1, 0),
+         d10 = if_else(period == 10, 1, 0),
+         d11 = if_else(period == 11, 1, 0),
+         d12 = if_else(period == 12, 1, 0),
+         d13 = if_else(period == 13, 1, 0),
+         d14 = if_else(period == 14, 1, 0),
+         d15 = if_else(period == 15, 1, 0),
+
+# create continuous predictor for trial number named "trial_c", centered on bin 1000 and rescaled
+         trial_c = (trial - 1000)/1000,
+# create categorical predictor for trial number named "stage" (early,middle,late) with index coding
+         stage = ifelse(trial <= 500, 1, ifelse(trial > 1000, 3, 2)),
+         stage = factor(stage, levels=c(1,2,3)),
+
+# create factor "condition", with "blank" as the reference level
+         condition = factor(condition, labels = c("blank", "congruent","incongruent")),
+# create categorical predictor "prime" with index-coding
+         prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
+         prime = factor(prime,levels=c(1,2,3))) %>%
+  select(pid,trial,trial_c,stage,condition,prime,period,period_9,timebin,d6:d15)
 
 head(ptb_data,n=17)
 summary(ptb_data)
-# 6 subjects
-# condition: blank (6401), congruent (2642), incongruent (3797)
-# period_9: -3 to 6
-# trial_c: -0.999 to 0.540
 ```
 
-# 3. Plot the logit and complementary log-log (cloglog) link functions.
+# 3. Fit hazard models.
 
-```{r plot-links}
-probability <- (1:99999)/100000
-logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
-logit    <- function(x) { return( log(x/(1-x)) )}
-inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
-cloglog         <- function(x) { return( log(-1*log(1-x)) )}
+## Model M0: A null model without experimental predictors
 
-cloglog_prob <- cloglog(probability)
-logit_prob <- logit(probability)
-dataplot <- cbind(probability,cloglog_prob,logit_prob)
+The first model we fit is a "random intercepts" model, where we fit a single intercept for each timebin and allow each intercept to vary between participants.
+This is a general specification of TIME, and can be used if we do not want to make assumptions about how cloglog-hazard changes over time (within a trial). 
+There are two ways to implement such a model. First, we can use the index-coding approach, as .. .by McElreath...
 
-ggplot() +
-  geom_hline(yintercept=0, color="white") +
-  geom_line(data=dataplot,aes(y=logit_prob,x=probability,colour="logit"),linewidth=1) +
-  geom_line(data=dataplot,aes(y=cloglog_prob,x=probability,colour="cloglog"),linewidth=1) +
-  scale_color_manual(name = "Link function:", values = c("logit" = "darkblue", "cloglog" = "red")) +
-  geom_vline(xintercept = logistic(0), linetype="dotted", linewidth = 0.3) +   
-  geom_vline(xintercept = inverse_cloglog(0), linetype="dotted", linewidth = 0.3) +
-  annotate("text", x = logistic(0)-.02, y = -6, label = "logistic(0) = 0.5", angle = 90, size=4) +
-  annotate("text", x = inverse_cloglog(0)+.02, y = -6, label = "inverse_cloglog(0) = 0.6321", angle=90,size=4) +
-  scale_x_continuous(n.breaks=10, limits = c(0,1), ) +
-  labs(x = "Probability",
-        y = "logit or cloglog scale") +
-  theme(panel.grid = element_blank(),
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18),
-      #  legend.position="top",
-        legend.text = element_text(size=18),
-      legend.position = "inside",
-        legend.position.inside=c(.2,.75),
-      legend.background = element_rect(fill="white") )
+Prepare the data file, and specify priors.
+
+```{r data-priors-M0}
+# remove unnecessary columns before fitting a model
+M0_data <- ptb_data %>% select(pid, event, timebin)
+
+priors_M0 <- c(
+  set_prior("skew_normal(-0.59,1.26,-4.22)", class = "b"), # flat prior for p
+  set_prior("normal(0, 1)", class = "sd"),                    
+  set_prior("lkj(2)", class = "cor")                        
+)
 ```
 
-```{r save-plot-links, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 8, height = 8, dpi = 300)
+Fit the model (M0). old model M0d 
+
+```{r fit-model-M0, eval=F}
+plan(multicore)
+
+model_M0 <-
+   brm(data = M0_data,
+       family = binomial(link="cloglog"),
+       event|trials(1) ~ 0 + timebin + (0 + timebin | pid),
+       prior = priors_M0,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "models/model_M0")
 ```
 
-# 4. Visualize different prior distributions on the logit and cloglog scales.
+2582.7 seconds.
 
-To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
-Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function), to gain a sense of what prior cloglog values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale.
+Second, we can fit the same model using a dummy coding approach, as follows.
 
-## Simulate, convert, and fit.
+Prepare the data file, and specify priors.
 
-```{r simulate-convert}
-set.seed(11)
+Fit the model with dummy coding (M0d). 
 
-logit    <- function(x) { return( log(x/(1-x)) )}
-cloglog  <- function(x) { return( log(-1*log(1-x)) )}
 
-# generate draws from U(0,1) and convert
-dat <- 
-  tibble(p = runif(1e6, 0, 1)) %>% 
-  mutate(g = logit(p),
-         c = cloglog(p)) 
-# display
-dat %>%   
-  ggplot(aes(x = c)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
-```
+### Make assumptions to simplify the model
 
-```{r fit-skew-normal, eval=F}
-# fit model
-fit_skewN <-
-  brm(data = dat,
-      family = skew_normal(),
-      c ~ 1,
-      chains = 4, cores = 4,
-      file = "Tutorial_2_Bayesian/models/fit_skewN")
-```
+Instead of using a general specification of TIME, we can treat TIME as a continuous variable and make assumptions about how hazard changes over time within a trial. For example, we might assume that hazard changes in a linear + quadratic fashion over timebins within a trial.
 
-```{r}
-fit_skewN <- readRDS("Tutorial_2_Bayesian/models/fit_skewN.rds")
-summary(fit_skewN) 
-```
+Prepare the data file, and specify priors.
 
-Now we can reverse the process. We simulate from the skew-Normal distribution based on the posterior means for mu, sigma, and alpha, and then convert the results into the probability (i.e., discrete-time hazard) metric. 
+Fit the model with a continuous predictor (M0c).
 
-```{r check-results}
-set.seed(11)
 
-inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
 
-tibble(c = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22) ) %>% 
-  mutate(p = inverse_cloglog(c)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
-```
+## Model M1.  
 
-## Visualize how seven prior distributions on the logit and/or cloglog scales look on the probability scale.
+The next model we fit also includes our predictor variable prime-target congruency.
+First, we can use index coding for the categorical predictor.
 
-```{r plot-priors}
-logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
-logit    <- function(x) { return( log(x/(1-x)) )}
-inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
-cloglog    <- function(x) { return( log(-1*log(1-x)) )}
 
-set.seed(23)
+Second, if we do not want to use index coding, assume that hazard can vary in a linear+quadratic fashion over time, and relax the proportionality assumption, then we can fit the following model.
 
-# A N(0,4) prior on the logit and cloglog scales pushes mass to probabilities of 0 and 1
-pr1 <- tibble(prior = rnorm(1e6, mean = 0, sd = 4)) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-13, y=60000, label="N(0,4)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'A', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
+## Model M2.
 
-l1 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 4)) %>%  
-  mutate(p = logistic(log_odds)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  ggtitle("logistic(prior)") +
-  theme(panel.grid = element_blank())
+The next model we fit also includes our predictor trial number.
 
-c1 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 4)) %>% 
-  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  ggtitle("inverse_cloglog(prior)")+
-  theme(panel.grid = element_blank())
+First, we can categorise the continuous predictor trial number by grouping them in one of three "stages" of the experiment (stage 1 = trials 1 to 500; stage 2 = trials 501 to 1000; stage 3 = trials 1001 and later) and use index coding.
 
-# A N(0,2) prior on the logit and cloglog scales pushes mass to probabilities of 0 and/or 1
-pr2 <- tibble(prior = rnorm(1e6, mean = 0, sd = 2)) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-6, y=60000, label="N(0,2)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'B', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
 
-l2 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 2)) %>%  
-  mutate(p = logistic(log_odds)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
+Second, we can treat trial number and bin number as continuous variables, and center them.
 
-c2 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 2)) %>% 
-  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
+# Model comparisons.
 
-# A student-t(df=7.61) prior with scale 1.57 on the logit scale approximates a uniform distribution on the probability scale. This might be a good prior to use for the alpha parameters or Intercept in a logit-hazard model.
-pr3 <- tibble(prior = rt(1e6, df = 7.61)* 1.57) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-12, y=140000, label="t(7.61,0,1.57)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'C', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
 
-l3 <- tibble(log_odds = rt(1e6, df = 7.61)* 1.57) %>%  
-  mutate(p = logistic(log_odds)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
+# Model inference.
 
-c3 <- ggplot()
 
-# A Normal(0,1) prior on the logit scale gently regularizes p towards .5. This might be a good prior to use for the beta parameters in a logit-hazard model.
-pr4 <- tibble(prior = rnorm(1e6, mean = 0, sd = 1))%>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-3, y=60000, label="N(0,1)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'D', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
 
-l4 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 1))%>%  
-  mutate(p = logistic(log_odds)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  geom_vline(xintercept=logistic(0), color="red") +
-  theme(panel.grid = element_blank())
-
-c4 <- ggplot()
-
-# A skew_Normal(-0.59,1.26,-4.22) prior on the cloglog scale approxiates a uniform distr. on the hazard scale. This uninformative prior might be good for the alpha parameters or Intercept in a cloglog-hazard model.
-pr5 <- tibble(prior = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22)) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-5.5, y=55000, label="skew_N(-0.59,1.26,-4.22)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'E', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
-
-l5 <- ggplot()
-
-c5 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20)) %>% 
-  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
-
-# The skew_Normal(-1,1,-2) on the cloglog scale is a weakly informative prior for the alpha parameters or Intercept in a cloglog-hazard model because hazard values below .5 more likely than values above .5 in general.
-pr6 <- tibble(prior = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-5, y=55000, label="skew_N(-1,1,-2)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'F', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
-
-l6 <- ggplot()
-
-c6 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>% 
-  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
-
-# A skew_Normal(-0.2,0.71,-2.2) on the cloglog scale gently regularizes p towards .6321. This might be a good prior to use for the beta parameters in a cloglog-hazard model.
-pr7 <- tibble(prior = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>%  
-  ggplot(aes(x = prior)) +
-  geom_histogram(bins = 50) +
-  scale_y_continuous(NULL, breaks = NULL) +
-  annotate(geom="text", x=-3.2, y=55000, label="skew_N(-0.2,.71,-2.2)",
-              color="red", size=6) +
-  annotate(geom = 'text', label = 'G', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
-  theme(panel.grid = element_blank())
-
-l7 <- ggplot()
-
-c7 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>% 
-  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
-  ggplot(aes(x = p)) +
-  geom_histogram(bins = 50) +
-  geom_vline(xintercept=inverse_cloglog(0), color = "red") +
-  scale_y_continuous(NULL, breaks = NULL) +
-  theme(panel.grid = element_blank())
-
-(l1 + pr1 + c1) / (l2 + pr2 + c2) / (l3 + pr3 + c3) / (l4 + pr4 + c4)/ (l5 + pr5 + c5) / (l6 + pr6 + c6) / (l7 + pr7 + c7)
-```
-
-```{r save-plot-priors, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi=300)
-```
-
-# 5. Fit hazard models.
-
-## Model M1: general specification of TIME in the baseline condition (blank prime), and main effects of prime type, and trial number.
 
 ### Prepare data for M1
 
@@ -862,3 +699,263 @@ make_fitted(model_M4, scale = "response") %>%
 ```{r save-plot-fit-hazard, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M4effects_subject6.png", width = 10, height = 10, dpi = 300)
 ```
+
+# 3. Plot the logit and complementary log-log (cloglog) link functions.
+
+```{r plot-links}
+probability <- (1:99999)/100000
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog         <- function(x) { return( log(-1*log(1-x)) )}
+
+cloglog_prob <- cloglog(probability)
+logit_prob <- logit(probability)
+dataplot <- cbind(probability,cloglog_prob,logit_prob)
+
+ggplot() +
+  geom_hline(yintercept=0, color="white") +
+  geom_line(data=dataplot,aes(y=logit_prob,x=probability,colour="logit"),linewidth=1) +
+  geom_line(data=dataplot,aes(y=cloglog_prob,x=probability,colour="cloglog"),linewidth=1) +
+  scale_color_manual(name = "Link function:", values = c("logit" = "darkblue", "cloglog" = "red")) +
+  geom_vline(xintercept = logistic(0), linetype="dotted", linewidth = 0.3) +   
+  geom_vline(xintercept = inverse_cloglog(0), linetype="dotted", linewidth = 0.3) +
+  annotate("text", x = logistic(0)-.02, y = -6, label = "logistic(0) = 0.5", angle = 90, size=4) +
+  annotate("text", x = inverse_cloglog(0)+.02, y = -6, label = "inverse_cloglog(0) = 0.6321", angle=90,size=4) +
+  scale_x_continuous(n.breaks=10, limits = c(0,1), ) +
+  labs(x = "Probability",
+        y = "logit or cloglog scale") +
+  theme(panel.grid = element_blank(),
+        axis.text=element_text(size=16),
+        axis.title=element_text(size=18),
+      #  legend.position="top",
+        legend.text = element_text(size=18),
+      legend.position = "inside",
+        legend.position.inside=c(.2,.75),
+      legend.background = element_rect(fill="white") )
+```
+
+```{r save-plot-links, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 8, height = 8, dpi = 300)
+```
+
+# 4. Visualize different prior distributions on the logit and cloglog scales.
+
+To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
+Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function), to gain a sense of what prior cloglog values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale.
+
+## Simulate, convert, and fit.
+
+```{r simulate-convert}
+set.seed(11)
+
+logit    <- function(x) { return( log(x/(1-x)) )}
+cloglog  <- function(x) { return( log(-1*log(1-x)) )}
+
+# generate draws from U(0,1) and convert
+dat <- 
+  tibble(p = runif(1e6, 0, 1)) %>% 
+  mutate(g = logit(p),
+         c = cloglog(p)) 
+# display
+dat %>%   
+  ggplot(aes(x = c)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+```
+
+```{r fit-skew-normal, eval=F}
+# fit model
+fit_skewN <-
+  brm(data = dat,
+      family = skew_normal(),
+      c ~ 1,
+      chains = 4, cores = 4,
+      file = "Tutorial_2_Bayesian/models/fit_skewN")
+```
+
+```{r}
+fit_skewN <- readRDS("Tutorial_2_Bayesian/models/fit_skewN.rds")
+summary(fit_skewN) 
+```
+
+Now we can reverse the process. We simulate from the skew-Normal distribution based on the posterior means for mu, sigma, and alpha, and then convert the results into the probability (i.e., discrete-time hazard) metric. 
+
+```{r check-results}
+set.seed(11)
+
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+
+tibble(c = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22) ) %>% 
+  mutate(p = inverse_cloglog(c)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+```
+
+## Visualize how seven prior distributions on the logit and/or cloglog scales look on the probability scale.
+
+```{r plot-priors}
+logistic <- function(x) { return( 1/(1+exp(-1*x)) )}
+logit    <- function(x) { return( log(x/(1-x)) )}
+inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
+cloglog    <- function(x) { return( log(-1*log(1-x)) )}
+
+set.seed(23)
+
+# A N(0,4) prior on the logit and cloglog scales pushes mass to probabilities of 0 and 1
+pr1 <- tibble(prior = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-13, y=60000, label="N(0,4)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'A', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l1 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 4)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("logistic(prior)") +
+  theme(panel.grid = element_blank())
+
+c1 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 4)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  ggtitle("inverse_cloglog(prior)")+
+  theme(panel.grid = element_blank())
+
+# A N(0,2) prior on the logit and cloglog scales pushes mass to probabilities of 0 and/or 1
+pr2 <- tibble(prior = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-6, y=60000, label="N(0,2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'B', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l2 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 2)) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c2 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# A student-t(df=7.61) prior with scale 1.57 on the logit scale approximates a uniform distribution on the probability scale. This might be a good prior to use for the alpha parameters or Intercept in a logit-hazard model.
+pr3 <- tibble(prior = rt(1e6, df = 7.61)* 1.57) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-12, y=140000, label="t(7.61,0,1.57)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'C', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l3 <- tibble(log_odds = rt(1e6, df = 7.61)* 1.57) %>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+c3 <- ggplot()
+
+# A Normal(0,1) prior on the logit scale gently regularizes p towards .5. This might be a good prior to use for the beta parameters in a logit-hazard model.
+pr4 <- tibble(prior = rnorm(1e6, mean = 0, sd = 1))%>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3, y=60000, label="N(0,1)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'D', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l4 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 1))%>%  
+  mutate(p = logistic(log_odds)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  geom_vline(xintercept=logistic(0), color="red") +
+  theme(panel.grid = element_blank())
+
+c4 <- ggplot()
+
+# A skew_Normal(-0.59,1.26,-4.22) prior on the cloglog scale approxiates a uniform distr. on the hazard scale. This uninformative prior might be good for the alpha parameters or Intercept in a cloglog-hazard model.
+pr5 <- tibble(prior = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-5.5, y=55000, label="skew_N(-0.59,1.26,-4.22)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'E', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l5 <- ggplot()
+
+c5 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.20)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# The skew_Normal(-1,1,-2) on the cloglog scale is a weakly informative prior for the alpha parameters or Intercept in a cloglog-hazard model because hazard values below .5 more likely than values above .5 in general.
+pr6 <- tibble(prior = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-5, y=55000, label="skew_N(-1,1,-2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'F', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l6 <- ggplot()
+
+c6 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-1, sigma = 1, alpha = -2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+# A skew_Normal(-0.2,0.71,-2.2) on the cloglog scale gently regularizes p towards .6321. This might be a good prior to use for the beta parameters in a cloglog-hazard model.
+pr7 <- tibble(prior = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>%  
+  ggplot(aes(x = prior)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  annotate(geom="text", x=-3.2, y=55000, label="skew_N(-0.2,.71,-2.2)",
+              color="red", size=6) +
+  annotate(geom = 'text', label = 'G', x = -Inf, y = Inf, hjust = 0, vjust = 1, size=8)+
+  theme(panel.grid = element_blank())
+
+l7 <- ggplot()
+
+c7 <- tibble(cloglog_prob = rskew_normal(1e6, mu=-0.2, sigma = .71, alpha = -2.2)) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept=inverse_cloglog(0), color = "red") +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
+
+(l1 + pr1 + c1) / (l2 + pr2 + c2) / (l3 + pr3 + c3) / (l4 + pr4 + c4)/ (l5 + pr5 + c5) / (l6 + pr6 + c6) / (l7 + pr7 + c7)
+```
+
+```{r save-plot-priors, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi=300)
+```
+
