@@ -23,7 +23,7 @@ We also plot the logit and cloglog link functions, and illustrate how various pr
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel")
+         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -444,38 +444,435 @@ loo(model_M1)$diagnostics %>%
   theme(panel.grid = element_blank())
 ```
 
-## Posterior distributions of the parameters
+## Posterior distributions of the population-level parameters of M1
 
+Wrangle the posterior draws.
 
+```{r}
+post <- as_draws_df(model_M1) %>% 
+  select(-lp__) %>% 
+  as_tibble()
+
+post_summary <- posterior_summary(model_M1, robust = TRUE)
+post_summary[1:30,]
+
+post_qi_b <- post %>%
+  select(starts_with("b_")) %>%
+  pivot_longer(everything()) %>%
+  group_by(name) %>% 
+  median_qi(value) %>% 
+  arrange(name)
+head(post_qi_b) # 30 "fixed" effects 
+```
+
+Visualise fixed effects.
+
+```{r}
+tidy_fixed <- post %>% 
+  select(starts_with("b_"), .chain, .iteration, .draw) %>% 
+  rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
+  pivot_longer(-c(chain, draw, iter)) %>% 
+  mutate(timebin = str_sub(name,10,11),
+         timebin = factor(str_remove(timebin,":"),levels=c(6:15)),
+         condition = str_sub(name,17,18),
+         condition = factor(str_remove(condition,"e"),
+                            levels=c(1,2,3),
+                            labels=c("blank","congruent","incongruent")))
+head(tidy_fixed)
+tail(tidy_fixed)
+
+# plot
+p_tidy_fixed <- ggplot(tidy_fixed, aes(x = timebin, y = value, fill=condition)) +  
+  stat_halfeye(alpha=0.7) +
+  labs(title = 'Posterior distributions for "fixed" effects\nin Model M1',
+       x = "time bin", y = "cloglog-hazard") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+   theme(axis.text.x = element_text(angle=90)) +
+  facet_wrap(~condition)
+p_tidy_fixed
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_postdistr.png", width = 10, height = 8, dpi = 800)
+```
 
 ## Expected value of the posterior predictive distribution
 
-We can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant, and for each participant in the data set.
+We can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant, for each participant in the data set, and for a brand new hypothetical participant.
 
-Figure X 
+For the average participant, using add_epred_draws().
+
+```{r}
+dat_M1 <- as_tibble(model_M1$data)
+
+epreds_grand <- dat_M1 %>% 
+  data_grid(timebin, prime)  %>% 
+  add_epred_draws(model_M1, re_formula = NA) %>% 
+  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  ungroup()
+```
+
+Summarize and plot predicted hazard values.
+
+```{r}
+epreds_grand %>% group_by(timebin,prime) %>% mean_qi()
+```
+
+```{r}
+ ggplot(epreds_grand, aes(x=timebin, y=.epred, 
+                       fill=prime, color=prime)) +
+    stat_lineribbon(alpha = 0.5, .width = .95) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(0,.6)) +
+    labs(y = "predicted hazard") +
+    ggtitle("Average participant")
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_pred_grand.png", width = 10, height = 8, dpi = 800)
+```
+
+Again, for the average participant, but using posterior draws.
+
+```{r}
+tidy_fixed %>%
+  mutate(haz = 1-exp((-1)*exp(value))) %>% # inverse cloglog
+  
+ggplot(aes(x=timebin, y=haz, 
+                       fill=condition, color=condition)) +
+    stat_lineribbon(alpha = 0.5, .width = .95) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(0,.6)) +
+    labs(y = "predicted hazard") +
+    ggtitle("Average participant")
+```
+
+Second, for each participant in the data set.
+
+```{r}
+epreds_pid <- dat_M1 %>% 
+  data_grid(pid,timebin, prime)  %>% 
+  add_epred_draws(model_M1, re_formula = NULL) %>% 
+  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  ungroup()
+```
+
+Summarize and plot predicted hazard values.
+
+```{r}
+epreds_pid %>% group_by(pid,timebin,prime) %>% mean_qi()
+```
+
+```{r}
+ ggplot(epreds_pid, aes(x=timebin, y=.epred, 
+                       fill=prime, color=prime)) +
+    stat_lineribbon(alpha = 0.5, .width = .95) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(0,1)) +
+    labs(y = "predicted hazard") +
+    ggtitle("Each participant (N = 6)") +
+    facet_wrap(~pid, ncol=3)
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_pred_pid.png", width = 10, height = 8, dpi = 800)
+```
+
+Third, for a completely new hypothetical participant.
+
+```{r}
+epreds_pid_new <- 
+  posterior_epred(model_M1, 
+                  newdata = expand_grid(timebin=6:15,prime=1:3,pid=7), 
+                  re_formula = NULL, 
+                  allow_new_levels=T, 
+                  sample_new_levels = "gaussian") %>% 
+  as_tibble %>%
+  mutate(draw = 1:n()) %>%
+  pivot_longer(V1:V30,values_to = ".epred", names_to = "condition") %>%
+  
+  mutate(prime = factor(rep(c(1,2,3), 10*8000), levels=c(1,2,3),labels=c("blank","congruent","incongruent")),
+         timebin = factor(rep(rep(c(6:15),each=3),8000),levels=c(6:15)  )) %>%
+  ungroup()
+```
+
+```{r}
+epreds_pid_new <- dat_M1 %>% 
+  data_grid(timebin, prime)  %>%
+  mutate(pid = 7) %>%
+  add_epred_draws(model_M1, re_formula = NULL, allow_new_levels=T,    sample_new_levels = "gaussian") %>% 
+  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  ungroup()
+```
+
+Summarize and plot predicted hazard values.
+
+```{r}
+epreds_pid_new %>% group_by(pid,timebin,prime) %>% mean_qi()
+```
+
+```{r}
+ ggplot(epreds_pid_new, aes(x=timebin, y=.epred, 
+                       fill=prime, color=prime)) +
+    stat_lineribbon(alpha = 0.5, .width = .95) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(0,1)) +
+    labs(y = "predicted hazard") +
+    ggtitle("A brand new hypothetical participant") 
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_pred_pid_new.png", width = 10, height = 8, dpi = 800)
+```
+
 
 ### Grand average marginal effects
 
+We are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
 
+```{r}
+epreds_grand_diffs <- epreds_grand %>%
+  pivot_wider(id_cols = c(timebin, .draw),
+              names_from = "prime",
+              values_from = ".epred") %>% #80000 x 5
+  mutate(`congruent minus blank` = congruent - blank,
+         `incongruent minus blank` = incongruent -  blank) %>% 
+  select(-c(blank,congruent,incongruent)) %>% 
+  pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
+               names_to = "contrast",
+               values_to = "pred_haz") 
+
+epreds_grand_diffs # 160 000 rows 
+```
+
+Summarize and plot.
+
+```{r}
+epreds_grand_diffs %>%
+  group_by(contrast,timebin) %>%
+    mean_qi(.width = c(.95)) %>%
+  arrange(contrast,timebin,.width)
+```
+
+
+!!!!!  Make a table ...
+
+
+```{r}
+ ggplot(epreds_grand_diffs, aes(x=timebin, y=pred_haz, 
+                       fill=contrast)) +
+  stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.8,.95)) +
+ # stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95))+
+  geom_hline(yintercept = 0, color = "red", lty = 3) +
+  scale_y_continuous(limits=c(-0.5,0.3)) +
+  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  theme(axis.text.x = element_text(angle=90)) +
+  labs(y = "difference in predicted hazard") +
+  ggtitle("Grand average marginal effect") +
+  facet_wrap(~contrast)
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_grand_AME.png", width = 10, height = 8, dpi = 800)
+```
+
+Note that these grand AMEs can also be calculated based on the posterior draws.
+
+```{r}
+post %>% # 8000 x 30 = 240000
+  mutate_all(function(x){1-exp((-1)*exp(x))}) %>%
+  mutate(bin6_cb = `b_timebin6:prime2` - `b_timebin6:prime1`,
+         bin7_cb = `b_timebin7:prime2` - `b_timebin7:prime1`,
+         bin8_cb = `b_timebin8:prime2` - `b_timebin8:prime1`,
+         bin9_cb = `b_timebin9:prime2` - `b_timebin9:prime1`,
+         bin10_cb = `b_timebin10:prime2` - `b_timebin10:prime1`,
+         bin11_cb = `b_timebin11:prime2` - `b_timebin11:prime1`,
+         bin12_cb = `b_timebin12:prime2` - `b_timebin12:prime1`,
+         bin13_cb = `b_timebin13:prime2` - `b_timebin13:prime1`,
+         bin14_cb = `b_timebin14:prime2` - `b_timebin14:prime1`,
+         bin15_cb = `b_timebin15:prime2` - `b_timebin15:prime1`,
+         bin6_ib = `b_timebin6:prime3` - `b_timebin6:prime1`,
+         bin7_ib = `b_timebin7:prime3` - `b_timebin7:prime1`,
+         bin8_ib = `b_timebin8:prime3` - `b_timebin8:prime1`,
+         bin9_ib = `b_timebin9:prime3` - `b_timebin9:prime1`,
+         bin10_ib = `b_timebin10:prime3` - `b_timebin10:prime1`,
+         bin11_ib = `b_timebin11:prime3` - `b_timebin11:prime1`,
+         bin12_ib = `b_timebin12:prime3` - `b_timebin12:prime1`,
+         bin13_ib = `b_timebin13:prime3` - `b_timebin13:prime1`,
+         bin14_ib = `b_timebin14:prime3` - `b_timebin14:prime1`,
+         bin15_ib = `b_timebin15:prime3` - `b_timebin15:prime1`) %>%
+  select(starts_with("bin"))  %>% # 8000 x 20
+  
+  pivot_longer(cols = bin6_cb:bin15_ib, names_to = "condition", values_to = "haz_diff") %>%
+  mutate(bin = str_sub(condition,4,5),
+         bin = str_remove(bin,"_"),
+         bin = factor(bin, levels=c(6:15)),
+         comp = str_sub(condition,6,8),
+         comp = str_remove(comp,"_"),
+         contrast = ifelse(comp == "cb", "congruent minus blank", "incongruent minus blank")) %>% 
+  
+  ggplot(aes(x=bin, y = haz_diff, fill = contrast)) +
+    stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
+    geom_hline(yintercept = 0, color = "red", lty = 3) +
+    scale_y_continuous(limits=c(-0.5,0.3)) +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    theme(axis.text.x = element_text(angle=90)) +
+    labs(y = "difference in predicted hazard", x = "timebin") +
+    ggtitle("Grand average marginal effect") +
+    facet_wrap(~contrast)
+```
 
 ### Subject-specific average marginal effects
 
+To calculate the subject-specific AMEs for each time bin, we create contrasts between the conditional means.
 
-And at the group level:
+```{r}
+epreds_pid_diffs <- epreds_pid %>%
+  pivot_wider(id_cols = c(pid,timebin, .draw),
+              names_from = "prime",
+              values_from = ".epred") %>% #80000 x 5
+  mutate(`congruent minus blank` = congruent - blank,
+         `incongruent minus blank` = incongruent -  blank) %>% 
+  select(-c(blank,congruent,incongruent)) %>% 
+  pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
+               names_to = "contrast",
+               values_to = "pred_haz") 
+epreds_pid_diffs # 160 000 rows 
+```
+
+Summarize and plot the contrasts in predicted hazard values.
+
+```{r}
+epreds_pid_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
+```
+
+```{r}
+ ggplot(epreds_pid_diffs, aes(x=timebin, y=pred_haz, 
+                       fill=contrast, color=contrast)) +
+    stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.95)) +
+    #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
+    geom_hline(yintercept = 0, color = "red", lty = 3) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(-0.6,0.6)) +
+    labs(y = "difference in predicted hazard") +
+    ggtitle("Subject-specific AMEs") +
+    facet_wrap(~pid, ncol=3)
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_pid_AMEs.png", width = 10, height = 8, dpi = 800)
+```
 
 
+[[remove next section....]]
+And check whether an average of subject-specific AMEs is equal to the grand AME... NO !!!
 
+```{r}
+epreds_pid_diffs_av <- epreds_pid_diffs %>% group_by(timebin,contrast,.draw) %>%
+  mutate(average_condmeans = mean(pred_haz))
+```
+
+```{r}
+ ggplot(epreds_pid_diffs_av, aes(x=timebin, y=pred_haz, 
+                       fill=contrast)) +
+  stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.8,.95)) +
+ # stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95))+
+  geom_hline(yintercept = 0, color = "red", lty = 3) +
+  scale_y_continuous(limits=c(-0.5,0.3)) +
+  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  theme(axis.text.x = element_text(angle=90)) +
+  labs(y = "difference in predicted hazard") +
+  ggtitle("Average of subject-specific AMEs") +
+  facet_wrap(~contrast)
+```
+
+### AMEs for a brand new hypothetical participant
+
+```{r}
+epreds_pid_new_diffs <- epreds_pid_new %>%
+  pivot_wider(id_cols = c(pid,timebin, .draw),
+              names_from = "prime",
+              values_from = ".epred") %>% #80000 x 5
+  mutate(`congruent minus blank` = congruent - blank,
+         `incongruent minus blank` = incongruent -  blank) %>% 
+  select(-c(blank,congruent,incongruent)) %>% 
+  pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
+               names_to = "contrast",
+               values_to = "pred_haz") 
+epreds_pid_new_diffs # 160 000 rows 
+```
+
+Summarize and plot the contrasts in predicted hazard values.
+
+```{r}
+epreds_pid_new_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
+```
+
+```{r}
+ ggplot(epreds_pid_new_diffs, aes(x=timebin, y=pred_haz, 
+                       fill=contrast, color=contrast)) +
+    stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.95)) +
+    #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
+    geom_hline(yintercept = 0, color = "red", lty = 3) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(-0.7,0.7)) +
+    labs(y = "difference in predicted hazard") +
+    ggtitle("AMEs for a brand new\nhypothetical participant") +
+    facet_wrap(~contrast)
+```
+
+```{r save-post, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1_pid_new_AMEs.png", width = 10, height = 8, dpi = 800)
+```
 
 ## Example conclusions for model M1.
 
-What can we conclude from model M1 about our research question, i.e., what is the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which time bins does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of xxx ms)?
+What can we conclude from model M1 about our research question, i.e., what is the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of xxx ms)?
 
+We can base our conclusion on the grand AMEs of congruent and incongruent primes in each bin. The contrast "congruent minus blank" was estimated to be 0.0925 hazard units in bin 6 (95% CrI = [0.0411, 0.183]), and 0.152 hazard units in bin 7 (95% CrI = [0.0489, 0.262]). For the other bins, the 95% credible interval contained zero.
+The contrast "incongruent minus blank" was estimated to be 0.0943 hazard units in bin 6 (95% CrI = [0.0322, 0.208]), -0.204 hazard units in bin 9 (95% CrI = [-0.331, -0.0769]), -0.275 hazard units in bin 10 (95% CrI = [-0.45, -0.0513]), and -0.213 hazard units in bin 11 (95% CrI = [-0.377, -0.0137]). For the other bins, the 95% credible interval contained zero.
 
+There are thus two phases of performance for the average subject between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440].
 
+The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
+For example, here are the proportions that each contrast is larger and smaller than 0:
 
+```{r}
+pabove <- epreds_grand_diffs %>% group_by(timebin,contrast) %>%
+    summarize(prop_above = mean(pred_haz > 0)) %>% arrange(contrast,timebin)
+pbelow <- epreds_grand_diffs %>% group_by(timebin,contrast) %>%
+    summarize(prop_below = mean(pred_haz < 0)) %>% arrange(contrast,timebin)
+pabove %>% inner_join(pbelow, by = c("timebin","contrast"))
+```
 
+Thus the probability that the contrast "congruent minus blank" is larger than 0, is larger than .80 in bins 6 to 9. And the probability that the contrast "incongruent minus blank" is smaller than 0, is larger than .80 in bins 8 to 13.
 
-
+#####################
 
 ### Prepare data for M1
 
