@@ -661,15 +661,16 @@ epreds_grand_diffs # 160 000 rows
 Summarize and plot.
 
 ```{r}
-epreds_grand_diffs %>%
+table <- epreds_grand_diffs %>%
   group_by(contrast,timebin) %>%
     mean_qi(.width = c(.95)) %>%
-  arrange(contrast,timebin,.width)
+  arrange(contrast,timebin,.width) %>%
+  select(-c(.width,.point,.interval))
 ```
 
-
-!!!!!  Make a table ...
-
+```{r save-table-grand-AMEs, eval=F}
+write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
+```
 
 ```{r}
  ggplot(epreds_grand_diffs, aes(x=timebin, y=pred_haz, 
@@ -857,7 +858,7 @@ What can we conclude from model M1 about our research question, i.e., what is th
 We can base our conclusion on the grand AMEs of congruent and incongruent primes in each bin. The contrast "congruent minus blank" was estimated to be 0.0925 hazard units in bin 6 (95% CrI = [0.0411, 0.183]), and 0.152 hazard units in bin 7 (95% CrI = [0.0489, 0.262]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.0943 hazard units in bin 6 (95% CrI = [0.0322, 0.208]), -0.204 hazard units in bin 9 (95% CrI = [-0.331, -0.0769]), -0.275 hazard units in bin 10 (95% CrI = [-0.45, -0.0513]), and -0.213 hazard units in bin 11 (95% CrI = [-0.377, -0.0137]). For the other bins, the 95% credible interval contained zero.
 
-There are thus two phases of performance for the average subject between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440].
+There are thus two phases of performance for the average subject between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The effect of an incongruent prime thus depends on how much waiting time has passed since target onset.
 
 The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
 For example, here are the proportions that each contrast is larger and smaller than 0:
