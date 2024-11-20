@@ -16,7 +16,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (prime = blank, congruent, or incongruent). We compare models using WAIC and LOO, and interpret parameter estimates for one model. 
+Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (prime = blank, congruent, or incongruent). We then compare models using WAIC and LOO, and interpret parameter estimates for one model. 
 We also plot the logit and cloglog link functions, and illustrate how various prior distributions on the logit and cloglog scales look on the original probability (i.e., hazard) scale. 
 
 # 1. Load the libraries that we will be using.
@@ -102,7 +102,7 @@ ptb_data <- ptb_data %>%
 # create categorical predictor "prime" with index-coding
          prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
          prime = factor(prime,levels=c(1,2,3))) %>%
-  select(pid,trial,trial_c,stage,condition,prime,period,period_9,timebin,d6:d15)
+  select(pid,event,trial,trial_c,stage,condition,prime,period,period_9,timebin,d6:d15)
 
 head(ptb_data,n=17)
 summary(ptb_data)
@@ -114,27 +114,26 @@ summary(ptb_data)
 
 The first model we fit is a "random intercepts" model, where we fit a single intercept for each timebin and allow each intercept to vary between participants.
 This is a general specification of TIME, and can be used if we do not want to make assumptions about how cloglog-hazard changes over time (within a trial). 
-There are two ways to implement such a model. First, we can use the index-coding approach, as .. .by McElreath...
+There are two ways to implement such a model. First, we can use the index-coding approach, which supplies an intercept for each level of TIME.
 
 Prepare the data file, and specify priors.
 
 ```{r data-priors-M0}
-# remove unnecessary columns before fitting a model
 M0_data <- ptb_data %>% select(pid, event, timebin)
 
 priors_M0 <- c(
-  set_prior("skew_normal(-0.59,1.26,-4.22)", class = "b"), # flat prior for p
+  set_prior("skew_normal(-0.59,1.26,-4.22)", class = "b"), # See suppl. material 
   set_prior("normal(0, 1)", class = "sd"),                    
   set_prior("lkj(2)", class = "cor")                        
 )
 ```
 
-Fit the model (M0). old model M0d 
+Fit model M0.
 
-```{r fit-model-M0, eval=F}
+```{r fit-model-M0, eval=F} 
 plan(multicore)
 
-model_M0 <-
+model_M0 <-                     # wrong data file name
    brm(data = M0_data,
        family = binomial(link="cloglog"),
        event|trials(1) ~ 0 + timebin + (0 + timebin | pid),
@@ -142,49 +141,338 @@ model_M0 <-
        chains = 4, cores = 4, iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
        seed = 12, init = "0",
-       file = "models/model_M0")
+       file = "Tutorial_2_Bayesian/models/model_M0")
 ```
 
-2582.7 seconds.
+This took 43 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+
+```{r}
+model_M0 <- readRDS("Tutorial_2_Bayesian/models/model_M0.rds")
+summary(model_M0)
+formula(model_M0)
+plot(model_M0)
+```
 
 Second, we can fit the same model using a dummy coding approach, as follows.
 
 Prepare the data file, and specify priors.
 
-Fit the model with dummy coding (M0d). 
+```{r data-priors-M0d}
+M0d_data <- ptb_data %>% select(pid, event, d6:d8, d10:d15)
 
+priors_M0d <- c(
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d6"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d7"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d8"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d10"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d11"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d12"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d13"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d14"), 
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d15"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),
+  set_prior("normal(0, 1)", class = "sd"),  
+  set_prior("lkj(2)", class = "cor")  
+)
+```
+
+Fit the model with dummy coding (M0d).
+
+```{r fit-model-M0d, eval=F}
+plan(multicore)
+
+model_M0d <-            # bernouilli.  :(
+   brm(data = M0d_data,
+       family = bernoulli(link="cloglog"),
+       event ~ 0 + d6 + d7 + d8 + Intercept + d10 + d11 + d12 + d13 + d14 + d15 + 
+                   (d6 + d7 + d8 + 1 + d10 + d11 + d12 + d13 + d14 + d15  | pid),
+       prior = priors_M0d,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M0d")
+```
+
+M0d took 77 minutes.
+
+```{r}
+model_M0d <- readRDS("Tutorial_2_Bayesian/models/model_M0d.rds")
+summary(model_M0d)
+formula(model_M0d)
+```
 
 ### Make assumptions to simplify the model
 
-Instead of using a general specification of TIME, we can treat TIME as a continuous variable and make assumptions about how hazard changes over time within a trial. For example, we might assume that hazard changes in a linear + quadratic fashion over timebins within a trial.
+Instead of using a general specification of TIME, we can treat TIME as a continuous variable and make assumptions about how hazard changes over time within a trial. For example, we might assume that hazard changes in a linear + quadratic fashion over time bins within a trial.
 
 Prepare the data file, and specify priors.
 
+```{r data-priors-M0c}
+M0c_data <- ptb_data %>% select(pid, event, period_9) %>%
+  mutate(period_9_sq = period_9^2,
+         period_9_cu = period_9^3)
+
+priors_M0c <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),      
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
+  set_prior("normal(0, 1)", class = "sd"),  
+  set_prior("lkj(2)", class = "cor")  
+)
+```
+
 Fit the model with a continuous predictor (M0c).
 
+```{r fit-model-M0c, eval=F}
+plan(multicore)
 
+model_M0c <-
+   brm(data = M0c_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + period_9 + period_9_sq + period_9_cu + 
+                          (0 + Intercept + period_9 + period_9_sq + period_9_cu  | pid),
+       prior = priors_M0c,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M0c")
+```
 
-## Model M1.  
+Model_M0c took about 144 minutes to run.
 
-The next model we fit also includes our predictor variable prime-target congruency.
+```{r}
+model_M0c <- readRDS("Tutorial_2_Bayesian/models/model_M0c.rds")
+summary(model_M0c)
+formula(model_M0c)
+```
+
+## Model M1. Adding our experimental manipulation.
+
+The next model we fit also includes our predictor variable prime type.
 First, we can use index coding for the categorical predictor.
 
+Prepare the data file, and specify priors.
 
-Second, if we do not want to use index coding, assume that hazard can vary in a linear+quadratic fashion over time, and relax the proportionality assumption, then we can fit the following model.
+```{r data-priors-M1}
+M1_data <- ptb_data %>% select(pid, event, timebin, prime) 
 
-## Model M2.
+priors_M1 <- c(
+  set_prior("skew_normal(-0.59,1.26,-4.22)", class = "b"), 
+  set_prior("normal(0, 1)", class = "sd"),                    
+  set_prior("lkj(2)", class = "cor")                        
+)
+```
 
-The next model we fit also includes our predictor trial number.
+Fit model M1.
 
-First, we can categorise the continuous predictor trial number by grouping them in one of three "stages" of the experiment (stage 1 = trials 1 to 500; stage 2 = trials 501 to 1000; stage 3 = trials 1001 and later) and use index coding.
+```{r fit-model-M1, eval=F}
+plan(multicore)
+
+model_M1 <-
+   brm(data = M1_data,
+       family = binomial(link="cloglog"),
+       event|trials(1) ~ 0 + timebin:prime  +
+                        (0 + timebin:prime | pid),
+       prior = priors_M1,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M1")
+```
+
+Model M1 took about 126 minutes to fit.
+
+```{r}
+model_M1 <- readRDS("Tutorial_2_Bayesian/models/model_M1.rds")
+summary(model_M1)
+formula(model_M1)
+```
+
+Second, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach and treat TIME as a continuous variable.
+For example, we may assume that hazard can change in a linear + quadratic + cubic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic + cubic fashion, and fit the following model (M1d).
+
+```{r data-priors-M1d}
+M1d_data <- ptb_data %>% select(pid, event, period_9, condition) %>%
+  
+priors_M1d <- c(
+  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),
+  set_prior("skew_normal(-1,1,-2)", class = "b", coef="Intercept"), 
+  set_prior("normal(0, 1)", class = "sd"),            
+  set_prior("lkj(2)", class = "cor")                  
+)
+```
+
+```{r fit-model-M1d, eval=F}
+plan(multicore)
+
+model_M1d <- 
+   brm(data = M1d_data,
+       family = binomial(link="cloglog"),
+       event | trials(1) ~ 0 + Intercept + 
+                           condition*period_9 + 
+                           condition*period_9_sq + 
+                           condition*period_9_cu +
+                           (1 + condition*period_9 +
+                           condition*period_9_sq +
+                           condition*period_9_cu | pid),
+       prior = priors_M1d,
+       chains = 4, cores = 4, iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+       seed = 12, init = "0",
+       file = "Tutorial_2_Bayesian/models/model_M1d")
+```
+
+Model_M1d took about 268 minutes to run. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+
+```{r}
+model_M1d <- readRDS("Tutorial_2_Bayesian/models/model_M1d.rds")
+summary(model_M1d)
+formula(model_M1d)
+```
+
+One could also fit a model with prime and period_9. However, to include interactions between a index coded categorical variable and a continuous variable in brm(), one has to switch to the non-linear syntax, as illustrated in the following model formula.
+
+```{r}
+bf(event|trials(1) ~ 0 + a + b * period_9 + c * period_9_sq,
+                 a ~ 0 + prime + (0 + prime |i| pid),
+                 b ~ 0 + prime + (0 + prime |i| pid),
+                 c ~ 0 + prime + (0 + prime |i| pid),
+                 nl = TRUE)
+```
+
+The priors can be set as follows.
+
+```{r priors-nonlinearsyntax}
+priors <- c(
+  prior(skew_normal(-0.59,1.26,-4.22), class = b, nlpar = a), 
+  prior(skew_normal(-0.2,.71,-2.2), class = b, nlpar = b), 
+  prior(skew_normal(-0.2,.71,-2.2), class = b, nlpar = c), 
+  prior(exponential(1), class = sd, group = pid, nlpar = a),
+  prior(exponential(1), class = sd, group = pid, nlpar = b),
+  prior(lkj(2), class = cor, group = pid)
+)
+```
+
+## Model M2. Including effects of trial number.
+
+Up until now, we have been working with one time scale, TIME or bin rank within a trial. While many cognitive processes play out on this short time scale (milliseconds to seconds), some play out on longer time scales (minutes to hours), e.g., learning processes.
+
+When we are interested in studying how the hazard of response occurence in our priming experiment also changes on a longer time scale, we can add trial number into the model formula. Here we simply illustrate some possibilities with index and reference coding.
+
+First, we can categorize the predictor trial number by grouping trials in one of three "stages" of the experiment (stage 1 = trials 1 to 500; stage 2 = trials 501 to 1000; stage 3 = trials 1001 and later) and use index coding (variable "stage" in ptb_data).
+
+```{r}
+event|trials(1) ~ 0 + timebin:prime:stage  + (0 + timebin:prime:stage | pid)
+```
+
+Second, we can treat trial number as a continuous variable, and make assumptions about the way hazard changes with trial number (e.g., linear, quadratic, etc.) for each combination of timebin and prime.
+
+```{r}
+bf(event|trials(1) ~ 0 + a + b * trial_c + c * trial_c_sq,
+                 a ~ 0 + timebin:prime + (0 + timebin:prime |i| pid),
+                 b ~ 0 + timebin:prime + (0 + timebin:prime |i| pid),
+                 c ~ 0 + timebin:prime + (0 + timebin:prime |i| pid),
+                 nl = TRUE)
+```
+
+Third, one can use dummy coding for prime type (variable "condition" in ptb_data), and treat TIME and trial number as continous variables.
+
+```{r}
+ bf(event | trials(1) ~ 0 + Intercept + 
+                          condition*period_9*trial_c + 
+                          condition*period_9*trial_c_sq + 
+                          condition*period_9_sq*trial_c +
+                          condition*period_9_sq*trial_c_sq +
+                          (1 +  condition*period_9*trial_c +
+                                condition*period_9*trial_c^2) + 
+                                condition*period_9_sq*trial_c +
+                                condition*period_9_sq*trial_c_sq  | pid)
+```
+
+# Compare models using loo and waic.
+
+The predictive accuracy of a set of models can be compared using WAIC and LOO.
+
+```{r compare-models}
+model_M0  <- readRDS("Tutorial_2_Bayesian/models/model_M0.rds")
+model_M0d <- readRDS("Tutorial_2_Bayesian/models/model_M0d.rds")
+model_M0c <- readRDS("Tutorial_2_Bayesian/models/model_M0c.rds")
+model_M1  <- readRDS("Tutorial_2_Bayesian/models/model_M1.rds")
+model_M1d <- readRDS("Tutorial_2_Bayesian/models/model_M1d.rds")
+```
+
+Using WAIC and LOO for comparing nonnested models.
+
+```{r add-criterion, eval=F}
+model_M0  <- add_criterion(model_M0, c("loo", "waic"))
+model_M0d <- add_criterion(model_M0d, c("loo", "waic"))
+model_M0c <- add_criterion(model_M0c, c("loo", "waic"))
+model_M1  <- add_criterion(model_M1, c("loo", "waic"))
+model_M1d <- add_criterion(model_M1d, c("loo", "waic"))
+```
+
+Compare all three models.
+
+```{r loo-compare}
+loo_compare(model_M0, model_M0d, model_M0c, model_M1, model_M1d, criterion = "loo") %>% print(simplify = F)
+loo_compare(model_M0, model_M0d, model_M0c, model_M1, model_M1d, criterion = "waic") %>% print(simplify = F)
+```
+
+```{r model-weights}
+model_weights(model_M0, model_M0d, model_M0c, model_M1, model_M1d, weights = "loo") %>% round(digits = 3)
+
+model_weights(model_M0, model_M0d, model_M0c, model_M1, model_M1d, weights = "waic") %>% round(digits = 3)
+```
+
+# Model inference for model M1.
+
+## Diagnostics
+
+The Pareto k estimates can be displayed as follows.
+
+```{r pareto}
+loo(model_M1)$diagnostics %>% 
+  data.frame() %>% 
+  # attach the `id` values
+  bind_cols(M1_data) %>% 
+  mutate(id = 1:n()) %>%
+  
+  ggplot(aes(x = id, y = pareto_k)) +
+  geom_point(alpha = 3/4) + 
+  geom_text(data = . %>% filter(pareto_k > .2),
+            aes(x = id + 2, label = id),
+            size = 3, hjust = 0) +
+  theme(panel.grid = element_blank())
+```
+
+## Posterior distributions of the parameters
 
 
-Second, we can treat trial number and bin number as continuous variables, and center them.
 
-# Model comparisons.
+## Expected value of the posterior predictive distribution
+
+We can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant, and for each participant in the data set.
+
+Figure X 
+
+### Grand average marginal effects
 
 
-# Model inference.
+
+### Subject-specific average marginal effects
+
+
+And at the group level:
+
+
+
+
+## Example conclusions for model M1.
+
+What can we conclude from model M1 about our research question, i.e., what is the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which time bins does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of xxx ms)?
+
+
+
+
 
 
 
@@ -872,7 +1160,12 @@ l3 <- tibble(log_odds = rt(1e6, df = 7.61)* 1.57) %>%
   scale_y_continuous(NULL, breaks = NULL) +
   theme(panel.grid = element_blank())
 
-c3 <- ggplot()
+c3 <- tibble(cloglog_prob = rt(1e6, df = 7.61)* 1.57) %>% 
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  theme(panel.grid = element_blank())
 
 # A Normal(0,1) prior on the logit scale gently regularizes p towards .5. This might be a good prior to use for the beta parameters in a logit-hazard model.
 pr4 <- tibble(prior = rnorm(1e6, mean = 0, sd = 1))%>%  
@@ -892,7 +1185,12 @@ l4 <- tibble(log_odds = rnorm(1e6, mean = 0, sd = 1))%>%
   geom_vline(xintercept=logistic(0), color="red") +
   theme(panel.grid = element_blank())
 
-c4 <- ggplot()
+c4 <- tibble(cloglog_prob = rnorm(1e6, mean = 0, sd = 1))%>%  
+  mutate(p = inverse_cloglog(cloglog_prob)) %>% 
+  ggplot(aes(x = p)) +
+  geom_histogram(bins = 50) +
+  scale_y_continuous(NULL, breaks = NULL) +
+ theme(panel.grid = element_blank())
 
 # A skew_Normal(-0.59,1.26,-4.22) prior on the cloglog scale approxiates a uniform distr. on the hazard scale. This uninformative prior might be good for the alpha parameters or Intercept in a cloglog-hazard model.
 pr5 <- tibble(prior = rskew_normal(1e6, mu=-0.59, sigma = 1.26, alpha = -4.22)) %>%  
