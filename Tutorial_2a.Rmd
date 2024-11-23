@@ -584,9 +584,8 @@ for(i in 1:N_obs){
   prior_pred <- add_predicted_draws(model_M0_lin_prior448, 
                                     newdata = newdata_prior, 
                                     summary=F, 
-                                    ndraws=NULL)
-  prior_pred <- prior_pred %>% 
-    mutate(obs = i)
+                                    ndraws=NULL) %>% 
+                mutate(obs = i)
   df_pred <- bind_rows(df_pred, prior_pred)
 }
 
@@ -879,21 +878,26 @@ First, for the average participant, using add_epred_draws().
 dat_M1 <- as_tibble(model_M1$data)
 
 epreds_grand <- dat_M1 %>% 
-  data_grid(timebin, prime)  %>% 
-  add_epred_draws(model_M1, re_formula = NA) %>% 
-  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  data_grid(timebin, prime) %>% 
+  add_epred_draws(model_M1, 
+                  re_formula = NA) %>% 
+  mutate(prime = factor(prime, 
+                        levels=c(1,2,3),
+                        labels=c("blank","congruent","incongruent"))) %>%
   ungroup()
 ```
 
 Summarize and plot predicted hazard values.
 
 ```{r}
-epreds_grand %>% group_by(timebin,prime) %>% mean_qi()
+epreds_grand %>% 
+  group_by(timebin,prime) %>% 
+  mean_qi()
 ```
 
 ```{r}
  ggplot(epreds_grand, aes(x=timebin, y=.epred, 
-                       fill=prime, color=prime)) +
+                          fill=prime, color=prime)) +
     stat_lineribbon(alpha = 0.5, .width = .95) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
@@ -915,7 +919,7 @@ tidy_fixed %>%
   mutate(haz = 1-exp((-1)*exp(value))) %>% # inverse cloglog
   
 ggplot(aes(x=timebin, y=haz, 
-                       fill=condition, color=condition)) +
+           fill=condition, color=condition)) +
     stat_lineribbon(alpha = 0.5, .width = .95) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
@@ -930,16 +934,21 @@ Second, for each participant in the data set.
 
 ```{r}
 epreds_pid <- dat_M1 %>% 
-  data_grid(pid,timebin, prime)  %>% 
-  add_epred_draws(model_M1, re_formula = NULL) %>% 
-  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  data_grid(pid,timebin, prime) %>% 
+  add_epred_draws(model_M1, 
+                  re_formula = NULL) %>% 
+  mutate(prime = factor(prime, 
+                        levels=c(1,2,3),
+                        labels=c("blank","congruent","incongruent"))) %>%
   ungroup()
 ```
 
 Summarize and plot predicted hazard values.
 
 ```{r}
-epreds_pid %>% group_by(pid,timebin,prime) %>% mean_qi()
+epreds_pid %>% 
+  group_by(pid,timebin,prime) %>% 
+  mean_qi()
 ```
 
 ```{r}
@@ -965,32 +974,45 @@ Third, for a completely new hypothetical participant.
 ```{r}
 epreds_pid_new <- 
   posterior_epred(model_M1, 
-                  newdata = expand_grid(timebin=6:15,prime=1:3,pid=7), 
+                  newdata = expand_grid(timebin=6:15,
+                                        prime=1:3,
+                                        pid=7), 
                   re_formula = NULL, 
                   allow_new_levels=T, 
                   sample_new_levels = "gaussian") %>% 
   as_tibble %>%
   mutate(draw = 1:n()) %>%
-  pivot_longer(V1:V30,values_to = ".epred", names_to = "condition") %>%
-  
-  mutate(prime = factor(rep(c(1,2,3), 10*8000), levels=c(1,2,3),labels=c("blank","congruent","incongruent")),
-         timebin = factor(rep(rep(c(6:15),each=3),8000),levels=c(6:15)  )) %>%
+  pivot_longer(V1:V30,
+               values_to = ".epred", 
+               names_to = "condition") %>%
+  mutate(prime = factor(rep(c(1,2,3), 10*8000), 
+                        levels=c(1,2,3),
+                        labels=c("blank","congruent","incongruent")),
+         timebin = factor(rep(rep(c(6:15),each=3),8000),
+                          levels=c(6:15))) %>%
   ungroup()
 ```
 
 ```{r}
 epreds_pid_new <- dat_M1 %>% 
-  data_grid(timebin, prime)  %>%
+  data_grid(timebin, prime) %>%
   mutate(pid = 7) %>%
-  add_epred_draws(model_M1, re_formula = NULL, allow_new_levels=T,    sample_new_levels = "gaussian") %>% 
-  mutate(prime = factor(prime, levels=c(1,2,3),labels=c("blank","congruent","incongruent"))) %>%
+  add_epred_draws(model_M1, 
+                  re_formula = NULL, 
+                  allow_new_levels=T,    
+                  sample_new_levels = "gaussian") %>% 
+  mutate(prime = factor(prime, 
+                        levels=c(1,2,3),
+                        labels=c("blank","congruent","incongruent"))) %>%
   ungroup()
 ```
 
 Summarize and plot predicted hazard values.
 
 ```{r}
-epreds_pid_new %>% group_by(pid,timebin,prime) %>% mean_qi()
+epreds_pid_new %>% 
+  group_by(pid,timebin,prime) %>% 
+  mean_qi()
 ```
 
 ```{r}
@@ -1009,7 +1031,6 @@ epreds_pid_new %>% group_by(pid,timebin,prime) %>% mean_qi()
 ```{r save-post, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1_pred_pid_new.png", width = 10, height = 8, dpi = 800)
 ```
-
 
 ### Grand average marginal effects
 
@@ -1047,9 +1068,13 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
 ```{r}
  ggplot(epreds_grand_diffs, aes(x=timebin, y=pred_haz, 
                        fill=contrast)) +
-  stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.8,.95)) +
+  stat_lineribbon(alpha = 0.5, 
+                  point_interval = "mean_qi",
+                  .width=c(.8,.95)) +
  # stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95))+
-  geom_hline(yintercept = 0, color = "red", lty = 3) +
+  geom_hline(yintercept = 0, 
+             color = "red", 
+             lty = 3) +
   scale_y_continuous(limits=c(-0.5,0.3)) +
   scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
   scale_fill_brewer(palette = "Dark2") +
@@ -1091,17 +1116,23 @@ post %>% # 8000 x 30 = 240000
          bin15_ib = `b_timebin15:prime3` - `b_timebin15:prime1`) %>%
   select(starts_with("bin"))  %>% # 8000 x 20
   
-  pivot_longer(cols = bin6_cb:bin15_ib, names_to = "condition", values_to = "haz_diff") %>%
+  pivot_longer(cols = bin6_cb:bin15_ib, 
+               names_to = "condition", 
+               values_to = "haz_diff") %>%
   mutate(bin = str_sub(condition,4,5),
          bin = str_remove(bin,"_"),
          bin = factor(bin, levels=c(6:15)),
          comp = str_sub(condition,6,8),
          comp = str_remove(comp,"_"),
-         contrast = ifelse(comp == "cb", "congruent minus blank", "incongruent minus blank")) %>% 
+         contrast = ifelse(comp == "cb", 
+         "congruent minus blank", "incongruent minus blank")) %>% 
   
-  ggplot(aes(x=bin, y = haz_diff, fill = contrast)) +
-    stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
-    geom_hline(yintercept = 0, color = "red", lty = 3) +
+  ggplot(aes(x=bin, y=haz_diff, fill=contrast)) +
+    stat_halfeye(point_interval = "mean_qi",
+                 .width=c(.8,.95)) +
+    geom_hline(yintercept = 0, 
+               color = "red", 
+               lty = 3) +
     scale_y_continuous(limits=c(-0.5,0.3)) +
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     scale_fill_brewer(palette = "Dark2") +
@@ -1185,16 +1216,16 @@ epreds_pid_diffs_av <- epreds_pid_diffs %>% group_by(timebin,contrast,.draw) %>%
 
 ```{r}
 epreds_pid_new_diffs <- epreds_pid_new %>%
-  pivot_wider(id_cols = c(pid,timebin, .draw),
+  pivot_wider(id_cols = c(pid,timebin,.draw),
               names_from = "prime",
-              values_from = ".epred") %>% #80000 x 5
+              values_from = ".epred") %>% 
   mutate(`congruent minus blank` = congruent - blank,
          `incongruent minus blank` = incongruent -  blank) %>% 
   select(-c(blank,congruent,incongruent)) %>% 
   pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
                names_to = "contrast",
                values_to = "pred_haz") 
-epreds_pid_new_diffs # 160 000 rows 
+epreds_pid_new_diffs 
 ```
 
 Summarize and plot the contrasts in predicted hazard values.
@@ -1206,7 +1237,9 @@ epreds_pid_new_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
 ```{r}
  ggplot(epreds_pid_new_diffs, aes(x=timebin, y=pred_haz, 
                        fill=contrast, color=contrast)) +
-    stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.95)) +
+    stat_lineribbon(alpha = 0.5, 
+                    point_interval = "mean_qi",
+                    .width=c(.95)) +
     #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
     geom_hline(yintercept = 0, color = "red", lty = 3) +
     scale_fill_brewer(palette = "Dark2") +
@@ -1225,9 +1258,9 @@ ggsave("Tutorial_2_Bayesian/figures/M1_pid_new_AMEs.png", width = 10, height = 8
 
 ## Example conclusions for model M1.
 
-What can we conclude from model M1 about our research question, i.e., what is the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of xxx ms)?
+What can we conclude from model M1 about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of xxx ms)?
 
-If we want to study the average effect of prime type on hazard, uncontaminated by interindividual differences, we can base our conclusion on the grand AMEs of congruent and incongruent primes in each bin. The contrast "congruent minus blank" was estimated to be 0.0925 hazard units in bin 6 (95% CrI = [0.0411, 0.183]), and 0.152 hazard units in bin 7 (95% CrI = [0.0489, 0.262]). For the other bins, the 95% credible interval contained zero.
+If we want to study the average effect of prime type on hazard, uncontaminated by inter-individual differences, we can base our conclusion on the grand AMEs of congruent and incongruent primes in each bin. The contrast "congruent minus blank" was estimated to be 0.0925 hazard units in bin 6 (95% CrI = [0.0411, 0.183]), and 0.152 hazard units in bin 7 (95% CrI = [0.0489, 0.262]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.0943 hazard units in bin 6 (95% CrI = [0.0322, 0.208]), -0.204 hazard units in bin 9 (95% CrI = [-0.331, -0.0769]), -0.275 hazard units in bin 10 (95% CrI = [-0.45, -0.0513]), and -0.213 hazard units in bin 11 (95% CrI = [-0.377, -0.0137]). For the other bins, the 95% credible interval contained zero. Note that we could also have calculated hazard ratios instead of hazard differences.
 
 There are thus two phases of performance for the average subject between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
@@ -1236,10 +1269,16 @@ The posterior distribution of each contrast can also be summarized by considerin
 For example, here are the proportions that each contrast is larger and smaller than 0:
 
 ```{r}
-pabove <- epreds_grand_diffs %>% group_by(timebin,contrast) %>%
-    summarize(prop_above = mean(pred_haz > 0)) %>% arrange(contrast,timebin)
-pbelow <- epreds_grand_diffs %>% group_by(timebin,contrast) %>%
-    summarize(prop_below = mean(pred_haz < 0)) %>% arrange(contrast,timebin)
+pabove <- epreds_grand_diffs %>% 
+  group_by(timebin,contrast) %>%
+  summarize(prop_above = mean(pred_haz > 0)) %>% 
+  arrange(contrast,timebin)
+
+pbelow <- epreds_grand_diffs %>% 
+  group_by(timebin,contrast) %>%
+  summarize(prop_below = mean(pred_haz < 0)) %>% 
+  arrange(contrast,timebin)
+
 pabove %>% inner_join(pbelow, by = c("timebin","contrast"))
 ```
 
@@ -1249,9 +1288,9 @@ Thus the probability that the contrast "congruent minus blank" is larger than 0,
 [[todo or not todo]]
 Plot of posterior distributions of sigma(timebinX:primeY) : check size differences between timebins and prime types? -> these are also population-level effects
 
-If we want to focus more on interindividual differences, we can study the subject-specific AMEs in Figure XX. While most participants show the grand AMEs, three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] - subject 2 also in bin (320,360]. This dip is also present in the AMEs for a brand new hypothetical participant.
+If we want to focus more on inter-individual differences, we can study the subject-specific AMEs in Figure XX. While most participants show the grand AMEs, three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] - subject 2 also in bin (320,360]. This dip is also present in the AMEs for a brand new hypothetical participant.
 
-Future studies could (a) increase the number of participants to estimate the porportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, Panis and Schmidt (ref) concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here:the target). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment.
+Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, Panis and Schmidt (ref) concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here:the target). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment.
 Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time. Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale (TIME). In Tutorial_2a.Rmd we provide a number of model formula that should get you going.
 
 #####################
