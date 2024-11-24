@@ -1,5 +1,5 @@
 ---
-title: "Tutorial_1a"
+title: "Tutorial 1a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
 output:
@@ -16,15 +16,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
-
-Content:
-
-1. Load libraries
-2. Read and wrangle data
-3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
-4. Extract info (life table, plots, ...) and create data files for fitting hazard and conditional accuracy models
-5. Optional: set up life tables and make plots for data aggregated across participants
+This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to calculate descriptive statistics. It uses functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
+To set up a life table, the user has to select a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (i.e., a cutoff time, or timeout). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
 
 # 1. Load the libraries that we will be using. 
 
@@ -34,40 +27,54 @@ pkg <- c("tidyverse", "patchwork")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# 2. Read and wrangle data
+Theme settings for ggplot.
 
-Read in the raw data from Panis and Schmidt (2016) - can be skipped.
+```{r plot-settings, results='hide'}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"))
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+# 2. Read and wrangle data.
+
+Read in the raw data file from Panis and Schmidt (2016) - can be skipped.
 
 ```{r read-raw-data}
-raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) # 9372 rows
-head(raw)
-#tail(raw)
-#glimpse(raw)
+raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", 
+                  delim="\t",
+                  col_names=T)
 ```
 
 Do some wrangling to get a simpler data set - can be skipped.
 
 ```{r wrangle-raw-data}
 # remove practice trials
-data <- raw %>% filter(practice==0) # 9240 experimental trials: 6 participants x 70 blocks x 22 trials-per-block
+data <- raw %>% filter(practice==0) # 9240 experimental trials: 6 subj x 70 blocks x 22 trials-per-block
 
 # remove unnecessary columns
 data <- data %>% select(-c(ss,practice,rd,form,task,primeduration,
-                                             blankduration,maskduration,targetduration,
-                                             void,target_dir,corresp,resperr))
+                           blankduration,maskduration,targetduration,
+                           void,target_dir,corresp,resperr))
+
 # look at trials where resp==0
-data %>% filter(resp==0) 
 data %>% filter(resp==0) %>% print(n=51)
 
 # remove trials with no response info if rt < 800 (800 was the response deadline in each trial):
 # the 46 trials where rt >= 800 and resp==0 are trials in which the subject did not respond; these should not be deleted because they will be treated as right-censored observations in EHA!
 # the remaining 5 trials of subject 1 should be removed (for some technical reason the resp (1 or 2) was not recorded; perhaps (s)he pressed both buttons at the same time...)
 sel = which(data$resp==0 & data$rt < 800)
-data <- data[-c(sel),] # 9235 rows
+data <- data[-c(sel),] 
 
 # keep only the no-mask trials
 data <- data %>% filter(mask_type == 0) %>%
-                 select(-mask_type) # 2757 rows and 8 variables
+                 select(-mask_type) 
+
 summary(data)
 # vp = Versuchsperson or subject
 # bl = block number
@@ -90,8 +97,9 @@ Read in simpler data file, change variable names, and create factors.
 data_wr <- read_csv("Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
 head(data_wr)
 
-# change some variable names to required names (pid, trial, condition, rt, and acc)
+# change some variable names to required names: pid, trial, condition, rt, and acc.
 colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial") 
+
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
 # condition must be a factor indicating the levels (1,2,...) and labels of the single independent variable 
@@ -100,13 +108,15 @@ colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial")
 
 # create factor for condition (prime type)
 data_wr <- data_wr %>% mutate(condition = condition + 1,
-                              condition = factor(condition, levels = c(1,2,3), labels = c("blank","congruent","incongruent")))
+                              condition = factor(condition, 
+                                                 levels = c(1,2,3), 
+                                                 labels = c("blank","congruent","incongruent")))
 summary(data_wr)
 ```
 
 # 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
 
-Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function plot_eha (line 118 in custom_functions.R) as above (line 88 in Tutorial_1a).
+Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function **plot_eha** (line 134-136 in custom_functions.R) as above (lines 96-99).
 
 ```{r load-functions}
 source("custom_functions.R")
@@ -115,16 +125,29 @@ source("custom_functions.R")
 Apply the custom functions
 
 ```{r apply-functions}
-# create a dataframe with two columns (pid and data); the latter contains a list of nested data frames
+# create a dataframe with two columns (pid and data); 
+# the latter contains a list of nested data frames
 data_nested <- data_wr %>% group_nest(pid)
+
 # apply the functions using map() and map2()
 data_final <- data_nested %>% 
-                     mutate(censored  = map(data, censor, 600, 40)) %>%   # ! user input: censoring time, and bin width
-                     mutate(ptb_data  = map(censored, ptb)) %>%           # create person-trial-bin dataset
-                     mutate(lifetable = map(ptb_data, setup_lt)) %>%      # create life tables without ca
-                     mutate(condacc   = map(censored, calc_ca)) %>%       # calculate ca
-                     mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    # create life tables with ca
-                     mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  # create plots 
+    # ! user input: censoring time, and bin width
+    mutate(censored = map(data, censor, 600, 40)) %>%
+    # create person-trial-bin data set
+    mutate(ptb_data = map(censored, ptb)) %>%
+    # create life tables without ca
+    mutate(lifetable = map(ptb_data, setup_lt)) %>%      
+    # calculate ca
+    mutate(condacc = map(censored, calc_ca)) %>%     
+    # create life tables with ca
+    mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%  
+    # create plots, and set haz_yaxis to 1, and first_bin_shown to 2
+    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha, 1, 2))  
+    # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
+    #            Recommended to set this to 1 when plotting the data of individual subjects.
+    # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
+    #            you can set first_bin_shown to another value, such as 5 (i.e., do not show the 
+    #            first 4 bins in the plots).
 ```
 
 Save the calculations.
@@ -133,17 +156,17 @@ Save the calculations.
 save(data_final, file="Tutorial_1_descriptive_stats/data/descr_stats_tut1a.Rdata")
 ```
 
-# 4. Extract info (life table, plots, ...) and create data files for fitting hazard and conditional accuracy models
+# 4. Extract info (life table, plots, ...) and create files for fitting hazard and conditional accuracy models
 
 ```{r extract-info, warning=F}
 # view original data (column 2) for subject 1:
-pluck(data_final, 2, 1) %>% print(n=20)
+pluck(data_final, 2, 1)
 
 # view person-trial-bin data set (column 4) for subject 1:
 pluck(data_final,4,1) %>% print(n=30)
 
 # view lifetable (column 7) for each condition for subject 1
-pluck(data_final, 7, 1) %>% filter(condition=="blank")
+pluck(data_final, 7, 1) %>% filter(condition=="blank") 
 pluck(data_final, 7, 1) %>% filter(condition=="congruent")
 pluck(data_final, 7, 1) %>% filter(condition=="incongruent")
 
@@ -162,25 +185,35 @@ Save the plots.
 
 ```{r save-plots, eval=F}
 # save the plot for each subject
-map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 6, height = 8, dpi = 600)
+map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 8, height = 8, dpi = 800)
 ```
 
 Create a life table.
 
 ```{r create-single-lifetable}
 # get the binsize in ms
-binsize    <- data_final$censored[[1]] %>% pull(bin_width) %>% max(na.rm=T)
+binsize    <- data_final$censored[[1]] %>% 
+                pull(bin_width) %>% 
+                max(na.rm=T)
+
 # extract the lifetable (column 7 in data_final) for condition 1 (neutral) for subject 6
 lifetable_blank_s6 <- data_final[[7]][[6]] %>% 
                         filter(condition=="blank") %>% 
                         mutate(bin = period*binsize,
                                events = event1) %>%
-                        select(bin,risk_set,events,hazard,se_haz,survival,se_surv,ca,se_ca) 
+                        select(bin,risk_set,events,hazard,se_haz,
+                              survival,se_surv,ca,se_ca) 
+
 # get riskset for first bin
-riskset <- lifetable_blank_s6 %>% select(risk_set) %>% slice(1) %>% pull()
+riskset <- lifetable_blank_s6 %>% 
+  select(risk_set) %>% 
+  slice(1) %>% 
+  pull()
 
 # create a row for time point 0
-row0 <- c(bin=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,survival=1,se_surv=0,ca=NA,se_ca=NA)
+row0 <- c(bin=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,
+          survival=1,se_surv=0,ca=NA,se_ca=NA)
+
 # add new row
 lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
                                  add_row(!!! row0) %>%
@@ -197,8 +230,9 @@ Create input file for fitting hazard models.
 ```{r create-file-hazard-modeling}
 # select the person-trial-bin data set for each subject, unnest them, and select relevant variables.
 input_modeling_hazard <- data_final %>% 
-                         select(pid, ptb_data) %>%  unnest(ptb_data) %>%
-                         select(pid,bl,tr,trial,condition,period,event)
+                           select(pid, ptb_data) %>%  
+                           unnest(ptb_data) %>%
+                           select(pid,bl,tr,trial,condition,period,event)
 summary(input_modeling_hazard)
 ```
 
@@ -209,15 +243,17 @@ write_csv(input_modeling_hazard, file="Tutorial_1_descriptive_stats/data/inputfi
 Create input file for fitting ca(t) models.
 
 ```{r create-file-ca-modeling}
-# select the censored data set for each subject, unnest them, discard trials that are censored (RT > 600 or no response detected before the deadline), and select relevant variables. 
+# select the censored data set for each subject, unnest them, discard trials that are 
+# censored (RT > 600 or no response detected before the deadline), and select relevant variables. 
 input_modeling_ca <- data_final %>%
-                     select(pid, censored) %>% unnest(censored) %>%
-                     filter(right_censored == 0) %>% # only keep uncensored trials
-                     select(pid,bl,tr,trial,condition,acc,drt)
+                       select(pid, censored) %>% 
+                       unnest(censored) %>%
+                       filter(right_censored == 0) %>% # only keep uncensored trials
+                       select(pid,bl,tr,trial,condition,acc,drt)
 ```
 
 ```{r save-file-ca-modeling, eval=F}
-write_csv(input_modeling_ca, file="Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
+write_csv(input_modeling_ca,   file="Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
 ```
 
 # 5. Optional: set up life tables and make plots for data aggregated across participants 
@@ -236,16 +272,24 @@ data_agg <- data_wr %>% mutate(oldtrial=trial,
 # apply functions
 data_agg_nested <- data_agg %>% group_nest(pid)
 data_agg_final <- data_agg_nested %>% 
-                     mutate(censored  = map(data, censor, 600, 40)) %>%   # ! user input: censoring time, and bin width
-                     mutate(ptb_data  = map(censored, ptb)) %>%           # create person-trial-bin dataset
-                     mutate(lifetable = map(ptb_data, setup_lt)) %>%      # create life tables without ca
-                     mutate(condacc   = map(censored, calc_ca)) %>%       # calculate ca
-                     mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    # create life tables with ca
-                     mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_agg,1))  # create plots 
+    mutate(censored  = map(data, censor, 600, 40)) %>%
+    mutate(ptb_data  = map(censored, ptb)) %>%          
+    mutate(lifetable = map(ptb_data, setup_lt)) %>%      
+    mutate(condacc   = map(censored, calc_ca)) %>%      
+    mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%  
+    # set haz_yaxis to .7, first_bin_shown to 1, aggregated_data to TRUE, and Nsubj to 6 
+    mutate(plot = map2(.x=lifetable_ca, .y=pid, plot_eha, .7, 3, T, 6)) 
+  # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
+  #            Recommended to set this to 1 when plotting the data of individual subjects.
+  # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
+  #.           you can set first_bin_shown to another value, such as 5 (i.e., do not show the 
+  #            first 4 bins in the plots).
+  # aggregated_data: For a dataset with data aggregated across individuals, set to TRUE. 
+  #            This only controls the title of the plots.
+  # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.
 ```
 
 ```{r agg-plot, warning=F}
 # view plot
 pluck(data_agg_final, 8, 1)
 ```
-
