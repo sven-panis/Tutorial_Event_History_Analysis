@@ -12,7 +12,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, results='hide'}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -129,7 +129,7 @@ priors_M0i <- c(
 
 Perform a prior predictive check to see if the binary observations generated from the sprecified prior distributions reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
 
-```{r}
+```{r M0i-prior, eval=F}
 plan(multicore)
 
 model_M0i_prior <-                  
@@ -145,6 +145,10 @@ model_M0i_prior <-
        seed = 12, init = "0",
        sample_prior = "only",
        file = "Tutorial_2_Bayesian/models/model_M0i_prior")
+```
+
+```{r inspect-M0i-prior}
+model_M0i_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0i_prior.rds")
 ```
 
 Next, use them to predict prior data. To better understand what the function add_predicted_draws is doing (which we will typically use), we first simulate prior data for one timebin manually.
@@ -204,7 +208,7 @@ The shape of the prior predictive distribution looks as expected (compare with F
 
 Now use add_predicted_draws() to simulate prior-based data for 10 bins and 6 subjects, while take into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
 
-```{r ppc-M0i-prior}
+```{r ppc-M0i-prior, eval=F}
 # Generate prior predictive hazard functions for 6 participants
 newdata_prior = tibble(timebin = 6:15) %>% 
            expand_grid(pid = 1:6)
@@ -275,7 +279,7 @@ model_M0i <-
 
 This took 28 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
-```{r insppect-M0i}
+```{r inspect-M0i}
 model_M0i <- readRDS("Tutorial_2_Bayesian/models/model_M0i.rds")
 summary(model_M0i)
 formula(model_M0i)
@@ -420,6 +424,11 @@ model_M0c_prior <-
        file = "Tutorial_2_Bayesian/models/model_M0c_prior")
 ```
 
+```{r inspect-M0c-prior}
+model_M0c_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior.rds")
+```
+
+
 Check the prior distributions.
 
 ```{r prior-distr}
@@ -445,7 +454,7 @@ ggplot(tidy_prior, aes(x = name, y = value, fill = name)) +
 
 Generate prior predictive check for each participant.
 
-```{r ppc-model-M0c-prior}
+```{r ppc-model-M0c-prior, eval=F}
 # Generate prior predictive hazard functions for 6 participants
 # Specify
 N_obs = 100 # increase for smoother results
@@ -763,7 +772,7 @@ loo(model_M1i)$diagnostics %>%
 
 Wrangle the posterior draws.
 
-```{r}
+```{r post-M0i}
 post <- as_draws_df(model_M1i) %>% 
   select(-lp__) %>% 
   as_tibble()
@@ -782,7 +791,7 @@ head(post_qi_b) # 30 "fixed" effects
 
 Visualise fixed effects.
 
-```{r}
+```{r plot-post-M0i}
 tidy_fixed <- post %>% 
   select(starts_with("b_"), .chain, .iteration, .draw) %>% 
   rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
@@ -852,7 +861,7 @@ epreds_grand %>%
     ggtitle("Average participant")
 ```
 
-```{r save-post, eval=F}
+```{r save-pred-grand, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_grand.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -909,7 +918,7 @@ epreds_pid %>%
     facet_wrap(~pid, ncol=3)
 ```
 
-```{r save-post, eval=F}
+```{r save-pred-pid, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -972,7 +981,7 @@ epreds_pid_new %>%
     ggtitle("A brand new hypothetical participant") 
 ```
 
-```{r save-post, eval=F}
+```{r save-pred-pid-new, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -1029,7 +1038,7 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
   facet_wrap(~contrast)
 ```
 
-```{r save-post, eval=F}
+```{r save-grand-AMEs, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_grand_AME.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -1127,7 +1136,7 @@ epreds_pid_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
     facet_wrap(~pid, ncol=3)
 ```
 
-```{r save-post, eval=F}
+```{r save-pid-AMEs, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pid_AMEs.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -1196,7 +1205,7 @@ epreds_pid_new_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
     facet_wrap(~contrast)
 ```
 
-```{r save-post, eval=F}
+```{r save-pid-new-AMEs, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pid_new_AMEs.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -1212,7 +1221,7 @@ There are thus two phases of performance for the average subject between 200 and
 The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
 For example, here are the proportions that each contrast is larger and smaller than 0:
 
-```{r}
+```{r props-contrasts}
 pabove <- epreds_grand_diffs %>% 
   group_by(timebin,contrast) %>%
   summarize(prop_above = mean(pred_haz > 0)) %>% 
