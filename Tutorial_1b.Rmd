@@ -20,7 +20,7 @@ Tutorial 1b illustrates how to use functional programming to set up life tables,
 
 # 1. Load the libraries that we will be using. 
 
-```{r load-pkg}
+```{r load-pkg, results='hide'}
 pkg <- c("tidyverse", "patchwork")
 
 lapply(pkg, library, character.only = TRUE)
