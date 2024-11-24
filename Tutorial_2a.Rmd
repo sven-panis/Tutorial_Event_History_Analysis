@@ -16,8 +16,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (prime = blank, congruent, or incongruent). We then compare models using WAIC and LOO, and interpret parameter estimates for one model. 
-We also plot the logit and cloglog link functions, and illustrate how various prior distributions on the logit and cloglog scales look on the original probability (i.e., hazard) scale. 
+Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (prime = blank, congruent, or incongruent). We perform prior predictive checks to infer the prior distributions we will employ. We compare models using WAIC and LOO, and interpret parameter estimates for one model. 
+We end by plotting the logit and cloglog link functions, and illustrate how various prior distributions on the logit and cloglog scales look on the original probability (i.e., hazard) scale. 
 
 # 1. Load the libraries that we will be using.
 
@@ -116,13 +116,13 @@ The first model we fit is a "random intercepts" model, where we fit a single int
 This is a general specification of TIME, and can be used if we do not want to make assumptions about how cloglog-hazard changes over time (within a trial). 
 There are two ways to implement such a model. First, we can use the index-coding approach, which supplies an intercept for each level of TIME.
 
-Prepare the data file, and specify priors.
+Prepare the data file, and specify priors. 
 
 ```{r data-priors-M0}
-M0_data <- ptb_data %>% select(pid, event, timebin)
+data_M0i <- ptb_data %>% select(pid, event, timebin)
 
-priors_M0 <- c(
-  set_prior("skew_normal(-0.59,1.26,-4.22)", class = "b"), # See suppl. material 
+priors_M0i <- c(
+  set_prior("skew_normal(-1,1,-2)", class = "b"), 
   set_prior("normal(0, 1)", class = "sd"),                    
   set_prior("lkj(2)", class = "cor")                        
 )
@@ -279,29 +279,29 @@ ggplot(df_pred_haz %>% filter(.draw < 21), aes(x=timebin, y=pred_haz, group=.dra
 
 
 
-Fit model M0.
+Fit model M0i.
 
-```{r fit-model-M0, eval=F} 
+```{r fit-model-M0i, eval=F} 
 plan(multicore)
 
-model_M0 <-                     # wrong data file name
-   brm(data = M0_data,
-       family = binomial(link="cloglog"),
-       event|trials(1) ~ 0 + timebin + (0 + timebin | pid),
-       prior = priors_M0,
+model_M0i <-                    
+   brm(data = data_M0i,
+       family = bernoulli(link="cloglog"),
+       formula = event ~ 0 + timebin + (0 + timebin | pid),
+       prior = priors_M0i,
        chains = 4, cores = 4, iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
        seed = 12, init = "0",
-       file = "Tutorial_2_Bayesian/models/model_M0")
+       file = "Tutorial_2_Bayesian/models/model_M0i")
 ```
 
-This took 43 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+This took 28 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ```{r}
-model_M0 <- readRDS("Tutorial_2_Bayesian/models/model_M0.rds")
-summary(model_M0)
-formula(model_M0)
-plot(model_M0)
+model_M0i <- readRDS("Tutorial_2_Bayesian/models/model_M0i.rds")
+summary(model_M0i)
+formula(model_M0i)
+plot(model_M0i)
 ```
 
 Second, we can fit the same model using a dummy coding approach, as follows.
@@ -309,7 +309,7 @@ Second, we can fit the same model using a dummy coding approach, as follows.
 Prepare the data file, and specify priors.
 
 ```{r data-priors-M0d}
-M0d_data <- ptb_data %>% select(pid, event, d6:d8, d10:d15)
+data_M0d <- ptb_data %>% select(pid, event, d6:d8, d10:d15)
 
 priors_M0d <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "d6"),
@@ -332,8 +332,8 @@ Fit the model with dummy coding (M0d).
 ```{r fit-model-M0d, eval=F}
 plan(multicore)
 
-model_M0d <-            # bernouilli.  :(
-   brm(data = M0d_data,
+model_M0d <-      
+   brm(data = data_M0d,
        family = bernoulli(link="cloglog"),
        event ~ 0 + d6 + d7 + d8 + Intercept + d10 + d11 + d12 + d13 + d14 + d15 + 
                    (d6 + d7 + d8 + 1 + d10 + d11 + d12 + d13 + d14 + d15  | pid),
@@ -344,12 +344,12 @@ model_M0d <-            # bernouilli.  :(
        file = "Tutorial_2_Bayesian/models/model_M0d")
 ```
 
-M0d took 77 minutes.
+M0d took about 77 minutes.
 
 ```{r}
 model_M0d <- readRDS("Tutorial_2_Bayesian/models/model_M0d.rds")
-summary(model_M0d)
 formula(model_M0d)
+fixef(model_M0d)
 ```
 
 ### Make assumptions to simplify the model
@@ -359,13 +359,14 @@ Instead of using a general specification of TIME, we can treat TIME as a continu
 Prepare the data file, and specify priors.
 
 ```{r data-priors-M0c}
-M0c_data <- ptb_data %>% select(pid, event, period_9) %>%
-  mutate(period_9_sq = period_9^2,
-         period_9_cu = period_9^3)
+data_M0c <- ptb_data %>% 
+  select(pid, event, period_9) %>%
+  mutate(period_9_sq = period_9^2)
 
 priors_M0c <- c(
-  set_prior("skew_normal(-0.2,0.71,-2.2)", class = "b"),      
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
+  set_prior("normal(0.1,.1)", class = "b", coef = "period_9"), 
+  set_prior("normal(0,.06)", class= "b", coef="period_9_sq"),   
   set_prior("normal(0, 1)", class = "sd"),  
   set_prior("lkj(2)", class = "cor")  
 )
@@ -377,10 +378,10 @@ Fit the model with a continuous predictor (M0c).
 plan(multicore)
 
 model_M0c <-
-   brm(data = M0c_data,
-       family = binomial(link="cloglog"),
-       event | trials(1) ~ 0 + Intercept + period_9 + period_9_sq + period_9_cu + 
-                          (0 + Intercept + period_9 + period_9_sq + period_9_cu  | pid),
+   brm(data = data_M0c,
+       family = bernoulli(link="cloglog"),
+       formula = event ~ 0 + Intercept + period_9 + period_9_sq + 
+              (0 + Intercept + period_9 + period_9_sq | pid),
        prior = priors_M0c,
        chains = 4, cores = 4, iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
@@ -388,7 +389,7 @@ model_M0c <-
        file = "Tutorial_2_Bayesian/models/model_M0c")
 ```
 
-Model_M0c took about 144 minutes to run.
+Model_M0c took about 71 minutes to run.
 
 ```{r}
 model_M0c <- readRDS("Tutorial_2_Bayesian/models/model_M0c.rds")
@@ -465,7 +466,7 @@ dat <- tibble(x = -3:6,
               x2 = x^2,
               x3 = x^3,
               cloglog1 = -1.8   + 0.3*x   - 0.1*x2   + 0.009*x3,
-              cloglog2 = -1     + 0.5*x   - 0.1*x2   + 0.004*x3,
+              cloglog2 = -1     + 0.4*x   - 0.1*x2   + 0.007*x3,
               cloglog3 = -3     - 0.1*x   + 0.12*x2  - 0.002*x3,
               cloglog4 = -0.40  + 0.2*x   - 0.04*x2  + 0.003*x3,
               haz1 = 1 - exp(-1*exp(cloglog1)),
@@ -511,8 +512,13 @@ priors_M0c_prior <- c(
 #set_prior("normal(0.5,.5)",class="b",coef="period_9"),
 #set_prior("normal(-.1,.2)",class="b",coef="period_9_sq"),   # Np3
 
-set_prior("normal(0.1,.08)",class="b",coef="period_9"), # ok !!!
-set_prior("normal(0,.06)",class="b",coef="period_9_sq"),   
+#set_prior("normal(0.1,.08)",class="b",coef="period_9"), # ok !!!
+#set_prior("normal(0,.06)",class="b",coef="period_9_sq"),
+
+set_prior("normal(0.1,.1)",class="b",coef="period_9"), # ok !!!
+set_prior("normal(0,.06)",class="b",coef="period_9_sq"),
+#set_prior("normal(0,.003)",class="b",coef="period_9_cu"),
+
 
 #set_prior("skew_normal(0.3,0.1,2)",class="b",coef="period_9"), #skNp3
 #set_prior("skew_normal(0,0.1,0)",class="b",coef="period_9_sq"),
@@ -525,21 +531,23 @@ set_prior("normal(0,.06)",class="b",coef="period_9_sq"),
 ```{r fit-model-M0c, eval=F}
 plan(multicore)
 
-model_M0_lin_prior448 <-
+model_M0_lin_prior454 <-
    brm(data = M0c_data,
        family = binomial(link="cloglog"),
-       event | trials(1) ~ 0 + Intercept + period_9 + period_9_sq +
-                          (0 + Intercept + period_9 + period_9_sq | pid),
+       event | trials(1) ~ 0 + Intercept + period_9 + period_9_sq  +
+                          (0 + Intercept + period_9 + period_9_sq  | pid),
        prior = priors_M0c_prior,
        chains = 4, cores = 4, iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
        seed = 12, init = "0",
        sample_prior = "only",
-       file = "Tutorial_2_Bayesian/models/model_M0_lin_prior448")
+       file = "Tutorial_2_Bayesian/models/model_M0_lin_prior454")
 ```
 
 ```{r}
-post <- as_draws_df(model_M0_lin_prior448) %>% 
+#model_M0_lin_prior448 <- readRDS("Tutorial_2_Bayesian/models/model_M0_lin_prior448.rds")
+
+post <- as_draws_df(model_M0_lin_prior454) %>% 
   select(-lp__) %>% 
   as_tibble()
 
@@ -551,8 +559,8 @@ head(tidy_fixed)
 tail(tidy_fixed)
 
 # plot
-p_tidy_fixed <- ggplot(tidy_fixed, aes(x = value, y = name)) +  
-  stat_halfeye(alpha=0.7,point_interval = "median_qi",.width=c(.8,.99) ) 
+p_tidy_fixed <- ggplot(tidy_fixed, aes(x = name, y = value, fill = name)) +  
+  stat_halfeye(alpha=0.7, point_interval = "median_qi",.width=c(.8,.99) ) 
 p_tidy_fixed
 
 ```   
@@ -565,11 +573,12 @@ newdata_prior = tibble(period_9 = c(-3:6)) %>%
   mutate(period_9_sq = period_9^2) %>%
   expand_grid(pid = 1:6)
 
-N_obs = 150 # increase for smoother results
+N_obs = 100 # increase for smoother results
 
 # prepare columns of data set
 df_pred <- tibble(period_9 = integer(0),
                  period_9_sq = integer(0),
+                # period_9_ce = integer(0),
                  pid = integer(0),
                   .row = integer(0),
                   .chain = integer(0),
@@ -581,7 +590,7 @@ df_pred <- tibble(period_9 = integer(0),
 set.seed(1)
 
 for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0_lin_prior448, 
+  prior_pred <- add_predicted_draws(model_M0_lin_prior454, 
                                     newdata = newdata_prior, 
                                     summary=F, 
                                     ndraws=NULL) %>% 
@@ -600,13 +609,12 @@ summary(df_pred_haz)
 # plot 40 draws per participant
 sel = sample(1:8000,3,replace=F)
 
-
 ggplot(df_pred_haz %>% 
-   filter(.draw <7639), aes(x=period_9, y=pred_haz, group=.draw)) +
+   filter(.draw <639), aes(x=period_9, y=pred_haz, group=.draw)) +
    geom_line(color="black") +
-   geom_line(data=df_pred_haz %>% filter(.draw ==7418), 
+   geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
              color="red", linewidth=2) +
-  geom_line(data=df_pred_haz %>% filter(.draw == 6001), 
+  geom_line(data=df_pred_haz %>% filter(.draw == sel[2]), 
             color="green", linewidth=2) +
   geom_line(data=df_pred_haz %>% filter(.draw == sel[3]), 
           color="blue", linewidth=2) +
