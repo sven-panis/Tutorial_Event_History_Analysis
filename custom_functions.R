@@ -1,5 +1,7 @@
-# function censor creates censored observations and discrete response times (drt), given a user-defined censoring time (timeout) and bin width in ms
+# function censor creates censored observations and discrete response times (drt), 
+# given a user-defined censoring time (timeout) and bin width in ms
 censor <- function(df, timeout, bin_width){
+
   if(!(timeout %% bin_width == 0)){
     return("The censoring time must be a multiple of the bin width!")
   }
@@ -7,10 +9,15 @@ censor <- function(df, timeout, bin_width){
     return("Both timeout and bin_width must be larger than 0!")
   }
   df %>% mutate(right_censored = 0,
-                rtc = ifelse(rt > timeout, timeout, rt) %>% round(digits=2), # censored response times
-                right_censored = ifelse(rtc == timeout,1,right_censored), # 1 = right censored observation, 0 = observed rt
-                drt = ceiling(rtc/bin_width), # drt = discrete RT or time bin rank
-                cens_time = timeout, bin_width = bin_width) # save both user-defined parameters for plotting
+                # censored response times
+                rtc = ifelse(rt > timeout, timeout, rt) %>% round(digits=2),
+                # 1 = right censored observation, 0 = observed rt
+                right_censored = ifelse(rtc == timeout,1,right_censored), 
+                # drt = discrete RT or time bin rank
+                drt = ceiling(rtc/bin_width), 
+                # save both user-defined parameters for plotting
+                cens_time = timeout, 
+                bin_width = bin_width) 
 }
 
 # function ptb creates a person-trial-bin oriented data set
@@ -18,7 +25,8 @@ ptb <- function(df){
   df %>% uncount(weights = drt) %>% # create drt rows per trial
     group_by(trial) %>% 
     mutate(period = 1:n()) %>% # create time bin (or time period) ranks within each trial
-    mutate(event = if_else(period == max(period) & right_censored == 0, 1, 0)) %>% # event = 1 indicates response occurrence
+    mutate(event = if_else(period == max(period) & right_censored == 0, 1, 0)) %>% 
+    # event = 1 indicates response occurrence
     ungroup()
 }
 
@@ -30,18 +38,23 @@ setup_lt <- function(ptb){
     ungroup() %>% 
     pivot_wider(names_from = event,
                 values_from = n) %>% 
-    mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
+    # replace NA with 0
+    mutate(event0 = ifelse(is.na(event0),0,event0), 
            event1 = ifelse(is.na(event1),0,event1),
-           risk_set = event0 + event1) %>% # define the risk set
-    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
-    mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4), # standard error for hazard
+           # define the risk set
+           risk_set = event0 + event1) %>% 
+    # calculate hazard estimate
+    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% 
+    # standard error for hazard, probability mass, and se for P(t)
+    mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4), 
            pmass = event1/max(risk_set),
            se_pmass = sqrt((pmass * (1 - pmass)) / max(risk_set))) %>% 
     group_by(condition) %>%
-    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
-           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
-           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
-    ungroup() 
+    # calculate survival estimate (Greenwood's (1926) approximation) and se of S(t)
+    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), 
+           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), 
+           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)) %>% 
+    ungroup()
 }
 
 # function calc_ca calculates the conditional accuracies 
@@ -58,9 +71,14 @@ calc_ca <- function(df){
 }
 
 # function join_lt_ca joins the conditional accuracies to the life tables
-join_lt_ca <- function(df1,df2){df1 %>% left_join(df2, join_by(condition,period))}
+join_lt_ca <- function(df1,df2){df1 %>% 
+    left_join(df2, join_by(condition,period)) %>%
+    select(condition,period,event1,risk_set,hazard,se_haz,survival,se_surv, 
+           ca,se_ca,pmass,se_pmass,bin_width,cens_time,event0,term,n)  
+  }
 
-# function extract_median is used to extract the S(t).50 quantiles (i.e., the estimated median RTs) when plotting the data
+# function extract_median is used to extract the S(t).50 quantiles 
+# (i.e., the estimated median RTs) when plotting the data
 extract_median <- function(df){
   above_pct50 <- df %>% 
     group_by(condition) %>%
@@ -79,186 +97,166 @@ extract_median <- function(df){
   median_period <- period_above+((survival_above-.5)/(survival_above-survival_below))*((period_above+1)-period_above)
 }
 
-# function plot_eha plots the hazard, survivor, and ca(t) functions, when there is one independent variable
-plot_eha <- function(df,subj,haz_yaxis){ # set the upper limit of the y-axis for the hazard functions to haz_yaxis == 1 when plotting the data of individual subjects (see line 244)
-  library(patchwork)
+# function plot_eha plots the hazard, survivor, and ca(t) functions, 
+# when there is one independent variable
+plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsubj=6){ 
+  
+  # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
+  #            Recommended to set this to 1 when plotting the data of individual subjects.
+  # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
+  #.           you can set first_bin_shown to another value, such as 5 (i.e., do not show the 
+  #            first 4 bins in the plots).
+  # aggregated_data: For a dataset with data aggregated across individuals, set to TRUE. 
+  #            This only controls the title of the plots.
+  # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.
+  
+  library(patchwork) # to combine figures
   cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
   binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
   median_period <- extract_median(df)
   n_conditions <- nlevels(df$condition)
+  
+  # create a data file with medians
   data_median <- c()
   for(i in 1:n_conditions){
     data_median <- append(data_median, c(median_period[i], median_period[i]))
   }
-  
-  data_medians <- tibble(period= data_median,
+  # set up new data file to plot vertical lines indicating quantile S(t).50
+  data_medians <- tibble(period = data_median,
                          survival = rep(c(.5, 0),n_conditions),
                          condition = rep(1:n_conditions, each=2))
+  
+  # Remove the first "first_bin_shown - 1" bins from the plots.
+  df <- df %>% filter(period >= first_bin_shown)
+  
   # plot the hazard functions
   p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
     geom_line(aes(y=hazard)) +
-    geom_point(aes(y=hazard), size=1) + labs(color="Condition") +
-    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits = c(0,cutoff/binsize)) +
+    geom_point(aes(y=hazard), 
+               size=1) + 
+    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,haz_yaxis)) +
-    labs(x="Time bin t's endpoint (ms)", y="h(t)", title = paste("Subject ", subj)) +
-    theme(legend.background = element_rect(fill = "transparent"),
-          panel.grid = element_blank(),
-          legend.position = "top",
+    labs(x = "bin endpoints (ms)", 
+         y = "h(t)",
+         color = "Condition") +
+    theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90))
+  
   # plot the survivor functions
   p2 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=survival), show.legend = F) +
-    geom_point(aes(y=survival), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
+    geom_line(aes(y=survival)) +
+    geom_point(aes(y=survival), 
+               size=1) +
+    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), 
+                   show.legend = F) +
+    
     # add vertical lines at the median RTs in the plot of the survivor functions using geom_path(). 
     # Make sure you apply the same levels and labels for the factor condition as in Tutorial 1a. 
-    geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("blank","congruent","incongruent"))),
+    geom_path(aes(x=period, 
+                  y=survival, 
+                  color=factor(condition, 
+                               levels = c(1,2,3),
+                               labels = c("blank","congruent","incongruent"))),
               data = data_medians, 
-              linetype = 3, show.legend = F) +
-    
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
+              linetype = 3, 
+              show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="S(t)",
-         colour="Condition") +
+    labs(x = "bin endpoints (ms)", 
+         y = "S(t)",
+         color = "Condition") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90))
+  
   # plot the conditional accuracy functions
   p3 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=ca), show.legend = F) +
-    geom_point(aes(y=ca), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
+    geom_line(aes(y=ca)) +
+    geom_point(aes(y=ca), 
+               size=1) +
+    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="ca(t)",
-         colour="Condition") +
+    labs(x = "bin endpoints (ms)", 
+         y = "ca(t)",
+         color = "Condition") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90))
+  
   # plot the probability mass functions
   p4 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=pmass), show.legend = F) +
-    geom_point(aes(y=pmass), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
+    geom_line(aes(y=pmass)) +
+    geom_point(aes(y=pmass), 
+               size=1) +
+    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
-    labs(x="Time bin t's endpoint (ms)", y="P(t)",
-         colour="Condition") +
+    labs(x = "bin endpoints (ms)", 
+         y = "P(t)",
+         color = "Condition") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90))
   
-  
-  (p1|p3) / (p2|p4)
-}
-
-# function plot_eha_agg plots the hazard, survivor, and ca(t) functions with a label for 
-# aggregated data.
-plot_eha_agg <- function(df,subj,haz_yaxis){ 
-  library(patchwork)
-  cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
-  binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
-  median_period <- extract_median(df)
-  n_conditions <- nlevels(df$condition)
-  data_median <- c()
-  for(i in 1:n_conditions){
-    data_median <- append(data_median, c(median_period[i], median_period[i]))
+  # create title
+  if(aggregated_data){
+    title = str_c("Descriptive stats for aggregated data (N = ", Nsubj,")")
+  } else {
+    title = str_c("Descriptive stats for subject ", subj)
   }
   
-  data_medians <- tibble(period= data_median,
-                         survival = rep(c(.5, 0),n_conditions),
-                         condition = rep(1:n_conditions, each=2))
-  # plot the hazard functions
-  p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=hazard)) +
-    geom_point(aes(y=hazard), size=1) + labs(color="Condition") +
-    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits = c(0,cutoff/binsize)) +
-    scale_y_continuous(limits = c(0,haz_yaxis)) +
-    labs(x="Time bin t's endpoint (ms)", y="h(t)", title = "Aggregated data (N=6)") +           # New info in title
-    theme(legend.background = element_rect(fill = "transparent"),
-          panel.grid = element_blank(),
-          legend.position = "top",
-          axis.text.x = element_text(angle=90))
-  # plot the survivor functions
-  p2 <-df %>%
-    ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=survival), show.legend = F) +
-    geom_point(aes(y=survival), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
-    geom_path(aes(x=period, y=survival, color=factor(condition, levels =c(1,2,3),labels=c("blank","congruent","incongruent"))),
-              data = data_medians, 
-              linetype = 3, show.legend = F) +
-    
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
-    scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="S(t)",
-         colour="Condition") +
-    theme(panel.grid = element_blank(),
-          axis.text.x = element_text(angle=90))
-  # plot the conditional accuracy functions
-  p3 <-df %>%
-    ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=ca), show.legend = F) +
-    geom_point(aes(y=ca), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
-    scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="ca(t)",
-         colour="Condition") +
-    theme(panel.grid = element_blank(),
-          axis.text.x = element_text(angle=90))
-  # plot the probability mass functions
-  p4 <-df %>%
-    ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=pmass), show.legend = F) +
-    geom_point(aes(y=pmass), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), show.legend = F) +
-    scale_x_continuous(breaks = c(0,1:(cutoff/binsize)), labels=c(0,1:(cutoff/binsize)*binsize),
-                       limits=c(0,cutoff/binsize)) +
-    scale_y_continuous(limits = c(0,.5)) +
-    labs(x="Time bin t's endpoint (ms)", y="P(t)",
-         colour="Condition") +
-    theme(panel.grid = element_blank(),
-          axis.text.x = element_text(angle=90))
+  # patchwork the plots
+  p1_theme <- p1 + theme(legend.position = "none")
+  p2_theme <- p2 + theme(legend.position = "none")
+  p3_theme <- p3 + theme(legend.position = "none")
   
-  (p1|p3) / (p2|p4)
+  p1_theme + p2_theme + p3_theme + p4 + 
+    plot_annotation(title = title) +
+    plot_layout(guides = "collect") & theme(legend.position = "bottom")
+ 
 }
-
 
 # function setup_lt_2IV sets up life tables for 2 independent variables
 setup_lt_2IV <- function(ptb){
-  ptb %>% mutate(event = str_c("event", event)) %>%
+  
+  ptb %>% 
+    mutate(event = str_c("event", event)) %>%
     group_by(condition1,condition2,period) %>% 
     count(event) %>% 
     ungroup() %>% 
     pivot_wider(names_from = event,
                 values_from = n) %>% 
-    mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
+    mutate(event0 = ifelse(is.na(event0),0,event0),
            event1 = ifelse(is.na(event1),0,event1),
-           risk_set = event0 + event1) %>% # define the risk set
-    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
+           risk_set = event0 + event1) %>% 
+    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% 
     mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4),
            pmass = event1/max(risk_set),
            se_pmass = sqrt((pmass * (1 - pmass)) / max(risk_set))) %>% 
     group_by(condition1,condition2) %>%
-    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
-           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
-           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
+    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), 
+           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), 
+           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>%
     ungroup() 
 }
 
 # function calc_ca_2IV calculates the conditional accuracies for 2 IVs
 calc_ca_2IV <- function(df){
-  df %>% filter(right_censored==0) %>%
+  df %>% 
+    filter(right_censored==0) %>%
     group_by(condition1,condition2,drt,cens_time,bin_width) %>%
     summarize(ca = mean(acc) %>% round(digits = 2),
               n = n(),
@@ -269,10 +267,13 @@ calc_ca_2IV <- function(df){
     select(-drt)
 }
 
-# function join_lt_ca_2IV joins the conditional accuracies to the life tables when there are two independent variables
-join_lt_ca_2IV <- function(df1,df2){df1 %>% left_join(df2, join_by(condition1,condition2,period))}
+# function join_lt_ca_2IV joins the conditional accuracies to the life tables 
+# when there are two independent variables
+join_lt_ca_2IV <- function(df1,df2){df1 %>% 
+    left_join(df2, join_by(condition1,condition2,period))}
 
-# function extract_median_2IV is used to extract the S(t).50 quantiles when there are two independent variables
+# function extract_median_2IV is used to extract the S(t).50 quantiles 
+# when there are two independent variables
 extract_median_2IV <- function(df){
   above_pct50 <- df %>% 
     group_by(condition1,condition2) %>%
@@ -291,40 +292,56 @@ extract_median_2IV <- function(df){
   median_period <- period_above+((survival_above-.5)/(survival_above-survival_below))*((period_above+1)-period_above)
 }
 
-# function plot_eha_2IV plots the hazard, survivor, and ca(t) functions, when there are two independent variables
-plot_eha_2IV <- function(df,subj,haz_yaxis){ 
+# function plot_eha_2IV plots the hazard, survivor, and ca(t) functions, 
+# when there are two independent variables. 
+plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsubj=6){
+  
+  # see plot_eha() for more information on the parameters.
   library(patchwork)
+  
   cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
   binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
   median_period <- extract_median_2IV(df)
   n_iv1 <- nlevels(df$condition1) 
   n_iv2 <- nlevels(df$condition2) 
   n_conditions <- n_iv1*n_iv2
+  
   data_median <- c()
   for(i in 1:n_conditions){
     data_median <- append(data_median, c(median_period[i], median_period[i]))
   }
-  # Create correctly named factors (here: prime and mask) and specify the same levels and labels as above
+  # Create correctly named factors (here: prime and mask) and 
+  # specify the same levels and labels as above
   data_medians <- tibble(period= data_median,
                          survival = rep(c(.5, 0),n_conditions),
-                         prime =  factor(rep(rep(1:n_iv2, each=2),n_iv1),levels=c(1:3),labels=c("blank","congruent","incongruent")),
-                         mask = factor(rep(1:n_iv1, each=2*n_iv2),levels=c(1:4),labels=c("nomask", "relevant", "irrelevant","lines")))
+                         prime =  factor(rep(rep(1:n_iv2, each=2), n_iv1),
+                                         levels=c(1:3),
+                                         labels=c("blank","congruent","incongruent")),
+                         mask = factor(rep(1:n_iv1, each=2*n_iv2),
+                                       levels=c(1:4),
+                                       labels=c("nomask", "relevant", "irrelevant","lines")))
+  
+  # Remove the first "first_bin_shown - 1" bins from the plots.
+  df <- df %>% filter(period >= first_bin_shown)
   
   # plot the hazard functions
   p1 <-df %>% 
-    mutate(mask = condition1,       # Create correctly named factor
-           prime = condition2) %>%  # Create correctly named factor
+    mutate(mask = condition1,       # Create correctly named factor (here: mask)
+           prime = condition2) %>%  # Create correctly named factor (here: prime)
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
     geom_line(aes(y=hazard)) +
-    geom_point(aes(y=hazard), size=1) + labs(color="Prime") +
-    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
-    scale_x_continuous(breaks = c(1:(cutoff/binsize)), labels=c(1:(cutoff/binsize)*binsize),
-                       limits = c(1,cutoff/binsize)) +
-    scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="h(t)", title = paste("Subject ", subj)) +
-    theme(legend.background = element_rect(fill = "transparent"),
-          panel.grid = element_blank(),
-          legend.position = "top",
+    geom_point(aes(y=hazard), 
+               size=1) + 
+    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
+    scale_y_continuous(limits = c(0,haz_yaxis)) +
+    labs(x = "bin endpoints (ms)", 
+         y = "h(t)", 
+         color = "Prime") +
+    theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor  
   
@@ -333,52 +350,82 @@ plot_eha_2IV <- function(df,subj,haz_yaxis){
     mutate(mask = condition1,      # Create correctly named factor
            prime = condition2) %>% # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
-    geom_line(aes(y=survival), show.legend = F) +
-    geom_point(aes(y=survival), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), show.legend = F) +
+    geom_line(aes(y=survival)) +
+    geom_point(aes(y=survival), 
+               size=1) +
+    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), 
+                   show.legend = F) +
     # add vertical lines to indicate the estimated median RTs with geom_path()
     geom_path(aes(x=period, y=survival),
               data = data_medians, 
-              linetype = 3, show.legend = F) +
-    scale_x_continuous(breaks = c(1:(cutoff/binsize)), labels=c(1:(cutoff/binsize)*binsize),
-                       limits=c(1,cutoff/binsize)) +
+              linetype = 3, 
+              show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="S(t)") +
+    labs(x = "bin endpoints (ms)", 
+         y = "S(t)",
+         color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
-  
   
   # plot the conditional accuracy functions
   p3 <-df %>%
     mutate(mask = condition1,       # Create correctly named factor
            prime = condition2) %>%  # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
-    geom_line(aes(y=ca), show.legend = F) +
-    geom_point(aes(y=ca), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
-    scale_x_continuous(breaks = c(1:(cutoff/binsize)), labels=c(1:(cutoff/binsize)*binsize),
-                       limits=c(1,cutoff/binsize)) +
+    geom_line(aes(y=ca)) +
+    geom_point(aes(y=ca), 
+               size=1) +
+    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x="Time bin t's endpoint (ms)", y="ca(t)") +
+    labs(x = "bin endpoints (ms)", 
+         y = "ca(t)",
+         color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
+  
   # plot the probability mass functions
   p4 <-df %>%
     mutate(mask = condition1,       # Create correctly named factor
            prime = condition2) %>%  # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
-    geom_line(aes(y=pmass), show.legend = F) +
-    geom_point(aes(y=pmass), size=1, show.legend = F) +
-    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), show.legend = F) +
-    scale_x_continuous(breaks = c(1:(cutoff/binsize)), labels=c(1:(cutoff/binsize)*binsize),
-                       limits=c(1,cutoff/binsize)) +
+    geom_line(aes(y=pmass)) +
+    geom_point(aes(y=pmass), 
+               size=1) +
+    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
+                   show.legend = F) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
-    labs(x="Time bin t's endpoint (ms)", y="P(t)") +
+    labs(x = "bin endpoints (ms)", 
+         y = "P(t)",
+         color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
   
-  p1/p2/p3/p4
+  # create title
+  if(aggregated_data){
+    title = str_c("Descriptive stats for aggregated data (N = ", Nsubj,")")
+  } else {
+    title = str_c("Descriptive stats for subject ", subj)
+  }
+  
+  # patchwork the plots
+  p1_theme <- p1 + theme(legend.position = "none")
+  p2_theme <- p2 + theme(legend.position = "none")
+  p3_theme <- p3 + theme(legend.position = "none")
+  
+  (p1_theme / p2_theme / p3_theme / p4) + 
+    plot_annotation(title = title) +
+    plot_layout(guides = "collect") & theme(legend.position = "bottom")
 }
