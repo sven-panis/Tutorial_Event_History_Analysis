@@ -410,16 +410,16 @@ We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the 
 \section{4. Tutorials}\label{tutorials}
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one and two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
-Additionally, to further simplify the process for other users, the tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see part B in the supplemental material for a list of the custom functions).
+Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see part B in the supplemental material for a list of the custom functions).
 
 Our list of tutorials is as follows:
 
 \begin{itemize}
 \tightlist
 \item
-  1a. Wrangle raw data and calculate descriptive stats for one independent variable.
+  1a. Wrangle raw data and calculate descriptive stats for one independent variable
 \item
-  1b. Wrangle raw data and calculate descriptive stats for two independent variables.
+  1b. Wrangle raw data and calculate descriptive stats for two independent variables
 \item
   2a. Bayesian multilevel modeling for h(t)
 \item
@@ -428,9 +428,15 @@ Our list of tutorials is as follows:
   3a. Frequentist multilevel modeling for h(t)
 \item
   3b. Frequentist multilevel modeling for ca(t)
+\item
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \setcounter{enumi}{3}
+  \tightlist
+  \item
+    Simulation and power analysis for planning experiments
+  \end{enumerate}
 \end{itemize}
-
-Plannng (T4) - if we get a simulation and power analysis script working, which we are happy with then we could include it here.
 
 \subsection{4.1 Tutorial 1a: Calculating descriptive statistics using a life table}\label{tutorial-1a-calculating-descriptive-statistics-using-a-life-table}
 
@@ -650,7 +656,7 @@ bin & \multicolumn{1}{c}{risk\_set} & \multicolumn{1}{c}{events} & \multicolumn{
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=12in,height=0.67\textheight,]{../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt} 
+{\centering \includegraphics[width=21.33in,height=0.67\textheight,]{../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt} 
 
 }
 
@@ -669,48 +675,41 @@ At this point, we have calculated, summarised and plotted descriptive statistics
 
 So far in this paper, we have use a simple experimental design, which involved one condition with three levels. But psychological experiments are often more complex, with crossed factorial designs with more conditions and more than three levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
-To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for participant 6 as part of Tutorial 1b for those that are interested.
+To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial 1b for those that are interested.
 
-
-
-\subsection{4.3 Tutorial 2a: Fitting Bayesian hazard models to time-to-event data}\label{tutorial-2a-fitting-bayesian-hazard-models-to-time-to-event-data}
+\subsection{4.3 Tutorial 2a: Fitting Bayesian hazard models to discrete time-to-event data}\label{tutorial-2a-fitting-bayesian-hazard-models-to-discrete-time-to-event-data}
 
 In this third tutorial, we illustrate how to fit Bayesian multi-level regression models to the RT data of the masked response priming data set used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors (Singer \& Willett, 2003).
 
 \subsubsection{4.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose a specification of the effect of discrete TIME (i.e., the time bin index t) in a selected baseline condition. One can choose a general specification (one intercept per bin) or a functional specification, such as a polynomial one (compare model 1 with models 2, 3, and 4 below; see also part D of the supplementary material).
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat discrete TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat time as a discrete predictor, you can choose between reference coding and index coding.
 
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In this tutorial we will fit four Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600{]} and the cloglog link. The data is prepared as follows.
+In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600{]} and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
 
 \scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# load person{-}trial{-}bin oriented data set}
-\NormalTok{ptb\_data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/inputfile\_hazard\_modeling.csv"}\NormalTok{)}
-\CommentTok{\# select analysis time window: (200,600] with 10 bins (time bin ranks 6 to 15)}
-\NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(period }\SpecialCharTok{\textgreater{}} \DecValTok{5}\NormalTok{)}
-\CommentTok{\# create factor condition, with "blank" as the reference level}
-\NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{, }\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)))}
-\CommentTok{\# center TIME (variable period) on bin 9, and variable trial on number 1000 and rescale; Add dummy variables for each bin.}
+\CommentTok{\# read in the file we saved in tutorial 1a}
+\NormalTok{ptb\_data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"Tutorial\_1\_descriptive\_stats/data/inputfile\_hazard\_modeling.csv"}\NormalTok{)}
+
 \NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} 
-        \FunctionTok{mutate}\NormalTok{(}\AttributeTok{period\_9 =}\NormalTok{ period }\SpecialCharTok{{-}} \DecValTok{9}\NormalTok{,}
-               \AttributeTok{trial\_c =}\NormalTok{ (trial }\SpecialCharTok{{-}} \DecValTok{1000}\NormalTok{)}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{,}
-               \AttributeTok{d6  =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{6}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d7  =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{7}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d8  =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{8}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d9  =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{9}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d10 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{10}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d11 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{11}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d12 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{12}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d13 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{13}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d14 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{14}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-               \AttributeTok{d15 =} \FunctionTok{if\_else}\NormalTok{(period }\SpecialCharTok{==} \DecValTok{15}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\CommentTok{\# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)}
+\FunctionTok{filter}\NormalTok{(period }\SpecialCharTok{\textgreater{}} \DecValTok{5}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+       \CommentTok{\# continuous predictor for TIME named "period\_9", centered on bin 9}
+\FunctionTok{mutate}\NormalTok{(}\AttributeTok{period\_9 =}\NormalTok{ period }\SpecialCharTok{{-}} \DecValTok{9}\NormalTok{,}
+       \CommentTok{\# categorical predictor for TIME named "timebin" with index coding}
+       \AttributeTok{timebin =} \FunctionTok{factor}\NormalTok{(period,}\AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{6}\SpecialCharTok{:}\DecValTok{15}\NormalTok{)),}
+       \CommentTok{\# factor "condition" using reference coding, with "blank" as the reference level}
+       \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{, }\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)),}
+       \CommentTok{\# categorical predictor "prime" with index coding}
+       \AttributeTok{prime =} \FunctionTok{ifelse}\NormalTok{(condition}\SpecialCharTok{==}\StringTok{"blank"}\NormalTok{,}\DecValTok{1}\NormalTok{, }\FunctionTok{ifelse}\NormalTok{(condition}\SpecialCharTok{==}\StringTok{"congruent"}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)),}
+       \AttributeTok{prime =} \FunctionTok{factor}\NormalTok{(prime,}\AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -718,240 +717,393 @@ In this tutorial we will fit four Bayesian multilevel models (i.e., generalized 
 
 \subsubsection{4.3.2 Prior distributions}\label{prior-distributions}
 
-To get the posterior distribution of each model parameter given the data, we need to specify a prior distribution for each parameter. The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions on the logit and/or cloglog scales.
+To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
+In Tutorial\_2a.Rmd we perform some prior predictive checks to make sure our selected prior distributions reflect our prior beliefs.
 
-While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 12 show prior distributions on the logit and cloglog scale that we use instead.
+The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
 
-\subsubsection{4.3.3 Model 1: A general specification of TIME, and main effects of congruency and trial number}\label{model-1-a-general-specification-of-time-and-main-effects-of-congruency-and-trial-number}
+\subsubsection{4.3.3 Model M0i: A general specification of TIME}\label{model-m0i-a-general-specification-of-time}
 
-When you do not want to make assumptions about the shape of the hazard function in the selected baseline condition, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one intercept per time bin. In this first model, we use a general specification of TIME for the selected baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
-Before we fit model 1, we remove unnecessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M1 is specified as follows.
+When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first model, we use a general specification of TIME using index coding, and call the model ``M0i''.
 
-\scriptsize
+Before we fit model M0i, we select the necessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M0i is specified as follows.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{model\_M1 }\OtherTok{\textless{}{-}}
-   \FunctionTok{brm}\NormalTok{(}\AttributeTok{data =}\NormalTok{ M1\_data,}
-       \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
-\NormalTok{       event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ d6 }\SpecialCharTok{+}\NormalTok{ d7 }\SpecialCharTok{+}\NormalTok{ d8 }\SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+}\NormalTok{ d10 }\SpecialCharTok{+}\NormalTok{ d11 }\SpecialCharTok{+}\NormalTok{ d12 }\SpecialCharTok{+}\NormalTok{ d13 }\SpecialCharTok{+}\NormalTok{ d14 }\SpecialCharTok{+}\NormalTok{ d15 }\SpecialCharTok{+} 
-\NormalTok{                           condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{+}
-\NormalTok{                           (d6 }\SpecialCharTok{+}\NormalTok{ d7 }\SpecialCharTok{+}\NormalTok{ d8 }\SpecialCharTok{+} \DecValTok{1} \SpecialCharTok{+}\NormalTok{ d10 }\SpecialCharTok{+}\NormalTok{ d11 }\SpecialCharTok{+}\NormalTok{ d12 }\SpecialCharTok{+}\NormalTok{ d13 }\SpecialCharTok{+}\NormalTok{ d14 }\SpecialCharTok{+}\NormalTok{ d15 }\SpecialCharTok{+} 
-\NormalTok{                           condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{|}\NormalTok{ pid),}
-       \AttributeTok{prior =}\NormalTok{ priors\_M1,}
-       \AttributeTok{chains =} \DecValTok{4}\NormalTok{, }\AttributeTok{cores =} \DecValTok{4}\NormalTok{, }\AttributeTok{iter =} \DecValTok{3000}\NormalTok{, }\AttributeTok{warmup =} \DecValTok{1000}\NormalTok{,}
-       \AttributeTok{control =} \FunctionTok{list}\NormalTok{(}\AttributeTok{adapt\_delta =} \FloatTok{0.999}\NormalTok{, }\AttributeTok{step\_size =} \FloatTok{0.04}\NormalTok{, }\AttributeTok{max\_treedepth =} \DecValTok{12}\NormalTok{),}
+\NormalTok{model\_M0i }\OtherTok{\textless{}{-}}                    
+   \FunctionTok{brm}\NormalTok{(}\AttributeTok{data =}\NormalTok{ data\_M0i,}
+       \AttributeTok{family =} \FunctionTok{bernoulli}\NormalTok{(}\AttributeTok{link=}\StringTok{"cloglog"}\NormalTok{),}
+       \AttributeTok{formula =}\NormalTok{ event }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin }\SpecialCharTok{|}\NormalTok{ pid),}
+       \AttributeTok{prior =}\NormalTok{ priors\_M0i,}
+       \AttributeTok{chains =} \DecValTok{4}\NormalTok{, }\AttributeTok{cores =} \DecValTok{4}\NormalTok{, }
+       \AttributeTok{iter =} \DecValTok{3000}\NormalTok{, }\AttributeTok{warmup =} \DecValTok{1000}\NormalTok{,}
+       \AttributeTok{control =} \FunctionTok{list}\NormalTok{(}\AttributeTok{adapt\_delta =} \FloatTok{0.999}\NormalTok{, }
+                      \AttributeTok{step\_size =} \FloatTok{0.04}\NormalTok{, }
+                      \AttributeTok{max\_treedepth =} \DecValTok{12}\NormalTok{),}
        \AttributeTok{seed =} \DecValTok{12}\NormalTok{, }\AttributeTok{init =} \StringTok{"0"}\NormalTok{,}
-       \AttributeTok{file =} \StringTok{"Tutorial\_2\_Bayesian/models/model\_M1"}\NormalTok{)}
+       \AttributeTok{file =} \StringTok{"Tutorial\_2\_Bayesian/models/model\_M0i"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\normalsize
+After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification ``0 + \ldots{}'' removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
-After selecting the binomial family and the cloglog link, the model formula is specified. The fixed effects include 9 dummy variables, the explicit Intercept variable (which represents bin 9 in this example), and the main effects of prime-target congruency (variable condition) and centered trial number (variable trial\_c). Each of these effects is allowed to vary across individuals (variable pid).
-Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+\subsubsection{4.3.4 Model M1i: Adding the effects of prime-target congruency}\label{model-m1i-adding-the-effects-of-prime-target-congruency}
 
-\subsubsection{4.3.4 Model 2: A polynomial specification of TIME, and main effects of congruency and trial number}\label{model-2-a-polynomial-specification-of-time-and-main-effects-of-congruency-and-trial-number}
-
-When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by using a polynomial specification of TIME. For our second example model, we thus use a third-order polynomial specification of TIME for the selected baseline condition (blank prime), and again assume that the effects of prime-target congruency and centered trial number are proportional and additive, and that the effect of trial number is linear. The model formula for model M2 looks as follows.
-
-\scriptsize
+Previous research has shown that psychological effects typically change over time (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis et al., 2017; Panis \& Wagemans, 2009). In the next model, we use index coding for both TIME (variable ``timebin'') and the categorical predictor prime-target-congruency (variable ``prime''), so that we get 30 grand intercepts, one for each combination of timebin level and prime level. Here is the model formula of this model that we call ``M1i''.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+}\NormalTok{ period\_9 }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
-\NormalTok{                           condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{+}
-\NormalTok{                           (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ period\_9 }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
-\NormalTok{                           condition }\SpecialCharTok{+}\NormalTok{ trial\_c }\SpecialCharTok{|}\NormalTok{ pid),}
+\NormalTok{event }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin}\SpecialCharTok{:}\NormalTok{prime }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin}\SpecialCharTok{:}\NormalTok{prime }\SpecialCharTok{|}\NormalTok{ pid)}
 \end{Highlighting}
 \end{Shaded}
 
-\normalsize
+Estimating model M1i took about 124 minutes.
 
-Because TIME is centered on bin 9, and trial number on trial 1000, the Intercept represents the cloglog-hazard in bin 9 for the blank prime condition in trial 1000. Estimating model M2 took about 2.5 hours.
+\subsubsection{4.3.4 Model M1d: A more parsimonious model}\label{model-m1d-a-more-parsimonious-model}
 
-\subsubsection{4.3.5 Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption}\label{model-3-a-polynomial-specification-of-time-and-relaxing-the-proportionality-assumption}
+When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable ``condition'') and treat TIME as a continuous variable (variable ``period\_9'').
 
-So far, we assumed that the effect of our predictors prime-target congruecy and centered trial number are the same in each time bin. However, the descriptive plots (e.g., Figure 4) suggest that the effect of prime-target congruency varies across time bins. Previous research has shown that psychological effects typically change over time (Panis, 2020; Panis, Moran, et al., 2020; Panis \& Schmidt, 2022; Panis et al., 2017; Panis \& Wagemans, 2009).
-For the third model, we thus use a third-order polynomial specification of TIME for the baseline condition (blank prime), and relax the proportionality assumption for the predictor variables prime-target congruency (variable condition) and centered trial number (variable trial\_c).
-
-\scriptsize
+For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called ``M1d''. Here is its model formula.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{        event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+} 
-\NormalTok{                            condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}  
-\NormalTok{                            condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}  
-\NormalTok{                            condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}  
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}  
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                            (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+} 
-\NormalTok{                            condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                            condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}  
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}  
-\NormalTok{                            trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{|}\NormalTok{ pid), }
+\NormalTok{event }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9\_sq }\SpecialCharTok{+} 
+\NormalTok{                   (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9\_sq }\SpecialCharTok{|}\NormalTok{ pid)}
 \end{Highlighting}
 \end{Shaded}
 
-\normalsize
+The specification ``0 + Intercept + \ldots{}'' removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition.
 
-Note that duplicate terms across the interaction terms in the model formula (e.g., condition) are ignored. Estimating model M3 took about 4.5 hours.
+\subsubsection{4.3.5 Compare the models.}\label{compare-the-models.}
 
-\subsubsection{4.3.6 Model 4: A polynomial specification of TIME, and relaxing all three assumptions}\label{model-4-a-polynomial-specification-of-time-and-relaxing-all-three-assumptions}
-
-Based on previous work (e.g., Panis, 2020) we expect nonlinear effects of trial number on the hazard of response occurrence. We thus relax all three assumptions in model 4. We add a squared term for the continuous predictor centered trial number -- I(trial\_c\^{}2) -- and include interaction terms. For example, how the effect of congruent primes changes across time bins within a trial might change across the trials within an experiment.
-
-\scriptsize
+We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria (Kurz, 2023a; McElreath, 2018).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{event }\SpecialCharTok{|} \FunctionTok{trials}\NormalTok{(}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+} 
-\NormalTok{                           condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+}  
-\NormalTok{                           condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
-\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+} 
-\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                           condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                           trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                           (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{  condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+} 
-\NormalTok{                                 condition}\SpecialCharTok{*}\NormalTok{period\_9}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+}  
-\NormalTok{                                 condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\NormalTok{trial\_c }\SpecialCharTok{+} 
-\NormalTok{                                 condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(trial\_c}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)   }
-\NormalTok{                                 condition}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{+} 
-\NormalTok{                                 trial\_c}\SpecialCharTok{*}\FunctionTok{I}\NormalTok{(period\_9}\SpecialCharTok{\^{}}\DecValTok{3}\NormalTok{) }\SpecialCharTok{|}\NormalTok{ pid)}
-\end{Highlighting}
-\end{Shaded}
-
-\normalsize
-
-Again, duplicate terms across the interaction terms in the model formula are ignored. Estimating model M4 took about 8 hours.
-
-\subsubsection{4.3.7 Compare the models.}\label{compare-the-models.}
-
-We can compare the four models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria (Kurz, 2023a; McElreath, 2018).
-
-\scriptsize
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## model_M1 model_M2 model_M3 model_M4 
-##        0        0        0        1
+##     model_M0i     model_M1i     model_M1d 
+## 2.462363e-183  1.000000e+00  5.739791e-17
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M1, model\_M2, model\_M3, model\_M4, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{3}\NormalTok{)}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## model_M1 model_M2 model_M3 model_M4 
-##        0        0        0        1
+##     model_M0i     model_M1i     model_M1d 
+## 8.545948e-184  1.000000e+00  2.055767e-17
 \end{verbatim}
 
-\normalsize
+Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models.
 
-Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M4, and a weight of 0 to the other three simpler models.
+\subsubsection{4.3.6 Interpreting model M1i}\label{interpreting-model-m1i}
 
-\subsubsection{4.3.8 Evaluate parameter estimates}\label{evaluate-parameter-estimates}
-
-To make inferences from the parameter estimates in model M4, we summarize the draws from the posterior distributions of the effects of congruent and incongruent primes relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
-
-Figure 6 shows one point (mean) and three highest posterior density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial numbers 500, 1000, and 1500.
+To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80\% and 95\% credible intervals).
 
 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials} 
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_postdistr} 
 
 }
 
-\caption{Means and 50/80/95\% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-effects}
+\caption{Medians and 80/95\% credible intervals of the posterior distributions of the population-level parameters of model M1i.}\label{fig:plot-fixed-effects}
 \end{figure}
 
-Table 4 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongurent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of a hazard ratio. For simplicity and ease of presentation, we only tabulate data for a subset of the design in the main text (trial 500 for congruent and incongruent conditions). For the full table, see Supplementary materials or Tutorual X.
-
-
-
-
-
-Based on Figure 6 and Supplementary Table XX, we see that at the beginning of the experiment (trial 500), congruent and incongruent primes have a positive effect in time bin (200,240{]} on cloglog-hazard, relative to the cloglog-hazard estimate in the baseline condition (no prime; red striped lines in Figure 6). For example, the hazard ratio shows that the hazard of response occurrence for congruent primes is estimated to be 8.82 times higher than that for no-prime trials in bin (200,240{]} of trial 500. Incongruent primes also have a negative effect on cloglog-hazard in bins (320,360{]}, (360,400{]}, and (400,440{]}. For example, in bin (320,360{]}, the hazard ratio shows that the hazard of response occurrence for incongruent prime is estimated to be .34 times smaller than that for no-prime trials. While the early positive effects reflect responses to the prime stimulus, the later negative effect for incongruent primes likely reflects response competition between the prime-triggered response (e.g., left) and the target-triggered response (e.g., right)
-
-In the middle of the experiment (trial 1000), both congruent and incongruent primes have positive effects in bins (200,240{]} and (240,280{]}, while incongruent primes again have negative effects in bins (320,360{]}, (360,400{]}, and (400,440{]}. Probably due to practicing stimulus-response associations, the primes generate a higher hazard of response occurrence for 80 ms early in a trial (compared to 40 ms at the beginning of the experiment) compared to the blank prime condition.
-
-Towards the end of the experiment (trial 1500), both congruent and incongruent primes have positive and negative effects. Positive effects are present in bins (200,240{]} and (240,280{]}. Incongruent primes again have negative effects in bins (320,360{]}, (360,400{]}, and (400,440{]}, and congruent primes now also have negative effects in bins (360,400{]} and (400,440{]}.
-
-These results show that the effect of prime-target congruency changes not only on the across-bin/within-trial time scale (variable period\_9), but also on the across-trial/within-experiment time scale (variable trial\_c). The fact that congruent primes generate negative effects for 80 ms (compared to no-prime trials) towards the end of the experiment, while incongruent primes generate negative effects for 120 ms throughout the experiment, suggests the involvement of separate cognitive processes.
-
-Panis and Schmidt (2016) distinguished between automatic response competition (bottom-up lateral inhibition between response channels), active and global inhibition (top-down nonselective response inhibition), and active and selective inhibition (top-down selective response inhibition). While automatic response competition can be expected to be present in the incongruent trials throughout the experiment, active and global response inhibition effects might be present in both congruent and incongruent (unmasked) prime trials. In other words, people learn that the prime-triggered response is premature and that they have to temporarily slow down (increase the global response threshold) in order to allow gating of the correct response to the target stimulus. Thus, it seems that this global inhibitory effect becomes visible in the congruent (compared to no-prime) trials towards the end of the experiment, while it might be masked by the automatic inhibitory effect of response competition in the incongruent trials.
-Interestingly, while Panis and Schmidt (2016) did not test interactions between prime-target congruency and trial number, they concluded that active (i.e., top-down) response inhibition starts around 360 ms after the onset of the second stimulus (the target stimulus in no-mask trials), which nicely coincides with the onset of the negative effect of congruent primes observed here in trial 1500.
-
-To conclude this Tutorial 2a, Figure 7 shows the model-based hazard functions for each prime type for participant 6, in trials 500, 1000, and 1500.
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant (Figure 6), and for each participant in the data set (Figure 7).
 
 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4effects_subject6} 
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_pred_grand} 
 
 }
 
-\caption{Model-based hazard functions for each prime type for participant 6 in trials 500, 1000, and 1500.}\label{fig:plot-hazard-subject6}
+\caption{Point (median) and 80/95\% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.}\label{fig:plot-pred-grand-effects}
 \end{figure}
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_pred_pid} 
+
+}
+
+\caption{Point (median) and 80/95\% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.}\label{fig:plot-pred-pid-effects}
+\end{figure}
+
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both for the average participant (Figure 8; grand average marginal effect) and for each participant in the data set (Figure 9; subject-specific average marginal effect).
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_grand_AME} 
+
+}
+
+\caption{Point (mean) and 80/95\% credible interval summaries of estimated differences in hazard in each time bin for the average participant.}\label{fig:plot-grand-ame-effects}
+\end{figure}
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_pid_AMEs} 
+
+}
+
+\caption{Point (mean) and 80/95\% credible interval summaries of estimated differences in hazard in each time bin for each participant.}\label{fig:plot-pid-ame-effects}
+\end{figure}
+
+Table 4 shows the summaries of the estimated hazard differences for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% credible interval, for the average participant.
+
+
+
+
+
+\begin{center}
+\begin{ThreePartTable}
+
+\begin{TableNotes}[para]
+\normalsize{\textit{Note.} diff = difference in predicted hazard.}
+\end{TableNotes}
+
+\begin{longtable}{lllll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
+\caption{\label{tab:table-grand-ame}Point (mean) and 95\% credible interval summary of estimated differences in hazard, for each time bin and contrast, in the average participant.}\\
+\toprule
+contrast & \multicolumn{1}{c}{timebin} & \multicolumn{1}{c}{diff} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper}\\
+\midrule
+\endfirsthead
+\caption*{\normalfont{Table \ref{tab:table-grand-ame} continued}}\\
+\toprule
+contrast & \multicolumn{1}{c}{timebin} & \multicolumn{1}{c}{diff} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper}\\
+\midrule
+\endhead
+congruent minus blank & 6 & 0.09 & 0.02 & 0.17\\
+congruent minus blank & 7 & 0.14 & 0.04 & 0.25\\
+congruent minus blank & 8 & 0.11 & -0.02 & 0.24\\
+congruent minus blank & 9 & 0.08 & -0.12 & 0.27\\
+congruent minus blank & 10 & -0.08 & -0.30 & 0.15\\
+congruent minus blank & 11 & -0.10 & -0.31 & 0.11\\
+congruent minus blank & 12 & -0.04 & -0.24 & 0.17\\
+congruent minus blank & 13 & -0.08 & -0.33 & 0.20\\
+congruent minus blank & 14 & -0.10 & -0.33 & 0.15\\
+congruent minus blank & 15 & -0.01 & -0.27 & 0.27\\
+incongruent minus blank & 6 & 0.09 & 0.01 & 0.21\\
+incongruent minus blank & 7 & 0.08 & -0.03 & 0.23\\
+incongruent minus blank & 8 & -0.06 & -0.17 & 0.07\\
+incongruent minus blank & 9 & -0.19 & -0.31 & -0.06\\
+incongruent minus blank & 10 & -0.27 & -0.45 & -0.04\\
+incongruent minus blank & 11 & -0.23 & -0.40 & -0.03\\
+incongruent minus blank & 12 & -0.17 & -0.33 & 0.02\\
+incongruent minus blank & 13 & -0.10 & -0.31 & 0.14\\
+incongruent minus blank & 14 & -0.06 & -0.27 & 0.15\\
+incongruent minus blank & 15 & 0.03 & -0.23 & 0.27\\
+\bottomrule
+\addlinespace
+\insertTableNotes
+\end{longtable}
+
+\end{ThreePartTable}
+\end{center}
+
+\paragraph{Example conclusions for M1i}\label{example-conclusions-for-m1i}
+
+What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
+
+If we want to study the average effect of prime type on hazard, uncontaminated by inter-individual differences, we can base our conclusion on Figure 8 and Table 4. The contrast ``congruent minus blank'' was estimated to be 0.09 hazard units in bin 6 (95\% CrI = {[}0.02, 0.17{]}), and 0.14 hazard units in bin 7 (95\% CrI = {[}0.04, 0.25{]}). For the other bins, the 95\% credible interval contained zero.
+The contrast ``incongruent minus blank'' was estimated to be 0.09 hazard units in bin 6 (95\% CrI = {[}0.01, 0.21{]}), -0.19 hazard units in bin 9 (95\% CrI = {[}-0.31, -0.06{]}), -0.27 hazard units in bin 10 (95\% CrI = {[}-0.45, -0.04{]}), and -0.23 hazard units in bin 11 (95\% CrI = {[}-0.40, -0.03{]}). For the other bins, the 95\% credible interval contained zero. Note that we could also have calculated hazard ratios instead of hazard differences.
+
+There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240{]}. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440{]}. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
+
+The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
+Table 5 shows the proportion of the posterior distribution below or above zero, for each time bin and contrast.
+
+
+
+
+
+\begin{center}
+\begin{ThreePartTable}
+
+\begin{TableNotes}[para]
+\normalsize{\textit{Note.} prop\_below = proportion below zero: prop\_above = proportion above zero.}
+\end{TableNotes}
+
+\begin{longtable}{llll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
+\caption{\label{tab:table-contrasts_props}Summarizing the posterior distributions of each contrast by their proportions below and above zero.}\\
+\toprule
+timebin & \multicolumn{1}{c}{contrast} & \multicolumn{1}{c}{prop\_above} & \multicolumn{1}{c}{prop\_below}\\
+\midrule
+\endfirsthead
+\caption*{\normalfont{Table \ref{tab:table-contrasts_props} continued}}\\
+\toprule
+timebin & \multicolumn{1}{c}{contrast} & \multicolumn{1}{c}{prop\_above} & \multicolumn{1}{c}{prop\_below}\\
+\midrule
+\endhead
+6 & congruent minus blank & 0.99 & 0.01\\
+7 & congruent minus blank & 0.99 & 0.01\\
+8 & congruent minus blank & 0.95 & 0.05\\
+9 & congruent minus blank & 0.79 & 0.21\\
+10 & congruent minus blank & 0.24 & 0.76\\
+11 & congruent minus blank & 0.15 & 0.85\\
+12 & congruent minus blank & 0.33 & 0.67\\
+13 & congruent minus blank & 0.28 & 0.72\\
+14 & congruent minus blank & 0.19 & 0.81\\
+15 & congruent minus blank & 0.47 & 0.53\\
+6 & incongruent minus blank & 0.98 & 0.02\\
+7 & incongruent minus blank & 0.92 & 0.08\\
+8 & incongruent minus blank & 0.12 & 0.88\\
+9 & incongruent minus blank & 0.00 & 1.00\\
+10 & incongruent minus blank & 0.01 & 0.99\\
+11 & incongruent minus blank & 0.02 & 0.98\\
+12 & incongruent minus blank & 0.04 & 0.96\\
+13 & incongruent minus blank & 0.20 & 0.80\\
+14 & incongruent minus blank & 0.27 & 0.73\\
+15 & incongruent minus blank & 0.58 & 0.42\\
+\bottomrule
+\addlinespace
+\insertTableNotes
+\end{longtable}
+
+\end{ThreePartTable}
+\end{center}
+
+Thus, the probability that the contrast ``congruent minus blank'' is larger than 0, is larger than .9 in bins 6 to 8. And the probability that the contrast ``incongruent minus blank'' is smaller than 0, is larger than .9 in bins 9 to 12.
+
+If we want to focus more on inter-individual differences, we can study the subject-specific differences in hazard in Figure 9. Note that three participants (1, 2, and 3) show a negative difference for the contrast ``congruent minus incongruent'' in bin (360,400{]} -- subject 2 also in bin (320,360{]}.
+
+Future studies could (a) increase the number of participants to estimate the proportion of ``dippers'' in the subject population, and/or (b) try to explain why this dip occurs. For example, Panis and Schmidt (2016) concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after \textasciitilde360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
+
+Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to ``dip'' around that time (Figure 9). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formula that should get you going.
 
 \subsection{4.4 Tutorial 2b: Fitting Bayesian conditional accuracy models}\label{tutorial-2b-fitting-bayesian-conditional-accuracy-models}
 
-In this fourth tutorial, we illustrate how to fit a Bayesian multi-level regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. For illustration purposes, we only fitted the effects of model M4 (see Tutorial 2a) in the conditional accuracy model called M4\_ca.
+In this fourth tutorial, we illustrate how to fit a Bayesian multi-level regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. For illustration purposes, we only fitted the effects of model M1i (see Tutorial 2a) in the conditional accuracy model called M1i\_ca.
 
-To make inferences from the parameter estimates in model M4\_ca, we summarize the draws from the posterior distributions of the effects of congruent and incongruent primes on logit-ca relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
-
-Figure 8 shows one point (mean) and three highest posterior density interval (50/80/95\%) estimates for the effects of congruent and incongruent primes relative to neutral primes on logit-ca, for each time bin in trial numbers 500, 1000, and 1500.
+To make inferences from the parameter estimates in model M1i\_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 10, together with point (median) and interval estimates (80\% and 95\% credible intervals).
 
 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials} 
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_ca_postdistr} 
 
 }
 
-\caption{Means and 50/80/95\% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.}\label{fig:plot-prime-ca-effects}
+\caption{Medians and 80/95\% credible intervals of the posterior distributions of the population-level parameters of model M1i\_ca.}\label{fig:plot-ca-fixed-effects}
 \end{figure}
 
-Supplementary Table XX shows the summaries of the draws from the posterior distributions of the effects of congruent and incongruent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of an odds ratio.
-
-
-
-
-
-Based on Figure 8 and Supplementary Table XX, we see that throughout the experiment (trials 500, 1000, and 1500), congruent primes have a positive effect on logit-ca(t) in time bins (200,240{]}, (240,280{]}, (280,320{]}, and (320,360{]}, relative to the logit-ca(t) estimates in the baseline condition (blank prime; red dashed lines in Figure 8). For example, the odds ratio for congruent primes in bin (320,360{]} in trial 500 shows that the odds of a correct response are estimated to be 8.89 times higher than the odds of a correct response when there is no prime.
-Incongruent primes have a negative effect on logit-ca(t) in time bins (200,240{]}, (240,280{]}, and (280,320{]} throughout the experiment, relative to the logit-ca(t) estimates in the baseline condition (no prime; red striped lines).
-
-To conclude this Tutorial 2b, Figure 9 shows the model-based ca(t) functions for each prime type for participant 6, in trials 500, 1000, and 1500.
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- for the average participant (Figure 11), and for each participant in the data set (Figure 12).
 
 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M4_ca_effects_subject6} 
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_ca_pred_grand} 
 
 }
 
-\caption{Model-based ca(t) functions for each prime type for participant 6 in trials 500, 1000, and 1500.}\label{fig:plot-ca-subject6}
+\caption{Point (median) and 80/95\% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.}\label{fig:plot-pred-grand-effects-ca}
 \end{figure}
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_ca_pred_pid} 
+
+}
+
+\caption{Point (median) and 80/95\% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.}\label{fig:plot-pred-pid-effects-ca}
+\end{figure}
+
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects for the average participant (Figure 13; grand average marginal effect).
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/M1i_ca_grand_AME} 
+
+}
+
+\caption{Point (mean) and 80/95\% credible interval summaries of estimated differences in conditional accuracy in each time bin for the average participant.}\label{fig:plot-ca-grand-ame-effects}
+\end{figure}
+
+Table 6 shows the summaries of the estimated differences in conditional accuracy for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95\% credible interval, for the average participant.
+
+
+
+
+
+\begin{center}
+\begin{ThreePartTable}
+
+\begin{TableNotes}[para]
+\normalsize{\textit{Note.} diff = difference in predicted conditional accuracy.}
+\end{TableNotes}
+
+\begin{longtable}{lllll}\noalign{\getlongtablewidth\global\LTcapwidth=\longtablewidth}
+\caption{\label{tab:table-ca-grand-ame}Point (mean) and 95\% credible interval summary of estimated differences in conditional accuracy, for each time bin and contrast, in the average participant.}\\
+\toprule
+contrast & \multicolumn{1}{c}{timebin} & \multicolumn{1}{c}{diff\_ca} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper}\\
+\midrule
+\endfirsthead
+\caption*{\normalfont{Table \ref{tab:table-ca-grand-ame} continued}}\\
+\toprule
+contrast & \multicolumn{1}{c}{timebin} & \multicolumn{1}{c}{diff\_ca} & \multicolumn{1}{c}{.lower} & \multicolumn{1}{c}{.upper}\\
+\midrule
+\endhead
+congruent minus blank & 6 & 0.36 & 0.06 & 0.74\\
+congruent minus blank & 7 & 0.32 & 0.13 & 0.57\\
+congruent minus blank & 8 & 0.16 & 0.06 & 0.31\\
+congruent minus blank & 9 & 0.07 & 0.02 & 0.17\\
+congruent minus blank & 10 & 0.00 & -0.03 & 0.03\\
+congruent minus blank & 11 & -0.03 & -0.11 & 0.02\\
+congruent minus blank & 12 & -0.02 & -0.10 & 0.03\\
+congruent minus blank & 13 & -0.04 & -0.20 & 0.06\\
+congruent minus blank & 14 & -0.20 & -0.59 & 0.07\\
+congruent minus blank & 15 & -0.06 & -0.49 & 0.28\\
+incongruent minus blank & 6 & -0.61 & -0.91 & -0.22\\
+incongruent minus blank & 7 & -0.64 & -0.84 & -0.38\\
+incongruent minus blank & 8 & -0.70 & -0.86 & -0.40\\
+incongruent minus blank & 9 & -0.21 & -0.59 & 0.04\\
+incongruent minus blank & 10 & -0.03 & -0.15 & 0.02\\
+incongruent minus blank & 11 & -0.02 & -0.07 & 0.02\\
+incongruent minus blank & 12 & 0.00 & -0.04 & 0.04\\
+incongruent minus blank & 13 & 0.01 & -0.06 & 0.08\\
+incongruent minus blank & 14 & 0.02 & -0.09 & 0.18\\
+incongruent minus blank & 15 & -0.09 & -0.39 & 0.23\\
+\bottomrule
+\addlinespace
+\insertTableNotes
+\end{longtable}
+
+\end{ThreePartTable}
+\end{center}
+
+Based on Figure 13 and Table 6, we see that congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240{]}, (240,280{]}, and (280,320{]}, relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 14).
+Incongruent primes have a negative effect on the conditional accuracy of emitted responses in those time bins, relative to the estimates in the baseline condition.
 
 \subsection{4.5 Tutorial 3a: Fitting Frequentist hazard models}\label{tutorial-3a-fitting-frequentist-hazard-models}
 
-In this fifth tutorial we illustrate how to fit a multilevel regression model to RT data in the frequentist framework, for the data set used in Tutorial 1a. The general process is similar to that in Tutorial 2a, except that there are no priors to set. Because we expected that the random effects structure of model M4 would be too complex for a freqentist approach, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS (Ripley et al., 2024). The resulting hazard model is called M3\_f.
+In this fifth tutorial we illustrate how to fit a multilevel regression model to RT data in the frequentist framework, for the data set used in Tutorial 1a. The general process is similar to that in Tutorial 2a, except that there are no priors to set.
 
-In Figure 10 we compare the parameter estimates of model M3 from brm() with those of model M3\_f from glmer().
+For illustration purposes, we only fitted the effects from model M1i (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS (Ripley et al., 2024). The resulting hazard model is called M1i\_f.
+
+In Figure 14 we compare the parameter estimates of model M1i from brm() with those of model M1i\_f from glmer().
 
 
 
@@ -961,14 +1113,14 @@ In Figure 10 we compare the parameter estimates of model M3 from brm() with thos
 
 }
 
-\caption{Parameter estimates for model M3 from brm() -- means and 95\% quantile intervals -- and model M3\_f from glmer() -- maximum likelihood estimates and 95\% confidence intervals.}\label{fig:plot-comparison}
+\caption{Parameter estimates for model M1i from brm() -- means and 95\% credible intervals -- and model M1i\_f from glmer() -- maximum likelihood estimates and 95\% confidence intervals.}\label{fig:plot-comparison}
 \end{figure}
 
-Figure 10 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, the random effects structure of model M3\_f was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a and 2b took several hours to build.
+Figure 14 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, model M1i\_f did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a took several hours to build.
 
 \subsection{4.6 Tutorial 3b: Fitting Frequentist conditional accuracy models}\label{tutorial-3b-fitting-frequentist-conditional-accuracy-models}
 
-In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. For illustration purposes, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS (Ripley et al., 2024). Again, the resulting conditional accuracy model M3\_ca\_f did not converge and resulted in a singular fit.
+In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. For illustration purposes, we only fitted the effects from model M1i\_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS (Ripley et al., 2024). Again, the resulting conditional accuracy model M1i\_ca\_f did not converge and resulted in a singular fit.
 
 \subsection{4.4 Tutorial 4: Planning}\label{tutorial-4-planning}
 

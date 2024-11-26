@@ -240,18 +240,17 @@ We used `r my_r_citation$r` for all reported analyses. The content of the tutori
 # 4. Tutorials
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one and two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
-Additionally, to further simplify the process for other users, the tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see part B in the supplemental material for a list of the custom functions).
+Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see part B in the supplemental material for a list of the custom functions).
 
 Our list of tutorials is as follows:
 
-* 1a. Wrangle raw data and calculate descriptive stats for one independent variable.
-* 1b. Wrangle raw data and calculate descriptive stats for two independent variables.
+* 1a. Wrangle raw data and calculate descriptive stats for one independent variable
+* 1b. Wrangle raw data and calculate descriptive stats for two independent variables
 * 2a. Bayesian multilevel modeling for h(t)
 * 2b. Bayesian multilevel modeling for ca(t)
 * 3a. Frequentist multilevel modeling for h(t)
 * 3b. Frequentist multilevel modeling for ca(t)
-
-Plannng (T4) - if we get a simulation and power analysis script working, which we are happy with then we could include it here.
+* 4.  Simulation and power analysis for planning experiments
 
 ## 4.1 Tutorial 1a: Calculating descriptive statistics using a life table
 
@@ -366,7 +365,7 @@ The next step is to set up the life table using our custom function setup_lt(), 
 The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored.
 One can now inspect different aspects, including the life table for a particular condition of a particular subject, and a plot of the different functions for a particular participant. 
 
-In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone may be guessing), outlying individuals, and/or different groups with qualitatively different behavior. 
+In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior. 
 
 Table 3 shows the life table for condition "blank" (no prime stimulus presented) for participant 6. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
 
@@ -416,291 +415,301 @@ At this point, we have calculated, summarised and plotted descriptive statistics
 
 So far in this paper, we have use a simple experimental design, which involved one condition with three levels. But psychological experiments are often more complex, with crossed factorial designs with more conditions and more than three levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
-To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for participant 6 as part of Tutorial 1b for those that are interested.
+To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial 1b for those that are interested.
 
-(ref:descr-plot5-caption) Sample-based discrete-time hazard, survivor, conditional accuracy, and probability mass functions for participant 6, as a function of prime type (blank, congruent, incongruent) and mask type (no mask, relevant, irrelevant, lines).
-
-```{r plot-2ivs, fig.cap = "(ref:descr-plot5-caption)", out.width='95%'}
-# knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject6_PanisSchmidt.png")
-```
-
-## 4.3 Tutorial 2a: Fitting Bayesian hazard models to time-to-event data
+## 4.3 Tutorial 2a: Fitting Bayesian hazard models to discrete time-to-event data
 
 In this third tutorial, we illustrate how to fit Bayesian multi-level regression models to the RT data of the masked response priming data set used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
 ### 4.3.1 Hazard model considerations 
 
-There are several analytic decisions one has to make when fitting a hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose a specification of the effect of discrete TIME (i.e., the time bin index t) in a selected baseline condition. One can choose a general specification (one intercept per bin) or a functional specification, such as a polynomial one (compare model 1 with models 2, 3, and 4 below; see also part D of the supplementary material).
-
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat time as a discrete predictor, you can choose between reference coding and index coding.  
 In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set [@allisonSurvivalAnalysisUsing2010]. When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In this tutorial we will fit four Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600] and the cloglog link. The data is prepared as follows.
+In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600] and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
 
 \scriptsize
-```{r prepare-data, echo=T}
-# load person-trial-bin oriented data set
-ptb_data <- read_csv("../Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
-# select analysis time window: (200,600] with 10 bins (time bin ranks 6 to 15)
-ptb_data <- ptb_data %>% filter(period > 5)
-# create factor condition, with "blank" as the reference level
-ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
-# center TIME (variable period) on bin 9, and variable trial on number 1000 and rescale; Add dummy variables for each bin.
+```{r wrangle-data, eval=F, echo=T}
+# read in the file we saved in tutorial 1a
+ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
+
 ptb_data <- ptb_data %>% 
-        mutate(period_9 = period - 9,
-               trial_c = (trial - 1000)/1000,
-               d6  = if_else(period == 6, 1, 0),
-               d7  = if_else(period == 7, 1, 0),
-               d8  = if_else(period == 8, 1, 0),
-               d9  = if_else(period == 9, 1, 0),
-               d10 = if_else(period == 10, 1, 0),
-               d11 = if_else(period == 11, 1, 0),
-               d12 = if_else(period == 12, 1, 0),
-               d13 = if_else(period == 13, 1, 0),
-               d14 = if_else(period == 14, 1, 0),
-               d15 = if_else(period == 15, 1, 0))
+# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
+filter(period > 5) %>%
+       # continuous predictor for TIME named "period_9", centered on bin 9
+mutate(period_9 = period - 9,
+       # categorical predictor for TIME named "timebin" with index coding
+       timebin = factor(period,levels=c(6:15)),
+       # factor "condition" using reference coding, with "blank" as the reference level
+       condition = factor(condition, labels = c("blank", "congruent","incongruent")),
+       # categorical predictor "prime" with index coding
+       prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
+       prime = factor(prime,levels=c(1,2,3)))
 ```
 \normalsize
 
 ### 4.3.2 Prior distributions
 
-To get the posterior distribution of each model parameter given the data, we need to specify a prior distribution for each parameter. The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions on the logit and/or cloglog scales.
+To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
+In Tutorial_2a.Rmd we perform some prior predictive checks to make sure our selected prior distributions reflect our prior beliefs.
 
-While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. The other rows in Figure 12 show prior distributions on the logit and cloglog scale that we use instead.
+The middle column of Figure 16 in part E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in supplementary Figure 16 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
 
-### 4.3.3 Model 1: A general specification of TIME, and main effects of congruency and trial number
+### 4.3.3 Model M0i: A null model with index coding
 
-When you do not want to make assumptions about the shape of the hazard function in the selected baseline condition, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one intercept per time bin. In this first model, we use a general specification of TIME for the selected baseline condition (blank prime), and assume that the effects of prime-target congruency and trial number are proportional and additive, and that the effect of trial number is linear.
-Before we fit model 1, we remove unnecessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M1 is specified as follows.
+When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first model, we use a general specification of TIME using index coding, and do not include experimental predictors. We call this model "M0i".
 
-\scriptsize
-```{r fit-model-M1, echo=T, eval=F}
-model_M1 <-
-   brm(data = M1_data,
-       family = binomial(link="cloglog"),
-       event | trials(1) ~ 0 + d6 + d7 + d8 + Intercept + d10 + d11 + d12 + d13 + d14 + d15 + 
-                           condition + trial_c +
-                           (d6 + d7 + d8 + 1 + d10 + d11 + d12 + d13 + d14 + d15 + 
-                           condition + trial_c | pid),
-       prior = priors_M1,
-       chains = 4, cores = 4, iter = 3000, warmup = 1000,
-       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 12),
+Before we fit model M0i, we select the necessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M0i is specified as follows.
+
+```{r fit-model-M0i, echo=T, eval=F} 
+model_M0i <-                    
+   brm(data = data_M0i,
+       family = bernoulli(link="cloglog"),
+       formula = event ~ 0 + timebin + (0 + timebin | pid),
+       prior = priors_M0i,
+       chains = 4, cores = 4, 
+       iter = 3000, warmup = 1000,
+       control = list(adapt_delta = 0.999, 
+                      step_size = 0.04, 
+                      max_treedepth = 12),
        seed = 12, init = "0",
-       file = "Tutorial_2_Bayesian/models/model_M1")
-```
-\normalsize
-
-After selecting the binomial family and the cloglog link, the model formula is specified. The fixed effects include 9 dummy variables, the explicit Intercept variable (which represents bin 9 in this example), and the main effects of prime-target congruency (variable condition) and centered trial number (variable trial_c). Each of these effects is allowed to vary across individuals (variable pid).
-Estimating model M1 took about 70 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
-
-### 4.3.4 Model 2: A polynomial specification of TIME, and main effects of congruency and trial number
-
-When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by using a polynomial specification of TIME. For our second example model, we thus use a third-order polynomial specification of TIME for the selected baseline condition (blank prime), and again assume that the effects of prime-target congruency and centered trial number are proportional and additive, and that the effect of trial number is linear. The model formula for model M2 looks as follows. 
-
-\scriptsize 
-```{r formula-model-M2, eval=F, echo=T}
-event | trials(1) ~ 0 + Intercept + period_9 + I(period_9^2) + I(period_9^3) +
-                           condition + trial_c +
-                           (1 + period_9 + I(period_9^2) + I(period_9^3) +
-                           condition + trial_c | pid),
-```
-\normalsize
-
-Because TIME is centered on bin 9, and trial number on trial 1000, the Intercept represents the cloglog-hazard in bin 9 for the blank prime condition in trial 1000. Estimating model M2 took about 2.5 hours.
-
-### 4.3.5 Model 3: A polynomial specification of TIME, and relaxing the proportionality assumption
-
-So far, we assumed that the effect of our predictors prime-target congruecy and centered trial number are the same in each time bin. However, the descriptive plots (e.g., Figure 4) suggest that the effect of prime-target congruency varies across time bins. Previous research has shown that psychological effects typically change over time [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022].
-For the third model, we thus use a third-order polynomial specification of TIME for the baseline condition (blank prime), and relax the proportionality assumption for the predictor variables prime-target congruency (variable condition) and centered trial number (variable trial_c). 
-
-\scriptsize
-```{r formula-model-M3, eval=F, echo=T}
-        event | trials(1) ~ 0 + Intercept + 
-                            condition*period_9 +  
-                            condition*I(period_9^2) +  
-                            condition*I(period_9^3) + 
-                            trial_c*period_9 +  
-                            trial_c*I(period_9^2) +  
-                            trial_c*I(period_9^3) + 
-                            (1 + condition*period_9 + 
-                            condition*I(period_9^2) + 
-                            condition*I(period_9^3) + 
-                            trial_c*period_9 +  
-                            trial_c*I(period_9^2) +  
-                            trial_c*I(period_9^3) | pid), 
-```
-\normalsize
-
-Note that duplicate terms across the interaction terms in the model formula (e.g., condition) are ignored. Estimating model M3 took about 4.5 hours.
-
-### 4.3.6 Model 4: A polynomial specification of TIME, and relaxing all three assumptions
-
-Based on previous work [e.g., @panisHowCanWe2020] we expect nonlinear effects of trial number on the hazard of response occurrence. We thus relax all three assumptions in model 4. We add a squared term for the continuous predictor centered trial number -- I(trial_c^2) -- and include interaction terms. For example, how the effect of congruent primes changes across time bins within a trial might change across the trials within an experiment. 
-
-\scriptsize  
-```{r fit-model-M4, eval=F, echo=T} 
-event | trials(1) ~ 0 + Intercept + 
-                           condition*period_9*trial_c +  
-                           condition*period_9*I(trial_c^2) +
-                           condition*I(period_9^2)*trial_c + 
-                           condition*I(period_9^2)*I(trial_c^2) + 
-                           condition*I(period_9^3) + 
-                           trial_c*I(period_9^3) + 
-                           (1 +  condition*period_9*trial_c + 
-                                 condition*period_9*I(trial_c^2) +  
-                                 condition*I(period_9^2)*trial_c + 
-                                 condition*I(period_9^2)*I(trial_c^2)   
-                                 condition*I(period_9^3) + 
-                                 trial_c*I(period_9^3) | pid)
-```
-\normalsize
-
-Again, duplicate terms across the interaction terms in the model formula are ignored. Estimating model M4 took about 8 hours.
-
-### 4.3.7 Compare the models.
-
-We can compare the four models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2018; @kurzAppliedLongitudinalDataAnalysis2023].
-
-```{r compare-models, echo=F, eval=T} 
-model_M1 <- readRDS("../Tutorial_2_Bayesian/models/model_M1.rds") 
-model_M2 <- readRDS("../Tutorial_2_Bayesian/models/model_M2.rds") 
-model_M3 <- readRDS("../Tutorial_2_Bayesian/models/model_M3.rds") 
-model_M4 <- readRDS("../Tutorial_2_Bayesian/models/model_M4.rds") 
+       file = "Tutorial_2_Bayesian/models/model_M0i")
 ```
 
-\scriptsize
+After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+
+### 4.3.4 Model M1i: Adding the effects of prime-target congruency
+
+Previous research has shown that psychological effects typically change over time [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022]. In the next model, we use index coding for both TIME (variable "timebin") and the categorical predictor prime-target-congruency (variable "prime"), so that we get 30 grand intercepts, one for each combination of timebin level and prime level. Here is the model formula of this model that we call "M1i".
+
+```{r fit-model-M1i, eval=F, echo=T}
+event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
+```
+
+Estimating model M1i took about 124 minutes.
+
+### 4.3.4 Model M1d: A more parsimonious model
+
+When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable "condition") and treat TIME as a continuous variable (variable "period_9").
+
+For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called "M1d". Here is its model formula.
+
+```{r fit-model-M1d, eval=F, echo=T}
+event ~ 0 + Intercept + condition*period_9 + condition*period_9_sq + 
+                   (1 + condition*period_9 + condition*period_9_sq | pid)
+```
+
+The specification "0 + Intercept + ..." removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period_9_sq is a squared version of period_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 145 minutes to run.
+
+### 4.3.5 Compare the models.
+
+We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2018; @kurzAppliedLongitudinalDataAnalysis2023].
+
+```{r load-models, echo=F, eval=T, echo=F} 
+model_M0i <- readRDS("../Tutorial_2_Bayesian/models/model_M0i.rds") 
+model_M1i <- readRDS("../Tutorial_2_Bayesian/models/model_M1i.rds") 
+model_M1d <- readRDS("../Tutorial_2_Bayesian/models/model_M1d.rds")
+
+model_M0i <- add_criterion(model_M0i, c("loo", "waic"))
+model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
+model_M1d <- add_criterion(model_M1d, c("loo", "waic"))
+```
+
 ```{r show-weights, echo=T, eval=T}
-model_weights(model_M1, model_M2, model_M3, model_M4, weights = "loo") %>% round(digits = 3)
-model_weights(model_M1, model_M2, model_M3, model_M4, weights = "waic") %>% round(digits = 3)
-```
-\normalsize
-
-Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M4, and a weight of 0 to the other three simpler models. 
-
-### 4.3.8 Evaluate parameter estimates
-
-To make inferences from the parameter estimates in model M4, we summarize the draws from the posterior distributions of the effects of congruent and incongruent primes relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
-
-Figure 6 shows one point (mean) and three highest posterior density interval (50/80/95%) estimates for the effects of congruent and incongruent primes relative to neutral primes, for each time bin in trial numbers 500, 1000, and 1500.
-
-(ref:descr-plot6-caption) Means and 50/80/95% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.
-
-```{r plot-prime-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_con_incon_3trials.png")
+model_weights(model_M0i, model_M1i, model_M1d, weights = "loo") %>% round(digits = 2)
+model_weights(model_M0i, model_M1i, model_M1d, weights = "waic") %>% round(digits = 2) 
 ```
 
-Table 4 shows the summaries of the draws from the posterior distributions of the effects of congruent and incongurent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of a hazard ratio. For simplicity and ease of presentation, we only tabulate data for a subset of the design in the main text (trial 500 for congruent and incongruent conditions). For the full table, see Supplementary materials or Tutorual X.
+Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models. 
 
-```{r}
-int_tab <- read_csv("../Tutorial_2_Bayesian/tables/effects_intervals_table.csv")
+### 4.3.6 Interpreting model M1i
+
+To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80% and 95% credible intervals).
+
+(ref:descr-plot5-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i.
+
+```{r plot-fixed-effects, fig.cap = "(ref:descr-plot5-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
 ```
 
-(ref:int-table-caption) Point and 95% highest posterior density interval estimates, and hazard ratios.
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant (Figure 6), and for each participant in the data set (Figure 7).
 
-(ref:int-table-note-caption) c500 = effect of congruent primes in trial 500; c1000 = effect of congruent primes in trial 1000; c1500 = effect of congruent primes in trial 1500; i500 = effect of incongruent primes in trial 500; i1000 = effect of incongruent primes in trial 1000; i1500 = effect of incongruent primes in trial 1500. 
+(ref:descr-plot6-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.
 
-```{r int-table}
-# apa_table(
-#   int_tab,
-#   caption = "(ref:int-table-caption)",
-#   note = "(ref:int-table-note-caption)",
-#   placement = "H",
+```{r plot-pred-grand-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_grand.png")
+```
+
+(ref:descr-plot7-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.
+
+```{r plot-pred-pid-effects, fig.cap = "(ref:descr-plot7-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_pid.png")
+```
+
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both for the average participant (Figure 8; grand average marginal effect) and for each participant in the data set (Figure 9; subject-specific average marginal effect). 
+
+(ref:descr-plot8-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for the average participant.
+
+```{r plot-grand-ame-effects, fig.cap = "(ref:descr-plot8-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_grand_AME.png")
+```
+
+(ref:descr-plot9-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for each participant.
+
+```{r plot-pid-ame-effects, fig.cap = "(ref:descr-plot9-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pid_AMEs.png")
+```
+
+Table 4 shows the summaries of the estimated hazard differences for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.
+
+```{r load-tables, eval=T, echo=F}
+tab_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/grand_AMEs.csv")
+#tab_pid_ame <- read_csv("../Tutorial_2_Bayesian/tables/pid_AMEs.csv")
+tab_contrast_props <- read_csv("../Tutorial_2_Bayesian/tables/contrasts_props.csv")
+```
+
+(ref:table-grand-ame-caption) Point (mean) and 95% credible interval summary of estimated differences in hazard, for each time bin and contrast, in the average participant.
+
+(ref:table-grand-ame-note-caption) diff = difference in predicted hazard.
+
+```{r table-grand-ame}
+ apa_table(
+   tab_grand_ame,
+   caption = "(ref:table-grand-ame-caption)",
+   note = "(ref:table-grand-ame-note-caption)",
+   placement = "H",
 #   font_size = "scriptsize",
-#   longtable = TRUE,
-#   repeat_header = TRUE,
-#   format.args = list(
-#        digits = c(0, 2,2,2,2,2,5),
-#         decimal.mark = ".", big.mark = "")
-# )
+   longtable = TRUE,
+   repeat_header = TRUE,
+   format.args = list(
+        digits = c(0,0,2,2,2),
+        decimal.mark = ".", big.mark = "")
+)
 ```
 
-Based on Figure 6 and Supplementary Table XX, we see that at the beginning of the experiment (trial 500), congruent and incongruent primes have a positive effect in time bin (200,240] on cloglog-hazard, relative to the cloglog-hazard estimate in the baseline condition (no prime; red striped lines in Figure 6). For example, the hazard ratio shows that the hazard of response occurrence for congruent primes is estimated to be 8.82 times higher than that for no-prime trials in bin (200,240] of trial 500. Incongruent primes also have a negative effect on cloglog-hazard in bins (320,360], (360,400], and (400,440]. For example, in bin (320,360], the hazard ratio shows that the hazard of response occurrence for incongruent prime is estimated to be .34 times smaller than that for no-prime trials. While the early positive effects reflect responses to the prime stimulus, the later negative effect for incongruent primes likely reflects response competition between the prime-triggered response (e.g., left) and the target-triggered response (e.g., right)
+#### Example conclusions for M1i
 
-In the middle of the experiment (trial 1000), both congruent and incongruent primes have positive effects in bins (200,240] and (240,280], while incongruent primes again have negative effects in bins (320,360], (360,400], and (400,440]. Probably due to practicing stimulus-response associations, the primes generate a higher hazard of response occurrence for 80 ms early in a trial (compared to 40 ms at the beginning of the experiment) compared to the blank prime condition.
+What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
 
-Towards the end of the experiment (trial 1500), both congruent and incongruent primes have positive and negative effects. Positive effects are present in bins (200,240] and (240,280]. Incongruent primes again have negative effects in bins (320,360], (360,400], and (400,440], and congruent primes now also have negative effects in bins (360,400] and (400,440].
+If we want to study the average effect of prime type on hazard, uncontaminated by inter-individual differences, we can base our conclusion on Figure 8 and Table 4. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin 7 (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
+The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin 9 (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin 10 (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin 11 (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. Note that we could also have calculated hazard ratios instead of hazard differences.
 
-These results show that the effect of prime-target congruency changes not only on the across-bin/within-trial time scale (variable period_9), but also on the across-trial/within-experiment time scale (variable trial_c). The fact that congruent primes generate negative effects for 80 ms (compared to no-prime trials) towards the end of the experiment, while incongruent primes generate negative effects for 120 ms throughout the experiment, suggests the involvement of separate cognitive processes. 
+There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
 
-@panisWhatShapingRT2016 distinguished between automatic response competition (bottom-up lateral inhibition between response channels), active and global inhibition (top-down nonselective response inhibition), and active and selective inhibition (top-down selective response inhibition). While automatic response competition can be expected to be present in the incongruent trials throughout the experiment, active and global response inhibition effects might be present in both congruent and incongruent (unmasked) prime trials. In other words, people learn that the prime-triggered response is premature and that they have to temporarily slow down (increase the global response threshold) in order to allow gating of the correct response to the target stimulus. Thus, it seems that this global inhibitory effect becomes visible in the congruent (compared to no-prime) trials towards the end of the experiment, while it might be masked by the automatic inhibitory effect of response competition in the incongruent trials.
-Interestingly, while @panisWhatShapingRT2016 did not test interactions between prime-target congruency and trial number, they concluded that active (i.e., top-down) response inhibition starts around 360 ms after the onset of the second stimulus (the target stimulus in no-mask trials), which nicely coincides with the onset of the negative effect of congruent primes observed here in trial 1500.
+The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
+Table 5 shows the proportion of the posterior distribution below or above zero, for each time bin and contrast.
 
-To conclude this Tutorial 2a, Figure 7 shows the model-based hazard functions for each prime type for participant 6, in trials 500, 1000, and 1500.
+(ref:table-props-caption) Summarizing the posterior distributions of each contrast by their proportions below and above zero.
 
-(ref:descr-plot7-caption) Model-based hazard functions for each prime type for participant 6 in trials 500, 1000, and 1500.
+(ref:table-props-note-caption) prop_below = proportion below zero: prop_above = proportion above zero.
 
-```{r plot-hazard-subject6, fig.cap = "(ref:descr-plot7-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4effects_subject6.png")
+```{r table-contrasts_props, eval=T}
+ apa_table(
+   tab_contrast_props,
+   caption = "(ref:table-props-caption)",
+   note = "(ref:table-props-note-caption)",
+   placement = "H",
+#   font_size = "scriptsize",
+   longtable = TRUE,
+   repeat_header = TRUE,
+   format.args = list(
+        digits = c(0,0,2,2),
+        decimal.mark = ".", big.mark = "")
+)
 ```
+
+Thus, the probability that the contrast "congruent minus blank" is larger than 0, is larger than .9 in bins 6 to 8. And the probability that the contrast "incongruent minus blank" is smaller than 0, is larger than .9 in bins 9 to 12.
+
+If we want to focus more on inter-individual differences, we can study the subject-specific differences in hazard in Figure 9. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360]. 
+
+Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, @panisWhatShapingRT2016 concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
+
+Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time (Figure 9). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formula that should get you going.
 
 ## 4.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
 
-In this fourth tutorial, we illustrate how to fit a Bayesian multi-level regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. For illustration purposes, we only fitted the effects of model M4 (see Tutorial 2a) in the conditional accuracy model called M4_ca.
+In this fourth tutorial, we illustrate how to fit a Bayesian multi-level regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. For illustration purposes, we only fitted the effects of model M1i (see Tutorial 2a) in the conditional accuracy model called M1i_ca.
 
-To make inferences from the parameter estimates in model M4_ca, we summarize the draws from the posterior distributions of the effects of congruent and incongruent primes on logit-ca relative to the blank prime condition, in each time bin for trial numbers 500, 1000, and 1500, in terms of point and interval estimates.
+To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 10, together with point (median) and interval estimates (80% and 95% credible intervals).
 
-Figure 8 shows one point (mean) and three highest posterior density interval (50/80/95%) estimates for the effects of congruent and incongruent primes relative to neutral primes on logit-ca, for each time bin in trial numbers 500, 1000, and 1500.
+(ref:descr-plot10-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca.
 
-(ref:descr-plot8-caption) Means and 50/80/95% highest posterior density intervals of the draws from the posterior distributions representing the effect of congruent and incongruent primes relative to neutral primes in each bin for trial numbers 500, 1000, and 1500.
-
-```{r plot-prime-ca-effects, fig.cap = "(ref:descr-plot8-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4_ca_effects_con_incon_3trials.png")
+```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot10-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
 ```
 
-Supplementary Table XX shows the summaries of the draws from the posterior distributions of the effects of congruent and incongruent primes relative to the blank prime condition in trials 500, 1000, and 1500, in terms of a point estimate (the mean) and the upper and lower bounds of the 95% highest posterior density interval. Also, by exponentiating the mean we obtain an effect size in terms of an odds ratio.
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- for the average participant (Figure 11), and for each participant in the data set (Figure 12).
 
-```{r}
-int_ca_tab <- read_csv("../Tutorial_2_Bayesian/tables/ca_effects_intervals_table.csv")
+(ref:plot11-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.
+
+```{r plot-pred-grand-effects-ca, fig.cap = "(ref:plot11-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_grand.png")
 ```
 
-(ref:int-ca-table-caption) Point and 95% highest posterior density interval estimates, and odds ratios.
+(ref:plot12-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.
 
-(ref:int-ca-table-note-caption) c500 = effect of congruent primes in trial 500; c1000 = effect of congruent primes in trial 1000; c1500 = effect of congruent primes in trial 1500; i500 = effect of incongruent primes in trial 500; i1000 = effect of incongruent primes in trial 1000; i1500 = effect of incongruent primes in trial 1500. 
+```{r plot-pred-pid-effects-ca, fig.cap = "(ref:plot12-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_pid.png")
+```
 
-```{r int-ca-table}
-# apa_table(
-#   int_ca_tab,
-#   caption = "(ref:int-ca-table-caption)",
-#   note = "(ref:int-ca-table-note-caption)",
-#   placement = "H",
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects for the average participant (Figure 13; grand average marginal effect).
+
+(ref:descr-plot13-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin for the average participant.
+
+```{r plot-ca-grand-ame-effects, fig.cap = "(ref:descr-plot13-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_grand_AME.png")
+```
+
+Table 6 shows the summaries of the estimated differences in conditional accuracy for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.
+
+```{r load-tables-ca, eval=T, echo=F}
+tab_ca_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
+```
+
+(ref:table-ca-grand-ame-caption) Point (mean) and 95% credible interval summary of estimated differences in conditional accuracy, for each time bin and contrast, in the average participant.
+
+(ref:table-ca-grand-ame-note-caption) diff = difference in predicted conditional accuracy.
+
+```{r table-ca-grand-ame}
+ apa_table(
+   tab_ca_grand_ame,
+   caption = "(ref:table-ca-grand-ame-caption)",
+   note = "(ref:table-ca-grand-ame-note-caption)",
+   placement = "H",
 #   font_size = "scriptsize",
-#   longtable = TRUE,
-#   repeat_header = TRUE,
-#   format.args = list(
-#        digits = c(0, 2,2,2,2,2,13),
-#         decimal.mark = ".", big.mark = "")
-# )
+   longtable = TRUE,
+   repeat_header = TRUE,
+   format.args = list(
+        digits = c(0,0,2,2,2),
+        decimal.mark = ".", big.mark = "")
+)
 ```
 
-Based on Figure 8 and Supplementary Table XX, we see that throughout the experiment (trials 500, 1000, and 1500), congruent primes have a positive effect on logit-ca(t) in time bins (200,240], (240,280], (280,320], and (320,360], relative to the logit-ca(t) estimates in the baseline condition (blank prime; red dashed lines in Figure 8). For example, the odds ratio for congruent primes in bin (320,360] in trial 500 shows that the odds of a correct response are estimated to be 8.89 times higher than the odds of a correct response when there is no prime. 
-Incongruent primes have a negative effect on logit-ca(t) in time bins (200,240], (240,280], and (280,320] throughout the experiment, relative to the logit-ca(t) estimates in the baseline condition (no prime; red striped lines).
-
-To conclude this Tutorial 2b, Figure 9 shows the model-based ca(t) functions for each prime type for participant 6, in trials 500, 1000, and 1500.
-
-(ref:descr-plot9-caption) Model-based ca(t) functions for each prime type for participant 6 in trials 500, 1000, and 1500.
-
-```{r plot-ca-subject6, fig.cap = "(ref:descr-plot9-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M4_ca_effects_subject6.png")
-```
+Based on Figure 13 and Table 6, we see that congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], and (280,320], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 14). 
+Incongruent primes have a negative effect on the conditional accuracy of emitted responses in those time bins, relative to the estimates in the baseline condition.
 
 ## 4.5 Tutorial 3a: Fitting Frequentist hazard models
 
-In this fifth tutorial we illustrate how to fit a multilevel regression model to RT data in the frequentist framework, for the data set used in Tutorial 1a. The general process is similar to that in Tutorial 2a, except that there are no priors to set. Because we expected that the random effects structure of model M4 would be too complex for a freqentist approach, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. The resulting hazard model is called M3_f.
+In this fifth tutorial we illustrate how to fit a multilevel regression model to RT data in the frequentist framework, for the data set used in Tutorial 1a. The general process is similar to that in Tutorial 2a, except that there are no priors to set. 
 
-In Figure 10 we compare the parameter estimates of model M3 from brm() with those of model M3_f from glmer().
+For illustration purposes, we only fitted the effects from model M1i (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. The resulting hazard model is called M1i_f.
 
-(ref:descr-plot10-caption) Parameter estimates for model M3 from brm() -- means and 95% quantile intervals -- and model M3_f from glmer() -- maximum likelihood estimates and 95% confidence intervals.
+In Figure 14 we compare the parameter estimates of model M1i from brm() with those of model M1i_f from glmer().
 
-```{r plot-comparison, fig.cap = "(ref:descr-plot10-caption)", out.width='80%'}
+(ref:descr-plot14-caption) Parameter estimates for model M1i from brm() -- means and 95% credible intervals -- and model M1i_f from glmer() -- maximum likelihood estimates and 95% confidence intervals.
+
+```{r plot-comparison, fig.cap = "(ref:descr-plot14-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_3_Frequentist/comparison.png")
 ```
 
-Figure 10 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, the random effects structure of model M3_f was already too complex for the frequentist model as it did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a and 2b took several hours to build.
+Figure 14 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, model M1i_f did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a took several hours to build.
 
 ## 4.6 Tutorial 3b: Fitting Frequentist conditional accuracy models
 
-In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. For illustration purposes, we only fitted the effects from model M3 (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. Again, the resulting conditional accuracy model M3_ca_f did not converge and resulted in a singular fit.
+In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. For illustration purposes, we only fitted the effects from model M1i_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. Again, the resulting conditional accuracy model M1i_ca_f did not converge and resulted in a singular fit.
 
 ## 4.4 Tutorial 4: Planning
 
