@@ -104,17 +104,21 @@ load("Tutorial_3_Frequentist/model_M1i_f.RData")
 
 ```{r extract-estimates}
 est <- tibble(brm = fixef(model_M1i)[,c(1,3,4)],
-              glmer = tidy(model_M1i_f, effects = c("fixed"), conf.int=T, conf.level = 0.95)[,c(2,3,7,8)], 
+              glmer = tidy(model_M1i_f, effects = c("fixed"), conf.int=T, conf.level = 0.95)[,c(3,7,8)],
               effectname = names(fixef(model_M1i_f)),
-              position = 1:30)
-
-colnames(est)
+              position = 1:30) 
+est
 ```
 
 ```{r plot-estimates}
-cols    <- c( "c1" = "#ff00ff", "c2" = "#3399ff" )
+# check hex codes for color paletter
+mypal <- brewer.pal(8,"Dark2")
+
+# specify colors and shapes
+cols    <- c( "c1" = mypal[1], "c2" = mypal[2])
 shapes  <- c("s1" = 16, "s2" = 17)
 
+# plot
 p1 <- ggplot(data = est, aes(x = position)) +
  geom_point(aes( y = brm[,"Estimate"],  
                  color = "c1", 
@@ -145,14 +149,7 @@ p1 <- ggplot(data = est, aes(x = position)) +
                               breaks = c("s1", "s2"),
                               values = shapes,
                               labels = c("brm", "glmer")) +
-  coord_flip() #+
- #theme(panel.grid = element_blank())
-         #legend.position = "top",
-         #axis.text.x = element_text(size=11,angle=90),
-         #axis.text.y = element_text(size=13),
-         #axis.title.x = element_text(size = 14),
-         #axis.title.y = element_text(size = 14),
-         #legend.text=element_text(size=13)) 
+  coord_flip() 
 p1
 ```
 

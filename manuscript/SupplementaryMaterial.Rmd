@@ -45,20 +45,19 @@ We defined 13 custom functions that we list here.
 * join_lt_ca_2IV(df1,df2) : add the ca(t) estimates to the life tables (2 independent variables)
 * extract_median(df) : estimate quantiles S(t)~.50~ (1 independent variable)
 * extract_median_2IV(df) : estimate quantiles S(t)~.50~ (2 independent variables)
-* plot_eha(df,subj,haz_yaxis) : create plots of the discrete-time functions (1 independent variable)
-* plot_eha_2IV(df,subj,haz_yaxis) : create plots of the discrete-time functions (2 independent variables)
-* plot_eha_agg(df,subj,haz_yaxis) : create 1 plot for data aggregated across participants (1 independent variable)
+* plot_eha(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsubj=6) : create plots of the discrete-time functions (1 independent variable), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
+* plot_eha_2IV(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,   Nsubj=6) : create plots of the discrete-time functions (2 independent variables), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
 
 When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc_ca() and join_lt_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha().
 When you want to analyse simple RT data from a detection experiment with two independent variables, the functions calc_ca_2IV() and join_lt_ca_2IV() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha_2IV().
 
 ## C. Link functions
 
-Popular link functions include the logit link and the complementary log-log link, as shown in Figure 11.
+Popular link functions include the logit link and the complementary log-log link, as shown in Figure 15.
 
-(ref:descr-plot11-caption) The logit and cloglog link functions.
+(ref:descr-plot15-caption) The logit and cloglog link functions.
  
-```{r plot-link-functions, fig.cap = "(ref:descr-plot11-caption)", out.width='80%'}
+```{r plot-link-functions, fig.cap = "(ref:descr-plot15-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/linkfunctions.png")
 ```
 
@@ -78,9 +77,9 @@ An example (single-level) discrete-time hazard model with a general specificatio
 
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 12 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
-(ref:descr-plot12-caption) Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
+(ref:descr-plot16-caption) Prior distributions for the Intercept on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
 
-```{r plot-priors, fig.cap = "(ref:descr-plot12-caption)", out.width='80%'}
+```{r plot-priors, fig.cap = "(ref:descr-plot16-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/plot_of_priors.png")
 ```
 

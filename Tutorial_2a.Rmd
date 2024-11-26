@@ -1260,30 +1260,24 @@ logit    <- function(x) { return( log(x/(1-x)) )}
 inverse_cloglog <- function(x) { return( 1-(exp(-1*exp(x))) )}
 cloglog         <- function(x) { return( log(-1*log(1-x)) )}
 
-cloglog_prob <- cloglog(probability)
-logit_prob <- logit(probability)
-dataplot <- cbind(probability,cloglog_prob,logit_prob)
+cloglog <- cloglog(probability)
+logit <- logit(probability)
+dataplot <- cbind(probability,cloglog,logit) %>%
+  as_tibble() %>%
+  pivot_longer(cloglog:logit, names_to = "link", values_to = "value")
 
 ggplot() +
   geom_hline(yintercept=0, color="grey") +
-  geom_line(data=dataplot,aes(y=logit_prob,x=probability,colour="logit"),linewidth=1) +
-  geom_line(data=dataplot,aes(y=cloglog_prob,x=probability,colour="cloglog"),linewidth=1) +
-  scale_color_manual(name = "Link function:", values = c("logit" = "darkblue", "cloglog" = "red")) +
+  geom_line(data=dataplot,aes(y=value,x=probability,colour=link),linewidth=1) +
+  geom_line(data=dataplot,aes(y=value,x=probability,colour=link),linewidth=1) +
+  scale_color_brewer(palette = "Dark2") +
   geom_vline(xintercept = logistic(0), linetype="dotted", linewidth = 0.3) +   
   geom_vline(xintercept = inverse_cloglog(0), linetype="dotted", linewidth = 0.3) +
   annotate("text", x = logistic(0)-.02, y = -6, label = "logistic(0) = 0.5", angle = 90, size=4) +
   annotate("text", x = inverse_cloglog(0)+.02, y = -6, label = "inverse_cloglog(0) = 0.6321", angle=90,size=4) +
-  scale_x_continuous(n.breaks=10, limits = c(0,1), ) +
   labs(x = "Probability",
         y = "logit or cloglog scale") +
-  theme(panel.grid = element_blank(),
-        axis.text=element_text(size=16),
-        axis.title=element_text(size=18),
-      #  legend.position="top",
-        legend.text = element_text(size=18),
-      legend.position = "inside",
-        legend.position.inside=c(.2,.75),
-      legend.background = element_rect(fill="white") )
+  theme(panel.grid = element_blank())
 ```
 
 ```{r save-plot-links, eval=F}
