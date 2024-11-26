@@ -760,8 +760,12 @@ I've created a new sub-section in sectino 2 and added a sumamry paragraph that p
 
 Still to do:
 
+- add figures of the prior predictive checks in Tutorial_2a.html
+
 - add refs for some websites I consulted
+
 - check the references in the ms to various parts of the supplementary material
+
 - check legends of all Figures, and add more info if needed
 
 - make loo plots (I did not find code to do that. Do you have a reference for such code?)
