@@ -428,7 +428,6 @@ model_M0c_prior <-
 model_M0c_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior.rds")
 ```
 
-
 Check the prior distributions.
 
 ```{r prior-distr}
@@ -634,7 +633,7 @@ model_M1d <-
 
 Model_M1d took about 145 minutes to run. Note that duplicate terms in the model formula (e.g., condition) are ignored.
 
-```{r}
+```{r inspect-M1d}
 model_M1d <- readRDS("Tutorial_2_Bayesian/models/model_M1d.rds")
 summary(model_M1d)
 formula(model_M1d)
@@ -642,7 +641,7 @@ formula(model_M1d)
 
 One could also fit a model with the variables prime and period_9. However, to include interactions between an index-coded categorical variable and a continuous variable in brm(), one has to switch to the non-linear syntax, as illustrated in the following model formula.
 
-```{r}
+```{r nonlinearsyntax}
 formula = bf(event ~ 0 + a + b * period_9 + c * period_9_sq,
                  a ~ 0 + prime + (0 + prime |i| pid),
                  b ~ 0 + prime + (0 + prime |i| pid),
@@ -684,13 +683,13 @@ When we are interested in studying how the hazard of response occurence in our p
 
 First, we can categorize the predictor trial number by grouping trials in one of three "stages" of the experiment (stage 1 = trials 1 to 500; stage 2 = trials 501 to 1000; stage 3 = trials 1001 and later) and use index coding (variable "stage" in ptb_data).
 
-```{r}
+```{r model-formula-1}
 event ~ 0 + timebin:prime:stage  + (0 + timebin:prime:stage | pid)
 ```
 
 Second, we can treat trial number as a continuous variable, and make assumptions about the way hazard changes with trial number (e.g., linear, quadratic, etc.) for each combination of timebin and prime.
 
-```{r}
+```{r model-formula-2}
 bf(event ~ 0 + a + b * trial_c + c * trial_c_sq,
        a ~ 0 + timebin:prime + (0 + timebin:prime |i| pid),
        b ~ 0 + timebin:prime + (0 + timebin:prime |i| pid),
@@ -700,7 +699,7 @@ bf(event ~ 0 + a + b * trial_c + c * trial_c_sq,
 
 Third, one can use dummy coding for prime type (variable "condition" in ptb_data), and treat TIME ("period_9") and trial number ("trial_c") as continous variables.
 
-```{r}
+```{r model-formula-3}
  bf(event ~ 0 + Intercept + 
             condition*period_9*trial_c + 
             condition*period_9*trial_c_sq + 
@@ -829,7 +828,7 @@ We can plot the expected value of the posterior predictive distribution -- the p
 
 First, for the average participant, using add_epred_draws().
 
-```{r}
+```{r epred-grand}
 dat_M1i <- as_tibble(model_M1i$data)
 
 epreds_grand <- dat_M1i %>% 
@@ -844,13 +843,13 @@ epreds_grand <- dat_M1i %>%
 
 Summarize and plot predicted hazard values.
 
-```{r}
+```{r epred-grand-summary}
 epreds_grand %>% 
   group_by(timebin,prime) %>% 
   median_qi(.width=0.95)
 ```
 
-```{r}
+```{r epred-grand-plot}
  ggplot(epreds_grand, aes(x=timebin, y=.epred, 
                           fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",.width=.95,alpha = 0.5) +
@@ -863,13 +862,13 @@ epreds_grand %>%
     ggtitle("Average participant")
 ```
 
-```{r save-pred-grand, eval=F}
+```{r save-epred-grand, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_grand.png", width = 10, height = 8, dpi = 800)
 ```
 
 Again, for the average participant, but now using posterior draws.
 
-```{r}
+```{r epred-grand-post}
 tidy_fixed %>%
   mutate(haz = 1-exp((-1)*exp(value))) %>% # inverse cloglog
   
@@ -889,7 +888,7 @@ ggplot(aes(x=timebin, y=haz,
 
 Second, for each participant in the data set.
 
-```{r}
+```{r epred-pid}
 epreds_pid <- dat_M1i %>% 
   data_grid(pid,timebin, prime) %>% 
   add_epred_draws(model_M1i, 
@@ -902,13 +901,13 @@ epreds_pid <- dat_M1i %>%
 
 Summarize and plot predicted hazard values.
 
-```{r}
+```{r epred-pid-summary}
 epreds_pid %>% 
   group_by(pid,timebin,prime) %>% 
   median_qi(.width=0.95)
 ```
 
-```{r}
+```{r epred-pid-plot}
  ggplot(epreds_pid, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
@@ -924,13 +923,13 @@ epreds_pid %>%
     facet_wrap(~pid, ncol=3)
 ```
 
-```{r save-pred-pid, eval=F}
+```{r save-epred-pid, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid.png", width = 10, height = 8, dpi = 800)
 ```
 
 Third, for a completely new hypothetical participant.
 
-```{r}
+```{r epred-new-pid}
 epreds_pid_new <- dat_M1i %>% 
   data_grid(timebin, prime) %>%
   mutate(pid = 7) %>%
@@ -946,13 +945,13 @@ epreds_pid_new <- dat_M1i %>%
 
 Summarize and plot predicted hazard values.
 
-```{r}
+```{r epred-new-pid-summary}
 epreds_pid_new %>% 
   group_by(pid,timebin,prime) %>% 
   median_qi(.width=.95)
 ```
 
-```{r}
+```{r epred-new-pid-plot}
  ggplot(epreds_pid_new, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
@@ -967,7 +966,7 @@ epreds_pid_new %>%
     ggtitle("A brand new hypothetical participant") 
 ```
 
-```{r save-pred-pid-new, eval=F}
+```{r save-epred-pid-new, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new.png", width = 10, height = 8, dpi = 800)
 ```
 
@@ -977,7 +976,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new.png", width = 10, height = 
 
 We are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
 
-```{r}
+```{r epred-grand-diff}
 epreds_grand_diffs <- epreds_grand %>%
   pivot_wider(id_cols = c(timebin, .draw),
               names_from = "prime",
@@ -994,7 +993,7 @@ epreds_grand_diffs # 160 000 rows
 
 Summarize and plot.
 
-```{r}
+```{r epred-grand-diff-summary}
 table <- epreds_grand_diffs %>%
   group_by(contrast,timebin) %>%
     mean_qi(.width = c(.95)) %>%
@@ -1006,7 +1005,7 @@ table <- epreds_grand_diffs %>%
 write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
 ```
 
-```{r}
+```{r epred-grand-diff-plot}
  ggplot(epreds_grand_diffs, aes(x=timebin, y=diff, 
                        fill=contrast)) +
   stat_lineribbon(alpha = 0.5, 
@@ -1031,7 +1030,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_grand_AME.png", width = 10, height = 8, 
 
 Note that these grand AMEs can also be calculated based on the posterior draws.
 
-```{r}
+```{r epred-grand-ame-post}
 post %>% # 8000 x 30 = 240000
   mutate_all(function(x){1-exp((-1)*exp(x))}) %>%
   mutate(bin6_cb = `b_timebin6:prime2` - `b_timebin6:prime1`,
@@ -1088,7 +1087,7 @@ post %>% # 8000 x 30 = 240000
 
 To calculate the subject-specific AMEs for each time bin, we create contrasts between the conditional means.
 
-```{r}
+```{r epred-pid-diff}
 epreds_pid_diffs <- epreds_pid %>%
   pivot_wider(id_cols = c(pid,timebin, .draw),
               names_from = "prime",
@@ -1104,7 +1103,7 @@ epreds_pid_diffs # 160 000 rows
 
 Summarize the contrasts in predicted hazard values.
 
-```{r}
+```{r epred-pid-diff-summary}
 table <- epreds_pid_diffs %>% 
   group_by(pid,timebin,contrast) %>% 
   mean_qi(.width = .95) %>%
@@ -1118,7 +1117,7 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/pid_AMEs.csv")
 
 Plot the contrasts in predicted hazard values.
 
-```{r}
+```{r epred-pid-diff-plot}
  ggplot(epreds_pid_diffs, aes(x=timebin, y=diff, 
                               fill=contrast, color=contrast)) +
     stat_lineribbon(alpha = 0.5, 
@@ -1146,11 +1145,11 @@ And check whether an average of subject-specific AMEs is equal to the grand AME.
 
 ```{r}
 epreds_pid_diffs_av <- epreds_pid_diffs %>% group_by(timebin,contrast,.draw) %>%
-  mutate(average_condmeans = mean(pred_haz))
+  mutate(average_condmeans = mean(diff))
 ```
 
 ```{r}
- ggplot(epreds_pid_diffs_av, aes(x=timebin, y=pred_haz, 
+ ggplot(epreds_pid_diffs_av, aes(x=timebin, y=diff, 
                        fill=contrast)) +
   stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.8,.95)) +
  # stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95))+
@@ -1167,7 +1166,7 @@ epreds_pid_diffs_av <- epreds_pid_diffs %>% group_by(timebin,contrast,.draw) %>%
 
 ### AMEs for a brand new hypothetical participant
 
-```{r}
+```{r epred-new-pid-diff}
 epreds_pid_new_diffs <- epreds_pid_new %>%
   pivot_wider(id_cols = c(pid,timebin,.draw),
               names_from = "prime",
@@ -1183,7 +1182,7 @@ epreds_pid_new_diffs
 
 Summarize and plot the contrasts in predicted hazard values.
 
-```{r}
+```{r epred-new-pid-diff-summary}
 epreds_pid_new_diffs %>% 
   group_by(pid,timebin,contrast) %>% 
   median_qi(.width = .95) %>%
@@ -1191,8 +1190,8 @@ epreds_pid_new_diffs %>%
   select(-c(.width,.point,.interval))
 ```
 
-```{r}
- ggplot(epreds_pid_new_diffs, aes(x=timebin, y=pred_haz, 
+```{r epred-new-pid-diff-plot}
+ ggplot(epreds_pid_new_diffs, aes(x=timebin, y=diff, 
                        fill=contrast, color=contrast)) +
     stat_lineribbon(alpha = 0.5, 
                     point_interval = "mean_qi",
@@ -1320,7 +1319,7 @@ fit_skewN <-
       file = "Tutorial_2_Bayesian/models/fit_skewN")
 ```
 
-```{r}
+```{r read-model-fit-skewN}
 fit_skewN <- readRDS("Tutorial_2_Bayesian/models/fit_skewN.rds")
 summary(fit_skewN) 
 ```

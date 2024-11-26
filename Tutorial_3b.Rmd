@@ -21,7 +21,7 @@ In this tutorial 3b we fit a Frequentist regression model to conditional accurac
 # 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
-pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme", "broom.mixed")
 
 lapply(pkg, library, character.only = TRUE)
 ```
