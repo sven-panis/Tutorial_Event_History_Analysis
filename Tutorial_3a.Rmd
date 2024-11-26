@@ -2,7 +2,12 @@
 title: "Tutorial_3a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: united
 editor_options: 
   chunk_output_type: console
 ---
@@ -13,13 +18,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this file we build a Frequentist hazard regression model for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
 
-Content:
-
-1. Load libraries.
-2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
-3. Fit hazard model in the frequentist framework (model_M3_f).
-4. Compare MLE estimates from model_M3_f with the posterior mean estimates from model_M3.
-
 # 1. Load the libraries that we will be using
 
 ```{r load-pkg, results='hide'}
@@ -28,88 +26,89 @@ pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme", "broom.mixed"
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# 2. Load and wrangle the person-trial-bin data set that we saved in Tutorial 1a.
+Theme settings for ggplot.
+
+```{r plot-settings, results='hide'}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"))
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+# 2. Load and wrangle the person-trial-bin data set.
 
 ```{r load-data}
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
-print(ptb_data,n=30)
-summary(ptb_data) # 26602 rows: 6 participants, trial, 3 conditions, 15 periods, and event indicator (0/1)
 ```
 
 Prepare the data set.
 
 ```{r prepare-data}
-# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
-ptb_data <- ptb_data %>% filter(period > 5)
+# select analysis time range
+ptb_data <- ptb_data %>% filter(period > 5) %>%
 
 # create factor condition, with "blank" as the reference level
-ptb_data <- ptb_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent"))) %>%
 
-# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
-ptb_data <- ptb_data %>% 
-        mutate(period_9 = period - 9,
-               trial_c = (trial - 1000)/1000)
+# center TIME (period) on bin 9, center trial on trial 1000 and rescale, 
+# create variables with index coding (timebin, prime).
+mutate(period_9 = period - 9,
+       trial_c = (trial - 1000)/1000,
+       timebin = factor(period, levels=c(6:15)),
+       prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
+       prime = factor(prime, levels=c(1,2,3)))
 
 head(ptb_data,n=17)
-summary(ptb_data)
-# 6 subjects
-# condition: blank (6401), congruent (2642), incongruent (3797)
-# period_9: -3 to 6
-# trial_c: -0.999 to 0.540
 ```
 
-# 3. 3. Fit hazard model in the frequentist framework (model_M3_f)
+# 3. 3. Fit hazard model in the frequentist framework (model_M1i_f)
 
 ```{r get-data}
-M3_data <- ptb_data %>% select(pid, period_9, trial_c, condition, event)
+data_M1i_f <- ptb_data %>% select(pid, event, timebin, prime)
 ```
 
-Model_M3_f contains the same effects as Model_M3 in Tutorial 2a.
+Model_M1i_f contains the same effects as Model_M1i in Tutorial 2a.
 
 ```{r fit-model, eval=F}
-model_M3_f <- glmer(event ~ 1 + condition*period_9 + 
-                           condition*I(period_9^2) + 
-                           condition*I(period_9^3) +
-                           trial_c*period_9 + 
-                           trial_c*I(period_9^2) + 
-                           trial_c*I(period_9^3) +
-                           (1 + condition*period_9 +
-                           condition*I(period_9^2) +
-                           condition*I(period_9^3) +
-                           trial_c*period_9 + 
-                           trial_c*I(period_9^2) + 
-                           trial_c*I(period_9^3) | pid),
-              
-              # control parameters, data set, and complementary log-log link function
-              control = glmerControl(optimizer = c("nlminbwrap"),
-                                     optCtrl = list(maxfun=10000000)), 
-              data=M3_data, 
-              family=binomial(link="cloglog"))
+model_M1i_f <- glmer(event ~ 0 + timebin:prime  +
+                            (0 + timebin:prime | pid),
+          # control parameters, data set, and complementary log-log link function
+          control = glmerControl(optimizer = c("nlminbwrap"),
+                                 optCtrl = list(maxfun=10000000)), 
+          data = data_M1i_f, 
+          family = binomial(link="cloglog"))
 ```
 
-Model_M3_f took about 3 hours.
+Model_M1i_f took about 3 hours.
 
-```{r save-model, eval=F}
-save(model_M3_f, file="Tutorial_3_Frequentist/model_M3_f.RData")
+```{r save-M1i-f, eval=F}
+save(model_M1i_f, file="Tutorial_3_Frequentist/model_M1i_f.RData")
 ```
 
-```{r effects-M3-f}
-load("Tutorial_3_Frequentist/model_M3_f.RData")
-summary(model_M3_f)
+```{r inspect-M1i-f}
+load("Tutorial_3_Frequentist/model_M1i_f.RData")
+summary(model_M1i_f)
 ```
 
-# 4. Compare MLE estimates from model_M3_f with the posterior mean estimates from model_M3.
+# 4. Compare MLE estimates from model_M1i_f with the posterior mean estimates from model_M1i.
 
 ```{r load-models}
-model_M3 <- readRDS("Tutorial_2_Bayesian/models/model_M3.rds")
-load("Tutorial_3_Frequentist/model_M3_f.RData")
+model_M1i <- readRDS("Tutorial_2_Bayesian/models/model_M1i.rds")
+load("Tutorial_3_Frequentist/model_M1i_f.RData")
 ```
 
 ```{r extract-estimates}
-est <- tibble(brm = fixef(model_M3)[,c(1,3,4)],
-              glmer = tidy(model_M3_f, effects = c("fixed"), conf.int=T, conf.level = 0.95)[,c(2,3,7,8)], 
-              effectname = names(fixef(model_M3_f)),
-              position = 1:16) 
+est <- tibble(brm = fixef(model_M1i)[,c(1,3,4)],
+              glmer = tidy(model_M1i_f, effects = c("fixed"), conf.int=T, conf.level = 0.95)[,c(2,3,7,8)], 
+              effectname = names(fixef(model_M1i_f)),
+              position = 1:30)
+
+colnames(est)
 ```
 
 ```{r plot-estimates}
@@ -117,13 +116,27 @@ cols    <- c( "c1" = "#ff00ff", "c2" = "#3399ff" )
 shapes  <- c("s1" = 16, "s2" = 17)
 
 p1 <- ggplot(data = est, aes(x = position)) +
- geom_point(aes( y = brm[,"Estimate"],  color = "c1", shape = "s1")) +
- geom_point(aes( y = glmer$estimate, color = "c2", shape = "s2"), position = position_nudge(x = .1))  +
- geom_linerange(aes(ymin=brm[,"Q2.5"], ymax=brm[,"Q97.5"], color = "c1"), show.legend = T) +
- geom_linerange(aes(ymin=glmer$conf.low, ymax=glmer$conf.high, color = "c2"), show.legend = T, position = position_nudge(x = .1)) +
+ geom_point(aes( y = brm[,"Estimate"],  
+                 color = "c1", 
+                 shape = "s1"),
+                 size = 1.5) +
+ geom_point(aes( y = glmer$estimate, 
+                 color = "c2", 
+                 shape = "s2"),
+                 size = 1.5, 
+                 position = position_nudge(x = .2))  +
+ geom_linerange(aes(ymin=brm[,"Q2.5"], ymax=brm[,"Q97.5"], 
+                    color = "c1"), 
+                show.legend = F) +
+ geom_linerange(aes(ymin=glmer$conf.low, ymax=glmer$conf.high, 
+                    color = "c2"), 
+                show.legend = F, 
+                position = position_nudge(x = .2)) +
  geom_hline(yintercept=0,colour = "grey", linetype = 2) +
- scale_x_continuous(breaks = 1:16,labels = est$effectname) +
- labs( x = "Effects in model M3", y = "cloglog-hazard" ) +
+ scale_x_continuous(breaks = 1:30,labels = est$effectname) +
+ scale_y_continuous(limits=c(-9,3), breaks = c(-9,-6,-3,0,3)) +
+  
+ labs( x = "Effects in model M1i", y = "cloglog-hazard" ) +
  scale_color_manual(name = "Model", 
                                 breaks = c("c1", "c2"), 
                                 values = cols,
@@ -132,17 +145,17 @@ p1 <- ggplot(data = est, aes(x = position)) +
                               breaks = c("s1", "s2"),
                               values = shapes,
                               labels = c("brm", "glmer")) +
-   theme(panel.grid = element_blank(),
-         panel.background = element_rect(fill="white",color="black"),
-         legend.position = "top",
-         axis.text.x = element_text(size=11,angle=90),
-         axis.text.y = element_text(size=13),
-         axis.title.x = element_text(size = 14),
-         axis.title.y = element_text(size = 14),
-         legend.text=element_text(size=13)) 
+  coord_flip() #+
+ #theme(panel.grid = element_blank())
+         #legend.position = "top",
+         #axis.text.x = element_text(size=11,angle=90),
+         #axis.text.y = element_text(size=13),
+         #axis.title.x = element_text(size = 14),
+         #axis.title.y = element_text(size = 14),
+         #legend.text=element_text(size=13)) 
 p1
 ```
 
-```{r save-plot-estimates, eval=F}
-ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=8,dpi=300)
+```{r save-plot-comparison, eval=F}
+ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=8,dpi=800)
 ```

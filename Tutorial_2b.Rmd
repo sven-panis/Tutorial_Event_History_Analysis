@@ -187,8 +187,10 @@ tail(tidy_fixed_ca)
 
 # plot
 p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill=condition)) +  
-  stat_halfeye(alpha=0.7) +
-  labs(title = 'Posterior distributions for "fixed" effects\nin Model M1i_ca',
+  stat_halfeye(point_interval = "median_qi",
+               .width = c(.80,.95),
+               alpha=0.7) +
+  labs(title = 'Posterior distributions for population-level\neffects in Model M1i_ca',
        x = "time bin", 
        y = "logit-ca") +
   scale_fill_brewer(palette = "Dark2") +
@@ -225,13 +227,15 @@ Summarize and plot predicted hazard values.
 ```{r epred-grand-summary}
 epreds_grand %>% 
   group_by(timebin,prime) %>% 
-  mean_qi()
+  median_qi()
 ```
 
 ```{r epred-grand-plot}
  ggplot(epreds_grand, aes(x=timebin, y=.epred, 
                           fill=prime, color=prime)) +
-    stat_lineribbon(alpha = 0.5, .width = .95) +
+    stat_lineribbon(point_interval="median_qi",
+                    alpha = 0.5, 
+                    .width = .95) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
@@ -263,13 +267,15 @@ Summarize and plot predicted hazard values.
 ```{r epred-pid-summary}
 epreds_pid %>% 
   group_by(pid,timebin,prime) %>% 
-  mean_qi()
+  median_qi()
 ```
 
 ```{r plot-epred-pid}
  ggplot(epreds_pid, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
-    stat_lineribbon(alpha = 0.5, .width = .95) +
+    stat_lineribbon(point_interval="median_qi",
+                    alpha = 0.5, 
+                    .width = .95) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
@@ -298,7 +304,7 @@ epreds_grand_diffs <- epreds_grand %>%
   select(-c(blank,congruent,incongruent)) %>% 
   pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
                names_to = "contrast",
-               values_to = "pred_ca") 
+               values_to = "diff_ca") 
 
 epreds_grand_diffs # 160 000 rows 
 ```
@@ -318,7 +324,7 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
 ```
 
 ```{r grand-ame-plot}
- ggplot(epreds_grand_diffs, aes(x=timebin, y=pred_ca, 
+ ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca, 
                        fill=contrast)) +
   stat_lineribbon(alpha = 0.5, 
                   point_interval = "mean_qi",
@@ -355,20 +361,24 @@ epreds_pid_diffs <- epreds_pid %>%
   select(-c(blank,congruent,incongruent)) %>% 
   pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
                names_to = "contrast",
-               values_to = "pred_ca") 
+               values_to = "diff_ca") 
 epreds_pid_diffs # 160 000 rows 
 ```
 
 Summarize and plot the contrasts in predicted hazard values.
 
 ```{r epred-pid-ame-summary}
-epreds_pid_diffs %>% group_by(pid,timebin,contrast) %>% mean_qi()
+epreds_pid_diffs %>% 
+  group_by(pid,timebin,contrast) %>% 
+  mean_qi()
 ```
 
 ```{r epred-pid-ame-plot}
- ggplot(epreds_pid_diffs, aes(x=timebin, y=pred_ca, 
+ ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca, 
                        fill=contrast, color=contrast)) +
-    stat_lineribbon(alpha = 0.5, point_interval = "mean_qi",.width=c(.95)) +
+    stat_lineribbon(alpha = 0.5, 
+                    point_interval = "mean_qi",
+                    .width=c(.95)) +
     #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
     geom_hline(yintercept = 0, color = "red", lty = 3) +
     scale_fill_brewer(palette = "Dark2") +

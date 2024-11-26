@@ -2,7 +2,12 @@
 title: "Tutorial_3b"
 author: "sven panis"
 date: "2024-10-18"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: united
 editor_options: 
   chunk_output_type: console
 ---
@@ -13,12 +18,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent).
 
-Content:
-
-1. Load libraries.
-2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
-3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
-
 # 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
@@ -27,72 +26,141 @@ pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme")
 lapply(pkg, library, character.only = TRUE)
 ```
 
-# 2. Load and wrangle the person-trial data set that we saved in Tutorial 1a.
+Theme settings for ggplot.
+
+```{r plot-settings, results='hide'}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"))
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+# 2. Load and wrangle the person-trial data set.
 
 ```{r load-data-ca}
 ca_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
-print(ca_data,n=30)
-summary(ca_data) # 2683 rows
 ```
 
 Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600]
-ca_data <- ca_data %>% filter(drt > 5)
+ca_data <- ca_data %>% filter(drt > 5) %>%
 
-# create factor condition, with "blank" as the reference level
-ca_data <- ca_data %>% mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")))
+# create factor condition, with "blank" as the reference level; center TIME; center and rescale trial; create index-coded variables timebin and prime
+mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent")),
+       period_9 = drt - 9,
+       trial_c = (trial - 1000)/1000,
+       timebin = factor(drt, levels=c(6:15)),
+       prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
+       prime = factor(prime, levels=c(1,2,3)))
 
-# center TIME (period) on bin 9, and trial on trial 1000 and rescale.
-ca_data <- ca_data %>% 
-        mutate(period_9 = drt - 9,
-               trial_c = (trial - 1000)/1000)
-
-head(ca_data,n=17)
-summary(ca_data)
-# 6 subjects
-# condition: blank (1303), congruent (668), incongruent (626)
-# period_9: -3 to 6
-# trial_c: -0.999 to 0.540
+head(ca_data)
 ```
 
-# 3. Fit a conditional accuracy model in the frequentist framework (model M3_ca_f).
+# 3. Fit a conditional accuracy model in the frequentist framework (model M1i_ca_f).
 
 ```{r get-data}
-M3_ca_data <- ca_data %>% select(pid, period_9, trial_c, condition, acc)
+data_M1i_ca_f <- ca_data %>% select(pid, acc, timebin, prime)
 ```
 
-Model_M3_ca_f contains the same effects as Model_M3 in Tutorial 2a.
+Model_M1i_ca_f contains the same effects as Model_M1i_ca in Tutorial 2b.
 
 ```{r fit-model, eval=F}
-model_M3_ca_f <- glmer(acc ~ 1 + condition*period_9 + 
-                           condition*I(period_9^2) + 
-                           condition*I(period_9^3) +
-                           trial_c*period_9 + 
-                           trial_c*I(period_9^2) + 
-                           trial_c*I(period_9^3) +
-                           (1 + condition*period_9 +
-                           condition*I(period_9^2) +
-                           condition*I(period_9^3) +
-                           trial_c*period_9 + 
-                           trial_c*I(period_9^2) + 
-                           trial_c*I(period_9^3) | pid),
+model_M1i_ca_f <- glmer(acc ~ 0 + timebin:prime  +
+                        (0 + timebin:prime | pid),
               
               # control parameters, data set, and complementary log-log link function
               control = glmerControl(optimizer = c("nlminbwrap"),
                                      optCtrl = list(maxfun=10000000)), 
-              data=M3_ca_data, 
-              family=binomial(link="logit"))
+              data = data_M1i_ca_f, 
+              family = binomial(link="logit"))
 ```
 
-Model_M3_ca_f took about 15 minutes to fit.
+Model_M1i_ca_f took about 90 minutes to fit.
 
 ```{r save-model, eval=F}
-save(model_M3_ca_f, file="Tutorial_3_Frequentist/model_M3_ca_f.RData")
+save(model_M1i_ca_f, file="Tutorial_3_Frequentist/model_M1i_ca_f.RData")
 ```
 
-```{r effects-M3-f}
-load("Tutorial_3_Frequentist/model_M3_ca_f.RData")
-summary(model_M3_ca_f)
+```{r effects-M1i-ca-f}
+load("Tutorial_3_Frequentist/model_M1i_ca_f.RData")
+fixef(model_M1i_ca_f)
+summary(model_M1i_ca_f)
 ```
+
+# 4. Compare MLE estimates from model_M1i_ca_f with the posterior mean estimates from model_M1i_ca.
+
+```{r load-models}
+model_M1i_ca <- readRDS("Tutorial_2_Bayesian/models/model_M1i_ca.rds")
+load("Tutorial_3_Frequentist/model_M1i_ca_f.RData")
+```
+
+```{r extract-estimates}
+est <- tibble(brm = fixef(model_M1i_ca)[,c(1,3,4)],
+              glmer = tidy(model_M1i_ca_f, 
+                           effects = c("fixed"), 
+                           conf.int=T, 
+                           conf.level = 0.95)[,c(2,3,7,8)], 
+              effectname = names(fixef(model_M1i_ca_f)),
+              position = 1:30)
+
+summary(est)
+head(est)
+```
+
+```{r plot-estimates}
+cols    <- c( "c1" = "#ff00ff", "c2" = "#3399ff" )
+shapes  <- c("s1" = 16, "s2" = 17)
+
+p1 <- ggplot(data = est, aes(x = position)) +
+ geom_point(aes( y = brm[,"Estimate"],  
+                 color = "c1", 
+                 shape = "s1"),
+                 size = 1.5) +
+ geom_point(aes( y = glmer$estimate, 
+                 color = "c2", 
+                 shape = "s2"),
+                 size = 1.5, 
+                 position = position_nudge(x = .2))  +
+ geom_linerange(aes(ymin=brm[,"Q2.5"], ymax=brm[,"Q97.5"], 
+                    color = "c1"), 
+                show.legend = F) +
+ geom_linerange(aes(ymin=glmer$conf.low, ymax=glmer$conf.high, 
+                    color = "c2"), 
+                show.legend = F, 
+                position = position_nudge(x = .2)) +
+ geom_hline(yintercept=0,colour = "grey", linetype = 2) +
+ scale_x_continuous(breaks = 1:30,labels = est$effectname) +
+ scale_y_continuous(limits=c(-25,25), breaks = c(-25,-20,-15,-10,-5,0,5,10,15,20,25)) +
+  
+ labs( x = "Effects in model M1i_ca", y = "logit-ca" ) +
+ scale_color_manual(name = "Model", 
+                                breaks = c("c1", "c2"), 
+                                values = cols,
+                                labels = c("brm", "glmer")) +
+ scale_shape_manual(name = "Model", 
+                              breaks = c("s1", "s2"),
+                              values = shapes,
+                              labels = c("brm", "glmer")) +
+  coord_flip() #+
+ #theme(panel.grid = element_blank())
+         #legend.position = "top",
+         #axis.text.x = element_text(size=11,angle=90),
+         #axis.text.y = element_text(size=13),
+         #axis.title.x = element_text(size = 14),
+         #axis.title.y = element_text(size = 14),
+         #legend.text=element_text(size=13)) 
+p1
+```
+
+```{r save-plot-comparison, eval=F}
+ggsave("Tutorial_3_Frequentist/Comparison_ca.png", height=8, width=8,dpi=800)
+```
+
+
