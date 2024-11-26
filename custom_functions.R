@@ -111,6 +111,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
   # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.
   
   library(patchwork) # to combine figures
+  library(RColorBrewer) # color palette 
   cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
   binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
   median_period <- extract_median(df)
@@ -136,6 +137,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                size=1) + 
     geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -165,6 +167,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
               data = data_medians, 
               linetype = 3, 
               show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -183,9 +186,11 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                size=1) +
     geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
+
     scale_y_continuous(limits = c(0,1)) +
     labs(x = "bin endpoints (ms)", 
          y = "ca(t)",
@@ -201,6 +206,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                size=1) +
     geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -298,6 +304,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
   
   # see plot_eha() for more information on the parameters.
   library(patchwork)
+  library(RColorBrewer)
   
   cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
   binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
@@ -334,6 +341,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                size=1) + 
     geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -360,6 +368,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
               data = data_medians, 
               linetype = 3, 
               show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -381,6 +390,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                size=1) +
     geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
@@ -402,6 +412,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                size=1) +
     geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
                    show.legend = F) +
+    scale_color_brewer(palette = "Dark2") +
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
