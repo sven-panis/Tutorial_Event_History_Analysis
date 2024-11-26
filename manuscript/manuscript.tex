@@ -785,6 +785,8 @@ Because TIME is centered on bin 9, the Intercept represents the estimated cloglo
 
 We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria (Kurz, 2023a; McElreath, 2018).
 
+\footnotesize
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
@@ -806,6 +808,8 @@ We can compare the three models using the Widely Applicable Information Criterio
 ## model_M0i model_M1i model_M1d 
 ##         0         1         0
 \end{verbatim}
+
+\normalsize
 
 Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models.
 
