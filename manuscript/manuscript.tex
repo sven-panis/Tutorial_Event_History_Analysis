@@ -523,7 +523,7 @@ pid & \multicolumn{1}{c}{trial} & \multicolumn{1}{c}{condition} & \multicolumn{1
 
 \subsubsection{4.1.2 A real data wrangling example}\label{a-real-data-wrangling-example}
 
-To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from Panis and Schmidt (2016).
+To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from Panis and Schmidt (2016). A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
 In their first experiment, Panis and Schmidt (2016) presented a double arrow for 94 ms that pointed left or right as the target stimulus with an onset at time point zero in each trial. Participants had to indicate the direction in which the double arrow pointed using their corresponding index finger, within 800 ms after target onset. Response time and accuracy were recorded on each trial. Prime type (blank, congruent, incongruent) and mask type were manipulated. Here we focus on the subset of trials in which no mask was presented. The 13-ms prime stimulus was a double arrow presented 187 ms before target onset in the congruent (same direction as target) and incongruent (opposite direction as target) prime conditions.
 
 There are several data wrangling steps to be taken. First, we need to load the data before we (a) supply required column names, and (b) specify the factor condition with the correct levels and labels.
@@ -546,15 +546,17 @@ The required column names are as follows:
 
 In the code of Tutorial 1a, this is accomplished as follows.
 
-\scriptsize
+\footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_wr }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/DataExp1\_6subjects\_wrangled.csv"}\NormalTok{)}
+\NormalTok{data\_wr}\OtherTok{\textless{}{-}}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/DataExp1\_6subjects\_wrangled.csv"}\NormalTok{)}
 \FunctionTok{colnames}\NormalTok{(data\_wr) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"pid"}\NormalTok{,}\StringTok{"bl"}\NormalTok{,}\StringTok{"tr"}\NormalTok{,}\StringTok{"condition"}\NormalTok{,}\StringTok{"resp"}\NormalTok{,}\StringTok{"acc"}\NormalTok{,}\StringTok{"rt"}\NormalTok{,}\StringTok{"trial"}\NormalTok{) }
 \NormalTok{data\_wr }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =}\NormalTok{ condition }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, }\CommentTok{\# original levels were 0, 1, 2.}
-         \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }\AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\AttributeTok{labels=}\FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{,}\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)))}
+         \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }
+                            \AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }
+                            \AttributeTok{labels=}\FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{,}\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -562,18 +564,24 @@ In the code of Tutorial 1a, this is accomplished as follows.
 
 Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see part A of the supplementary material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group\_nest() function, and supply a user-defined censoring time and bin width to our custom function ``censor()'', as follows.
 
-\scriptsize
+\footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data\_nested }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_nest}\NormalTok{(pid)}
 \NormalTok{data\_final }\OtherTok{\textless{}{-}}\NormalTok{ data\_nested }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored  =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}   \CommentTok{\# ! user input: censoring time, and bin width}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data  =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{\%\textgreater{}\%}           \CommentTok{\# create person{-}trial{-}bin data set}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{\%\textgreater{}\%}      \CommentTok{\# create life tables without ca(t)}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc   =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{\%\textgreater{}\%}       \CommentTok{\# calculate ca(t)}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{\%\textgreater{}\%}    \CommentTok{\# create life tables with ca(t)}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{plot      =} \FunctionTok{map2}\NormalTok{(}\AttributeTok{.x =}\NormalTok{ lifetable\_ca, }\AttributeTok{.y =}\NormalTok{ pid, plot\_eha,}\DecValTok{1}\NormalTok{))  }\CommentTok{\# create plots }
+  \CommentTok{\# ! user input: censoring time, and bin width}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}   
+  \CommentTok{\# create person{-}trial{-}bin data set}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{\%\textgreater{}\%}          
+  \CommentTok{\# create life tables without ca(t)}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{\%\textgreater{}\%}   
+  \CommentTok{\# calculate ca(t)}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{\%\textgreater{}\%}      
+  \CommentTok{\# create life tables with ca(t)}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{\%\textgreater{}\%}    
+  \CommentTok{\# create plots }
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{plot =} \FunctionTok{map2}\NormalTok{(}\AttributeTok{.x =}\NormalTok{ lifetable\_ca, }\AttributeTok{.y =}\NormalTok{ pid, plot\_eha,}\DecValTok{1}\NormalTok{))  }
 \end{Highlighting}
 \end{Shaded}
 
@@ -597,8 +605,7 @@ The next step is to set up the life table using our custom function setup\_lt(),
 
 The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored.
 One can now inspect different aspects, including the life table for a particular condition of a particular subject, and a plot of the different functions for a particular participant.
-
-In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone may be guessing), outlying individuals, and/or different groups with qualitatively different behavior.
+In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior.
 
 Table 3 shows the life table for condition ``blank'' (no prime stimulus presented) for participant 6. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
 
@@ -683,15 +690,14 @@ In this third tutorial, we illustrate how to fit Bayesian multi-level regression
 
 \subsubsection{4.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat discrete TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat time as a discrete predictor, you can choose between reference coding and index coding.
-
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat time as a discrete predictor, you can choose between reference coding and index coding.\\
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
 In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600{]} and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
 
-\scriptsize
+\footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -720,11 +726,11 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial\_2a.Rmd we perform some prior predictive checks to make sure our selected prior distributions reflect our prior beliefs.
 
-The middle column of Figure 12 in part E of the supplementary material shows seven examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 12 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
+The middle column of Figure 16 in part E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in supplementary Figure 16 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
 
-\subsubsection{4.3.3 Model M0i: A general specification of TIME}\label{model-m0i-a-general-specification-of-time}
+\subsubsection{4.3.3 Model M0i: A null model with index coding}\label{model-m0i-a-null-model-with-index-coding}
 
-When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first model, we use a general specification of TIME using index coding, and call the model ``M0i''.
+When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first model, we use a general specification of TIME using index coding, and do not include experimental predictors. We call this model ``M0i''.
 
 Before we fit model M0i, we select the necessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M0i is specified as follows.
 
@@ -772,8 +778,8 @@ For example, we may assume that hazard can change in a linear + quadratic fashio
 \end{Highlighting}
 \end{Shaded}
 
-The specification ``0 + Intercept + \ldots{}'' removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. Note that duplicate terms in the model formula (e.g., condition) are ignored.
-Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition.
+The specification ``0 + Intercept + \ldots{}'' removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period\_9\_sq is a squared version of period\_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 145 minutes to run.
 
 \subsubsection{4.3.5 Compare the models.}\label{compare-the-models.}
 
@@ -781,24 +787,24 @@ We can compare the three models using the Widely Applicable Information Criterio
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##     model_M0i     model_M1i     model_M1d 
-## 2.462363e-183  1.000000e+00  5.739791e-17
+## model_M0i model_M1i model_M1d 
+##         0         1         0
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##     model_M0i     model_M1i     model_M1d 
-## 8.545948e-184  1.000000e+00  2.055767e-17
+## model_M0i model_M1i model_M1d 
+##         0         1         0
 \end{verbatim}
 
 Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models.
@@ -1440,11 +1446,9 @@ We defined 13 custom functions that we list here.
 \item
   extract\_median\_2IV(df) : estimate quantiles S(t)\textsubscript{.50} (2 independent variables)
 \item
-  plot\_eha(df,subj,haz\_yaxis) : create plots of the discrete-time functions (1 independent variable)
+  plot\_eha(df,subj,haz\_yaxis=1,first\_bin\_shown=1,aggregated\_data=F,Nsubj=6) : create plots of the discrete-time functions (1 independent variable), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
 \item
-  plot\_eha\_2IV(df,subj,haz\_yaxis) : create plots of the discrete-time functions (2 independent variables)
-\item
-  plot\_eha\_agg(df,subj,haz\_yaxis) : create 1 plot for data aggregated across participants (1 independent variable)
+  plot\_eha\_2IV(df,subj,haz\_yaxis=1,first\_bin\_shown=1,aggregated\_data=F, Nsubj=6) : create plots of the discrete-time functions (2 independent variables), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
 \end{itemize}
 
 When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc\_ca() and join\_lt\_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot\_eha().
@@ -1452,7 +1456,7 @@ When you want to analyse simple RT data from a detection experiment with two ind
 
 \subsection{C. Link functions}\label{c.-link-functions}
 
-Popular link functions include the logit link and the complementary log-log link, as shown in Figure 11.
+Popular link functions include the logit link and the complementary log-log link, as shown in Figure 15.
 
 
 
@@ -1489,7 +1493,7 @@ To gain a sense of what prior \emph{logit} values would approximate a uniform di
 
 }
 
-\caption{Prior distributions on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).}\label{fig:plot-priors}
+\caption{Prior distributions for the Intercept on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).}\label{fig:plot-priors}
 \end{figure}
 
 To gain a sense of what prior \emph{cloglog} values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale.

@@ -312,7 +312,7 @@ apa_table(
 
 ### 4.1.2 A real data wrangling example 
 
-To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from @panisWhatShapingRT2016.
+To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from @panisWhatShapingRT2016. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
 In their first experiment, @panisWhatShapingRT2016 presented a double arrow for 94 ms that pointed left or right as the target stimulus with an onset at time point zero in each trial. Participants had to indicate the direction in which the double arrow pointed using their corresponding index finger, within 800 ms after target onset. Response time and accuracy were recorded on each trial. Prime type (blank, congruent, incongruent) and mask type were manipulated. Here we focus on the subset of trials in which no mask was presented. The 13-ms prime stimulus was a double arrow presented 187 ms before target onset in the congruent (same direction as target) and incongruent (opposite direction as target) prime conditions.
 
 There are several data wrangling steps to be taken. First, we need to load the data before we (a) supply required column names, and (b) specify the factor condition with the correct levels and labels.
@@ -327,28 +327,36 @@ The required column names are as follows:
 
 In the code of Tutorial 1a, this is accomplished as follows.
 
-\scriptsize
+\footnotesize
 ```{r setup-data-tut1, echo=TRUE}
-data_wr <- read_csv("../Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
+data_wr<-read_csv("../Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
 colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial") 
 data_wr <- data_wr %>% 
   mutate(condition = condition + 1, # original levels were 0, 1, 2.
-         condition = factor(condition, levels=c(1,2,3), labels=c("blank","congruent","incongruent")))
+         condition = factor(condition, 
+                            levels=c(1,2,3), 
+                            labels=c("blank","congruent","incongruent")))
 ```
 \normalsize
 
 Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see part A of the supplementary material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
 
-\scriptsize
+\footnotesize
 ```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
 data_nested <- data_wr %>% group_nest(pid)
 data_final <- data_nested %>% 
-  mutate(censored  = map(data, censor, 600, 40)) %>%   # ! user input: censoring time, and bin width
-  mutate(ptb_data  = map(censored, ptb)) %>%           # create person-trial-bin data set
-  mutate(lifetable = map(ptb_data, setup_lt)) %>%      # create life tables without ca(t)
-  mutate(condacc   = map(censored, calc_ca)) %>%       # calculate ca(t)
-  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    # create life tables with ca(t)
-  mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  # create plots 
+  # ! user input: censoring time, and bin width
+  mutate(censored = map(data, censor, 600, 40)) %>%   
+  # create person-trial-bin data set
+  mutate(ptb_data = map(censored, ptb)) %>%          
+  # create life tables without ca(t)
+  mutate(lifetable = map(ptb_data, setup_lt)) %>%   
+  # calculate ca(t)
+  mutate(condacc = map(censored, calc_ca)) %>%      
+  # create life tables with ca(t)
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    
+  # create plots 
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  
 ```
 \normalsize
 
@@ -364,7 +372,6 @@ The next step is to set up the life table using our custom function setup_lt(), 
 
 The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored.
 One can now inspect different aspects, including the life table for a particular condition of a particular subject, and a plot of the different functions for a particular participant. 
-
 In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior. 
 
 Table 3 shows the life table for condition "blank" (no prime stimulus presented) for participant 6. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). At time point zero, no events can occur and therefore h(t) and ca(t) are undefined.
@@ -430,7 +437,7 @@ In general, there are three assumptions one can make or relax when adding experi
 
 In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600] and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
 
-\scriptsize
+\footnotesize
 ```{r wrangle-data, eval=F, echo=T}
 # read in the file we saved in tutorial 1a
 ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modeling.csv")
@@ -518,10 +525,12 @@ model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
 model_M1d <- add_criterion(model_M1d, c("loo", "waic"))
 ```
 
+\footnotesize
 ```{r show-weights, echo=T, eval=T}
 model_weights(model_M0i, model_M1i, model_M1d, weights = "loo") %>% round(digits = 2)
 model_weights(model_M0i, model_M1i, model_M1d, weights = "waic") %>% round(digits = 2) 
 ```
+\normalsize
 
 Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models. 
 
