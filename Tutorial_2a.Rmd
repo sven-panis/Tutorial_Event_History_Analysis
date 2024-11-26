@@ -515,7 +515,7 @@ ggplot(df_pred_haz %>%
   facet_wrap(~pid)
 ```
 
-```{r save-ppc-M1c, eval=F}
+```{r save-ppc-M0c, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M0c_ppc.png", width = 10, height = 8, dpi = 800)
 ```
 
