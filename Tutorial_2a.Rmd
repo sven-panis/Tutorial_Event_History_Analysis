@@ -16,7 +16,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (with factor prime = blank, congruent, or incongruent). We perform some prior predictive checks to infer the prior distributions we will employ. We compare models using WAIC and LOO, and interpret parameter estimates for one model. 
+Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data. The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (with factor prime = blank, congruent, or incongruent). We perform some prior predictive checks to determine the prior distributions we will employ. We compare models using WAIC and LOO, and interpret parameter estimates for one model. 
 We end by plotting the logit and cloglog link functions, and illustrate how various prior distributions on the logit and cloglog scales look on the original probability (i.e., hazard) scale. 
 
 # 1. Load the libraries that we will be using.
@@ -127,7 +127,7 @@ priors_M0i <- c(
 )
 ```
 
-Perform a prior predictive check to see if the binary observations generated from the sprecified prior distributions reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
+Perform a prior predictive check to see if the binary observations generated from the specified prior distributions reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
 
 ```{r M0i-prior, eval=F}
 plan(multicore)
@@ -153,7 +153,7 @@ model_M0i_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0i_prior.rds")
 
 Next, use them to predict prior data. To better understand what the function add_predicted_draws is doing (which we will typically use), we first simulate prior data for one timebin manually.
 
-```{r ppc-manual}
+```{r ppc-manual, eval=T}
 # prior predictive check for 1 time bin
 # see http://bruno.nicenboim.me/bayescogsci/
 
@@ -204,7 +204,11 @@ ggplot(prior_pred_haz, aes(x=pred_haz)) +
        subtitle = str_c(N_samples," samples; ",N_obs," observations per sample"))
 ```
 
-The shape of the prior predictive distribution looks as expected (compare with Figure X in the supplementary material): hazard values below .5 are more likely than hazard values above .5.
+```{r save-ppc, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png", width = 10, height = 8, dpi = 800)
+```
+
+The shape of the prior predictive distribution looks as expected (compare with Figure 16 (row F) in the supplementary material): hazard values below .5 are more likely than hazard values above .5.
 
 Now use add_predicted_draws() to simulate prior-based data for 10 bins and 6 subjects, while take into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
 
@@ -258,6 +262,10 @@ ggplot(data = df_pred_haz %>% filter(.draw < 41),
   facet_wrap(~pid)
 ```
 
+```{r save-ppc-ten-bins-six-subjects, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0i_ppc.png", width = 10, height = 8, dpi = 800)
+```
+
 Now we can fit model M0i to get the posterior distributions.
 
 ```{r fit-model-M0i, eval=F} 
@@ -282,7 +290,6 @@ This took 28 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chi
 ```{r inspect-M0i}
 model_M0i <- readRDS("Tutorial_2_Bayesian/models/model_M0i.rds")
 summary(model_M0i)
-formula(model_M0i)
 plot(model_M0i)
 ```
 
@@ -356,9 +363,9 @@ priors_M0c <- c(
 )
 ```
 
-Perform a prior predictive check to see if the binary observations generated from the sprecified prior distributions reflect our prior beliefs. 
+Perform a prior predictive check to see if the binary observations generated from the specified prior distributions reflect our prior beliefs. 
 The following code allows to change the coefficients and generate (cloglog-)hazard functions.
-Once you have found the coefficients for period_9 and period_9_sq that generate a variety of hazard functions spanning your prior beliefs, you can then use them to estimate a mean and standard deviation for each coefficient.
+Once you have found the coefficients for the intercept, period_9 and period_9_sq that generate a variety of hazard functions spanning your prior beliefs, you can then use them to determine a suited mean and standard deviation for each coefficient.
 
 ```{r search-coef}
 dat <- tibble(x = -3:6,
@@ -393,7 +400,7 @@ p2<-ggplot(dat, aes(x=x))+
 p1|p2
 ```
 
-First, sample the prior distributions, and set the variance of the normal prior for class "sd" to a low value, to minimize the effect of the random variables while inspecting the relation between the selected priors for period_9 and period_9_sq and the shape of the prior predictive distributions.
+Next, sample the prior distributions, and set the variance of the normal prior for class "sd" to a low value, to minimize the effect of the random effects while inspecting the relation between the selected priors for period_9 and period_9_sq and the shape of the prior predictive distributions.
 
 ```{r priors-M0c-ppc}
 priors_M0c_ppc <- c(
@@ -424,7 +431,7 @@ model_M0c_prior <-
        file = "Tutorial_2_Bayesian/models/model_M0c_prior")
 ```
 
-```{r inspect-M0c-prior}
+```{r load-M0c-prior}
 model_M0c_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior.rds")
 ```
 
@@ -451,7 +458,7 @@ ggplot(tidy_prior, aes(x = name, y = value, fill = name)) +
        title = "Samples from the prior distributions")
 ```   
 
-Generate prior predictive check for each participant.
+Next, generate prior predictive check for each participant.
 
 ```{r ppc-model-M0c-prior, eval=F}
 # Generate prior predictive hazard functions for 6 participants
@@ -508,9 +515,13 @@ ggplot(df_pred_haz %>%
   facet_wrap(~pid)
 ```
 
+```{r save-ppc-M1c, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0c_ppc.png", width = 10, height = 8, dpi = 800)
+```
+
 A wide range of differently shaped hazard functions can be observed, and early bins are unlikely to have high hazard values, consistent with our prior beliefs. Note that some simulated hazard functions start off with a high hazard in bin -3. These reflect a combination of negative slopes and a positive coefficient for period_9_sq. These possibilities are required to encompass hazard functions that initially decrease and then increase, as observed in the empirical hazard functions for incongruent primes.
 
-Now increase the variance again of the normal prior for class "sd", and fit model M0c to get the posterior distributions.
+Now increase the standard deviation again of the normal prior for class "sd", and fit model M0c to get the posterior distributions.
 
 ```{r fit-model-M0c, eval=F}
 plan(multicore)
