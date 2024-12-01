@@ -1,6 +1,6 @@
-# Tutorial_Event_History_Analysis
+# A tutorial on hazard analysis
 
-A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
+A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis (EHA), survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
 
@@ -33,11 +33,11 @@ If you want to see and work with the code, then:
 
 - Tutorial_2a.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
 
-- Tutorial_2b.Rmd (generating inferential statistics : Bayesian discrete-time conditional accuracy models).
+- Tutorial_2b.Rmd (generating inferential statistics : Bayesian discrete-time conditional accuracy analysis).
 
 - Tutorial_3a.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
 
-- Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy models).
+- Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy analysis).
 
 - Folder manuscript 
 manuscript.Rmd (papaja Template)
@@ -46,6 +46,7 @@ manuscript.tex
 r-references.bib
 extrareferences.bib
 SupplementaryMaterial.Rmd
+SupplementaryMaterial.html
 
 - Folder sims (code for Figure 1)
 sims.Rmd
