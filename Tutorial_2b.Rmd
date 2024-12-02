@@ -235,7 +235,7 @@ epreds_grand %>%
                           fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
                     alpha = 0.5, 
-                    .width = .95) +
+                    .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
@@ -275,7 +275,7 @@ epreds_pid %>%
                        fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
                     alpha = 0.5, 
-                    .width = .95) +
+                    .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
@@ -378,7 +378,7 @@ epreds_pid_diffs %>%
                        fill=contrast, color=contrast)) +
     stat_lineribbon(alpha = 0.5, 
                     point_interval = "mean_qi",
-                    .width=c(.95)) +
+                    .width=c(.8,.95)) +
     #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
     geom_hline(yintercept = 0, color = "red", lty = 3) +
     scale_fill_brewer(palette = "Dark2") +

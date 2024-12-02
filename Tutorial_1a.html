@@ -1979,13 +1979,13 @@ data_agg_final &lt;- data_agg_nested %&gt;%
     mutate(lifetable = map(ptb_data, setup_lt)) %&gt;%      
     mutate(condacc   = map(censored, calc_ca)) %&gt;%      
     mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %&gt;%  
-    # set haz_yaxis to .7, first_bin_shown to 1, aggregated_data to TRUE, and Nsubj to 6 
+    # set haz_yaxis to .7, first_bin_shown to 3, aggregated_data to TRUE, and Nsubj to 6 
     mutate(plot = map2(.x=lifetable_ca, .y=pid, plot_eha, .7, 3, T, 6)) 
   # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
   #            Recommended to set this to 1 when plotting the data of individual subjects.
   # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
-  #.           you can set first_bin_shown to another value, such as 5 (i.e., do not show the 
-  #            first 4 bins in the plots).
+  #.           you can set first_bin_shown to another value, such as 3 (i.e., do not show the 
+  #            first3 bins in the plots).
   # aggregated_data: For a dataset with data aggregated across individuals, set to TRUE. 
   #            This only controls the title of the plots.
   # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.</code></pre>
