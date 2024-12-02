@@ -90,7 +90,6 @@ save(model_M1i_ca_f, file="Tutorial_3_Frequentist/model_M1i_ca_f.RData")
 
 ```{r effects-M1i-ca-f}
 load("Tutorial_3_Frequentist/model_M1i_ca_f.RData")
-fixef(model_M1i_ca_f)
 summary(model_M1i_ca_f)
 ```
 
@@ -109,9 +108,6 @@ est <- tibble(brm = fixef(model_M1i_ca)[,c(1,3,4)],
                            conf.level = 0.95)[,c(2,3,7,8)], 
               effectname = names(fixef(model_M1i_ca_f)),
               position = 1:30)
-
-summary(est)
-head(est)
 ```
 
 ```{r plot-estimates}

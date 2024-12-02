@@ -1596,24 +1596,7 @@ head(ca_data)</code></pre>
 <p>Model_M1i_ca_f took about 90 minutes to fit.</p>
 <pre class="r"><code>save(model_M1i_ca_f, file=&quot;Tutorial_3_Frequentist/model_M1i_ca_f.RData&quot;)</code></pre>
 <pre class="r"><code>load(&quot;Tutorial_3_Frequentist/model_M1i_ca_f.RData&quot;)
-fixef(model_M1i_ca_f)</code></pre>
-<pre><code>##  timebin6:prime1  timebin7:prime1  timebin8:prime1  timebin9:prime1 
-##         2.306789         1.059531         1.916293         2.808928 
-## timebin10:prime1 timebin11:prime1 timebin12:prime1 timebin13:prime1 
-##         5.969420         7.164395        24.566278        24.566346 
-## timebin14:prime1 timebin15:prime1  timebin6:prime2  timebin7:prime2 
-##        24.566263        24.566304        24.566472         7.267956 
-##  timebin8:prime2  timebin9:prime2 timebin10:prime2 timebin11:prime2 
-##        24.566199        24.566005        24.566146         5.536669 
-## timebin12:prime2 timebin13:prime2 timebin14:prime2 timebin15:prime2 
-##        24.565869        24.566358         2.751966        24.566232 
-##  timebin6:prime3  timebin7:prime3  timebin8:prime3  timebin9:prime3 
-##       -24.566162       -24.566048        -3.128859         2.765245 
-## timebin10:prime3 timebin11:prime3 timebin12:prime3 timebin13:prime3 
-##         4.383175         5.002501        24.523864        24.537652 
-## timebin14:prime3 timebin15:prime3 
-##        24.562082         3.483781</code></pre>
-<pre class="r"><code>summary(model_M1i_ca_f)</code></pre>
+summary(model_M1i_ca_f)</code></pre>
 <pre><code>## Warning in vcov.merMod(object, use.hessian = use.hessian): variance-covariance matrix computed from finite-difference Hessian is
 ## not positive definite or contains NA values: falling back to var-cov estimated from RX</code></pre>
 <pre><code>## Warning in vcov.merMod(object, correlation = correlation, sigm = sig): variance-covariance matrix computed from finite-difference Hessian is
@@ -1788,39 +1771,6 @@ load(&quot;Tutorial_3_Frequentist/model_M1i_ca_f.RData&quot;)</code></pre>
 ## not positive definite or contains NA values: falling back to var-cov estimated from RX</code></pre>
 <pre><code>## Warning in vcov.merMod(object): variance-covariance matrix computed from finite-difference Hessian is
 ## not positive definite or contains NA values: falling back to var-cov estimated from RX</code></pre>
-<pre class="r"><code>summary(est)</code></pre>
-<pre><code>##     brm.Estimate           brm.Q2.5             brm.Q97.5     
-##  Min.   :-4.912813    Min.   :-8.639487    Min.   :-2.652359  
-##  1st Qu.: 1.579036    1st Qu.:-0.163812    1st Qu.: 3.263126  
-##  Median : 3.592894    Median : 1.786486    Median : 5.977746  
-##  Mean   : 2.802760    Mean   : 0.818865    Mean   : 5.449207  
-##  3rd Qu.: 4.750103    3rd Qu.: 2.739292    3rd Qu.: 8.145723  
-##  Max.   : 5.876447    Max.   : 3.566718    Max.   : 9.930281  
-##       glmer.term          glmer.estimate        glmer.conf.low       glmer.conf.high   
-##  Length:30             Min.   :-24.566162    Min.   :-189306.92    Min.   :     1.34   
-##  Class :character      1st Qu.:  2.776165    1st Qu.: -54631.85    1st Qu.:     7.49   
-##  Mode  :character      Median :  7.216175    Median : -36115.82    Median : 36164.95   
-##  NA                    Mean   : 11.466922    Mean   : -38769.66    Mean   : 38792.60   
-##  NA                    3rd Qu.: 24.566186    3rd Qu.:      0.21    3rd Qu.: 54680.94   
-##  NA                    Max.   : 24.566472    Max.   :      4.16    Max.   :189356.05   
-##   effectname           position    
-##  Length:30          Min.   : 1.00  
-##  Class :character   1st Qu.: 8.25  
-##  Mode  :character   Median :15.50  
-##                     Mean   :15.50  
-##                     3rd Qu.:22.75  
-##                     Max.   :30.00</code></pre>
-<pre class="r"><code>head(est)</code></pre>
-<pre><code>## # A tibble: 6 × 4
-##   brm[,&quot;Estimate&quot;] [,&quot;Q2.5&quot;] [,&quot;Q97.5&quot;] glmer$term $estimate effectname position
-##              &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;         &lt;int&gt;
-## 1            0.584    -1.14        2.43 timebin6:…      2.31 timebin6:…        1
-## 2            0.704    -0.374       1.71 timebin7:…      1.06 timebin7:…        2
-## 3            1.70      0.794       2.56 timebin8:…      1.92 timebin8:…        3
-## 4            2.57      1.52        3.59 timebin9:…      2.81 timebin9:…        4
-## 5            4.51      3.22        6.05 timebin10…      5.97 timebin10…        5
-## 6            4.88      3.32        7.04 timebin11…      7.16 timebin11…        6
-## # ℹ 2 more variables: glmer$conf.low &lt;dbl&gt;, $conf.high &lt;dbl&gt;</code></pre>
 <pre class="r"><code># check hex codes for color paletter
 mypal &lt;- brewer.pal(8,&quot;Dark2&quot;)
 
