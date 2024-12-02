@@ -155,7 +155,7 @@ model_M0i_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0i_prior.rds")
 
 Next, use them to predict prior data. But to better understand what the function add_predicted_draws is doing (which we will typically use), we first simulate prior data for one timebin manually.
 
-```{r ppc-manual, eval=T}
+```{r ppc-manual, eval=F}
 # prior predictive check for 1 time bin
 # see http://bruno.nicenboim.me/bayescogsci/
 
