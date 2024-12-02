@@ -39,6 +39,8 @@ If you want to see and work with the code, then:
 
 - Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy analysis).
 
+- Tutorial_4.Rmd (Simulating data sets, power and precision)
+
 - Folder manuscript 
 manuscript.Rmd (papaja Template)
 manuscript.pdf
@@ -48,7 +50,7 @@ extrareferences.bib
 SupplementaryMaterial.Rmd
 SupplementaryMaterial.html
 
-- Folder sims (code for Figure 1)
+- Folder sims (code for Figures 1, 2, and 3)
 sims.Rmd
 folder figures
 
@@ -64,9 +66,7 @@ folder tables
 
 - Folder Tutorial_3_Frequentist 
 
-- Folder renv
-
-
-
-
-
+- Folder Tutorial_4_planning
+folder data
+folder figures
+folder models
