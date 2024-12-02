@@ -129,7 +129,7 @@ priors_M0i <- c(
 
 ### Intermezzo: Prior Predictive Check for M0i. 
 
-Perform a prior predictive check to see if the binary observations generated from the specified prior distribution(s) reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
+Following Gelman et al. (2020), we perform a prior predictive check to see if the binary observations generated from the specified prior distribution(s) reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
 
 ```{r M0i-prior, eval=F}
 plan(multicore)
@@ -139,7 +139,7 @@ model_M0i_prior <-
        family = bernoulli(link="cloglog"),
        formula = event ~ 0 + timebin + (0 + timebin | pid),
        prior = priors_M0i,
-       chains = 4, cores = 4, 
+       chains = 1, cores = 1, 
        iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, 
                       step_size = 0.04, 
@@ -153,7 +153,7 @@ model_M0i_prior <-
 model_M0i_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0i_prior.rds")
 ```
 
-Next, use them to predict prior data. To better understand what the function add_predicted_draws is doing (which we will typically use), we first simulate prior data for one timebin manually.
+Next, use them to predict prior data. But to better understand what the function add_predicted_draws is doing (which we will typically use), we first simulate prior data for one timebin manually.
 
 ```{r ppc-manual, eval=T}
 # prior predictive check for 1 time bin
@@ -164,7 +164,7 @@ inverse_cloglog <- function(x) {return(1-(exp(-1*exp(x))))}
 cloglog <- function(x) {return(log(-1*log(1-x)))}
 
 # Specify
-N_samples <- 1000 # the number of samples from the skew_normal
+N_samples <- 2000 # the number of samples from the skew_normal
 N_obs <- 100      # the number of simulated observations per sample
 set.seed(1)
 
@@ -190,7 +190,8 @@ cloglog_predictive_distribution <- function(samples, Nobs) {
 cloglog_samples <- rskew_normal(N_samples,-1,1,-2) 
 
 # apply the function
-prior_pred <- cloglog_predictive_distribution(cloglog_samples,N_obs)
+prior_pred <- cloglog_predictive_distribution(cloglog_samples,
+                                              N_obs)
 
 # calculate hazard as the mean over binary observations
 prior_pred_haz <- prior_pred %>% 
@@ -203,16 +204,21 @@ ggplot(prior_pred_haz, aes(x=pred_haz)) +
   scale_x_continuous(limits = c(0,1)) +
   labs(x = "simulated hazard",
        title = "Prior predictive distribution",
-       subtitle = str_c(N_samples," samples; ",N_obs," observations per sample"))
+       subtitle = str_c(N_samples," samples; ",
+                        N_obs," observations per sample"))
 ```
 
 ```{r save-ppc, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png", width = 10, height = 8, dpi = 800)
 ```
 
-The shape of the prior predictive distribution looks as expected (compare with Figure 16 (row F) in the supplementary material): hazard values below .5 are more likely than hazard values above .5.
+```{r plot-ppc-1-bin, out.width='80%'}
+knitr::include_graphics("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png")
+```
 
-Now use add_predicted_draws() to simulate prior-based data for 10 bins and 6 subjects, while take into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
+The shape of the prior predictive distribution for 1 bin looks as expected (compare with Figure 16 (row F) in the supplementary material): hazard values below .5 are more likely than hazard values above .5.
+
+Now use add_predicted_draws() to simulate prior-based data for 10 bins and 6 subjects, while taking into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
 
 ```{r ppc-M0i-prior, eval=F}
 # Generate prior predictive hazard functions for 6 participants
@@ -249,7 +255,7 @@ df_pred_haz <- df_pred %>%
   summarise(pred_haz = mean(.prediction))
 
 # plot 40 draws per participant
-ggplot(data = df_pred_haz %>% filter(.draw < 41), 
+ggplot(data = df_pred_haz %>% filter(.draw < 200), 
        aes(x=timebin, y=pred_haz, group=.draw)) +
    geom_line(color="black") +
    geom_line(data=df_pred_haz %>% filter(.draw == 20), 
@@ -267,6 +273,12 @@ ggplot(data = df_pred_haz %>% filter(.draw < 41),
 ```{r save-ppc-ten-bins-six-subjects, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M0i_ppc.png", width = 10, height = 8, dpi = 800)
 ```
+
+```{r plot-ppc-M0i, out.width='80%'}
+knitr::include_graphics("Tutorial_2_Bayesian/figures/M0i_ppc.png")
+```
+
+The red hazard function is one of the 200 functions plotted, for each of six participants. They can take on any shape, with values below .5 being more likely than values above .5.
 
 After our prior predictive check, we can fit model M0i to get the posterior distributions.
 
@@ -343,7 +355,6 @@ M0d took about 77 minutes.
 
 ```{r inpect-M0d}
 model_M0d <- readRDS("Tutorial_2_Bayesian/models/model_M0d.rds")
-formula(model_M0d)
 fixef(model_M0d)
 ```
 
@@ -358,24 +369,27 @@ data_M0c <- ptb_data %>%
 
 priors_M0c <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
-  set_prior("normal(0.1,.1)", class = "b", coef = "period_9"), 
+  set_prior("normal(0.3,.25)", class = "b", coef = "period_9"), 
   set_prior("normal(0,.06)", class= "b", coef="period_9_sq"),   
   set_prior("normal(0, 1)", class = "sd"),  
   set_prior("lkj(2)", class = "cor")  
 )
 ```
 
+### Intermezzo. Prior predictive check for model M0c.
+
 Perform a prior predictive check to see if the binary observations generated from the specified prior distributions reflect our prior beliefs. 
-The following code allows to change the coefficients and generate (cloglog-)hazard functions.
+
+To get an idea of how the intercept and both slopes control the shape of the hazard function, the following code allows to change the coefficients and generate (cloglog-)hazard functions.
 Once you have found the coefficients for the intercept, period_9 and period_9_sq that generate a variety of hazard functions spanning your prior beliefs, you can then use them to determine a suited mean and standard deviation for each coefficient.
 
 ```{r search-coef}
 dat <- tibble(x = -3:6,
               x2 = x^2,
-              cloglog1 = -1.8   + 0.3*x   - 0.1*x2,
-              cloglog2 = -1     + 0.4*x   - 0.1*x2,
-              cloglog3 = -3     - 0.1*x   + 0.12*x2,
-              cloglog4 = -0.40  + 0.2*x   - 0.04*x2,
+              cloglog1 = -1.8   + 0.3*x    - 0.1*x2,  # black
+              cloglog2 = -1     + 0.41*x   - 0.04*x2,  # green
+              cloglog3 = -3     - 0.13*x   + 0.12*x2, # red
+              cloglog4 = -0.40  + 0.6*x    - 0.11*x2, # blue
               haz1 = 1 - exp(-1*exp(cloglog1)),
               haz2 = 1 - exp(-1*exp(cloglog2)),
               haz3 = 1 - exp(-1*exp(cloglog3)),
@@ -402,46 +416,50 @@ p2<-ggplot(dat, aes(x=x))+
 p1|p2
 ```
 
-Next, sample the prior distributions, and set the variance of the normal prior for class "sd" to a low value, to minimize the effect of the random effects while inspecting the relation between the selected priors for period_9 and period_9_sq and the shape of the prior predictive distributions.
+For example, the coefficients for x vary from -0.13 to 0.6, and we might specify N(.3,.25) as a prior distribution, Those for x-squared vary from -0.11 to 0.12, and we might specify N(0,.06) as a prior distribution.
 
-```{r priors-M0c-ppc}
-priors_M0c_ppc <- c(
+Suppose we expect (cloglog-)hazard functions that increase almost linearly with time. We also set the standard deviation of the normal prior for class "sd" to a low value, to minimize the effect of the random effects while inspecting the relation between the selected priors for period_9 and period_9_sq and the shape of the prior predictive distributions.
+
+```{r priors-M0c-ppc1}
+priors_M0c_ppc1 <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
-  set_prior("normal(0.1,.1)", class = "b", coef = "period_9"), 
-  set_prior("normal(0,.06)", class= "b", coef="period_9_sq"),   
-  set_prior("normal(0, .1)", class = "sd"),  # set standard deviation to a small value for now
+  set_prior("normal(0.3,.001)", class = "b", coef = "period_9"), 
+  set_prior("normal(0,.001)", class= "b", coef="period_9_sq"),   
+  set_prior("normal(0, .01)", class = "sd"), 
   set_prior("lkj(2)", class = "cor")  
 )
 ```
 
-```{r fit-model-M0c-prior, eval=F}
+Sample the prior distributions.
+
+```{r fit-model-M0c-prior1, eval=F}
 plan(multicore)
 
-model_M0c_prior <-
+model_M0c_prior1 <-
    brm(data = data_M0c,
        family = bernoulli(link="cloglog"),
        formula = event ~ 0 + Intercept + period_9 + period_9_sq +  
                           (0 + Intercept + period_9 + period_9_sq | pid),
-       prior = priors_M0c_ppc,
-       chains = 4, cores = 4, 
+       prior = priors_M0c_ppc1,
+       chains = 1, cores = 1, 
        iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, 
                       step_size = 0.04, 
                       max_treedepth = 12),
        seed = 12, init = "0",
        sample_prior = "only",
-       file = "Tutorial_2_Bayesian/models/model_M0c_prior")
+       file = "Tutorial_2_Bayesian/models/model_M0c_prior1")
 ```
 
-```{r load-M0c-prior}
-model_M0c_prior <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior.rds")
+```{r load-M0c-prior1}
+model_M0c_prior1 <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior1.rds")
 ```
 
 Check the prior distributions.
 
-```{r prior-distr}
+```{r prior1-distr}
 # extract prior draws
-post <- as_draws_df(model_M0c_prior) %>% 
+post <- as_draws_df(model_M0c_prior1) %>% 
   select(-lp__) %>% 
   as_tibble()
 
@@ -462,16 +480,12 @@ ggplot(tidy_prior, aes(x = name, y = value, fill = name)) +
 
 Next, generate prior predictive check for each participant.
 
-```{r ppc-model-M0c-prior, eval=F}
-# Generate prior predictive hazard functions for 6 participants
-# Specify
-N_obs = 100 # increase for smoother results
-set.seed(1)
+Create a function.
 
-# make new data
-newdata_prior = tibble(period_9 = c(-3:6)) %>% 
-  mutate(period_9_sq = period_9^2) %>%
-  expand_grid(pid = 1:6)
+```{r function-plot-ppc, eval=F}
+plot_ppc <- function(fit_prior, N_samples, N_obs, new_data_prior){
+
+set.seed(1)
 
 # prepare columns of data set with predictions
 df_pred <- tibble(period_9 = integer(0),
@@ -486,10 +500,10 @@ df_pred <- tibble(period_9 = integer(0),
 
 # extract predictions
 for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0c_prior, 
-                                    newdata = newdata_prior, 
+  prior_pred <- add_predicted_draws(fit_prior, 
+                                    newdata = new_data_prior, 
                                     summary=F, 
-                                    ndraws=NULL) %>% 
+                                    ndraws=N_samples) %>% 
                 mutate(obs = i)
   df_pred <- bind_rows(df_pred, prior_pred)
 }
@@ -499,11 +513,11 @@ df_pred_haz <- df_pred %>%
   group_by(pid,period_9,.draw) %>% 
   summarise(pred_haz = mean(.prediction)) 
 
-# plot 200 draws per participant, highlighting three
-sel = sample(1:200,3,replace=F)
+# plot N_samples draws per participant, highlighting three
+sel = sample(1:N_samples,3,replace=F)
 
 ggplot(df_pred_haz %>% 
-   filter(.draw <200), aes(x=period_9, y=pred_haz, group=.draw)) +
+   filter(.draw <N_samples), aes(x=period_9, y=pred_haz, group=.draw)) +
    geom_line(color="black") +
    # highlight
    geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
@@ -515,14 +529,34 @@ ggplot(df_pred_haz %>%
   scale_y_continuous(limits = c(0,1)) +
   scale_x_continuous(limits = c(-3,6), breaks = c(-3:6)) +
   facet_wrap(~pid)
+}
 ```
 
-```{r save-ppc-M0c, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M0c_ppc.png", width = 10, height = 8, dpi = 800)
+Apply the function.
+
+```{r eval=F}
+# make new data
+newdata_prior = tibble(period_9 = c(-3:6)) %>% 
+  mutate(period_9_sq = period_9^2) %>%
+  expand_grid(pid = 1:6)
+
+# make ppc plot
+p1 <- plot_ppc(model_M0c_prior1,2000,100,newdata_prior)
+p1
 ```
 
-#
-Suppose we believe apriori that hazard functions are flat.
+For each of 2000 draws from the prior distributions, a black hazard function is plotted. Three randomly selected hazard functions are highlighted in red, green, and blue. 
+
+```{r save-ppc1-M0c, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0c_ppc1.png", width = 10, height = 8, dpi = 800)
+```
+
+```{r plot-ppc1-M0c, out.width='80%'}
+knitr::include_graphics("Tutorial_2_Bayesian/figures/M0c_ppc1.png")
+```
+
+
+Or suppose we believe apriori that the hazard functions are flat.
 We specify our new priors:
 
 ```{r priors-M0c-ppc2}
@@ -530,12 +564,14 @@ priors_M0c_ppc2 <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
   set_prior("normal(0,.001)", class = "b", coef = "period_9"), 
   set_prior("normal(0,.001)", class= "b", coef="period_9_sq"),   
-  set_prior("normal(0, .001)", class = "sd"),  # set standard deviation to a small value for now
+  set_prior("normal(0, .001)", class = "sd"), 
   set_prior("lkj(2)", class = "cor")  
 )
 ```
 
-```{r fit-model-M0c-prior, eval=F}
+Sample the prior distributions 2000 times:
+
+```{r fit-model-M0c-prior2, eval=F}
 plan(multicore)
 
 model_M0c_prior2 <-
@@ -544,7 +580,7 @@ model_M0c_prior2 <-
        formula = event ~ 0 + Intercept + period_9 + period_9_sq +  
                           (0 + Intercept + period_9 + period_9_sq | pid),
        prior = priors_M0c_ppc2,
-       chains = 4, cores = 4, 
+       chains = 1, cores = 1, 
        iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, 
                       step_size = 0.04, 
@@ -554,247 +590,46 @@ model_M0c_prior2 <-
        file = "Tutorial_2_Bayesian/models/model_M0c_prior2")
 ```
 
-```{r ppc-model-M0c-prior, eval=F}
-# Generate prior predictive hazard functions for 6 participants
-# Specify
-N_obs = 100 # increase for smoother results
-set.seed(1)
+```{r load-M0c-prior2}
+model_M0c_prior2 <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior2.rds")
+```
 
+Apply the function plot_ppc().
+
+```{r eval=F}
 # make new data
 newdata_prior = tibble(period_9 = c(-3:6)) %>% 
   mutate(period_9_sq = period_9^2) %>%
   expand_grid(pid = 1:6)
 
-# prepare columns of data set with predictions
-df_pred <- tibble(period_9 = integer(0),
-                  period_9_sq = integer(0),
-                  pid = integer(0),
-                  .row = integer(0),
-                  .chain = integer(0),
-                  .iteration = integer(0),
-                  .draw = integer(0),
-                  .prediction = integer(0),
-                  obs = integer(0))
-
-# extract predictions
-for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0c_prior2, 
-                                    newdata = newdata_prior, 
-                                    summary=F, 
-                                    ndraws=200) %>% 
-                mutate(obs = i)
-  df_pred <- bind_rows(df_pred, prior_pred)
-}
-
-# calculate hazard per draw (average across obs)
-df_pred_haz <- df_pred %>% 
-  group_by(pid,period_9,.draw) %>% 
-  summarise(pred_haz = mean(.prediction)) 
-
-# plot 200 draws per participant, highlighting three
-sel = sample(1:200,3,replace=F)
-
-ggplot(df_pred_haz %>% 
-   filter(.draw <200), aes(x=period_9, y=pred_haz, group=.draw)) +
-   geom_line(color="black") +
-   # highlight
-   geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
-             color="red", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[2]), 
-            color="green", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[3]), 
-          color="blue", linewidth=2) +
-  scale_y_continuous(limits = c(0,1)) +
-  scale_x_continuous(limits = c(-3,6), breaks = c(-3:6)) +
-  facet_wrap(~pid)
+# make ppc plot
+p2 <- plot_ppc(model_M0c_prior2,2000,100,newdata_prior)
+p2
 ```
 
-Or, suppose we believe that hazard increases with time; More specifically, we assume that cloglog-hazard increases linearly over time.
+Now the prior predictive hazard functions are all rather flat, with an intercept controlled by the prior skew-normal distribution, i.e., values below .5 are more likely than values above .5.
 
-```{r priors-M0c-ppc2}
+```{r save-ppc2-M0c, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0c_ppc2.png", width = 10, height = 8, dpi = 800)
+```
+
+```{r plot-ppc2-M0c, out.width='80%'}
+knitr::include_graphics("Tutorial_2_Bayesian/figures/M0c_ppc2.png")
+```
+
+Finally, perform a ppc for the selected prior distributions for M0c (see lines 369-374), and increase the standard deviation for the normal prior for class "sd" somewhat.
+
+```{r priors-M0c-ppc3}
 priors_M0c_ppc3 <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
-  set_prior("normal(0.3,.001)", class = "b", coef = "period_9"), 
-  set_prior("normal(0,.001)", class= "b", coef="period_9_sq"),   
-  set_prior("normal(0, .001)", class = "sd"),  # set standard deviation to a small value for now
-  set_prior("lkj(2)", class = "cor")  
-)
-```
-
-```{r fit-model-M0c-prior, eval=F}
-plan(multicore)
-
-model_M0c_prior3 <-
-   brm(data = data_M0c,
-       family = bernoulli(link="cloglog"),
-       formula = event ~ 0 + Intercept + period_9 + period_9_sq +  
-                          (0 + Intercept + period_9 + period_9_sq | pid),
-       prior = priors_M0c_ppc3,
-       chains = 4, cores = 4, 
-       iter = 3000, warmup = 1000,
-       control = list(adapt_delta = 0.999, 
-                      step_size = 0.04, 
-                      max_treedepth = 12),
-       seed = 12, init = "0",
-       sample_prior = "only",
-       file = "Tutorial_2_Bayesian/models/model_M0c_prior3")
-```
-
-```{r ppc-model-M0c-prior, eval=F}
-# Generate prior predictive hazard functions for 6 participants
-# Specify
-N_obs = 300 # increase for smoother results
-set.seed(1)
-
-# make new data
-newdata_prior = tibble(period_9 = c(-3:6)) %>% 
-  mutate(period_9_sq = period_9^2) %>%
-  expand_grid(pid = 1:6)
-
-# prepare columns of data set with predictions
-df_pred <- tibble(period_9 = integer(0),
-                  period_9_sq = integer(0),
-                  pid = integer(0),
-                  .row = integer(0),
-                  .chain = integer(0),
-                  .iteration = integer(0),
-                  .draw = integer(0),
-                  .prediction = integer(0),
-                  obs = integer(0))
-
-# extract predictions
-for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0c_prior3, 
-                                    newdata = newdata_prior, 
-                                    summary=F, 
-                                    ndraws=20) %>% 
-                mutate(obs = i)
-  df_pred <- bind_rows(df_pred, prior_pred)
-}
-
-# calculate hazard per draw (average across obs)
-df_pred_haz <- df_pred %>% 
-  group_by(pid,period_9,.draw) %>% 
-  summarise(pred_haz = mean(.prediction)) 
-
-# plot 200 draws per participant, highlighting three
-sel = sample(1:20,3,replace=F)
-
-ggplot(df_pred_haz %>% 
-   filter(.draw <= 20), aes(x=period_9, y=pred_haz, group=.draw)) +
-   geom_line(color="black") +
-   # highlight
-   geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
-             color="red", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[2]), 
-            color="green", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[3]), 
-          color="blue", linewidth=2) +
-  scale_y_continuous(limits = c(0,1)) +
-  scale_x_continuous(limits = c(-3,6), breaks = c(-3:6)) +
-  facet_wrap(~pid)
-```
-
-Or, suppose we believe that hazard first increases with time, and then decreases; 
-
-```{r priors-M0c-ppc2}
-priors_M0c_ppc3 <- c(
-  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
-  set_prior("normal(0.6,.2)", class = "b", coef = "period_9"), 
-  set_prior("normal(-0,.09)", class= "b", coef="period_9_sq"),   
-  set_prior("normal(0, .1)", class = "sd"),  # set standard deviation to a small value for now
-  set_prior("lkj(2)", class = "cor")  
-)
-```
-
-```{r fit-model-M0c-prior, eval=F}
-plan(multicore)
-
-model_M0c_prior3 <-
-   brm(data = data_M0c,
-       family = bernoulli(link="cloglog"),
-       formula = event ~ 0 + Intercept + period_9 + period_9_sq +  
-                          (0 + Intercept + period_9 + period_9_sq | pid),
-       prior = priors_M0c_ppc3,
-       chains = 4, cores = 4, 
-       iter = 3000, warmup = 1000,
-       control = list(adapt_delta = 0.999, 
-                      step_size = 0.04, 
-                      max_treedepth = 12),
-       seed = 12, init = "0",
-       sample_prior = "only",
-       file = "Tutorial_2_Bayesian/models/model_M0c_prior3")
-```
-
-```{r ppc-model-M0c-prior, eval=F}
-# Generate prior predictive hazard functions for 6 participants
-# Specify
-N_obs = 100 # increase for smoother results
-N_samples = 8000
-set.seed(1)
-
-# make new data
-newdata_prior = tibble(period_9 = c(-3:6)) %>% 
-  mutate(period_9_sq = period_9^2) %>%
-  expand_grid(pid = 1:6)
-
-# prepare columns of data set with predictions
-df_pred <- tibble(period_9 = integer(0),
-                  period_9_sq = integer(0),
-                  pid = integer(0),
-                  .row = integer(0),
-                  .chain = integer(0),
-                  .iteration = integer(0),
-                  .draw = integer(0),
-                  .prediction = integer(0),
-                  obs = integer(0))
-
-# extract predictions
-for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0c_prior3, 
-                                    newdata = newdata_prior, 
-                                    summary=F, 
-                                    ndraws=N_samples) %>% 
-                mutate(obs = i)
-  df_pred <- bind_rows(df_pred, prior_pred)
-}
-
-# calculate hazard per draw (average across obs)
-df_pred_haz <- df_pred %>% 
-  group_by(pid,period_9,.draw) %>% 
-  summarise(pred_haz = mean(.prediction)) 
-
-# plot 200 draws per participant, highlighting three
-sel = sample(1:N_samples,3,replace=F)
-
-ggplot(df_pred_haz %>% 
-   filter(.draw <= N_samples), aes(x=period_9, y=pred_haz, group=.draw)) +
-   geom_line(color="black") +
-   # highlight
-   geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
-             color="red", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[2]), 
-            color="green", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[3]), 
-          color="blue", linewidth=2) +
-  scale_y_continuous(limits = c(0,1)) +
-  scale_x_continuous(limits = c(-3,6), breaks = c(-3:6)) +
-  facet_wrap(~pid)
-```
-
-Or, check settings.
-
-```{r priors-M0c-ppc2}
-priors_M0c_ppc3 <- c(
-  set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"),  
-  set_prior("normal(0.1,.1)", class = "b", coef = "period_9"), 
+  set_prior("normal(0.3,.25)", class = "b", coef = "period_9"), 
   set_prior("normal(0,.06)", class= "b", coef="period_9_sq"),   
-  set_prior("normal(0, .1)", class = "sd"),  # set standard deviation to a small value for now
+  set_prior("normal(0, .1)", class = "sd"),  
   set_prior("lkj(2)", class = "cor")  
 )
 ```
 
-```{r fit-model-M0c-prior, eval=F}
+```{r fit-model-M0c-prior3, eval=F}
 plan(multicore)
 
 model_M0c_prior3 <-
@@ -803,7 +638,7 @@ model_M0c_prior3 <-
        formula = event ~ 0 + Intercept + period_9 + period_9_sq +  
                           (0 + Intercept + period_9 + period_9_sq | pid),
        prior = priors_M0c_ppc3,
-       chains = 4, cores = 4, 
+       chains = 1, cores = 1, 
        iter = 3000, warmup = 1000,
        control = list(adapt_delta = 0.999, 
                       step_size = 0.04, 
@@ -813,69 +648,35 @@ model_M0c_prior3 <-
        file = "Tutorial_2_Bayesian/models/model_M0c_prior3")
 ```
 
-```{r ppc-model-M0c-prior, eval=F}
-# Generate prior predictive hazard functions for 6 participants
-# Specify
-N_obs = 100 # increase for smoother results
-N_samples = 8000
-set.seed(1)
+```{r load-M0c-prior3}
+model_M0c_prior3 <- readRDS("Tutorial_2_Bayesian/models/model_M0c_prior3.rds")
+```
 
+Apply the function plot_ppc().
+
+```{r eval=F}
 # make new data
 newdata_prior = tibble(period_9 = c(-3:6)) %>% 
   mutate(period_9_sq = period_9^2) %>%
   expand_grid(pid = 1:6)
 
-# prepare columns of data set with predictions
-df_pred <- tibble(period_9 = integer(0),
-                  period_9_sq = integer(0),
-                  pid = integer(0),
-                  .row = integer(0),
-                  .chain = integer(0),
-                  .iteration = integer(0),
-                  .draw = integer(0),
-                  .prediction = integer(0),
-                  obs = integer(0))
-
-# extract predictions
-for(i in 1:N_obs){
-  prior_pred <- add_predicted_draws(model_M0c_prior3, 
-                                    newdata = newdata_prior, 
-                                    summary=F, 
-                                    ndraws=N_samples) %>% 
-                mutate(obs = i)
-  df_pred <- bind_rows(df_pred, prior_pred)
-}
-
-# calculate hazard per draw (average across obs)
-df_pred_haz <- df_pred %>% 
-  group_by(pid,period_9,.draw) %>% 
-  summarise(pred_haz = mean(.prediction)) 
-
-# plot 200 draws per participant, highlighting three
-sel = sample(1:N_samples,3,replace=F)
-
-ggplot(df_pred_haz %>% 
-   filter(.draw <= N_samples), aes(x=period_9, y=pred_haz, group=.draw)) +
-   geom_line(color="black") +
-   # highlight
-   geom_line(data=df_pred_haz %>% filter(.draw ==sel[1]), 
-             color="red", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[2]), 
-            color="green", linewidth=2) +
-   geom_line(data=df_pred_haz %>% filter(.draw == sel[3]), 
-          color="blue", linewidth=2) +
-  scale_y_continuous(limits = c(0,1)) +
-  scale_x_continuous(limits = c(-3,6), breaks = c(-3:6)) +
-  facet_wrap(~pid)
+# make ppc plot
+p3 <- plot_ppc(model_M0c_prior3,2000,100,newdata_prior)
+p3
 ```
 
+A wide range of differently shaped hazard functions can be observed, and early bins are unlikely to have high hazard values, consistent with our prior beliefs. 
+Note that some simulated hazard functions start off with a high hazard in bin -3. These reflect a combination of negative slopes and a positive coefficient for period_9_sq. These possibilities are required to encompass hazard functions that initially decrease and then increase, as observed in the empirical hazard functions for incongruent primes.
 
+```{r save-ppc3-M0c, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M0c_ppc3.png", width = 10, height = 8, dpi = 800)
+```
 
-#
+```{r plot-ppc3-M0c, out.width='80%'}
+knitr::include_graphics("Tutorial_2_Bayesian/figures/M0c_ppc3.png")
+```
 
-A wide range of differently shaped hazard functions can be observed, and early bins are unlikely to have high hazard values, consistent with our prior beliefs. Note that some simulated hazard functions start off with a high hazard in bin -3. These reflect a combination of negative slopes and a positive coefficient for period_9_sq. These possibilities are required to encompass hazard functions that initially decrease and then increase, as observed in the empirical hazard functions for incongruent primes.
-
-Now increase the standard deviation again of the normal prior for class "sd", and fit model M0c to get the posterior distributions.
+After these prior predictive checks, we can increase the standard deviation for class "sd" to 1 to cover many possible inter-individual differences, and fit model M0c to get the posterior distributions.
 
 ```{r fit-model-M0c, eval=F}
 plan(multicore)
@@ -895,7 +696,7 @@ model_M0c <-
        file = "Tutorial_2_Bayesian/models/model_M0c")
 ```
 
-Model_M0c took about 71 minutes to run.
+Model_M0c took about 19 minutes to run.
 
 ```{r inspect-M0c}
 model_M0c <- readRDS("Tutorial_2_Bayesian/models/model_M0c.rds")
@@ -952,7 +753,8 @@ Second, if we want to make assumptions about (1) how hazard changes over TIME in
 For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the following model (M1d).
 
 ```{r data-priors-M1d}
-data_M1d <- ptb_data %>% select(pid, event, period_9, condition) %>%
+data_M1d <- ptb_data %>% 
+  select(pid, event, period_9, condition) %>%
   mutate(period_9_sq = period_9^2)
 
 # check which priors to set for model_M1d
@@ -966,7 +768,7 @@ check_priors_M1d <- get_prior(formula = event ~ 0 + Intercept +
   
 priors_M1d <- c(
   set_prior("skew_normal(-1,1,-2)", class = "b", coef = "Intercept"), 
-  set_prior("normal(0.1,.1)", class = "b", coef = "period_9"), 
+  set_prior("normal(0.3,.25)", class = "b", coef = "period_9"), 
   set_prior("normal(0,.06)", class= "b", coef = "period_9_sq"),  
   set_prior("normal(0,.4)", class = "b", coef = "conditioncongruent"),
   set_prior("normal(0,.4)", class = "b", coef = "conditionincongruent"),
@@ -996,12 +798,11 @@ model_M1d <-
        file = "Tutorial_2_Bayesian/models/model_M1d")
 ```
 
-Model_M1d took about 145 minutes to run. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+Model_M1d took about 184 minutes to run. Note that duplicate terms in the model formula (e.g., condition) are ignored.
 
 ```{r inspect-M1d}
 model_M1d <- readRDS("Tutorial_2_Bayesian/models/model_M1d.rds")
 summary(model_M1d)
-formula(model_M1d)
 ```
 
 One could also fit a model with the variables prime and period_9. However, to include interactions between an index-coded categorical variable and a continuous variable in brm(), one has to switch to the non-linear syntax, as illustrated in the following model formula.
@@ -1031,8 +832,8 @@ get_prior(formula=bf(event ~ 0 + a + b * period_9 + c * period_9_sq,
 # set priors
 priors <- c(
   prior(skew_normal(-1,1,-2), class = b, nlpar = a), 
-  prior(normal(0.1,.2), class = b, nlpar = b), 
-  prior(normal(0,.7), class = b, nlpar = c), 
+  prior(normal(0.3,.25), class = b, nlpar = b), 
+  prior(normal(0,.06), class = b, nlpar = c), 
   prior(exponential(1), class = sd, group = pid, nlpar = a),
   prior(exponential(1), class = sd, group = pid, nlpar = b),
   prior(exponential(1), class = sd, group = pid, nlpar = c),
@@ -1132,6 +933,8 @@ loo(model_M1i)$diagnostics %>%
   theme(panel.grid = element_blank())
 ```
 
+Observations with Pareto k values above .7 are problematic.
+
 ## Posterior distributions of the population-level parameters of M1i
 
 Wrangle the posterior draws.
@@ -1189,7 +992,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_postdistr.png", width = 10, height = 8, 
 
 ## Expected value of the posterior predictive distribution
 
-We can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant, for each participant in the data set, and for a brand new hypothetical participant.
+Following Heiss (2021), we can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant, for each participant in the data set, and for a brand new hypothetical participant.
 
 First, for the average participant, using add_epred_draws().
 
@@ -1339,7 +1142,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new.png", width = 10, height = 
 
 ### Grand AMEs
 
-We are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
+Following Heiss (2021), we are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
 
 ```{r epred-grand-diff}
 epreds_grand_diffs <- epreds_grand %>%

@@ -132,7 +132,7 @@ Therefore, our ultimate goal is twofold: first, we want to convince readers of t
 
 # 2. A brief introduction to event history analysis
 
-For a comprehensive background context to EHA, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010]. Likewise, for a general introduction to understanding regression equations, we recommend several excellent textbooks [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in the supplementary material.
+For a comprehensive background context to EHA, we recommend several excellent textbooks [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010]. Likewise, for a general introduction to understanding regression equations, we recommend several excellent textbooks [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in part D of the supplementary material.
 
 ## 2.1 Basic features of event history analysis 
 
@@ -408,7 +408,7 @@ At this point, we have calculated, summarised and plotted descriptive statistics
 
 So far in this paper, we have use a simple experimental design, which involved one condition with three levels. But psychological experiments are often more complex, with crossed factorial designs with more conditions and more than three levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
-To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial 1b for those that are interested.
+To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial_1b.Rmd for those that are interested.
 
 ## 4.3 Tutorial 2a: Fitting Bayesian hazard models to discrete time-to-event data
 
@@ -447,9 +447,9 @@ mutate(period_9 = period - 9,
 ### 4.3.2 Prior distributions
 
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
-In Tutorial_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs.
+In Tutorial_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs [@gelmanBayesianWorkflow2020].
 
-The middle column of Figure 16 in part E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in supplementary Figure 16 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
+The middle column of Figure 16 in part E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 16 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
 
 ### 4.3.3 Model M0i: A null model with index coding
 
@@ -472,7 +472,7 @@ model_M0i <-
        file = "Tutorial_2_Bayesian/models/model_M0i")
 ```
 
-After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ### 4.3.4 Model M1i: Adding the effects of prime-target congruency
 
@@ -496,7 +496,7 @@ event ~ 0 + Intercept + condition*period_9 + condition*period_9_sq +
 ```
 
 The specification "0 + Intercept + ..." removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period_9_sq is a squared version of period_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
-Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 145 minutes to run.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 184 minutes to run.
 
 ### 4.3.5 Compare the models.
 
@@ -724,10 +724,10 @@ Second, even if you are not primarily interested in studying the temporal states
 ## 5.2 Model complexity versus interpretability
 
 EHA can quickly become very complex when adding more than 1 time scale, due to the many possible higher-order interactions. 
-For example, model M4 contains two time scales as covariates: the passage of time on the within-trial time scale, and the passage of time on the across-trial (or within-experiment) time scale. However, when trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (within-trial, within-block, within-session, and within-experiment).
+For example, some of the models discussed in Tutorial 2a (M2) contain two time scales as covariates: the passage of time on the within-trial time scale, and the passage of time on the across-trial (or within-experiment) time scale. However, when trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (within-trial, within-block, within-session, and within-experiment).
 From a theoretical perspective, adding more than 1 time scale -- and their interactions -- can be important to capture plasticity and other learning effects that may play out on such longer time scales, and that are probably present in each experiment in general.
 From a practical perspective, therefore, some choices need to be made to balance the amount of data that is being collected per participant, condition and across the varying timescales. As one example, if there are several timescales of relevance, then it might be prudent for interpretational purposes to limit the number of experimental predictor variables (conditions).
-This is of course where planning and data simulation efforts would be important to provide a guide to experimental design choices.
+This is of course where planning and data simulation efforts would be important to provide a guide to experimental design choices (see Tutorial 4).
 
 ## 5.3 Individual differences
 
