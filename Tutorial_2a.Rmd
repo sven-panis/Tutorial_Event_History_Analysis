@@ -304,7 +304,7 @@ This took 28 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chi
 ```{r inspect-M0i}
 model_M0i <- readRDS("Tutorial_2_Bayesian/models/model_M0i.rds")
 summary(model_M0i)
-plot(model_M0i)
+#plot(model_M0i)
 ```
 
 Second, we can fit the same model using a dummy coding approach, as follows.
