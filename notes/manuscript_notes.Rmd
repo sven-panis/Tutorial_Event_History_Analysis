@@ -766,6 +766,8 @@ Still to do:
 
 - add info on simulation and power analysis (section 4.4 + summary in section 4)
 
+- delete code in Tutorial_2a about brand new hypothetical subject?
+
 - use timebin or time bins?
 
 - use multi-level or multilevel ?
