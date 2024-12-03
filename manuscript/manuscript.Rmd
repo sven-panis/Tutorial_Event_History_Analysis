@@ -26,7 +26,6 @@ authornote: |
   <!-- Enter author note here. -->
 abstract: |
   Time-to-event data such as response times, saccade latencies, and fixation durations form a cornerstone of experimental psychology, and have had a widerspread impact on our understanding of human cognition. However, the orthodox method for analysing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and duration. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterise the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake, in this paper we outline a set of tutorials that detail how to implement one distributional method known as discrete-time EHA. We illustrate how to wrangle raw data files and calculate descriptive statistics, as well as how to calculate inferential statistics via Bayesian and frequentist multilevel regression modelling. Along the way, we touch upon several key aspects of the workflow, such as how to specify regression models, the implications for experimental design, as well as how to manage inter-individual differences. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the general approach can easily be adapted to other data sets, and all of the tutorials are available as .html files to widen access beyond R-users.  
-
 keywords          : "response times, event history analysis, Bayesian multi-level regression models, experimental psychology, cognitive psychology"
 wordcount         : "X"
 bibliography      : ["extrareferences2.bib", "r-references.bib"]
@@ -40,7 +39,6 @@ footnotelist      : no
 classoption       : "man, donotrepeattitle"
 appendix          : SupplementaryMaterial.Rmd
 output            : papaja::apa6_pdf
-
 # output            : papaja::apa6_word
 editor_options: 
   chunk_output_type: console
@@ -207,8 +205,8 @@ Although the focus is on EHA/SAT, we also want to briefly comment on broader asp
 ## 3.1 Data science workflow and descriptive statistics
 
 We perform data wrangling following tidyverse principles and a functional programming approach [@wickhamDataScienceImport2023].
-Functional programming basically means you don't write your own loops but instead use functions that have been built and tested by others.
-[[more here, as necessary]].
+Functional programming basically means that you avoid writing your own loops but instead use functions that have been built and tested by others.
+In addition, we also supply a set of custom-built functions, which make the process of data wrangling in the context of EHA a lot quicker and more efficient.
 
 ## 3.2 Inferential statistical approach 
 
@@ -621,7 +619,7 @@ Thus, the probability that the contrast "congruent minus blank" is larger than 0
 
 If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 9. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360].
 
-Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, @panisWhatShapingRT2016 concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
+Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, @panisWhatShapingRT2016 concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to. To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
 
 Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time (Figure 9). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formula that should get you going.
 
