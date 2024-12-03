@@ -173,4 +173,12 @@ Once you have these predictions, you can wrangle and compare contrasts, plot, an
 I will share the code so that you can take a look.
 
 
+# December 3rd 2024 #
 
+## Tutorial 2a ##
+
+I haven't had time to dig through the prior predictive checks yet, as I wanted to focus on the main plots in the paper.
+
+If I follow correctly, it is re-assuring that wrangling the posterior draws gives the same results as using add_epred_draws(). Am I following correctly though?
+
+when you predict data for a new participant, couldn't you also just supply new data that has no pid variable? Instead, it would just have timebin and prime condition and the model would make appropriate estimates?? I'd be curious to see this also (not that we necessarily need it in the tutorial, I'm just curious.)
