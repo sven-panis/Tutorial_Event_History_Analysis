@@ -772,3 +772,91 @@ Still to do:
 
 - use multi-level or multilevel ?
 
+
+## December 2nd 2024 ##
+
+I read your comments above. 
+
+On first glance, I really like the new plots!
+
+I'll dig in now with some comments.
+
+### intro ###
+
+I think the Halley Ref should be 1693 and not 1997? We have a copy of the original manuscriopt, so it seems reasonable to cite the original?
+
+### section 3.1 ###
+
+maybe add a sentence to highlights how we add our own custom functions to make the wrangling and plotting sections quicker and more efficient. e.g., we add to this approach by writing our own custom functions.
+
+### section 3.2 ###
+
+first sentence, the McElreath reference should be 2020 for the textbook and not 2018.
+
+### 4.3.4 Model M1d ###
+
+I'm not convinced we need this model to be reported in the main text. It is complex and deviates from the prior model structure with index coding.
+Folks need to get their head around polynomial specifications of time. And we don't really need them to and we don't really give them much chance to understand it. It is kind of like "trust me".
+Instead, I would have this in the tutorial with a qualifier saying...you can also build models that specify time differently...
+
+Then in the main text just compare M0i and M1i, for the purposes of demonstrating how to do it.
+The basic conclusion being that adding the factor condition improves predictive accuracy compare to timebin only. 
+That's maybe quite basic, but also quite important too for our conclusion - congruency matters.
+
+Or maybe have these models, all with index coding:
+
+- grand intercept only (no predictors)
+- timebin only (M0i)
+- congruency only (without timebin)
+- congruency:timebin (M1i)
+
+Or just stick with two models, as you have above (M0i and M1i).
+
+The main thing we want to communicate is how and why to do model comparison. So let's keep it as simple as possible, at least in the main text.
+
+### section 4.3.3 ###
+
+we need to define index coding.
+
+maybe somewhere earlier we could have a subsection that explains different coding schemes for categorical variables? e.g., dummy, reference and contrast it with index. Then say we focus on index in the main text, as we think it is easier to interpret means per condition.
+
+### section 4.3.6 ###
+
+Tables 4 and 5 can be moved to the tutorial only (or Supps) whichever makes most sense. 
+
+Figure 5 y-axis. Should it just be cloglog? Rather than cloglog-hazard?
+
+Another way to plot Figure 5 would be to avoid a facet and instead fill by prime. That way, you might benefit from the principle of putting things close together that you want to compare e.g., the effects of prime should be easier to see if prime comparisons are close together. Maybe at least plot it the other way to have a look and see what you think? I'd like to see it at least.
+
+There is no need to commit the space needed when they are redundant with the figures. e.g., we can just say in the main text, the point estimates and quantile intervals can be reported in a table (see the tutorial for details). That saves loads of space and time scanning values when the figures are beautiful and standalone as they are.
+
+also, the title of this sub-section should be about evaluating parameter estimates (rather than interpreting model ...). This is because you can use model comparison to interpret the model. So we should make the subsection distinctive.
+
+This figures in this section are wonderful. Nice work!
+
+I suggest two changes:
+
+1. Combine Figures 6 and 7 into one figure (so that the group average is at the top and the individual PIDs are below. Patchwork can do this for you. And if you include + plot_annotation(tag_levels = 'A') then you'll get a nice A and B to label the different parts of the plot.)
+
+2. As (1) combine Figures 8 and 9.
+
+
+on page 38, you say:
+
+>Note that we could also have calculated hazard ratios instead of hazard differences.
+
+This feels a little disjointed from what comes before in the paragraph.
+Either remove it or provide an extra sentence that distinguishes between the absolute hazard difference and the hazard ratio.
+
+Figure 6. Change the title from "Average participant" as it is a bit misleading. Maybe something like "group average" or "grand average" or even remove the title completely once you combine it with the individual pid plots because it will probably become obvious, especially with a figure legend explaining things.
+
+Figure 9. spell out AMEs in full to avoid jargon.
+
+### section 4.4 ###
+
+Combine Figures 11 and 12 like I suggest above.
+
+Put Table 6 in the tutorial and remove it from the main text.
+
+Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog on the y-axis. This makes the orientation similar to the prior plots and will therefore be easier to follow for the reader.
+
