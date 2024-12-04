@@ -1178,7 +1178,7 @@ The basic workflow is as follows:
   Summarise the simulated data to estimate likely power or precision of the research design options.
 \end{enumerate}
 
-Ideally, in the above workflow, we would also fit a model to each dataset and summarise the model output, rather than the raw data. However, when each model takes several hours to build, and we may want to simulate 1000s of datasets, it can be too computationally demanding for desktop machines. So, for ease, here we just use the raw simulated datasets to set expectations.
+Ideally, in the above workflow, we would also fit a model to each dataset and summarise the model output, rather than the raw data. However, when each model takes several hours to build, and we may want to simulate 1000s of datasets, it can be computationally demanding for desktop machines. So, for ease, here we just use the raw simulated datasets to guide future expectations.
 
 In the below, we only provide a high-level summary of the process and let readers dive into the details within the tutorial should they feel so inclined.
 
@@ -1193,7 +1193,7 @@ We fit an index coding model on a subset of timebins (six timebins in total) and
 \end{Highlighting}
 \end{Shaded}
 
-We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, of course, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section.
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section.
 
 
 
@@ -1208,30 +1208,37 @@ We then took parameters from this model and used them to create a single dataset
 
 \subsubsection{4.7.4 Simulate and summarise data across a range of parameter values}\label{simulate-and-summarise-data-across-a-range-of-parameter-values}
 
-Here we use the same data simulating process as used above, but instead of simulating one dataset, we simulate 1000 datasets per variation in parameter values.
+Here we use the same data simulation process as used above, but instead of simulating one dataset, we simulate 1000 datasets per variation in parameter values.
 Specifically, in Simulation 1, we vary the number of trials per condition (100, 200, and 400), as well as the effect size in bin 6.
 We focus on bin 6 only, in terms of varying the effect size, just to make things simpler and easier to understand.
-The effect size observed in bin 6 in this subsample of data was a 79\% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In order words, a hazard ratio of 0.21.
-As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75\%, 50\% and 25\% reduction in hazard as a function of prime condition.
+The effect size observed in bin 6 in this subsample of data was a 79\% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In other words, a hazard ratio of 0.21 (e.g., 0.085/0.401 = 0.21).
+As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75\%, 50\% and 25\% reduction in hazard value as a function of prime condition.
 
 Summary results from Simulation 1 are shown in Figure 16A.
-Figure 16A which depicts statistical ``power'' as calculated by the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent).
-We know that ``power'' is not a Bayesian thing, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
+Figure 16A depicts statistical ``power'' as calculated by the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent).
 In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
-The results show that if we were targetting an effect size similar to the one reported in the orgininal study, the using 10 participants and 100 trials per condition would be enough to provide over 95\% power.
+We are aware that ``power'' is not part of a Bayesian analytical workflow, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
+
+The results of Simulation 1 show that if we were targeting an effect size similar to the one reported in the original study, then testing 10 participants and collecting 100 trials per condition would be enough to provide over 95\% power.
 However, we could not be as confident about smaller effects, such as a hazard ratio of 50\% or 25\%.
-From this simulation, we can see that somewhere between an effect size of 50\% and 75\%, power increases to a range that most researchers would consider acceptable (i.e., \textgreater95\% power).
+From this simulation, we can see that somewhere between an effect size of a 50\% and 75\% reduction in hazard value, power increases to a range that most researchers would consider acceptable (i.e., \textgreater95\% power).
 To probe this space a little further, we decided to run a second simulation, which varied different parameters
 
-I Simulation 2, we varied the effect size across different values (0.5, 0.4, 0.3), which correspond to a 50\%, 60\% and 70\% reduction in hazard as a function of prime condition.
-In addition, we varied the number of participants in the data (10, 15, and 20 participants).
+In Simulation 2, we varied the effect size between a different range of values (0.5, 0.4, 0.3), which correspond to a 50\%, 60\% and 70\% reduction in hazard value as a function of prime condition.
+In addition, we varied the number of participants per experiment between 10, 15, and 20 participants.
 Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
 Summary results from Simulation 2 are shown in Figure 16B.
-A summary of these power calculations might be as follows:
+A summary of these power calculations might be as follows (trial count = 200 per condition in all cases):
 
-For a 70\% reduction (0.3 hazard ratio), N=10, trial=200 per condition, would give nearly 100\% power.
-For a 60\% reduction (0.4 hazard ratio), N=10, trial=200 per condition, would give nearly 90\% power.
-For a 50\% reduction (0.5 hazard ratio), N=15, trial=200 per condition, would give over 80\% power.
+\begin{itemize}
+\tightlist
+\item
+  For a 70\% reduction (0.3 hazard ratio), N=10 would give nearly 100\% power.
+\item
+  For a 60\% reduction (0.4 hazard ratio), N=10 would give nearly 90\% power.
+\item
+  For a 50\% reduction (0.5 hazard ratio), N=15 would give over 80\% power.
+\end{itemize}
 
 
 
@@ -1241,12 +1248,12 @@ For a 50\% reduction (0.5 hazard ratio), N=15, trial=200 per condition, would gi
 
 }
 
-\caption{Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25\%, 50\% and 75\% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50\%, 60\% and 70\% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80\% (red), 90\% (black) and 95\% (blue) power.}\label{fig:power}
+\caption{Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25\%, 50\% and 75\% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50\%, 60\% and 70\% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80\% (red), 90\% (black) and 95\% (blue) power. Abbreviations: rep\_n = the number of trials per experimental condition; sub\_j = the number of participants per simulated experiment.}\label{fig:power}
 \end{figure}
 
 \subsubsection{4.7.5 Planning decisions}\label{planning-decisions}
 
-Now that we have summarised our simulated data, what planning decisions do we make about future study?
+Now that we have summarised our simulated data, what planning decisions could we make about a future study?
 How many trials per condition should we collect and how many participants should we test?
 Like almost always when planning future studies, the answer depends on your objectives, as well as the available resources (Lakens, 2022).
 There is no straigtforward and clear-cut answer.
@@ -1265,13 +1272,14 @@ Some considerations might be\ldots{}
 \end{itemize}
 
 If we were running this kind of study in our lab, what would we do?
-We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon, then pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80\% power mark.
+We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon (Panis \& Schmidt, 2016).
+Then we might pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80\% power mark.
 If we wanted to maximise power based on these simulations, and we had the time and resources available, then we test N=20 participants, which would provide \textgreater90\% power for an effect size of 0.5.
 
-\textbf{But}, and this is an important ``but'', unless there are unavoidable reasons, no matter what planning choices we made, we would not solely rely on one study.
+\textbf{But}, and this is an important ``but'', unless there are unavoidable reasons, no matter what planning choices we made based on these data simulations, we would not solely rely on data collected from one single study.
 Instead, we would run a follow-up experiment that replicates and extends the initial result.
-By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of power analysis.
-Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study has sufficient evidential value to hit some criterion mark.
+By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of planning tool, such as a power analysis.
+Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study on its own has sufficient evidential value to hit some criterion mark.
 
 \section{5. Discussion}\label{discussion}
 
