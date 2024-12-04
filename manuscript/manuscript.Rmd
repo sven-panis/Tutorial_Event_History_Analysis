@@ -705,9 +705,103 @@ Figure 14 confirms that the parameter estimates from both Bayesian and frequenti
 
 In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. To keep it short, we only fitted the effects from model M1i_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. Again, the resulting conditional accuracy model M1i_ca_f did not converge and resulted in a singular fit.
 
-## 4.4 Tutorial 4: Planning
+## 4.7 Tutorial 4: Planning
 
-This needs adding... RR to do this.
+In the final tutorial, we look at planning a future experiment, which uses EHA.
+
+### 4.7.1 Background
+
+The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it (Gelman et al., 2020).
+The basic structure and code follows the examples outlined by Solomon Kurz in his
+'power' blog posts (Kurz, 2019) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as the related paper (DeBruine & Barr, 2021). 
+
+### 4.7.2 Basic workflow
+
+The basic workflow is as follows:
+
+1. Fit a regression model to an existing dataset.
+2. Use the regression model parameters to simulate one new dataset.
+3. Write a function to create 1000s of datasets and vary parameters of interest (e.g., sample size, trial count, effect size).
+4. Summarise the simulated data to estimate likely power or precision of the research design options.
+
+Ideally, in the above workflow, we would also fit a model to each dataset and summarise the model output, rather than the raw data. However, when each model takes several hours to build, and we may want to simulate 1000s of datasets, it can be computationally demanding for desktop machines. So, for ease, here we just use the raw simulated datasets to guide future expectations.
+
+In the below, we only provide a high-level summary of the process and let readers dive into the details within the tutorial should they feel so inclined.
+
+### 4.7.3 Fit a regression model and simulate one dataset
+
+We again use the data from Panis & Schmidt (2016) to provide a worked example.
+We fit an index coding model on a subset of timebins (six timebins in total) and for two prime conditions (congruent and incongruent). We chose to focus on a subsample of the data to ease the computational burden. We also used a full varying effects structure, with the model formula, as follows:
+
+```{r sim-model-bi, eval=F, echo=T}
+event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
+```
+
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
+
+(ref:simdat-plot15-caption) Raw data from Panis & Schmidt (2016) and simulated data from 10 participants.
+
+```{r simdat, fig.cap = "(ref:simdat-plot15-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_4_Planning/figures/raw_vs_d1.jpeg")
+```
+
+### 4.7.4 Simulate and summarise data across a range of parameter values
+
+Here we use the same data simulation process as used above, but instead of simulating one dataset, we simulate 1000 datasets per variation in parameter values.
+Specifically, in Simulation 1, we vary the number of trials per condition (100, 200, and 400), as well as the effect size in bin 6. 
+We focus on bin 6 only, in terms of varying the effect size, just to make things simpler and easier to understand.
+The effect size observed in bin 6 in this subsample of data was a 79% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In other words, a hazard ratio of 0.21 (e.g., 0.085/0.401 = 0.21). 
+As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75%, 50% and 25% reduction in hazard value as a function of prime condition.
+
+Summary results from Simulation 1 are shown in Figure 16A.
+Figure 16A depicts statistical "power" as calculated by the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). 
+In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
+We are aware that "power" is not part of a Bayesian analytical workflow, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
+
+The results of Simulation 1 show that if we were targeting an effect size similar to the one reported in the original study, then testing 10 participants and collecting 100 trials per condition would be enough to provide over 95% power.
+However, we could not be as confident about smaller effects, such as a hazard ratio of 50% or 25%.
+From this simulation, we can see that somewhere between an effect size of a 50% and 75% reduction in hazard value, power increases to a range that most researchers would consider acceptable (i.e., >95% power).
+To probe this space a little further, we decided to run a second simulation, which varied different parameters
+
+In Simulation 2, we varied the effect size between a different range of values (0.5, 0.4, 0.3), which correspond to a 50%, 60% and 70% reduction in hazard value as a function of prime condition.
+In addition, we varied the number of participants per experiment between 10, 15, and 20 participants.
+Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
+Summary results from Simulation 2 are shown in Figure 16B.
+A summary of these power calculations might be as follows (trial count = 200 per condition in all cases):
+
+- For a 70% reduction (0.3 hazard ratio), N=10 would give nearly 100% power.
+- For a 60% reduction (0.4 hazard ratio), N=10 would give nearly 90% power.
+- For a 50% reduction (0.5 hazard ratio), N=15 would give over 80% power.
+
+(ref:power-plot16-caption) Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25%, 50% and 75% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50%, 60% and 70% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80% (red), 90% (black) and 95% (blue) power. Abbreviations: rep_n = the number of trials per experimental condition; sub_j = the number of participants per simulated experiment.
+
+```{r power, fig.cap = "(ref:power-plot16-caption)", out.width='100%'}
+knitr::include_graphics("../Tutorial_4_Planning/figures/bin6_power_col.jpeg")
+```
+
+### 4.7.5 Planning decisions
+
+Now that we have summarised our simulated data, what planning decisions could we make about a future study?
+How many trials per condition should we collect and how many participants should we test? 
+Like almost always when planning future studies, the answer depends on your objectives, as well as the available resources (Lakens, 2022). 
+There is no straigtforward and clear-cut answer.
+Some considerations might be...
+
+  - How much power or precision are you looking to obtain in this particular study?
+  - Are you running multiple studies that have some form of replication built in?
+  - What resources do you have at your disposal, such as time, money and personnel?
+  - How easy or difficult is it to obtain the specific type of sample?
+
+If we were running this kind of study in our lab, what would we do?
+We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon (Panis & Schmidt, 2016).
+Then we might pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80% power mark.
+If we wanted to maximise power based on these simulations, and we had the time and resources available, then we test N=20 participants, which would provide >90% power for an effect size of 0.5.
+
+**But**, and this is an important "but", unless there are unavoidable reasons, no matter what planning choices we made based on these data simulations, we would not solely rely on data collected from one single study. 
+Instead, we would run a follow-up experiment that replicates and extends the initial result. 
+By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of planning tool, such as a power analysis. 
+Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study on its own has sufficient evidential value to hit some criterion mark.
+
 
 # 5. Discussion
 

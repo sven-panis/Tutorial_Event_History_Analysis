@@ -94,14 +94,28 @@
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -397,8 +411,8 @@ Although the focus is on EHA/SAT, we also want to briefly comment on broader asp
 \subsection{3.1 Data science workflow and descriptive statistics}\label{data-science-workflow-and-descriptive-statistics}
 
 We perform data wrangling following tidyverse principles and a functional programming approach (Wickham, Çetinkaya-Rundel, \& Grolemund, 2023).
-Functional programming basically means you don't write your own loops but instead use functions that have been built and tested by others.
-{[}{[}more here, as necessary{]}{]}.
+Functional programming basically means that you avoid writing your own loops but instead use functions that have been built and tested by others.
+In addition, we also supply a set of custom-built functions, which make the process of data wrangling in the context of EHA a lot quicker and more efficient.
 
 \subsection{3.2 Inferential statistical approach}\label{inferential-statistical-approach}
 
@@ -407,7 +421,7 @@ To make inferences, we use two main approaches. We compare models of different c
 
 \subsection{3.3 Implementation}\label{implementation}
 
-We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multi-level regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Heiss (2021), Kurz (2023a), and Kurz (2023b).
+We used R (Version 4.4.1; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{standist} (Version 0.0.0.9000; Girard, n.d.), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multi-level regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2018), Heiss (2021), Kurz (2023a), and Kurz (2023b).
 
 \section{4. Tutorials}\label{tutorials}
 
@@ -663,7 +677,7 @@ Figure 4 displays the discrete-time hazard, survivor, conditional accuracy, and 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=21.33in,height=0.67\textheight,]{../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt} 
+{\centering \includegraphics[height=0.67\textheight,]{../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt} 
 
 }
 
@@ -999,7 +1013,7 @@ Thus, the probability that the contrast ``congruent minus blank'' is larger than
 
 If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 9. Note that three participants (1, 2, and 3) show a negative difference for the contrast ``congruent minus incongruent'' in bin (360,400{]} -- subject 2 also in bin (320,360{]}.
 
-Future studies could (a) increase the number of participants to estimate the proportion of ``dippers'' in the subject population, and/or (b) try to explain why this dip occurs. For example, Panis and Schmidt (2016) concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after \textasciitilde360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
+Future studies could (a) increase the number of participants to estimate the proportion of ``dippers'' in the subject population, and/or (b) try to explain why this dip occurs. For example, Panis and Schmidt (2016) concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to. To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after \textasciitilde360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
 
 Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to ``dip'' around that time (Figure 9). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formula that should get you going.
 
@@ -1137,9 +1151,127 @@ Figure 14 confirms that the parameter estimates from both Bayesian and frequenti
 
 In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data set used in Tutorial 1a. To keep it short, we only fitted the effects from model M1i\_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS (Ripley et al., 2024). Again, the resulting conditional accuracy model M1i\_ca\_f did not converge and resulted in a singular fit.
 
-\subsection{4.4 Tutorial 4: Planning}\label{tutorial-4-planning}
+\subsection{4.7 Tutorial 4: Planning}\label{tutorial-4-planning}
 
-This needs adding\ldots{} RR to do this.
+In the final tutorial, we look at planning a future experiment, which uses EHA.
+
+\subsubsection{4.7.1 Background}\label{background}
+
+The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it (Gelman et al., 2020).
+The basic structure and code follows the examples outlined by Solomon Kurz in his
+`power' blog posts (Kurz, 2019) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}) as well as the related paper (DeBruine \& Barr, 2021).
+
+\subsubsection{4.7.2 Basic workflow}\label{basic-workflow}
+
+The basic workflow is as follows:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fit a regression model to an existing dataset.
+\item
+  Use the regression model parameters to simulate one new dataset.
+\item
+  Write a function to create 1000s of datasets and vary parameters of interest (e.g., sample size, trial count, effect size).
+\item
+  Summarise the simulated data to estimate likely power or precision of the research design options.
+\end{enumerate}
+
+Ideally, in the above workflow, we would also fit a model to each dataset and summarise the model output, rather than the raw data. However, when each model takes several hours to build, and we may want to simulate 1000s of datasets, it can be too computationally demanding for desktop machines. So, for ease, here we just use the raw simulated datasets to set expectations.
+
+In the below, we only provide a high-level summary of the process and let readers dive into the details within the tutorial should they feel so inclined.
+
+\subsubsection{4.7.3 Fit a regression model and simulate one dataset}\label{fit-a-regression-model-and-simulate-one-dataset}
+
+We again use the data from Panis \& Schmidt (2016) to provide a worked example.
+We fit an index coding model on a subset of timebins (six timebins in total) and for two prime conditions (congruent and incongruent). We chose to focus on a subsample of the data to ease the computational burden. We also used a full varying effects structure, with the model formula, as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{event }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin}\SpecialCharTok{:}\NormalTok{prime }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{0} \SpecialCharTok{+}\NormalTok{ timebin}\SpecialCharTok{:}\NormalTok{prime }\SpecialCharTok{|}\NormalTok{ pid)}
+\end{Highlighting}
+\end{Shaded}
+
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, of course, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section.
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_4_Planning/figures/raw_vs_d1} 
+
+}
+
+\caption{Raw data from Panis \& Schmidt (2016) and simulated data from 10 participants.}\label{fig:simdat}
+\end{figure}
+
+\subsubsection{4.7.4 Simulate and summarise data across a range of parameter values}\label{simulate-and-summarise-data-across-a-range-of-parameter-values}
+
+Here we use the same data simulating process as used above, but instead of simulating one dataset, we simulate 1000 datasets per variation in parameter values.
+Specifically, in Simulation 1, we vary the number of trials per condition (100, 200, and 400), as well as the effect size in bin 6.
+We focus on bin 6 only, in terms of varying the effect size, just to make things simpler and easier to understand.
+The effect size observed in bin 6 in this subsample of data was a 79\% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In order words, a hazard ratio of 0.21.
+As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75\%, 50\% and 25\% reduction in hazard as a function of prime condition.
+
+Summary results from Simulation 1 are shown in Figure 16A.
+Figure 16A which depicts statistical ``power'' as calculated by the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent).
+We know that ``power'' is not a Bayesian thing, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
+In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
+The results show that if we were targetting an effect size similar to the one reported in the orgininal study, the using 10 participants and 100 trials per condition would be enough to provide over 95\% power.
+However, we could not be as confident about smaller effects, such as a hazard ratio of 50\% or 25\%.
+From this simulation, we can see that somewhere between an effect size of 50\% and 75\%, power increases to a range that most researchers would consider acceptable (i.e., \textgreater95\% power).
+To probe this space a little further, we decided to run a second simulation, which varied different parameters
+
+I Simulation 2, we varied the effect size across different values (0.5, 0.4, 0.3), which correspond to a 50\%, 60\% and 70\% reduction in hazard as a function of prime condition.
+In addition, we varied the number of participants in the data (10, 15, and 20 participants).
+Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
+Summary results from Simulation 2 are shown in Figure 16B.
+A summary of these power calculations might be as follows:
+
+For a 70\% reduction (0.3 hazard ratio), N=10, trial=200 per condition, would give nearly 100\% power.
+For a 60\% reduction (0.4 hazard ratio), N=10, trial=200 per condition, would give nearly 90\% power.
+For a 50\% reduction (0.5 hazard ratio), N=15, trial=200 per condition, would give over 80\% power.
+
+
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.67\textheight,]{../Tutorial_4_Planning/figures/bin6_power_col} 
+
+}
+
+\caption{Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25\%, 50\% and 75\% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50\%, 60\% and 70\% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80\% (red), 90\% (black) and 95\% (blue) power.}\label{fig:power}
+\end{figure}
+
+\subsubsection{4.7.5 Planning decisions}\label{planning-decisions}
+
+Now that we have summarised our simulated data, what planning decisions do we make about future study?
+How many trials per condition should we collect and how many participants should we test?
+Like almost always when planning future studies, the answer depends on your objectives, as well as the available resources (Lakens, 2022).
+There is no straigtforward and clear-cut answer.
+Some considerations might be\ldots{}
+
+\begin{itemize}
+\tightlist
+\item
+  How much power or precision are you looking to obtain in this particular study?
+\item
+  Are you running multiple studies that have some form of replication built in?
+\item
+  What resources do you have at your disposal, such as time, money and personnel?
+\item
+  How easy or difficult is it to obtain the specific type of sample?
+\end{itemize}
+
+If we were running this kind of study in our lab, what would we do?
+We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon, then pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80\% power mark.
+If we wanted to maximise power based on these simulations, and we had the time and resources available, then we test N=20 participants, which would provide \textgreater90\% power for an effect size of 0.5.
+
+\textbf{But}, and this is an important ``but'', unless there are unavoidable reasons, no matter what planning choices we made, we would not solely rely on one study.
+Instead, we would run a follow-up experiment that replicates and extends the initial result.
+By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of power analysis.
+Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study has sufficient evidential value to hit some criterion mark.
 
 \section{5. Discussion}\label{discussion}
 
@@ -1257,7 +1389,7 @@ Gelman, A., Hill, J., \& Vehtari, A. (2020). Regression and {Other Stories}. htt
 Gelman, A., Vehtari, A., Simpson, D., Margossian, C. C., Carpenter, B., Yao, Y., \ldots{} Modrák, M. (2020). \emph{Bayesian {Workflow}}. arXiv. \url{https://doi.org/10.48550/arXiv.2011.01808}
 
 \bibitem[\citeproctext]{ref-R-standist}
-Girard, J. (2024). \emph{Standist: What the package does (one line, title case)}. Retrieved from \url{https://github.com/jmgirard/standist}
+Girard, J. (n.d.). \emph{Standist: What the package does (one line, title case)}. Retrieved from \url{https://github.com/jmgirard/standist}
 
 \bibitem[\citeproctext]{ref-R-lubridate}
 Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with {lubridate}. \emph{Journal of Statistical Software}, \emph{40}(3), 1--25. Retrieved from \url{https://www.jstatsoft.org/v40/i03/}
@@ -1371,10 +1503,10 @@ Wickelgren, W. A. (1977). Speed-accuracy tradeoff and information processing dyn
 Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer-Verlag New York. Retrieved from \url{https://ggplot2.tidyverse.org}
 
 \bibitem[\citeproctext]{ref-R-forcats}
-Wickham, H. (2023a). \emph{Forcats: Tools for working with categorical variables (factors)}. Retrieved from \url{https://forcats.tidyverse.org/}
+Wickham, H. (2023a). \emph{Forcats: Tools for working with categorical variables (factors)}. Retrieved from \url{https://CRAN.R-project.org/package=forcats}
 
 \bibitem[\citeproctext]{ref-R-stringr}
-Wickham, H. (2023b). \emph{Stringr: Simple, consistent wrappers for common string operations}. Retrieved from \url{https://stringr.tidyverse.org}
+Wickham, H. (2023b). \emph{Stringr: Simple, consistent wrappers for common string operations}. Retrieved from \url{https://CRAN.R-project.org/package=stringr}
 
 \bibitem[\citeproctext]{ref-R-tidyverse}
 Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., \ldots{} Yutani, H. (2019). Welcome to the {tidyverse}. \emph{Journal of Open Source Software}, \emph{4}(43), 1686. \url{https://doi.org/10.21105/joss.01686}
@@ -1383,16 +1515,16 @@ Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., \
 Wickham, H., Çetinkaya-Rundel, M., \& Grolemund, G. (2023). \emph{R for data science: Import, tidy, transform, visualize, and model data} (2nd edition). Beijing Boston Farnham Sebastopol Tokyo: O'Reilly.
 
 \bibitem[\citeproctext]{ref-R-dplyr}
-Wickham, H., François, R., Henry, L., Müller, K., \& Vaughan, D. (2023). \emph{Dplyr: A grammar of data manipulation}. Retrieved from \url{https://dplyr.tidyverse.org}
+Wickham, H., François, R., Henry, L., Müller, K., \& Vaughan, D. (2023). \emph{Dplyr: A grammar of data manipulation}. Retrieved from \url{https://CRAN.R-project.org/package=dplyr}
 
 \bibitem[\citeproctext]{ref-R-purrr}
-Wickham, H., \& Henry, L. (2023). \emph{Purrr: Functional programming tools}. Retrieved from \url{https://purrr.tidyverse.org/}
+Wickham, H., \& Henry, L. (2023). \emph{Purrr: Functional programming tools}. Retrieved from \url{https://CRAN.R-project.org/package=purrr}
 
 \bibitem[\citeproctext]{ref-R-readr}
-Wickham, H., Hester, J., \& Bryan, J. (2024). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://readr.tidyverse.org}
+Wickham, H., Hester, J., \& Bryan, J. (2024). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://CRAN.R-project.org/package=readr}
 
 \bibitem[\citeproctext]{ref-R-tidyr}
-Wickham, H., Vaughan, D., \& Girlich, M. (2024). \emph{Tidyr: Tidy messy data}. Retrieved from \url{https://tidyr.tidyverse.org}
+Wickham, H., Vaughan, D., \& Girlich, M. (2024). \emph{Tidyr: Tidy messy data}. Retrieved from \url{https://CRAN.R-project.org/package=tidyr}
 
 \bibitem[\citeproctext]{ref-winterStatisticsLinguistsIntroduction2019}
 Winter, B. (2019). \emph{Statistics for {Linguists}: {An Introduction Using R}}. New York: Routledge. \url{https://doi.org/10.4324/9781315165547}
