@@ -80,8 +80,8 @@ And for some simpler worked examples of the general workflow (i.e., simpler than
 The basic workflow is as follows:
 
 1. Fit a regression model to an existing dataset.
-2. Use the regression model parameters to simulate a one new dataset.
-3. Create a function to iterate over many datatsets and vary parameters of interest (e.g., sample size, trial count, effect size).
+2. Use the regression model parameters to simulate one new dataset.
+3. Write a function to create 1000s of datasets and vary parameters of interest (e.g., sample size, trial count, effect size).
 4. Summarise the simulated data to estimate likely power or precision of the research design options.
 
 ## 2.3 - Exceptions to the normal workflow ##
@@ -625,7 +625,7 @@ p5.4 <- (p3.1 / p5.3) +
 p5.4
 
 ggsave ("Tutorial_4_planning/figures/raw_vs_d1.jpeg",
-        width = 8, height = 8)
+        width = 8, height = 8, dpi=800)
 ```
 
 ok, this looks reasonably sensible.
@@ -1115,6 +1115,7 @@ p10.4 <- ggplot(power_x1, aes(x=rep_n, y=power,
   geom_hline(yintercept = 0.95, colour = "blue", linetype = "dashed") +
   scale_colour_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
+  labs(title = "Simulation 1") +
   theme(legend.position = "none") +
   facet_wrap(~b6c, nrow=1)
 p10.4
@@ -1473,6 +1474,7 @@ p11.6 <- ggplot(power_x2, aes(x=subj_n, y=power,
   geom_hline(yintercept = 0.95, colour = "blue", linetype = "dashed") +
   scale_colour_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
+  labs(title = "Simulation 2") +
   theme(legend.position = "none") +
   facet_wrap(~b6c, nrow=1)
 p11.6
@@ -1502,3 +1504,18 @@ My thoughts for studies in my lab might be something like this...
 Pick 0.4 or 0.5 as a target effect size since this is much smaller than that observed in published studies, then pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80% power mark.
 
 **But**, and this is an important "but", do not solely rely on one study. Run a follow-up experiment that replicates and extends the initial result. By doing so, you avoid the Cult of the Isolated Single Study, and it reduces the reliance on any one type of power analysis. Instead, you are aiming for common patterns across two or more experiments, rather than trying to make the case that a single study has sufficient evidential value to hit some criterion mark.
+
+# 12. Join some plots together #
+
+Join the power column plots together from sim1 and sim2.
+
+```{r}
+p12.1 <- (p10.4 | p11.6) +
+  plot_annotation(tag_levels = 'A') +
+  plot_layout(axes = 'collect')
+p12.1
+
+ggsave ("Tutorial_4_planning/figures/bin6_power_col.jpeg",
+        width = 12, height = 7, dpi=800)
+```
+
