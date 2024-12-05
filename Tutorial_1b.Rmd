@@ -45,7 +45,9 @@ pd2 <- position_dodge(1)
 Read in the raw data from Panis and Schmidt (2016).
 
 ```{r read-raw-data}
-raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", delim="\t",col_names=T) 
+raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", 
+                  delim="\t",
+                  col_names=T) 
 head(raw)
 ```
 
@@ -53,12 +55,15 @@ Do some wrangling.
 
 ```{r wrangle-raw-data}
 # remove practice trials
-data_wr <- raw %>% filter(practice==0) 
+data_wr <- raw %>% 
+  filter(practice==0) 
 
 # remove unnecessary columns
-data_wr <- data_wr %>% select(-c(ss,practice,rd,form,task,primeduration,
-                                blankduration,maskduration,targetduration,
-                                void,target_dir,corresp,resperr))
+data_wr <- data_wr %>% 
+  select(-c(ss,practice,rd,form,task,primeduration,
+            blankduration,maskduration,targetduration,
+            void,target_dir,corresp,resperr))
+
 # look at trials where resp==0
 data_wr %>% 
   filter(resp==0) %>% 
@@ -67,8 +72,8 @@ data_wr %>%
 # remove trials with no response info if rt < 800 (800 was the response deadline in each trial):
 # the 46 trials where rt >= 800 and resp==0 are trials in which the subject did not respond; these should not be deleted because they will be treated as right-censored observations in EHA!
 # the remaining 5 trials of subject 1 should be removed (for some technical reason the resp (1 or 2) was not recorded; perhaps (s)he pressed both buttons at the same time...)
-sel = which(data_wr$resp==0 & data_wr$rt < 800)
-data_wr <- data_wr[-c(sel),] 
+data <- data %>% 
+  filter(!(resp == 0 & rt < 800))
 
 summary(data_wr)
 # vp = Versuchsperson or subject
@@ -86,7 +91,9 @@ Change variable names, and create factors.
 
 ```{r create-names-and-factors}
 # change some variable names to required names (pid, trial, condition1, condition2, rt, and acc)
-colnames(data_wr) <- c("pid","bl","tr","condition1", "condition2","resp","acc","rt","trial") 
+data_wr <- data_wr %>% 
+  rename(pid = vp, condition1 = mask_type, condition2 = prime_type, 
+         acc = respac, trial = TrialNr)
 
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
@@ -122,7 +129,9 @@ Apply the functions
 
 ```{r apply-functions}
 # create a data frame with two columns (pid and data); the latter contains a list of nested data frames
-data_nested <- data_wr %>% group_nest(pid)
+data_nested <- data_wr %>% 
+  group_nest(pid)
+
 # apply the functions using map() and map2()
 data_final <- data_nested %>% 
   # ! user input: censoring time, and bin width
@@ -158,15 +167,24 @@ pluck(data_final, 8, 1)
 
 # view the median RTs in a tibble:
 median_bin <- map(data_final$lifetable_ca, extract_median_2IV)
-binsize    <- data_final$censored[[1]] %>% pull(bin_width) %>% max(na.rm=T)
+
+binsize    <- data_final$censored[[1]] %>% 
+  pull(bin_width) %>% 
+  max(na.rm=T)
+
 median_rt  <- modify_depth(median_bin,1,~.x*binsize)
-median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% list_rbind(names_to = "pid")
-median_tb %>% print(n=6*12)
+
+median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% 
+  list_rbind(names_to = "pid")
+
+median_tb %>% 
+  print(n=6*12)
 ```
 
 Save the plots.
 
 ```{r save-plots, warning=F, eval=F}
 # save the plot for each subject
-map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 12, height = 10, dpi = 800)
+map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject", data_final$pid, "_PanisSchmidt.png"), 
+     data_final$plot, ggsave, width = 12, height = 10, dpi = 800)
 ```

@@ -55,25 +55,33 @@ Do some wrangling to get a simpler data set - can be skipped.
 
 ```{r wrangle-raw-data}
 # remove practice trials
-data <- raw %>% filter(practice==0) # 9240 experimental trials: 6 subj x 70 blocks x 22 trials-per-block
+data <- raw %>% 
+  filter(practice==0) # 9240 experimental trials: 6 subj x 70 blocks x 22 trials-per-block
 
 # remove unnecessary columns
-data <- data %>% select(-c(ss,practice,rd,form,task,primeduration,
-                           blankduration,maskduration,targetduration,
-                           void,target_dir,corresp,resperr))
+data <- data %>% 
+  select(-c(ss,practice,rd,form,task,primeduration,
+            blankduration,maskduration,targetduration,
+            void,target_dir,corresp,resperr))
 
 # look at trials where resp==0
-data %>% filter(resp==0) %>% print(n=51)
+data %>% 
+  filter(resp==0) %>% 
+  print(n=51)
 
 # remove trials with no response info if rt < 800 (800 was the response deadline in each trial):
 # the 46 trials where rt >= 800 and resp==0 are trials in which the subject did not respond; these should not be deleted because they will be treated as right-censored observations in EHA!
 # the remaining 5 trials of subject 1 should be removed (for some technical reason the resp (1 or 2) was not recorded; perhaps (s)he pressed both buttons at the same time...)
-sel = which(data$resp==0 & data$rt < 800)
-data <- data[-c(sel),] 
+data <- data %>% 
+  filter(!(resp == 0 & rt < 800))
+
+data %>%
+  distinct(resp)
 
 # keep only the no-mask trials
-data <- data %>% filter(mask_type == 0) %>%
-                 select(-mask_type) 
+data <- data %>% 
+  filter(mask_type == 0) %>%
+  select(-mask_type) 
 
 summary(data)
 # vp = Versuchsperson or subject
@@ -98,7 +106,8 @@ data_wr <- read_csv("Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangl
 head(data_wr)
 
 # change some variable names to required names: pid, trial, condition, rt, and acc.
-colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial") 
+data_wr <- data_wr %>% 
+  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr)
 
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
@@ -107,10 +116,11 @@ colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial")
 # acc to indicate column with accuracies (1/0)
 
 # create factor for condition (prime type)
-data_wr <- data_wr %>% mutate(condition = condition + 1,
-                              condition = factor(condition, 
-                                                 levels = c(1,2,3), 
-                                                 labels = c("blank","congruent","incongruent")))
+data_wr <- data_wr %>% 
+  mutate(condition = condition + 1,
+         condition = factor(condition,
+                            levels = c(1,2,3), 
+                            labels = c("blank","congruent","incongruent")))
 summary(data_wr)
 ```
 
@@ -127,7 +137,8 @@ Apply the custom functions
 ```{r apply-functions}
 # create a dataframe with two columns (pid and data); 
 # the latter contains a list of nested data frames
-data_nested <- data_wr %>% group_nest(pid)
+data_nested <- data_wr %>% 
+  group_nest(pid)
 
 # apply the functions using map() and map2()
 data_final <- data_nested %>% 
@@ -163,21 +174,31 @@ save(data_final, file="Tutorial_1_descriptive_stats/data/descr_stats_tut1a.Rdata
 pluck(data_final, 2, 1)
 
 # view person-trial-bin data set (column 4) for subject 1:
-pluck(data_final,4,1) %>% print(n=30)
+pluck(data_final,4,1) %>% 
+  print(n=30)
 
 # view lifetable (column 7) for each condition for subject 1
-pluck(data_final, 7, 1) %>% filter(condition=="blank") 
-pluck(data_final, 7, 1) %>% filter(condition=="congruent")
-pluck(data_final, 7, 1) %>% filter(condition=="incongruent")
+pluck(data_final, 7, 1) %>% 
+  filter(condition=="blank") 
+pluck(data_final, 7, 1) %>% 
+  filter(condition=="congruent")
+pluck(data_final, 7, 1) %>% 
+  filter(condition=="incongruent")
 
 # view plot (column 8) for subject 1. 
 pluck(data_final, 8, 6)
 
 # view the median RTs in a tibble (median_tb)
 median_bin <- map(data_final$lifetable_ca, extract_median)
-binsize    <- data_final$censored[[1]] %>% pull(bin_width) %>% max(na.rm=T)
+
+binsize    <- data_final$censored[[1]] %>% 
+  pull(bin_width) %>% 
+  max(na.rm=T)
+
 median_rt  <- modify_depth(median_bin,1,~.x*binsize)
-median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% list_rbind(names_to = "pid")
+
+median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>% 
+  list_rbind(names_to = "pid")
 median_tb
 ```
 
@@ -185,7 +206,8 @@ Save the plots.
 
 ```{r save-plots, eval=F}
 # save the plot for each subject
-map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), data_final$plot, ggsave, width = 8, height = 8, dpi = 800)
+map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_for_subject", data_final$pid, "_PanisSchmidt.png"), 
+     data_final$plot, ggsave, width = 8, height = 8, dpi = 800)
 ```
 
 Create a life table.
@@ -193,16 +215,16 @@ Create a life table.
 ```{r create-single-lifetable}
 # get the binsize in ms
 binsize    <- data_final$censored[[1]] %>% 
-                pull(bin_width) %>% 
-                max(na.rm=T)
+  pull(bin_width) %>% 
+  max(na.rm=T)
 
 # extract the lifetable (column 7 in data_final) for condition 1 (neutral) for subject 6
 lifetable_blank_s6 <- data_final[[7]][[6]] %>% 
-                        filter(condition=="blank") %>% 
-                        mutate(bin = period*binsize,
-                               events = event1) %>%
-                        select(bin,risk_set,events,hazard,se_haz,
-                              survival,se_surv,ca,se_ca) 
+  filter(condition=="blank") %>% 
+  mutate(bin = period*binsize,
+         events = event1) %>%
+  select(bin,risk_set,events,hazard,se_haz,
+         survival,se_surv,ca,se_ca) 
 
 # get riskset for first bin
 riskset <- lifetable_blank_s6 %>% 
@@ -216,8 +238,8 @@ row0 <- c(bin=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,
 
 # add new row
 lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
-                                 add_row(!!! row0) %>%
-                                 arrange(bin)
+  add_row(!!! row0) %>%
+  arrange(bin)
 lifetable_blank_s6_complete
 ```
 
@@ -230,9 +252,9 @@ Create input file for fitting hazard models.
 ```{r create-file-hazard-modeling}
 # select the person-trial-bin data set for each subject, unnest them, and select relevant variables.
 input_modeling_hazard <- data_final %>% 
-                           select(pid, ptb_data) %>%  
-                           unnest(ptb_data) %>%
-                           select(pid,bl,tr,trial,condition,period,event)
+  select(pid, ptb_data) %>%  
+  unnest(ptb_data) %>%
+  select(pid,bl,tr,trial,condition,period,event)
 summary(input_modeling_hazard)
 ```
 
@@ -246,10 +268,10 @@ Create input file for fitting ca(t) models.
 # select the censored data set for each subject, unnest them, discard trials that are 
 # censored (RT > 600 or no response detected before the deadline), and select relevant variables. 
 input_modeling_ca <- data_final %>%
-                       select(pid, censored) %>% 
-                       unnest(censored) %>%
-                       filter(right_censored == 0) %>% # only keep uncensored trials
-                       select(pid,bl,tr,trial,condition,acc,drt)
+  select(pid, censored) %>% 
+  unnest(censored) %>%
+  filter(right_censored == 0) %>% # only keep uncensored trials
+  select(pid,bl,tr,trial,condition,acc,drt)
 ```
 
 ```{r save-file-ca-modeling, eval=F}
@@ -262,15 +284,18 @@ Note: This is only recommended when all subjects show the same qualitative patte
 
 ```{r agg-data}
 # create single subject number, and unique trial number
-data_agg <- data_wr %>% mutate(oldtrial=trial,
-                               oldpid=pid,
-                               trial = 1:n(),
-                               pid = 1)
+data_agg <- data_wr %>% 
+  mutate(oldtrial=trial,
+         oldpid=pid,
+         trial = 1:n(),
+         pid = 1)
 ```
 
 ```{r agg-descr}
 # apply functions
-data_agg_nested <- data_agg %>% group_nest(pid)
+data_agg_nested <- data_agg %>% 
+  group_nest(pid)
+
 data_agg_final <- data_agg_nested %>% 
     mutate(censored  = map(data, censor, 600, 40)) %>%
     mutate(ptb_data  = map(censored, ptb)) %>%          
