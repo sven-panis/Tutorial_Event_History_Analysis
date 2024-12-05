@@ -61,4 +61,29 @@ But let's have a quick discussion about one of them. Something came up when I wa
 I need to run it by you.
 
 
+# December 5th 2024 #
 
+I took a look at tutorial2b.
+
+## coding conventions ##
+
+I edited stuff to make each code argument after a pipe a new line. 
+I think it is easier to read this way.
+You can also "re-indent" lines to make the code more consistent in terms of indents also.
+e.g., cmd+I or select the tab "code" then "re-indent lines"
+
+## priors ##
+
+line 101. we don't say anything about how we came to set the priors how we did. 
+Should we say something? Or do we say it elsewhere?
+Maybe a few lines about weakly iformative priors and what that means in this context?
+
+## plots ##
+
+a very minor point.
+for the grand average marginal effects, you facet by condition.
+for the single subject marginal effects, you overlap the lines.
+This is not a big deal, I'm just pointing out the difference.
+e.g., you could plot the grand average in the same way. 
+I'm not saying that would be better. I'm just saying that it would then be consistent.
+It makes no difference overall as they are both very clear as they are.
