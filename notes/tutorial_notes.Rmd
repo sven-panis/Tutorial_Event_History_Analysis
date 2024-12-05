@@ -37,3 +37,28 @@ This is what we did in Andrew Wildman's psychopy tutorial.
 There are other themes, but this works for me.
 
 
+# December 4th 2024 #
+
+I took a look at tutorial2a.
+
+## overall comments on structure ##
+
+My feeling is that it is comprehensive and clear. Nice work on the prior predictive checks.
+
+However, it is long. And there is a lot of additional material, which extends beyond what is required.
+This is just an observation, and not necessarily a criticism.
+
+To give you a few examples, the sidenote about prior predictive checks is long. And you calculate things twice in several places e.g., from draws manually and using convenience functions. Now, this might all add to the richness and depth of understanding that the tutorial provides. But, at the same time, it does appear to be going against our stated aim of removing barriers to entry. If we consider a more minimal structure, we would supply code in the tutorial to get the job done and nothing more. Readers would be able to walk along with the most direct and straightforward link to the main text. There could be a case that we are not showing enough skill in selecting what is most important.
+
+Now, at the moment, I'm conflicted. The richness and context plus thinking and logic is good. But it makes it long with loads of plots. My worry is that someone reads the manuscript, flips to the tutorial and then thinks "oh boy, what's all this?" and then gives up.
+
+For now, I say we leave it, but just keep it in mind for future revisions and accessibility, as it may need re-thinking later.
+
+## epred draws ##
+
+These look good in general. 
+But let's have a quick discussion about one of them. Something came up when I was playing around.
+I need to run it by you.
+
+
+
