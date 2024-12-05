@@ -23,7 +23,8 @@ We end by plotting the logit and cloglog link functions, and illustrate how vari
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr")
+         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr",
+         "rstan")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -1134,6 +1135,49 @@ epreds_pid_new %>%
 
 ```{r save-epred-pid-new, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new.png", width = 10, height = 8, dpi = 800)
+```
+
+Fourth, six completely new hypothetical participants.
+
+```{r epred-new-pid-6}
+epreds_pid_new6 <- dat_M1i %>% 
+  data_grid(timebin, prime, pid = 7:12) %>%
+  add_epred_draws(model_M1i, 
+                  re_formula = NULL, 
+                  allow_new_levels=T,    
+                  sample_new_levels = "gaussian") %>% 
+  mutate(prime = factor(prime, 
+                        levels=c(1,2,3),
+                        labels=c("blank","congruent","incongruent"))) %>%
+  ungroup()
+```
+
+Summarize and plot predicted hazard values.
+
+```{r epred-new-pid-6-summary}
+epreds_pid_new6 %>% 
+  group_by(pid,timebin,prime) %>% 
+  median_qi(.width=.95)
+```
+
+```{r epred-new-pid-6-plot}
+ ggplot(epreds_pid_new6, aes(x=timebin, y=.epred, 
+                       fill=prime, color=prime)) +
+    stat_lineribbon(point_interval="median_qi",
+                    .width=.95,
+                    alpha = 0.5) +
+    scale_fill_brewer(palette = "Dark2") +
+    scale_color_brewer(palette = "Dark2") +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    theme(axis.text.x = element_text(angle=90)) +
+    scale_y_continuous(limits=c(0,1)) +
+    labs(y = "predicted hazard") +
+    ggtitle("Six new hypothetical participants") +
+    facet_wrap(~pid, ncol=3)
+```
+
+```{r save-epred-pid-new, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1i_pred_pid_new_6.png", width = 10, height = 8, dpi = 800)
 ```
 
 ## Average marginal effects (AMEs)
