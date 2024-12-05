@@ -22,7 +22,8 @@ In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accura
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr")
+         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr",
+         "rstan")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -70,17 +71,17 @@ Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600]
-ca_data <- ca_data %>% filter(drt > 5) %>%
-
-# create factor condition, with "blank" as the reference level
-mutate(condition = factor(condition, 
-                          labels = c("blank", "congruent","incongruent")),
-       prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
-      prime = factor(prime,levels=c(1,2,3)),
-       timebin = factor(drt, levels=c(6:15)),
-       period_9 = drt - 9,
-       trial_c = (trial - 1000)/1000) 
-
+ca_data <- ca_data %>% 
+  filter(drt > 5) %>%
+  # create factor condition, with "blank" as the reference level
+  mutate(condition = factor(condition, 
+                            labels = c("blank", "congruent","incongruent")),
+         prime = ifelse(condition=="blank",1, 
+                 ifelse(condition=="congruent",2,3)),
+         prime = factor(prime,levels=c(1,2,3)),
+         timebin = factor(drt, levels=c(6:15)),
+         period_9 = drt - 9,
+         trial_c = (trial - 1000)/1000) 
 head(ca_data)
 ```
 
@@ -92,7 +93,8 @@ We fit a single model "M1i_ca", using index coding for both TIME and condition (
 
 ```{r data-M1i-ca}
 # remove unnecessary columns before fitting a model
-data_M1i_ca <- ca_data %>% select(pid,acc,timebin,prime)
+data_M1i_ca <- ca_data %>% 
+  select(pid,acc,timebin,prime)
 head(data_M1i_ca)
 ```
 
