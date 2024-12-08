@@ -36,6 +36,7 @@ output:
 This is what we did in Andrew Wildman's psychopy tutorial. 
 There are other themes, but this works for me.
 
+-> Done.
 
 # December 4th 2024 #
 
@@ -53,6 +54,8 @@ To give you a few examples, the sidenote about prior predictive checks is long. 
 Now, at the moment, I'm conflicted. The richness and context plus thinking and logic is good. But it makes it long with loads of plots. My worry is that someone reads the manuscript, flips to the tutorial and then thinks "oh boy, what's all this?" and then gives up.
 
 For now, I say we leave it, but just keep it in mind for future revisions and accessibility, as it may need re-thinking later.
+
+-> I moved the prior predictive checks to their own section at the end of tutorial 2a.
 
 ## epred draws ##
 
@@ -72,11 +75,15 @@ I think it is easier to read this way.
 You can also "re-indent" lines to make the code more consistent in terms of indents also.
 e.g., cmd+I or select the tab "code" then "re-indent lines"
 
+-> great.
+
 ## priors ##
 
 line 101. we don't say anything about how we came to set the priors how we did. 
 Should we say something? Or do we say it elsewhere?
 Maybe a few lines about weakly iformative priors and what that means in this context?
+
+-> I added a few lines.
 
 ## plots ##
 
@@ -87,3 +94,5 @@ This is not a big deal, I'm just pointing out the difference.
 e.g., you could plot the grand average in the same way. 
 I'm not saying that would be better. I'm just saying that it would then be consistent.
 It makes no difference overall as they are both very clear as they are.
+
+

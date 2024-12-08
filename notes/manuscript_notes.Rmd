@@ -791,11 +791,23 @@ I think the Halley Ref should be 1693 and not 1997? We have a copy of the origin
 
 maybe add a sentence to highlights how we add our own custom functions to make the wrangling and plotting sections quicker and more efficient. e.g., we add to this approach by writing our own custom functions.
 
+-> Done.
+
 ### section 3.2 ###
 
 first sentence, the McElreath reference should be 2020 for the textbook and not 2018.
 
+-> Done. Here and elsewhere...
 
+
+Other refs to add:
+
+Lakens, D. (2022). Sample Size Justification. Collabra: Psychology, 8(1), 33267. https://doi.org/10.1525/collabra.33267
+Gelman, A., Vehtari, A., Simpson, D., Margossian, C. C., Carpenter, B., Yao, Y., Kennedy, L., Gabry, J., Bürkner, P.-C., & Modrák, M. (2020). Bayesian Workflow (arXiv:2011.01808). arXiv. http://arxiv.org/abs/2011.01808
+Kurz, A. S. https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/
+DeBruine, L. M., & Barr, D. J. (2021). Understanding Mixed-Effects Models Through Data Simulation. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920965119. https://doi.org/10.1177/2515245920965119
+
+-> Done.
 
 ### 4.3.4 Model M1d ###
 
@@ -817,6 +829,8 @@ Or maybe have these models, all with index coding:
 Or just stick with two models, as you have above (M0i and M1i).
 
 The main thing we want to communicate is how and why to do model comparison. So let's keep it as simple as possible, at least in the main text.
+
+-> Model M1d removed from main text.
 
 ### section 4.3.3 ###
 

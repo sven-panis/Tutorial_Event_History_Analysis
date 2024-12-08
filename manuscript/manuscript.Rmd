@@ -74,6 +74,9 @@ lapply(pkg3, library, character.only = TRUE)
 # R references
 r_refs(file = "r-references.bib", append=F) # append=F prevents multiple copies of the same citation
 my_r_citation <- cite_r(file = "r-references.bib", footnote = TRUE) 
+
+
+
 ```
 
 ```{r analysis-preferences}
@@ -106,7 +109,7 @@ Why does this matter for research in psychology? Compared to the aggregation of 
 For example, the distributions in Example 4 show that the effect starts between 100 and 200 ms (in timebin 2) and is gone when the waiting time reaches 500 ms or more. In contrast, in Example 5, the effect starts around 300 ms and is gone by 700 ms. And in the Example 6, the effect reverses between 500 and 600 ms. What kind of theory or theories could account for such effects? Are there new auxiliary assumptions that theories need to adopt? And are there new experiments that need to be performed to test the novel predictions that follow from these analyses? As we show later using published examples, for many psychological questions, such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes, as well as adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit.
 
 From a historical perspective, it is worth noting that the development of analytical tools that can estimate or predict whether and when events will occur is not a new endeavour.
-Indeed, hundreds of years ago, analytical methods were developed to predict the duration of time until people died [e.g., @halleyVIEstimateDegrees1997; @williammatthewmakehamLawMortalityConstruction1860].
+Indeed, hundreds of years ago, analytical methods were developed to predict the duration of time until people died [e.g., @Halley1693; @williammatthewmakehamLawMortalityConstruction1860].
 The same logic has been applied to psychological time-to-event data, as previously demonstrated [@panisAnalyzingResponseTimes2020].
 
 ## 1.2 Aims and structure of the paper
@@ -206,16 +209,16 @@ Although the focus is on EHA/SAT, we also want to briefly comment on broader asp
 
 We perform data wrangling following tidyverse principles and a functional programming approach [@wickhamDataScienceImport2023].
 Functional programming basically means that you avoid writing your own loops but instead use functions that have been built and tested by others.
-In addition, we also supply a set of custom-built functions, which make the process of data wrangling in the context of EHA a lot quicker and more efficient.
+In addition, we also supply a set of custom-built functions, which make the process of data wrangling in the context of descriptive EHA a lot quicker and more efficient.
 
 ## 3.2 Inferential statistical approach 
 
-Our lab adopts a estimation approach to multi-level regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2018; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach to specifying varying (or random) effects [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant 
-To make inferences, we use two main approaches. We compare models of different complexity, using information criteria (e.g., WAIC) and cross-validation (e.g., LOO), to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2018]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates.  
+Our lab adopts a estimation approach to multi-level regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2020; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach to specifying varying (or random) effects [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant 
+To make inferences, we use two main approaches. We compare models of different complexity, using information criteria (e.g., WAIC) and cross-validation (e.g., LOO), to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2020]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates.  
 
 ## 3.3 Implementation
 
-We used `r my_r_citation$r` for all reported analyses. The content of the tutorials, in terms of EHA and multi-level regression modelling, is mainly based on @allisonSurvivalAnalysisUsing2010, @singerAppliedLongitudinalData2003, @mcelreathStatisticalRethinkingBayesian2018, @heiss2021,  @kurzAppliedLongitudinalDataAnalysis2023, and @kurzStatisticalRethinkingSecondEd2023.
+We used `r my_r_citation$r` for all reported analyses. The content of the tutorials, in terms of EHA and multi-level regression modelling, is mainly based on @allisonSurvivalAnalysisUsing2010, @singerAppliedLongitudinalData2003, @mcelreathStatisticalRethinkingBayesian2020, @heiss2021,  @kurzAppliedLongitudinalDataAnalysis2023, and @kurzStatisticalRethinkingSecondEd2023.
 
 `r my_r_citation$pkgs` <!-- create footnote -->
 
@@ -498,7 +501,7 @@ Because TIME is centered on bin 9, the Intercept represents the estimated cloglo
 
 ### 4.3.5 Compare the models.
 
-We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2018; @kurzAppliedLongitudinalDataAnalysis2023].
+We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
 
 ```{r load-models, echo=F, eval=T, echo=F} 
 model_M0i <- readRDS("../Tutorial_2_Bayesian/models/model_M0i.rds") 
