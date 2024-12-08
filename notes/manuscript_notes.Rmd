@@ -785,6 +785,8 @@ I'll dig in now with some comments.
 
 I think the Halley Ref should be 1693 and not 1997? We have a copy of the original manuscriopt, so it seems reasonable to cite the original?
 
+-> Done.
+
 ### section 3.1 ###
 
 maybe add a sentence to highlights how we add our own custom functions to make the wrangling and plotting sections quicker and more efficient. e.g., we add to this approach by writing our own custom functions.
@@ -792,6 +794,8 @@ maybe add a sentence to highlights how we add our own custom functions to make t
 ### section 3.2 ###
 
 first sentence, the McElreath reference should be 2020 for the textbook and not 2018.
+
+
 
 ### 4.3.4 Model M1d ###
 
@@ -818,15 +822,22 @@ The main thing we want to communicate is how and why to do model comparison. So 
 
 we need to define index coding.
 
+-> McElreath book... def
+
+
 maybe somewhere earlier we could have a subsection that explains different coding schemes for categorical variables? e.g., dummy, reference and contrast it with index. Then say we focus on index in the main text, as we think it is easier to interpret means per condition.
 
 ### section 4.3.6 ###
 
 Tables 4 and 5 can be moved to the tutorial only (or Supps) whichever makes most sense. 
 
+->
+
 Figure 5 y-axis. Should it just be cloglog? Rather than cloglog-hazard?
 
 Another way to plot Figure 5 would be to avoid a facet and instead fill by prime. That way, you might benefit from the principle of putting things close together that you want to compare e.g., the effects of prime should be easier to see if prime comparisons are close together. Maybe at least plot it the other way to have a look and see what you think? I'd like to see it at least.
+
+->
 
 There is no need to commit the space needed when they are redundant with the figures. e.g., we can just say in the main text, the point estimates and quantile intervals can be reported in a table (see the tutorial for details). That saves loads of space and time scanning values when the figures are beautiful and standalone as they are.
 
@@ -840,6 +851,7 @@ I suggest two changes:
 
 2. As (1) combine Figures 8 and 9.
 
+->
 
 on page 38, you say:
 
@@ -848,9 +860,15 @@ on page 38, you say:
 This feels a little disjointed from what comes before in the paragraph.
 Either remove it or provide an extra sentence that distinguishes between the absolute hazard difference and the hazard ratio.
 
+-> I will remove it.
+
 Figure 6. Change the title from "Average participant" as it is a bit misleading. Maybe something like "group average" or "grand average" or even remove the title completely once you combine it with the individual pid plots because it will probably become obvious, especially with a figure legend explaining things.
 
+->
+
 Figure 9. spell out AMEs in full to avoid jargon.
+
+->
 
 ### section 4.4 ###
 

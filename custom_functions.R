@@ -327,7 +327,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                          mask = factor(rep(1:n_iv1, each=2*n_iv2),
                                        levels=c(1:4),
                                        labels=c("nomask", "relevant", "irrelevant","lines")))
-  
+   
   # Remove the first "first_bin_shown - 1" bins from the plots.
   df <- df %>% filter(period >= first_bin_shown)
   
@@ -339,104 +339,104 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
     geom_line(aes(y=hazard)) +
     geom_point(aes(y=hazard), 
                size=1) + 
-    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
-                   show.legend = F) +
+    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz),
+                  show.legend = F) +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
-                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
-                       limits = c(first_bin_shown,cutoff/binsize)) +
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)),
+                      labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                      limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,haz_yaxis)) +
-    labs(x = "bin endpoints (ms)", 
-         y = "h(t)", 
-         color = "Prime") +
+    labs(x = "bin endpoints (ms)",
+        y = "h(t)",
+        color = "Prime") +
     theme(panel.grid = element_blank(),
-          axis.text.x = element_text(angle=90)) +
-    facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor  
-  
+         axis.text.x = element_text(angle=90)) +
+    facet_wrap(~mask, nrow=1, ncol=4) # Apply correctly named factor
+
   # plot the survivor functions
   p2 <-df %>%
     mutate(mask = condition1,      # Create correctly named factor
            prime = condition2) %>% # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
     geom_line(aes(y=survival)) +
-    geom_point(aes(y=survival), 
+    geom_point(aes(y=survival),
                size=1) +
-    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), 
+    geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv),
                    show.legend = F) +
     # add vertical lines to indicate the estimated median RTs with geom_path()
     geom_path(aes(x=period, y=survival),
-              data = data_medians, 
-              linetype = 3, 
+              data = data_medians,
+              linetype = 3,
               show.legend = F) +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)),
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "bin endpoints (ms)",
          y = "S(t)",
          color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
-  
+
   # plot the conditional accuracy functions
   p3 <-df %>%
     mutate(mask = condition1,       # Create correctly named factor
            prime = condition2) %>%  # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
     geom_line(aes(y=ca)) +
-    geom_point(aes(y=ca), 
+    geom_point(aes(y=ca),
                size=1) +
-    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
+    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca),
                    show.legend = F) +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)),
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "bin endpoints (ms)",
          y = "ca(t)",
          color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
-  
+
   # plot the probability mass functions
   p4 <-df %>%
     mutate(mask = condition1,       # Create correctly named factor
            prime = condition2) %>%  # Create correctly named factor
     ggplot(aes(x=period, color=prime, group=prime)) + # Apply correctly named factor
     geom_line(aes(y=pmass)) +
-    geom_point(aes(y=pmass), 
+    geom_point(aes(y=pmass),
                size=1) +
-    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
+    geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass),
                    show.legend = F) +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)),
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "bin endpoints (ms)",
          y = "P(t)",
          color = "Prime") +
     theme(panel.grid = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
-  
+
   # create title
   if(aggregated_data){
     title = str_c("Descriptive stats for aggregated data (N = ", Nsubj,")")
   } else {
     title = str_c("Descriptive stats for subject ", subj)
   }
-  
+
   # patchwork the plots
   p1_theme <- p1 + theme(legend.position = "none")
   p2_theme <- p2 + theme(legend.position = "none")
   p3_theme <- p3 + theme(legend.position = "none")
-  
-  (p1_theme / p2_theme / p3_theme / p4) + 
+
+  (p1_theme / p2_theme / p3_theme / p4) +
     plot_annotation(title = title) +
     plot_layout(guides = "collect") & theme(legend.position = "bottom")
 }
