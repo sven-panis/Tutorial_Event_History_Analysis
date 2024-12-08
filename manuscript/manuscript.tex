@@ -694,13 +694,13 @@ In this third tutorial, we illustrate how to fit Bayesian multi-level regression
 
 \subsubsection{4.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat a variable as a discrete predictor, you can choose between reference coding and index coding.
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable which contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600{]} and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
+In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600{]} and the cloglog link. Below, we shortly discuss two of these models. The person-trial-bin data set is prepared as follows.
 
 \footnotesize
 
@@ -712,10 +712,8 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 \NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} 
 \CommentTok{\# select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)}
 \FunctionTok{filter}\NormalTok{(period }\SpecialCharTok{\textgreater{}} \DecValTok{5}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-       \CommentTok{\# continuous predictor for TIME named "period\_9", centered on bin 9}
-\FunctionTok{mutate}\NormalTok{(}\AttributeTok{period\_9 =}\NormalTok{ period }\SpecialCharTok{{-}} \DecValTok{9}\NormalTok{,}
-       \CommentTok{\# categorical predictor for TIME named "timebin" with index coding}
-       \AttributeTok{timebin =} \FunctionTok{factor}\NormalTok{(period, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\DecValTok{6}\SpecialCharTok{:}\DecValTok{15}\NormalTok{)),}
+       \CommentTok{\# define categorical predictor TIME as index variable named timebin}
+\FunctionTok{mutate}\NormalTok{(}\AttributeTok{timebin =} \FunctionTok{factor}\NormalTok{(period, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\DecValTok{6}\SpecialCharTok{:}\DecValTok{15}\NormalTok{)),}
        \CommentTok{\# factor "condition" using reference coding, with "blank" as the reference level}
        \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }\AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{, }\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)),}
        \CommentTok{\# categorical predictor "prime" with index coding}
@@ -770,55 +768,39 @@ Previous research has shown that psychological effects typically change over tim
 
 Estimating model M1i took about 124 minutes.
 
-\subsubsection{4.3.4 Model M1d: A more parsimonious model}\label{model-m1d-a-more-parsimonious-model}
-
-When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable ``condition'') and treat TIME as a continuous variable (variable ``period\_9'').
-
-For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called ``M1d''. Here is its model formula.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{event }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ Intercept }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9\_sq }\SpecialCharTok{+} 
-\NormalTok{                   (}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9 }\SpecialCharTok{+}\NormalTok{ condition}\SpecialCharTok{*}\NormalTok{period\_9\_sq }\SpecialCharTok{|}\NormalTok{ pid)}
-\end{Highlighting}
-\end{Shaded}
-
-The specification ``0 + Intercept + \ldots{}'' removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period\_9\_sq is a squared version of period\_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
-Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 184 minutes to run.
-
 \subsubsection{4.3.5 Compare the models.}\label{compare-the-models.}
 
-We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria (Kurz, 2023a; McElreath, 2020).
+We can compare the two models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria (Kurz, 2023a; McElreath, 2020).
 
 \footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## model_M0i model_M1i model_M1d 
-##         0         1         0
+## model_M0i model_M1i 
+##         0         1
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, model\_M1d, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## model_M0i model_M1i model_M1d 
-##         0         1         0
+## model_M0i model_M1i 
+##         0         1
 \end{verbatim}
 
 \normalsize
 
-Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models.
+Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other simpler model.
 
-\subsubsection{4.3.6 Interpreting model M1i}\label{interpreting-model-m1i}
+\subsubsection{4.3.6 Evaluating parameter estimates in model M1i}\label{evaluating-parameter-estimates-in-model-m1i}
 
 To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80\% and 95\% credible intervals).
 

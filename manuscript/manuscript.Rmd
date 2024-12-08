@@ -417,13 +417,13 @@ In this third tutorial, we illustrate how to fit Bayesian multi-level regression
 
 ### 4.3.1 Hazard model considerations 
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a discrete or continuous predictor. And when you treat a variable as a discrete predictor, you can choose between reference coding and index coding.  
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see part C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial_2a.Rmd for an example). With index coding, one constructs an index variable which contains integers that correspond to different categories (see models M0i and M1i below). As explained by @mcelreathStatisticalRethinkingBayesian2020, the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set [@allisonSurvivalAnalysisUsing2010]. When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600] and the cloglog link. Below, we shortly discuss three of these models. The person-trial-bin data set is prepared as follows.
+In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the analysis time window (200,600] and the cloglog link. Below, we shortly discuss two of these models. The person-trial-bin data set is prepared as follows.
 
 \footnotesize
 ```{r wrangle-data, eval=F, echo=T}
@@ -433,10 +433,8 @@ ptb_data <- read_csv("Tutorial_1_descriptive_stats/data/inputfile_hazard_modelin
 ptb_data <- ptb_data %>% 
 # select analysis time range: (200,600] with 10 bins (time bin ranks 6 to 15)
 filter(period > 5) %>%
-       # continuous predictor for TIME named "period_9", centered on bin 9
-mutate(period_9 = period - 9,
-       # categorical predictor for TIME named "timebin" with index coding
-       timebin = factor(period, levels = c(6:15)),
+       # define categorical predictor TIME as index variable named timebin
+mutate(timebin = factor(period, levels = c(6:15)),
        # factor "condition" using reference coding, with "blank" as the reference level
        condition = factor(condition, labels = c("blank", "congruent","incongruent")),
        # categorical predictor "prime" with index coding
@@ -485,44 +483,30 @@ event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
 
 Estimating model M1i took about 124 minutes.
 
-### 4.3.4 Model M1d: A more parsimonious model
-
-When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable "condition") and treat TIME as a continuous variable (variable "period_9").
-
-For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called "M1d". Here is its model formula.
-
-```{r fit-model-M1d, eval=F, echo=T}
-event ~ 0 + Intercept + condition*period_9 + condition*period_9_sq + 
-                   (1 + condition*period_9 + condition*period_9_sq | pid)
-```
-
-The specification "0 + Intercept + ..." removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period_9_sq is a squared version of period_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
-Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 184 minutes to run.
-
 ### 4.3.5 Compare the models.
 
-We can compare the three models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
+We can compare the two models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
 
 ```{r load-models, echo=F, eval=T, echo=F} 
 model_M0i <- readRDS("../Tutorial_2_Bayesian/models/model_M0i.rds") 
 model_M1i <- readRDS("../Tutorial_2_Bayesian/models/model_M1i.rds") 
-model_M1d <- readRDS("../Tutorial_2_Bayesian/models/model_M1d.rds")
+#model_M1d <- readRDS("../Tutorial_2_Bayesian/models/model_M1d.rds")
 
 model_M0i <- add_criterion(model_M0i, c("loo", "waic"))
 model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
-model_M1d <- add_criterion(model_M1d, c("loo", "waic"))
+#model_M1d <- add_criterion(model_M1d, c("loo", "waic"))
 ```
 
 \footnotesize
 ```{r show-weights, echo=T, eval=T}
-model_weights(model_M0i, model_M1i, model_M1d, weights = "loo") %>% round(digits = 2)
-model_weights(model_M0i, model_M1i, model_M1d, weights = "waic") %>% round(digits = 2) 
+model_weights(model_M0i, model_M1i, weights = "loo") %>% round(digits = 2)
+model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 2) 
 ```
 \normalsize
 
-Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other two simpler models. 
+Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other simpler model. 
 
-### 4.3.6 Interpreting model M1i
+### 4.3.6 Evaluating parameter estimates in model M1i
 
 To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80% and 95% credible intervals).
 

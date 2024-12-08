@@ -751,6 +751,32 @@ fixef(model_M1i)
 Second, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach and treat TIME as a continuous variable.
 For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the following model (M1d).
 
+
+
+### 4.3.4 Model M1d: A more parsimonious model
+
+
+##
+When the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable "condition") and treat TIME as a continuous variable (variable "period_9").
+
+For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called "M1d". Here is its model formula.
+
+```{r fit-model-M1d, eval=F, echo=T}
+event ~ 0 + Intercept + condition*period_9 + condition*period_9_sq + 
+                   (1 + condition*period_9 + condition*period_9_sq | pid)
+```
+
+The specification "0 + Intercept + ..." removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period_9_sq is a squared version of period_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model M1d took about 184 minutes to run.
+##
+
+
+
+
+
+
+
+
 ```{r data-priors-M1d}
 data_M1d <- ptb_data %>% 
   select(pid, event, period_9, condition) %>%
