@@ -145,7 +145,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     labs(x = "bin endpoints (ms)", 
          y = "h(t)",
          color = "Condition") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the survivor functions
@@ -175,7 +175,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     labs(x = "bin endpoints (ms)", 
          y = "S(t)",
          color = "Condition") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the conditional accuracy functions
@@ -195,7 +195,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     labs(x = "bin endpoints (ms)", 
          y = "ca(t)",
          color = "Condition") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the probability mass functions
@@ -214,7 +214,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     labs(x = "bin endpoints (ms)", 
          y = "P(t)",
          color = "Condition") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # create title
@@ -231,7 +231,9 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
   
   p1_theme + p2_theme + p3_theme + p4 + 
     plot_annotation(title = title) +
-    plot_layout(guides = "collect") & theme(legend.position = "bottom")
+    plot_layout(guides = "collect", 
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
  
 }
 
@@ -349,7 +351,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
     labs(x = "bin endpoints (ms)",
         y = "h(t)",
         color = "Prime") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
          axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask, nrow=1, ncol=4) # Apply correctly named factor
 
@@ -376,7 +378,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
     labs(x = "bin endpoints (ms)",
          y = "S(t)",
          color = "Prime") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
 
@@ -398,7 +400,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
     labs(x = "bin endpoints (ms)",
          y = "ca(t)",
          color = "Prime") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
 
@@ -420,7 +422,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
     labs(x = "bin endpoints (ms)",
          y = "P(t)",
          color = "Prime") +
-    theme(panel.grid = element_blank(),
+    theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90)) +
     facet_wrap(~mask,nrow=1,ncol=4) # Apply correctly named factor
 
@@ -438,5 +440,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
 
   (p1_theme / p2_theme / p3_theme / p4) +
     plot_annotation(title = title) +
-    plot_layout(guides = "collect") & theme(legend.position = "bottom")
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
 }
