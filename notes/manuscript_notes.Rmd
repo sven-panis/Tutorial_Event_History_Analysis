@@ -850,7 +850,7 @@ Tables 4 and 5 can be moved to the tutorial only (or Supps) whichever makes most
 
 Figure 5 y-axis. Should it just be cloglog? Rather than cloglog-hazard?
 
--> cloglog-hazard is better I guess.
+-> cloglog-hazard is correct.
 
 
 
@@ -909,10 +909,12 @@ Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog 
 
 # Sven dec 8
 
-I also moved prior predictive checks to last section of 2a.
+move prior predictive checks to last section of 2a.
 
-Mention 2b ppc...
+Mention 2b priors...
 
 Section 4...
 
-Tutorial 2a ... M1d...
+figure numbers suppl. mat.
+
+

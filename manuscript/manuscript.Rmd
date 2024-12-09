@@ -698,9 +698,9 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 
 ### 4.7.1 Background
 
-The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it (Gelman et al., 2020).
+The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it [@gelmanBayesianWorkflow2020].
 The basic structure and code follows the examples outlined by Solomon Kurz in his
-'power' blog posts (Kurz, 2019) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as the related paper (DeBruine & Barr, 2021). 
+'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as the related paper [@debruineUnderstandingMixedEffectsModels2021]. 
 
 ### 4.7.2 Basic workflow
 
@@ -717,7 +717,7 @@ In the below, we only provide a high-level summary of the process and let reader
 
 ### 4.7.3 Fit a regression model and simulate one dataset
 
-We again use the data from Panis & Schmidt (2016) to provide a worked example.
+We again use the data from @panisWhatShapingRT2016 to provide a worked example.
 We fit an index coding model on a subset of timebins (six timebins in total) and for two prime conditions (congruent and incongruent). We chose to focus on a subsample of the data to ease the computational burden. We also used a full varying effects structure, with the model formula, as follows:
 
 ```{r sim-model-bi, eval=F, echo=T}
@@ -726,7 +726,7 @@ event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
 
 We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
 
-(ref:simdat-plot15-caption) Raw data from Panis & Schmidt (2016) and simulated data from 10 participants.
+(ref:simdat-plot15-caption) Raw data from @panisWhatShapingRT2016 and simulated data from 10 participants.
 
 ```{r simdat, fig.cap = "(ref:simdat-plot15-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_4_Planning/figures/raw_vs_d1.jpeg")
@@ -770,7 +770,7 @@ knitr::include_graphics("../Tutorial_4_Planning/figures/bin6_power_col.jpeg")
 
 Now that we have summarised our simulated data, what planning decisions could we make about a future study?
 How many trials per condition should we collect and how many participants should we test? 
-Like almost always when planning future studies, the answer depends on your objectives, as well as the available resources (Lakens, 2022). 
+Like almost always when planning future studies, the answer depends on your objectives, as well as the available resources [@lakensSampleSizeJustification2022]. 
 There is no straigtforward and clear-cut answer.
 Some considerations might be...
 
@@ -780,15 +780,14 @@ Some considerations might be...
   - How easy or difficult is it to obtain the specific type of sample?
 
 If we were running this kind of study in our lab, what would we do?
-We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon (Panis & Schmidt, 2016).
+We might pick a hazard ratio of 0.4 or 0.5 as a target effect size since this is much smaller than that observed in the previously published study that this work is building upon [@panisWhatShapingRT2016].
 Then we might pick the corresponding N value (i.e., N=10 or N=15) that takes you over the 80% power mark.
 If we wanted to maximise power based on these simulations, and we had the time and resources available, then we test N=20 participants, which would provide >90% power for an effect size of 0.5.
 
 **But**, and this is an important "but", unless there are unavoidable reasons, no matter what planning choices we made based on these data simulations, we would not solely rely on data collected from one single study. 
 Instead, we would run a follow-up experiment that replicates and extends the initial result. 
-By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of planning tool, such as a power analysis. 
+By doing so, we would aim to avoid the Cult of the Isolated Single Study [@nelderStatisticsStatisticalScience1999; @tongStatisticalInferenceEnables2019], and thus reduce the reliance on any one type of planning tool, such as a power analysis. 
 Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study on its own has sufficient evidential value to hit some criterion mark.
-
 
 # 5. Discussion
 

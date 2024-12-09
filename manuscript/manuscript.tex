@@ -1125,9 +1125,9 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 
 \subsubsection{4.7.1 Background}\label{background}
 
-The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it (Gelman et al., 2020).
+The general approach to planning that we adopt here involves simulating data to help guide what you might be able to expect from your data once you collect it (Gelman, Vehtari, et al., 2020).
 The basic structure and code follows the examples outlined by Solomon Kurz in his
-`power' blog posts (Kurz, 2019) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}) as well as the related paper (DeBruine \& Barr, 2021).
+`power' blog posts (\url{https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/}) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}) as well as the related paper (DeBruine \& Barr, 2021).
 
 \subsubsection{4.7.2 Basic workflow}\label{basic-workflow}
 
@@ -1152,7 +1152,7 @@ In the below, we only provide a high-level summary of the process and let reader
 
 \subsubsection{4.7.3 Fit a regression model and simulate one dataset}\label{fit-a-regression-model-and-simulate-one-dataset}
 
-We again use the data from Panis \& Schmidt (2016) to provide a worked example.
+We again use the data from Panis and Schmidt (2016) to provide a worked example.
 We fit an index coding model on a subset of timebins (six timebins in total) and for two prime conditions (congruent and incongruent). We chose to focus on a subsample of the data to ease the computational burden. We also used a full varying effects structure, with the model formula, as follows:
 
 \begin{Shaded}
@@ -1171,7 +1171,7 @@ We then took parameters from this model and used them to create a single dataset
 
 }
 
-\caption{Raw data from Panis \& Schmidt (2016) and simulated data from 10 participants.}\label{fig:simdat}
+\caption{Raw data from Panis and Schmidt (2016) and simulated data from 10 participants.}\label{fig:simdat}
 \end{figure}
 
 \subsubsection{4.7.4 Simulate and summarise data across a range of parameter values}\label{simulate-and-summarise-data-across-a-range-of-parameter-values}
@@ -1246,7 +1246,7 @@ If we wanted to maximise power based on these simulations, and we had the time a
 
 \textbf{But}, and this is an important ``but'', unless there are unavoidable reasons, no matter what planning choices we made based on these data simulations, we would not solely rely on data collected from one single study.
 Instead, we would run a follow-up experiment that replicates and extends the initial result.
-By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1986; Tong, 2019), and thus reduce the reliance on any one type of planning tool, such as a power analysis.
+By doing so, we would aim to avoid the Cult of the Isolated Single Study (Nelder, 1999; Tong, 2019), and thus reduce the reliance on any one type of planning tool, such as a power analysis.
 Then, we would look for common patterns across two or more experiments, rather than trying to make the case that a single study on its own has sufficient evidential value to hit some criterion mark.
 
 \section{5. Discussion}\label{discussion}
@@ -1346,6 +1346,9 @@ Bürkner, P.-C. (2018). Advanced {Bayesian} multilevel modeling with the {R} pac
 \bibitem[\citeproctext]{ref-R-brms_c}
 Bürkner, P.-C. (2021). Bayesian item response modeling in {R} with {brms} and {Stan}. \emph{Journal of Statistical Software}, \emph{100}(5), 1--54. \url{https://doi.org/10.18637/jss.v100.i05}
 
+\bibitem[\citeproctext]{ref-debruineUnderstandingMixedEffectsModels2021}
+DeBruine, L. M., \& Barr, D. J. (2021). Understanding {Mixed-Effects Models Through Data Simulation}. \emph{Advances in Methods and Practices in Psychological Science}, \emph{4}(1), 2515245920965119. \url{https://doi.org/10.1177/2515245920965119}
+
 \bibitem[\citeproctext]{ref-R-Rcpp_b}
 Eddelbuettel, D., \& Balamuta, J. J. (2018). {Extending {R} with {C++}: A Brief Introduction to {Rcpp}}. \emph{The American Statistician}, \emph{72}(1), 28--36. \url{https://doi.org/10.1080/00031305.2017.1375990}
 
@@ -1403,6 +1406,9 @@ Kurz, A. S. (2023a). \emph{Applied longitudinal data analysis in brms and the ti
 \bibitem[\citeproctext]{ref-kurzStatisticalRethinkingSecondEd2023}
 Kurz, A. S. (2023b). \emph{Statistical rethinking with brms, ggplot2, and the tidyverse: {Second} edition} (version 0.4.0). Retrieved from \url{https://bookdown.org/content/4857/}
 
+\bibitem[\citeproctext]{ref-lakensSampleSizeJustification2022}
+Lakens, D. (2022). Sample {Size Justification}. \emph{Collabra: Psychology}, \emph{8}(1), 33267. \url{https://doi.org/10.1525/collabra.33267}
+
 \bibitem[\citeproctext]{ref-landesIntroductionEventHistory2020}
 Landes, J., Engelhardt, S. C., \& Pelletier, F. (2020). An introduction to event history analyses for ecologists. \emph{Ecosphere}, \emph{11}(10), e03238. \url{https://doi.org/10.1002/ecs2.3238}
 
@@ -1420,6 +1426,9 @@ Meyer, D. E., Osman, A. M., Irwin, D. E., \& Yantis, S. (1988). Modern mental ch
 
 \bibitem[\citeproctext]{ref-R-tibble}
 Müller, K., \& Wickham, H. (2023). \emph{Tibble: Simple data frames}. Retrieved from \url{https://CRAN.R-project.org/package=tibble}
+
+\bibitem[\citeproctext]{ref-nelderStatisticsStatisticalScience1999}
+Nelder, J. A. (1999). From {Statistics} to {Statistical Science}. \emph{Journal of the Royal Statistical Society. Series D (The Statistician)}, \emph{48}(2), 257--269. Retrieved from \url{https://www.jstor.org/stable/2681191}
 
 \bibitem[\citeproctext]{ref-R-RColorBrewer}
 Neuwirth, E. (2022). \emph{RColorBrewer: ColorBrewer palettes}. Retrieved from \url{https://CRAN.R-project.org/package=RColorBrewer}
@@ -1468,6 +1477,9 @@ Steele, F., Goldstein, H., \& Browne, W. (2004). A general multilevel multistate
 
 \bibitem[\citeproctext]{ref-teachmanAnalyzingSocialProcesses1983}
 Teachman, J. D. (1983). Analyzing social processes: {Life} tables and proportional hazards models. \emph{Social Science Research}, \emph{12}(3), 263--301. \url{https://doi.org/10.1016/0049-089X(83)90015-7}
+
+\bibitem[\citeproctext]{ref-tongStatisticalInferenceEnables2019}
+Tong, C. (2019). Statistical {Inference Enables Bad Science}; {Statistical Thinking Enables Good Science}. \emph{The American Statistician}, \emph{73}(sup1), 246--261. \url{https://doi.org/10.1080/00031305.2018.1518264}
 
 \bibitem[\citeproctext]{ref-townsendTruthConsequencesOrdinal1990}
 Townsend, J. T. (1990). Truth and consequences of ordinal differences in statistical distributions: {Toward} a theory of hierarchical inference. \emph{Psychological Bulletin}, \emph{108}(3), 551--567. \url{https://doi.org/10.1037/0033-2909.108.3.551}
