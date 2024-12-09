@@ -924,10 +924,14 @@ Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog 
 
 move prior predictive checks to last section of 2a. -> Done.
 
-Mention 2b priors...
+Mention 2b priors...   todo
 
 Section 4... refs ok. comments?
 
-figure numbers suppl. mat.
+figure numbers suppl. mat.   todo
 
 appendices??
+
+Read all,  make html of Rmd files
+
+
