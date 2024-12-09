@@ -516,35 +516,29 @@ To make inferences from the parameter estimates in model M1i, we first plot the 
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
 ```
 
-Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant (Figure 6), and for each participant in the data set (Figure 7).
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- for the average participant (Figure 6A), and for each participant in the data set (Figure 6B).
 
-(ref:descr-plot6-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.
+
+
+(ref:descr-plot6-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant (A), and for each participant (B).
 
 ```{r plot-pred-grand-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_grand.png")
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_combined.png")
 ```
 
-(ref:descr-plot7-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both for the average participant (Figure 7A; grand average marginal effect) and for each participant in the data set (Figure 7B; subject-specific average marginal effect). 
 
-```{r plot-pred-pid-effects, fig.cap = "(ref:descr-plot7-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_pid.png")
+
+(ref:descr-plot7-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for the average participant (A), and for each participant (B).
+
+```{r plot-grand-ame-effects, fig.cap = "(ref:descr-plot7-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ame_combined.png")
 ```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both for the average participant (Figure 8; grand average marginal effect) and for each participant in the data set (Figure 9; subject-specific average marginal effect). 
 
-(ref:descr-plot8-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for the average participant.
 
-```{r plot-grand-ame-effects, fig.cap = "(ref:descr-plot8-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_grand_AME.png")
-```
 
-(ref:descr-plot9-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for each participant.
-
-```{r plot-pid-ame-effects, fig.cap = "(ref:descr-plot9-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pid_AMEs.png")
-```
-
-Table 4 shows the summaries of the estimated hazard differences for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.
+<!-- Table 4 shows the summaries of the estimated hazard differences for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.-->
 
 ```{r load-tables, eval=T, echo=F}
 tab_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/grand_AMEs.csv")
@@ -571,6 +565,8 @@ tab_contrast_props <- read_csv("../Tutorial_2_Bayesian/tables/contrasts_props.cs
 )
 ```
 
+The point estimates and quantile intervals can be reported in a table (see Tutorial_2a.Rmd for details).
+
 #### Example conclusions for M1i
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
@@ -579,30 +575,6 @@ If we want to study the average effect of prime type on hazard, uncontaminated b
 The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin 9 (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin 10 (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin 11 (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. Note that we could also have calculated hazard ratios instead of hazard differences.
 
 There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
-
-The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
-Table 5 shows the proportion of the posterior distribution below or above zero, for each time bin and contrast.
-
-(ref:table-props-caption) Summarizing the posterior distributions of each contrast by their proportion below and above zero.
-
-(ref:table-props-note-caption) prop_below = proportion below zero; prop_above = proportion above zero.
-
-```{r table-contrasts_props, eval=T}
- apa_table(
-   tab_contrast_props,
-   caption = "(ref:table-props-caption)",
-   note = "(ref:table-props-note-caption)",
-   placement = "H",
-#   font_size = "scriptsize",
-   longtable = TRUE,
-   repeat_header = TRUE,
-   format.args = list(
-        digits = c(0,0,2,2),
-        decimal.mark = ".", big.mark = "")
-)
-```
-
-Thus, the probability that the contrast "congruent minus blank" is larger than 0, is larger than .9 in bins 6 to 8. And the probability that the contrast "incongruent minus blank" is smaller than 0, is larger than .9 in bins 9 to 12.
 
 If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 9. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360].
 
@@ -614,37 +586,33 @@ Interestingly, all subjects show a tendency in their mean difference (congruent 
 
 In this fourth tutorial, we illustrate how to fit a Bayesian multi-level regression model to the timed accuracy data from the masked response priming data set used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data set, (b) we use the logit link function, and (c) we change the priors. To keep the tutorial short, we only fitted the effects of model M1i (see Tutorial 2a) in the conditional accuracy model called M1i_ca.
 
-To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 10, together with point (median) and interval estimates (80% and 95% credible intervals).
+To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 8, together with point (median) and interval estimates (80% and 95% credible intervals).
 
-(ref:descr-plot10-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca.
+(ref:descr-plot8-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca.
 
-```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot10-caption)", out.width='80%'}
+```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot8-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
 ```
 
-Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- for the average participant (Figure 11), and for each participant in the data set (Figure 12).
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- for the average participant (Figure 9A), and for each participant in the data set (Figure 9B).
 
-(ref:plot11-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant.
+(ref:plot9-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the average participant (A), and for each participant (B).
 
-```{r plot-pred-grand-effects-ca, fig.cap = "(ref:plot11-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_grand.png")
+```{r plot-pred-grand-effects-ca, fig.cap = "(ref:plot9-caption)", out.width='80%'}
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png")
 ```
 
-(ref:plot12-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for each participant.
 
-```{r plot-pred-pid-effects-ca, fig.cap = "(ref:plot12-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_pid.png")
-```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects for the average participant (Figure 13; grand average marginal effect).
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects for the average participant (Figure 10; grand average marginal effect).
 
-(ref:descr-plot13-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin for the average participant.
+(ref:descr-plot10-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin for the average participant.
 
-```{r plot-ca-grand-ame-effects, fig.cap = "(ref:descr-plot13-caption)", out.width='80%'}
+```{r plot-ca-grand-ame-effects, fig.cap = "(ref:descr-plot10-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_grand_AME.png")
 ```
 
-Table 6 shows the summaries of the estimated differences in conditional accuracy for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.
+<!-- Table 6 shows the summaries of the estimated differences in conditional accuracy for both contrasts in terms of a point estimate (the mean) and the upper and lower bounds of the 95% credible interval, for the average participant.-->
 
 ```{r load-tables-ca, eval=T, echo=F}
 tab_ca_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
@@ -654,7 +622,7 @@ tab_ca_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
 
 (ref:table-ca-grand-ame-note-caption) diff = difference in predicted conditional accuracy.
 
-```{r table-ca-grand-ame}
+```{r table-ca-grand-ame, eval=F}
  apa_table(
    tab_ca_grand_ame,
    caption = "(ref:table-ca-grand-ame-caption)",
@@ -669,7 +637,9 @@ tab_ca_grand_ame <- read_csv("../Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
 )
 ```
 
-Based on Figure 13 and Table 6, we see that congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], and (280,320], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 14). 
+The point estimates and quantile intervals can be reported in a table (see Tutorial_2b.Rmd for details).
+
+Based on Figure 10 we see that congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], and (280,320], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 14). 
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in those time bins, relative to the estimates in the baseline condition.
 
 ## 4.5 Tutorial 3a: Fitting Frequentist hazard models
@@ -678,15 +648,15 @@ In this fifth tutorial we illustrate how to fit a multilevel regression model to
 
 To keep this tutorial short, we only fitted the effects from model M1i (see Tutorial 2a) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. The resulting hazard model is called M1i_f.
 
-In Figure 14 we compare the parameter estimates of model M1i from brm() with those of model M1i_f from glmer().
+In Figure 11 we compare the parameter estimates of model M1i from brm() with those of model M1i_f from glmer().
 
-(ref:descr-plot14-caption) Parameter estimates for model M1i from brm() -- means and 95% credible intervals -- and model M1i_f from glmer() -- maximum likelihood estimates and 95% confidence intervals.
+(ref:descr-plot11-caption) Parameter estimates for model M1i from brm() -- means and 95% credible intervals -- and model M1i_f from glmer() -- maximum likelihood estimates and 95% confidence intervals.
 
-```{r plot-comparison, fig.cap = "(ref:descr-plot14-caption)", out.width='80%'}
+```{r plot-comparison, fig.cap = "(ref:descr-plot11-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_3_Frequentist/comparison.png")
 ```
 
-Figure 14 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, model M1i_f did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a took several hours to build.
+Figure 11 confirms that the parameter estimates from both Bayesian and frequentist models are pretty similar, which makes sense given the close similarity in model structure. However, model M1i_f did not converge and resulted in a singular fit. This is of course one of the reasons why Bayesian modeling has become so popular in recent years. But the price you pay for being able to fit more complex random effects models in a Bayesian framework is computation time. In other words, as we have noted throughout, some of the Bayesian models in Tutorials 2a took several hours to build.
 
 ## 4.6 Tutorial 3b: Fitting Frequentist conditional accuracy models
 
@@ -724,11 +694,11 @@ We fit an index coding model on a subset of timebins (six timebins in total) and
 event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
 ```
 
-We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 15 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 12 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
 
-(ref:simdat-plot15-caption) Raw data from @panisWhatShapingRT2016 and simulated data from 10 participants.
+(ref:simdat-plot12-caption) Raw data from @panisWhatShapingRT2016 and simulated data from 10 participants.
 
-```{r simdat, fig.cap = "(ref:simdat-plot15-caption)", out.width='80%'}
+```{r simdat, fig.cap = "(ref:simdat-plot12-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_4_Planning/figures/raw_vs_d1.jpeg")
 ```
 
@@ -740,8 +710,8 @@ We focus on bin 6 only, in terms of varying the effect size, just to make things
 The effect size observed in bin 6 in this subsample of data was a 79% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In other words, a hazard ratio of 0.21 (e.g., 0.085/0.401 = 0.21). 
 As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75%, 50% and 25% reduction in hazard value as a function of prime condition.
 
-Summary results from Simulation 1 are shown in Figure 16A.
-Figure 16A depicts statistical "power" as calculated by the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). 
+Summary results from Simulation 1 are shown in Figure 13A.
+Figure 13A depicts statistical "power" as calculated by the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). 
 In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
 We are aware that "power" is not part of a Bayesian analytical workflow, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
 
@@ -753,16 +723,16 @@ To probe this space a little further, we decided to run a second simulation, whi
 In Simulation 2, we varied the effect size between a different range of values (0.5, 0.4, 0.3), which correspond to a 50%, 60% and 70% reduction in hazard value as a function of prime condition.
 In addition, we varied the number of participants per experiment between 10, 15, and 20 participants.
 Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
-Summary results from Simulation 2 are shown in Figure 16B.
+Summary results from Simulation 2 are shown in Figure 13B.
 A summary of these power calculations might be as follows (trial count = 200 per condition in all cases):
 
 - For a 70% reduction (0.3 hazard ratio), N=10 would give nearly 100% power.
 - For a 60% reduction (0.4 hazard ratio), N=10 would give nearly 90% power.
 - For a 50% reduction (0.5 hazard ratio), N=15 would give over 80% power.
 
-(ref:power-plot16-caption) Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25%, 50% and 75% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50%, 60% and 70% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80% (red), 90% (black) and 95% (blue) power. Abbreviations: rep_n = the number of trials per experimental condition; sub_j = the number of participants per simulated experiment.
+(ref:power-plot13-caption) Statistical power across data Simulation 1 (A) and Simulation 2 (B). Power was calculated as the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). In Simulation 1, the effect size was varied between a 25%, 50% and 75% reduction in hazard value, whereas the trial count was varied between 100, 200 and 400 trials per condition (the number of participants was fixed at N=10). In Simulation 2, the effect size was varied between a 50%, 60% and 70% reduction in hazard value, whereas the number of participants was varied between N=10, 15 and 20 (the number of trials per condition was fixed at 200).The dashed lines represent 80% (red), 90% (black) and 95% (blue) power. Abbreviations: rep_n = the number of trials per experimental condition; sub_j = the number of participants per simulated experiment.
 
-```{r power, fig.cap = "(ref:power-plot16-caption)", out.width='100%'}
+```{r power, fig.cap = "(ref:power-plot13-caption)", out.width='100%'}
 knitr::include_graphics("../Tutorial_4_Planning/figures/bin6_power_col.jpeg")
 ```
 
