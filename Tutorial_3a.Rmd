@@ -106,8 +106,9 @@ load("Tutorial_3_Frequentist/model_M1i_f.RData")
 est <- tibble(brm = fixef(model_M1i)[,c(1,3,4)],
               glmer = tidy(model_M1i_f, effects = c("fixed"), conf.int=T, conf.level = 0.95)[,c(3,7,8)],
               effectname = names(fixef(model_M1i_f)),
-              position = 1:30) 
-est
+              position = rep(6:15,3),
+              prime = factor(rep(1:3, each=10),labels=c("blank","congruent","incongruent")) )
+est %>% print(n=30)
 ```
 
 ```{r plot-estimates}
@@ -156,3 +157,54 @@ p1
 ```{r save-plot-comparison, eval=F}
 ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=8,dpi=800)
 ```
+
+#
+```{r plot-estimates}
+# check hex codes for color paletter
+mypal <- brewer.pal(8,"Dark2")
+
+# specify colors and shapes
+cols    <- c( "c1" = mypal[1], "c2" = mypal[2])
+shapes  <- c("s1" = 16, "s2" = 17)
+
+# plot
+p1 <- ggplot(data = est, aes(x = position)) +
+ geom_point(aes( y = brm[,"Estimate"],  
+                 color = "c1", 
+                 shape = "s1"),
+                 size = 1.5) +
+ geom_point(aes( y = glmer$estimate, 
+                 color = "c2", 
+                 shape = "s2"),
+                 size = 1.5, 
+                 position = position_nudge(x = .2))  +
+ geom_linerange(aes(ymin=brm[,"Q2.5"], ymax=brm[,"Q97.5"], 
+                    color = "c1"), 
+                show.legend = F) +
+ geom_linerange(aes(ymin=glmer$conf.low, ymax=glmer$conf.high, 
+                    color = "c2"), 
+                show.legend = F, 
+                position = position_nudge(x = .2)) +
+# geom_hline(yintercept=0,colour = "grey", linetype = 2) +
+ scale_x_continuous(breaks = 6:15, labels = 6:15*40) +
+ scale_y_continuous(limits=c(-9,3), breaks = c(-9,-6,-3,0,3)) +
+  
+ labs( x = "bin endpoint", y = "cloglog-hazard" ) +
+ scale_color_manual(name = "Model", 
+                                breaks = c("c1", "c2"), 
+                                values = cols,
+                                labels = c("brm", "glmer")) +
+ scale_shape_manual(name = "Model", 
+                              breaks = c("s1", "s2"),
+                              values = shapes,
+                              labels = c("brm", "glmer")) +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle=90)) +
+  facet_wrap(~prime)
+p1
+```
+
+```{r save-plot-comparison, eval=F}
+ggsave("Tutorial_3_Frequentist/Comparison.png", height=8, width=10,dpi=800)
+```
+

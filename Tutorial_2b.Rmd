@@ -207,6 +207,45 @@ p_tidy_fixed_ca
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png", width = 10, height = 8, dpi = 800)
 ```
 
+#
+```{r plot-post-M0i-ca-alt}
+tidy_fixed_ca <- post_ca %>% 
+  select(starts_with("b_"), .chain, .iteration, .draw) %>% 
+  rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
+  pivot_longer(-c(chain, draw, iter)) %>% 
+  mutate(timebin = str_sub(name,10,11),
+         timebin = factor(str_remove(timebin,":"),levels=c(6:15)),
+         condition = str_sub(name,17,18),
+         condition = factor(str_remove(condition,"e"),
+                            levels=c(1,2,3),
+                            labels=c("blank","congruent","incongruent")))
+head(tidy_fixed_ca)
+tail(tidy_fixed_ca)
+
+# plot
+p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill=condition)) +  
+  stat_halfeye(point_interval = "median_qi",
+               .width = c(.80,.95),
+               alpha=0.7,
+               position = pd) +
+  labs(title = 'Posterior distributions for population-level\neffects in Model M1i_ca',
+       x = "time bin", 
+       y = "logit-ca") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_y_continuous(limits=c(-10,10)) +
+  theme(axis.text.x = element_text(angle=90)) #+
+  #facet_wrap(~condition)
+p_tidy_fixed_ca
+```
+
+```{r save-post-alt, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/M1i_ca_postdistr_alt.png", width = 10, height = 8, dpi = 800)
+```
+
+#
+
+
 ## Plot predicted conditional accuracy functions 
 
 ### Grand mean
@@ -233,7 +272,7 @@ epreds_grand %>%
 ```
 
 ```{r epred-grand-plot}
- ggplot(epreds_grand, aes(x=timebin, y=.epred, 
+ p1 <- ggplot(epreds_grand, aes(x=timebin, y=.epred, 
                           fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
                     alpha = 0.5, 
@@ -243,8 +282,9 @@ epreds_grand %>%
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
-    labs(y = "predicted conditional accuracy") +
-    ggtitle("Average participant")
+    labs(y = "predicted conditional accuracy") #+
+    #ggtitle("Average participant")
+p1
 ```
 
 ```{r save-epred-grand, eval=F}
@@ -273,7 +313,7 @@ epreds_pid %>%
 ```
 
 ```{r plot-epred-pid}
- ggplot(epreds_pid, aes(x=timebin, y=.epred, 
+p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
     stat_lineribbon(point_interval="median_qi",
                     alpha = 0.5, 
@@ -284,13 +324,36 @@ epreds_pid %>%
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
     labs(y = "predicted conditional accuracy") +
-    ggtitle("Each participant (N = 6)") +
+   # ggtitle("Each participant (N = 6)") +
     facet_wrap(~pid, ncol=3)
+p2
 ```
 
 ```{r save-epred-pid, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_pid.png", width = 10, height = 8, dpi = 800)
 ```
+
+Combine the plots.
+
+```{r save-epred-combined, eval=F}
+# combine 2 plots
+p1_theme <- p1 + theme(legend.position = "none")
+
+(p1_theme / p2) +
+    plot_annotation(tag_levels = 'A') +
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save plot.
+
+```{r save-combined-pred, eval=F}
+# save combined plot
+ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png", width = 10, height = 12, dpi = 800)
+```
+
+
 
 ## Plot average marginal effects (AMEs)
 
