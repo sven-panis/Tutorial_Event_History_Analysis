@@ -556,7 +556,7 @@ tab_contrast_props <- read_csv("../Tutorial_2_Bayesian/tables/contrasts_props.cs
 
 (ref:table-grand-ame-note-caption) diff = difference in predicted hazard.
 
-```{r table-grand-ame}
+```{r table-grand-ame, eval = F}
  apa_table(
    tab_grand_ame,
    caption = "(ref:table-grand-ame-caption)",
