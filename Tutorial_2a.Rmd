@@ -1208,7 +1208,7 @@ epreds_grand_diffs <- epreds_grand %>%
 epreds_grand_diffs # 160 000 rows 
 ```
 
-Summarize and plot.
+Summarize.
 
 ```{r epred-grand-diff-summary}
 table <- epreds_grand_diffs %>%
@@ -1218,7 +1218,7 @@ table <- epreds_grand_diffs %>%
   select(-c(.width,.point,.interval))
 ```
 
-Save as table.
+Save summary as table.
 
 ```{r save-table-grand-AMEs, eval=F}
 write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
@@ -1229,8 +1229,6 @@ Show table.
 ```{r}
 kable(table, caption = "Point (mean) and 95% credible interval summary of estimated differences in hazard, for each time bin and contrast, in the average participant.")
 ```
-
-
 
 Plot.
 
@@ -1344,6 +1342,12 @@ Save as table.
 
 ```{r save-table-pid-AMEs, eval=F}
 write_csv(table, file="Tutorial_2_Bayesian/tables/pid_AMEs.csv")
+```
+
+Show table.
+
+```{r}
+kable(table, caption = "Point (mean) and 95% credible interval summary of estimated differences in hazard, for each time bin and contrast, in the average participant.")
 ```
 
 Plot the contrasts in predicted hazard values.
