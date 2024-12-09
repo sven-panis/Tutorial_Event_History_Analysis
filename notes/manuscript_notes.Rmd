@@ -913,8 +913,8 @@ move prior predictive checks to last section of 2a.
 
 Mention 2b priors...
 
-Section 4...
+Section 4... refs ok. comments?
 
 figure numbers suppl. mat.
 
-
+Move table to Suppl. mat??
