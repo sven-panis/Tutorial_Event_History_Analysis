@@ -24,7 +24,7 @@ We end by plotting the logit and cloglog link functions, and illustrate how vari
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
          "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr",
-         "rstan")
+         "rstan", "knitr")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -1226,6 +1226,9 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/grand_AMEs.csv")
 
 Show table.
 
+```{r}
+kable(table, caption = "Point (mean) and 95% credible interval summary of estimated differences in hazard, for each time bin and contrast, in the average participant.")
+```
 
 
 
