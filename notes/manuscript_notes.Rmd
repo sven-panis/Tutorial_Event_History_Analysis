@@ -932,7 +932,7 @@ clean up html files (delete old figures, Mention tut 2b priors line 101, ...)
 
 change Figure comparison for ca
 
-check for timebin, multilevel
+check for timebin -> time bin
 
 
 
