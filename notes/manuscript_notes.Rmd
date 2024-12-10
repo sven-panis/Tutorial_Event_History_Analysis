@@ -760,17 +760,17 @@ I've created a new sub-section in sectino 2 and added a sumamry paragraph that p
 
 Still to do:
 
-- check legends of all Figures, and add more info if needed
+- check legends of all Figures, and add more info if needed -> Done
 
 - make loo plots (I did not find code to do that. Do you have a reference for such code?)
 
-- add info on simulation and power analysis (section 4.4 + summary in section 4)
+- add info on simulation and power analysis (section 4.4 + summary in section 4). Done.
 
-- delete code in Tutorial_2a about brand new hypothetical subject?
+- delete code in Tutorial_2a about brand new hypothetical subject? Done.
 
-- use timebin or time bins?
+- use timebin or time bins? Timebin.
 
-- use multi-level or multilevel ?
+- use multi-level or multilevel ? Multilevel.
 
 
 ## December 2nd 2024 ##
@@ -857,7 +857,7 @@ Figure 5 y-axis. Should it just be cloglog? Rather than cloglog-hazard?
 
 Another way to plot Figure 5 would be to avoid a facet and instead fill by prime. That way, you might benefit from the principle of putting things close together that you want to compare e.g., the effects of prime should be easier to see if prime comparisons are close together. Maybe at least plot it the other way to have a look and see what you think? I'd like to see it at least.
 
--> Done. !!!!! delete one....
+-> Done. 
 
 There is no need to commit the space needed when they are redundant with the figures. e.g., we can just say in the main text, the point estimates and quantile intervals can be reported in a table (see the tutorial for details). That saves loads of space and time scanning values when the figures are beautiful and standalone as they are.
 
@@ -920,18 +920,20 @@ Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog 
 -> Done.
 
 
-# Sven dec 10
+# Sven dec 10 still to do:
 
 adjust small error in Figure 3 + check Figure 10 + add second panel to Figure 10
 
 change ms code in section 4.1.2 (make it same as in tut)
 
-Mention tut 2b priors...   todo
+appendix/separate Rmd file... + {var} in functions...?
 
-Section 4... comments?
+clean up html files (delete old figures, Mention tut 2b priors, ...)
 
-appendices/separate Rmd file...
+change Figure comparison for ca
 
-clean up html of Rmd files
+check for timebin, multilevel
+
+
 
 
