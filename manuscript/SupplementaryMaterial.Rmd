@@ -25,7 +25,7 @@ For two-choice RT data, the discrete-time hazard function can be extended with t
 
 \noindent ca(t) = P(correct | RT = t)   \hfill  (5)
 
-\noindent which gives you for each bin the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. This latter function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
+\noindent which gives you for each bin the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
 
 The survivor function provides a context for the hazard function, as S(t-1) = P(RT > t-1) = P(RT $\geq$ t) tells you on how many percent of the trials the estimate h(t) = P(RT = t| RT $\geq$ t) is based. The probability mass function provides a context for the conditional accuracy function, as P(t) = P(RT = t) tells you on how many percent of the trials the estimate ca(t) = P(correct | RT = t) is based.
 
@@ -53,11 +53,11 @@ When you want to analyse simple RT data from a detection experiment with two ind
 
 ## C. Link functions
 
-Popular link functions include the logit link and the complementary log-log link, as shown in Figure 15.
+Popular link functions include the logit link and the complementary log-log link, as shown in Figure 14.
 
-(ref:descr-plot15-caption) The logit and cloglog link functions.
+(ref:descr-plot14-caption) The logit and cloglog link functions.
  
-```{r plot-link-functions, fig.cap = "(ref:descr-plot15-caption)", out.width='80%'}
+```{r plot-link-functions, fig.cap = "(ref:descr-plot14-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/linkfunctions.png")
 ```
 
@@ -69,17 +69,17 @@ An example (single-level) discrete-time hazard model with three predictors (TIME
 
 The main predictor variable TIME is the time bin index t that is centered on value 9 in this example. The first set of terms within brackets, the parameters $\beta$~0~ to $\beta$~2~ multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X~i~ take on a value of zero). The second set of terms (the beta parameters $\beta$~3~ to $\beta$~5~) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor variable. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X~1~ is to vertically shift the whole baseline cloglog-hazard function by $\beta$~3~ cloglog-hazard units. However, if the predictor interacts linearly with TIME (see X~2~ in the example), then the effect of a 1 unit increase in X~2~ is to vertically shift the predicted cloglog-hazard in bin 9 by $\beta$~4~ cloglog-hazard units (when TIME-9 = 0), in bin 10 by $\beta$~4~ + $\beta$~5~ cloglog-hazard units (when TIME-9 = 1), and so forth. To interpret the effects of a predictor, its $\beta$ parameter is exponentiated, resulting in a hazard ratio (due to the use of the cloglog link). When using the logit link, exponentiating a $\beta$ parameter results in an odds ratio.
 
-An example (single-level) discrete-time hazard model with a general specification for TIME (separate intercepts for each of six bins, where D1 to D6 are binary variables identifying each bin) and a single predictor (X~1~) can be written as follows:
+An example (single-level) discrete-time hazard model with a general specification for TIME (separate intercepts for each of six bins, where D1 to D6 are binary indicator variables identifying each bin) and a single predictor (X~1~) can be written as follows:
 
 \noindent cloglog[h(t)] =  [$\beta$~0~D1 + $\beta$~1~D2 + $\beta$~2~D3 + $\beta$~3~D4 + $\beta$~4~D5 + $\beta$~5~D6] + [$\beta$~6~X~1~]  \hfill  (7)
 
 ## E. Prior distributions
 
-To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 16 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
+To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 15 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
-(ref:descr-plot16-caption) Prior distributions for the Intercept on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
+(ref:descr-plot15-caption) Prior distributions for the Intercept on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).
 
-```{r plot-priors, fig.cap = "(ref:descr-plot16-caption)", out.width='80%'}
+```{r plot-priors, fig.cap = "(ref:descr-plot15-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/plot_of_priors.png")
 ```
 

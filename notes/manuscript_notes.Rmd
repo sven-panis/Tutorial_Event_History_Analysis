@@ -920,18 +920,18 @@ Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog 
 -> Done.
 
 
-# Sven dec 8
+# Sven dec 10
 
-move prior predictive checks to last section of 2a. -> Done.
+adjust small error in Figure 3 + check Figure 10 + add second panel to Figure 10
 
-Mention 2b priors...   todo
+change ms code in section 4.1.2 (make it same as in tut)
 
-Section 4... refs ok. comments?
+Mention tut 2b priors...   todo
 
-figure numbers suppl. mat.   todo
+Section 4... comments?
 
-appendices??
+appendices/separate Rmd file...
 
-Read all,  make html of Rmd files
+clean up html of Rmd files
 
 
