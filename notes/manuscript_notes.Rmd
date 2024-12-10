@@ -935,5 +935,26 @@ change Figure comparison for ca
 check for timebin -> time bin
 
 
+# Rich Dec 10th
 
+## supplementary figures ##
+
+in the main text, change to Supplementary Figure X (as appropriate). 
+e.g., page 28, Figure 15 when talking about priors.
+
+## figure 11 ##
+
+very minor point. I would make figure smaller in height. There is a lot of white space and a shorter plot woudl still communicate the main message. 
+I would also fatten the point and the lines to make them easier to see.
+Add more dodge if necessary.
+
+## conclusion ##
+
+you say 
+
+>Statistically controlling for the passage of time during data analysis is equally important as experimental control during the design of an experiment, to better understand human behavior in experimental paradigms.
+
+But I don't think we need it, and I don't understand the second half of the sentence. If we do need it, we need to make it clear what it means.
+
+For now, I deleted it. 
 
