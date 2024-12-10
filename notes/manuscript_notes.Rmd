@@ -928,7 +928,7 @@ change ms code in section 4.1.2 (make it same as in tut)
 
 appendix/separate Rmd file... + {var} in functions...?
 
-clean up html files (delete old figures, Mention tut 2b priors, ...)
+clean up html files (delete old figures, Mention tut 2b priors line 101, ...)
 
 change Figure comparison for ca
 

@@ -83,7 +83,7 @@ line 101. we don't say anything about how we came to set the priors how we did.
 Should we say something? Or do we say it elsewhere?
 Maybe a few lines about weakly iformative priors and what that means in this context?
 
--> I added a few lines.
+->  todo...
 
 ## plots ##
 
