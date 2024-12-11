@@ -22,7 +22,8 @@ Tutorial 4 shows one way to plan the design of a future experiment using EHA.
 
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux")
+         "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux",
+         "rstan")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -34,6 +35,8 @@ options(brms.backend = "cmdstanr",
         mc.cores = parallel::detectCores(),
         future.fork.enable = TRUE,
         future.rng.onMisuse = "ignore") ## automatically set in RStudio
+
+rstan_options(auto_write = TRUE)
 
 supportsMulticore()
 detectCores()
@@ -72,6 +75,7 @@ For Solomon's blog posts, see here: [https://solomonkurz.netlify.app/tags/power/
 
 For Lisa's faux package, see here: [https://debruine.github.io/faux/](https://debruine.github.io/faux/).
 The vignettes provided by the faux package are particularly helpful and worth following before you take a deep dive in the below code. 
+There is also an associated [journal article](https://doi.org/10.1177/2515245920965119), which is worth reading. 
 
 And for some simpler worked examples of the general workflow (i.e., simpler than using EHA), then take a look at these examples by Rich, which show how you might simulate multi-level data for a range of factorial designs: [https://github.com/rich-ramsey/sim_demo](https://github.com/rich-ramsey/sim_demo)
 
@@ -79,31 +83,31 @@ And for some simpler worked examples of the general workflow (i.e., simpler than
 
 The basic workflow is as follows:
 
-1. Fit a regression model to an existing dataset.
-2. Use the regression model parameters to simulate one new dataset.
+1. Fit a regression model to existing data.
+2. Use the regression model parameters to simulate new data.
 3. Write a function to create 1000s of datasets and vary parameters of interest (e.g., sample size, trial count, effect size).
-4. Summarise the simulated data to estimate likely power or precision of the research design options.
+4. Summarise the simulated data to estimate likely power or precision of the various research designs.
 
 ## 2.3 - Exceptions to the normal workflow ##
 
 The basic workflow above is a modified version of that recommended by Solomon and Lisa.
-In a typical workflow, once the datasets are simulated, a regression model would be fit to each datatset.
-Then, the parameters from each model would be summarised to make a judgment about the likely precision or power of the desing.
-However, in the case of Model_4 in this tutorial, which took ~8 hours to build, we are not able to easily build 1000 models per variation in sample size and/or trial count, as that would take an unreasonably long time.
+In a typical workflow, once the datasets are simulated, a regression model would be fit to each dataset.
+Then, the parameters from each model would be summarised to make a judgment about the likely precision or power of the design.
+However, in the case of some of the models in this tutorial, which can take several hours to build, we are not able to easily build 1000 models per variation in parameter setting, such as sample size and/or trial count, as that would take an unreasonably long time on a desktop machine.
 Instead, we choose to take a simpler approach and summarise the data per bin and condition, rather than the parameter estimates from the model.
 Although this is not as satisfying, we feel it can still be a useful guide to set expectations. 
-To further save time and computational resources, we also choose to use a much simpler model than Model_4, in order to outline the basic approach to planning via data simulation. 
-The details on this simpler model structure are provided below.
+To further save time and computational resources, for the purposes of this planning tutorial, we also choose to use a smaller dataset than was used in the earlier tutorials. 
+The details on this simpler dataset and modelling procedure are provided below.
 
 # 3. Read in the data #
 
-Here, we again use data form Panis and Schmidt (2016), but to make things simpler, we focus on only 6 timebins (timebins 4-9) and two conditions (con and inc).
+Here, we again use data form Panis and Schmidt (2016), but to make things simpler, we focus on only 6 time bins (time bins 4-9) and two prime conditions (congruent and incongruent).
 
 ## read in and wrangle the raw data ##
 
 ```{r load-data}
 data <- read_csv("Tutorial_4_planning/data/tidyppp_Exp1_n6.csv") %>%
-  ## no mask condition only, neutral prime removed, timebins 4-9 only
+  ## no mask condition only, neutral prime removed, time bins 4-9 only
   filter(no_ma == 1, no_pr < 1, timebin %in% c(4:9)) %>% 
   ## remove unnecessary columns
   select(-c(bl, target_dir, corresp, resp, respac, rel_ma, irr_ma, ran_ma, no_ma)) %>%
@@ -134,12 +138,12 @@ summary data
 ```{r calculate-summary-data}
 data_pid <- data %>% 
   group_by(pid, timebin, prime) %>% 
-  summarise(outcome = mean(outcome))
+  summarise(outcome = mean(outcome, na.rm = TRUE))
 head(data_pid)
 
 data_group <- data %>% 
   group_by(timebin, prime) %>% 
-  summarise(outcome = mean(outcome))
+  summarise(outcome = mean(outcome, na.rm = TRUE))
 head(data_group)
 ```
 
@@ -181,9 +185,9 @@ https://discourse.mc-stan.org/t/specifying-formulates-for-interaction-between-ca
 
 And in the context of data simulation, index coding can be particularly useful, because it may be often easier and more intuitive to set condition means, rather than more complicated regression parameters, such as interaction terms.
 
-So, the approach here is to build an initial model using an index coding approach, but with a much simpler dataset than has been used in prior tutorials.
+The approach here is to build an initial model using an index coding approach, but with a subset of the data that was used in prior tutorials.
 
-Because we are building Bayesian regression models, which generate a posterior distribution per condition of interest in our index coding approach, we can simply calculate contrasts of interests and associated prevision or interval estimates (95% quantile intervals, for example) to address any questions we may have about comparisons between conditions, such as inc vs con in a particular timebin. 
+Because we are building Bayesian regression models, which generate a posterior distribution per condition of interest in our index coding approach, we can simply calculate contrasts of interests and associated precision or interval estimates (95% quantile intervals, for example) to address any questions we may have about comparisons between conditions, such as incongruent vs congruent in a particular time bin. 
 
 ## formula ##
 
@@ -203,7 +207,6 @@ get_prior(formula,
 
 ## visualise priors ##
 
-For an index coding model, priors will be set differently to how they were set in the earlier tutorials, because the earlier tutorials did not use an index coding approach.
 Using an index coding approach, each condition has a prior for the mean of that condition.
 And as we know from plot 3.1 above, the condition averages across the six time bins selected range from near zero on the hazard probability scale to 0.50. 
 And in principle, the more general case could involve any hazard value from zero to 1.
@@ -228,6 +231,9 @@ visualize("normal(0, 2)", "normal(0, 1)", "normal(0, 0.5)",
 ```
 
 (0,2) looks like it covers all of our likely values, even if it is too broad.
+
+For simplicity, we use these normal(0,2) priors for the mean per condition.
+However, if we were doing this for real, we would probably choose different priors that are similar to ones that were discussed in Tutorial_2a as well as in Supplmentary Materials.
 
 ## set priors ##
 
@@ -265,10 +271,11 @@ The model built without any concerns, errors or warnings.
 
 At this point, you would normally do the following:
 
-- model checking by looking at the convergence of chains and model diagnostics. 
+- check the model by looking at the convergence of chains and other model diagnostics. 
 We'll skip this step for now, just to move on to the main focus of planning and data simulation. 
 
 - Summarise and visualise the parameter estimates and/or posterior predictions.
+
 Below, we quickly summarise fixed effects from the model in cloglog values, and we also convert them to hazard values, which tend to be far easier to interpret.
 
 ## visualise fixed effect parameters from model bi ##
@@ -323,12 +330,12 @@ check.labels
 p4.1 <- ggplot(tidy_fixed, aes(x = bin, y = value, fill=prime)) +  
   stat_halfeye(alpha=0.7) +
   labs(title = "Model bi cloglog",
-       x = "timebin", y = "cloglog") +
+       x = "time bin", y = "cloglog") +
   scale_fill_brewer(palette = "Dark2") 
 p4.1
 
 ggsave ("Tutorial_4_planning/figures/index_cloglog.jpeg",
-        width = 6, height = 4)
+        width = 6, height = 4, dpi = 800)
 ```
 
 calculate hazards per condition per bin in the posterior dist
@@ -347,20 +354,20 @@ p4.2 <- ggplot(tidy_haz, aes(x = bin, y = hazard,
                                     fill=prime)) +  
   stat_halfeye(alpha=0.7) +
   labs(title = "hazard estimates",
-       x = "timebin", y = "hazard") +
+       x = "time bin", y = "hazard") +
   scale_fill_brewer(palette = "Dark2") +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) 
 p4.2
 
 ggsave ("Tutorial_4_planning/figures/index_hazard.jpeg",
-        width = 6, height = 4)
+        width = 6, height = 4, dpi = 800)
 ```
 
 warning about removing rows. 
 
 # 5. Simulate a single dataset #
 
-Note: For multi-level data, data simulation can be quite a convoluted process, and we therefore strongly recommend reading the power blogs by Solomon Kurz and working through the faux package vignettes, before getting stuck into the below code.
+Note: For multi-level data, data simulation can be quite a convoluted process, and we therefore strongly recommend reading the power blogs by Solomon Kurz and working through the faux package [vignettes](https://debruine.github.io/faux/index.html), before getting stuck into the below code.
 
 read in a prior model, if not already loaded.
 
@@ -385,7 +392,7 @@ fixef <- as_tibble(fixef(bi), rownames = "term") %>%
   mutate(across(where(is.double), \(x) round(x, 2)))
 fixef
 
-## b1 to b6 = timebin 1 to 6.
+## b1 to b6 = time bin 1 to 6.
 ## c = con
 b1c = -4.66
 b2c = -3.24
@@ -587,14 +594,14 @@ summarise the outcome data, which is produced based on the prob value, right?
 ```{r summary-d1-out}
 d1_out_pid <- d1_out %>% 
   group_by(subj, condition, bin) %>% 
-  summarise(outcome = mean(outcomen)) %>% 
+  summarise(outcome = mean(outcomen, na.rm = TRUE)) %>% 
   mutate(prime = if_else(condition == "cond1", "con", "inc"),
          prime = factor(prime))
 d1_out_pid
 
 d1_out_group <- d1_out %>% 
   group_by(condition, bin) %>% 
-  summarise(outcome = mean(outcomen)) %>% 
+  summarise(outcome = mean(outcomen, na.rm = TRUE)) %>% 
   mutate(prime = if_else(condition == "cond1", "con", "inc"),
          prime = factor(prime))
 d1_out_group
@@ -638,8 +645,7 @@ take a look at avg hazards and hazard ratios at the group level in the original 
 p3.1
 ```
 
-this is the descriptive data per bin and condition for hazards
-probability of a response/event, given that it has not happened yet
+this is the descriptive data per bin and condition for the hazard - probability of a response/event, given that it has not happened yet
 
 this is the group level summary data plotted in dat_plot
 
@@ -690,7 +696,7 @@ And keep in mind that we do need to think about the absolute hazard values, as w
 
 So con is close to 0.1, so let's fix it there as a round number and calculate some deviations from it.
 
-Given that the effect of interest was ~80% reduction in Sven's 2016 paper, let's play around with a range of effect sizes from e.g., 0.25, 0.5, 0.75.
+Given that the effect of interest was ~80% reduction in Sven's 2016 paper (Panis & Schmidt, 2016), let's play around with a range of effect sizes from e.g., 0.25, 0.5, 0.75.
 These would translate to a 75% reduction, 50% reduction and 25% reduction from con to inc.
 
 ```{r sim1-bin6-effect-sizes}
@@ -714,7 +720,7 @@ bin6
 # 7. Create a function to iterate through and simulate many datatsets
 
 create a function to simulate data
-These values are from the initial model and data from Sven's paper, but they can be modified when running the function, which we do below.
+These values are from the initial model and data from Sven's paper, which we created above in section 4, but they can be modified when running the function, which we do below.
 
 ```{r index-sim-function}
 index_sim <- function(subj_n = 10, rep_n = 200, bin_n = 6,  # these can be changed when calling the function
@@ -801,7 +807,7 @@ head(test_summary)
 
 # 8. Simulate data for a range of parameters
 
-vary trial count per condition and effect size, keep pid fixed at 10.
+vary trial count per condition and effect size, keep pid fixed at N=10.
 This will take some time, probably hours...go get a beer/coffee.
 For the purposes of this tutorial, eval is set to false in the below chunks, to save time.
 
@@ -913,7 +919,7 @@ p9.1 <- ggplot(sx1_sim,
                 width=.2, colour = "black") +
   scale_colour_brewer(palette = "Dark2") +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="timebin",
+  labs(x="time bin",
        y="outcome") + 
   facet_grid(fct_rev(rep_n)~b6c)
 p9.1
@@ -959,7 +965,7 @@ p9.2 <- ggplot(sx1_sim_check,
   geom_hline(yintercept = c(0.25, 0.5, 0.75), colour = "red") +
   scale_colour_brewer(palette = "Dark2") +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="timebin",
+  labs(x="time bin",
        y="outcome") + 
   facet_wrap(~rep_n)
 p9.2
@@ -967,7 +973,7 @@ p9.2
 
 # 10. calculate power / precision #
 
-basic idea - calculate the difference score in hazard between con and inc per bin and then report how many lower bound quantiles exclude zero? This of course is not a model-based estimate. But I think it should give a good guide to what we might expect.
+basic idea - calculate the difference score in hazard between con and inc per bin and then report how many lower bound 95% quantile intervals exclude zero? This of course is not a model-based estimate. But we think it should give a reasonable guide to what we might expect.
 
 ## calculate difference scores ##
 
@@ -1126,7 +1132,7 @@ ggsave ("Tutorial_4_planning/figures/sim1/bin6_power_col.jpeg",
 
 ok, on the basis of this analysis, we might make the following conclusions:
 
-- effects of con vs inc that are as large as previously reported by Panis et al., 2016 would be easy to detect with 100 trials and 10 pids. And probably less data than that also.
+- effects of con vs inc that are as large as previously reported by Panis & Schimdt (2016) would be easy to detect with 100 trials and 10 pids. And probably less data than that also.
 
 - Across all effect sizes, there is no benefit of adding more than 200 trials per condition.
 
@@ -1134,9 +1140,9 @@ ok, on the basis of this analysis, we might make the following conclusions:
 
 - Other analyses to run - how many individual pids per exp show a clear effect of con vs inc in bin 6? This would be useful to know if we used the small-N design logic and the individual as the unit of replication.
 
-# 11. Run some more follow-up sims #
+# 11. Run a follow-up simulation #
 
-Let's try a 50%, 60% and 70% reduction across N=10,15 and 20.
+Let's try a 50%, 60% and 70% reduction across N=10, 15 and 20.
 
 let's check effect sizes quickly.
 
@@ -1161,7 +1167,7 @@ bin6_v2
 ## run the sim ##
 
 vary effect size and pid.
-Again, as before, this will take some time, probably hours...go get a beer/coffee.
+Again, as before, this will take some time, probably hours...go get another beer/coffee.
 And again, eval is set to FALSE, to save time for the tutorial.
 
 ```{r run-sim2, eval=FALSE}
@@ -1272,7 +1278,7 @@ p11.1 <- ggplot(sx2_sim,
                 width=.2, colour = "black") +
   scale_colour_brewer(palette = "Dark2") +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="timebin",
+  labs(x="time bin",
        y="outcome") + 
   facet_grid(fct_rev(subj_n)~b6c)
 p11.1
@@ -1318,7 +1324,7 @@ p11.2 <- ggplot(sx2_sim_check,
   geom_hline(yintercept = c(0.3, 0.4, 0.5), colour = "red") +
   scale_colour_brewer(palette = "Dark2") +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="timebin",
+  labs(x="time bin",
        y="outcome") + 
   facet_wrap(~subj_n)
 p11.2
@@ -1326,7 +1332,7 @@ p11.2
 
 ## calculate power / precision ##
 
-basic idea - calculate the difference score in hazard between con and inc per bin and then report how many lower bound quantiles exclude zero? This of course is not a model-based estimate. But I think it should give a good guide to what we might expect.
+Same basic idea as in Simulation 1.
 
 ## calculate difference scores ##
 
