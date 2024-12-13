@@ -182,7 +182,7 @@ Figure 3 shows that the early upswing in hazard is equal for both priming condit
 
 This joint pattern of results is interesting because it can provide meaningfully different conclusions about psychological processes compared to conventional analyses, such as computing mean-average RT and accuracy across trials. Mean-average RT would only represent the overall ability of cognition to overcome interference, on average, across trials. For instance, if mean-average RT was higher in incongruent than congruent trials, one may conclude that cognitive mechanisms that support interference control are working as expected across trials, and are indexed by each recorded response. But such a conclusion is not supported when the effects are explored over a timeline. Instead, the psychological conclusion is much more nuanced and suggests that multiple states start, stop and possibly interact over a particular temporal window.
 
-(ref:descr-plot3-caption) Discrete-time hazard and conditional accuracy functions. Discrete time-to-event and conditional accuracy data were simulated for 2000 trials for each of two priming conditions (congruent and incongruent prime stimuli). Error bars represent +/- 1 standard error of the respective proportion. Bin width equals 100 ms. 
+(ref:descr-plot3-caption) Discrete-time hazard and conditional accuracy functions. Discrete time-to-event and conditional accuracy data were simulated for 1000 trials for each of two priming conditions (congruent and incongruent prime stimuli). Error bars represent +/- 1 standard error of the respective proportion. Bin width equals 100 ms. 
 
 ```{r plot3, fig.cap = "(ref:descr-plot3-caption)", out.width="80%"}
 knitr::include_graphics("../sims/figures/haz_acc_single.jpeg")

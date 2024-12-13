@@ -922,7 +922,14 @@ Figure 14. Do a facet_wrap by prime type. Put timebin on the x axis and cloglog 
 
 # Sven dec 10 still to do:
 
-adjust small error in Figure 3 + check Figure 10 + add second panel to Figure 10
+adjust small error in Figure 3 
+
+-> Done.
+
+check Figure 10 + add second panel to Figure 10
+
+-> 
+
 
 change ms code in section 4.1.2 (make it same as in tut)
 

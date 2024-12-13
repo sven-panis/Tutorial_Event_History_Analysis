@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This file simulates the data used in Figure 1 of the manuscript and then creates some plots.
+This file simulates the data used in Figures 1, 2, and 3 of the manuscript and then creates some plots.
 
 # load the libraries that we will be using #
 
@@ -1106,7 +1106,7 @@ with two rows
 
 with two columns
 
-```{r}
+```{r figure-1}
 p_haz_inset_facet <- p8.1b +
   geom_plot(data = inset_facet,
             vp.width = 1/3,
@@ -1366,7 +1366,7 @@ ggsave("sims/figures/haz_surv.jpeg",
        width = 7, height = 5, dpi=800)
 ```
 
-# Section 11: Simulate hazard data for 1 subject, 1 condition, 200 trials, and plot empirical hazard and survivor functions with error bars (Figure 2)
+# Section 11 (Figure 2): Simulate hazard data for 1 subject, 1 condition, 200 trials, and plot empirical hazard and survivor functions with error bars
 
 ## Simulate hazard data based on user-defined hazard function
 
@@ -1440,29 +1440,27 @@ ggsave("sims/figures/haz_surv_single.jpeg",
 
 # Section 12 (Figure 3): plot of hazard and ca(t) for 2 conditions with error bars
 
-## hazard
-
-### generate data set
+## generate data set
 
 ```{r}
 ## make it reproducible
 set.seed(8)
 
 ## apply function sim_haz
-data_single2 <- sim_haz(subj_n = 1, rep_n = 1000) %>%
+ntrials <- 1000
+
+data_single2 <- sim_haz(subj_n = 1, rep_n = ntrials) %>%
                mutate(period = bin,
                       trial = as.integer(str_sub(rep, start=4, end=7)),
                       condition = factor(condition, labels=c("congruent","incongruent"))) %>%
                select(-c("contrast","cumsum","outcomel","outcomen","bin","rep"))  %>%
                mutate(acc = ifelse(period<6 & condition=="incongruent",0,1),
-                      acc = ifelse(period==6 & condition=="incongruent" & trial < 500,0,acc)) 
+                      acc = ifelse(period==6 & condition=="incongruent" & trial < ntrials/2,0,acc)) 
 head(data_single2, n=20)
 summary(data_single2)
-
-
 ```
 
-### set up life table
+## set up life table
 
 ```{r}
 lifetable2 <- data_single2 %>%
@@ -1486,7 +1484,7 @@ lifetable2 <- data_single2 %>%
     ungroup() 
 ```
 
-## add ca(t)
+## get ca(t)
 
 ```{r}
 ca <- data_single2 %>% 
@@ -1500,7 +1498,7 @@ ca
 ```
 
 
-### plot hazard functions
+## plot hazard functions
 
 ```{r}
 p12.1 <-ggplot(lifetable2, aes(x = period, y = hazard,
@@ -1516,24 +1514,7 @@ p12.1 <-ggplot(lifetable2, aes(x = period, y = hazard,
 p12.1
 ```
 
-## accuracy 
-
-create some data
-
-```{r}
-acc <- tibble(
-  time = seq(1,10,1),
-  congruent = rep(1,length = 10),
-  incongruent = c(0, 0, 0, 0, 0, .5, 1, 1, 1, 1)
-) %>% 
-  pivot_longer(-time,
-               names_to = "condition",
-               values_to = "accuracy") %>% 
-  mutate(condition = factor(condition))
-head(acc,n=20)
-```
-
-line plot per bin
+## plot ca 
 
 ```{r}
 p12.2 <-ggplot(ca, aes(x = period, y = ca,
@@ -1551,7 +1532,7 @@ p12.2 <-ggplot(ca, aes(x = period, y = ca,
 p12.2
 ```
 
-Combine plots
+## Combine plots
 
 ```{r}
 p12.3 <- (p12.1 / p12.2) +
@@ -1563,7 +1544,3 @@ ggsave("sims/figures/haz_acc_single.jpeg",
        width = 7, height = 6, dpi=800)
 
 ```
-
-
-
-
