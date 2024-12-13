@@ -936,7 +936,8 @@ change ms code in section 4.1.2 (make it same as in tut)
 
 appendix/separate Rmd file... + {var} in functions...?
 
--> 
+-> separate supplementary.Rmd created.
+
 
 clean up html files 2a (delete old figures, 
 
@@ -945,12 +946,18 @@ clean up html files 2a (delete old figures,
 Mention tut 2b priors line 101, ...)
 -> Done.
 
+
 change Figure comparison for ca
 -> 
+
 
 check for timebin -> time bin
 
 -> 
+
+Change grand average to population-level expectations... and participant-level expectations...
+
+->
 
 
 # Rich Dec 10th
@@ -960,7 +967,7 @@ check for timebin -> time bin
 in the main text, change to Supplementary Figure X (as appropriate). 
 e.g., page 28, Figure 15 when talking about priors.
 
--> 
+-> Done.
 
 ## figure 11 ##
 

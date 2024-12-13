@@ -304,7 +304,7 @@ Therefore, our ultimate goal is twofold: first, we want to convince readers of t
 
 \section{2. A brief introduction to event history analysis}\label{a-brief-introduction-to-event-history-analysis}
 
-We recommend several excellent textbooks for a comprehensive background context to EHA (Allison, 2010; Singer \& Willett, 2003) and for a more general introduction to understanding regression equations (Gelman, Hill, \& Vehtari, 2020; Winter, 2019). Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the supplementary material.
+We recommend several excellent textbooks for a comprehensive background context to EHA (Allison, 2010; Singer \& Willett, 2003) and for a more general introduction to understanding regression equations (Gelman, Hill, \& Vehtari, 2020; Winter, 2019). Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
 
 \subsection{2.1 Basic features of event history analysis}\label{basic-features-of-event-history-analysis}
 
@@ -322,7 +322,7 @@ To apply EHA, one must be able to:
 
 In EHA, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. Since our focus here is on hazard models that use discrete time units, we describe that approach. After dividing time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 timebins), let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. For example, the first response might occur at 546 ms and it would be in timebin 6 (any RTs from 501 ms to 600 ms).
 
-Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in part A of the supplementary material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins.
+Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in part A of the Supplemental Material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins.
 
 
 
@@ -339,7 +339,7 @@ Because the survivor function is a decreasing function of time, the error bars i
 
 \subsection{2.2 Benefits of event history analysis}\label{benefits-of-event-history-analysis}
 
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks. Instead, we briefly list the benefits below, and refer the reader to section F of the supplementary material for more detailed coverage of the benefits. The benefits include:
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks. Instead, we briefly list the benefits below, and refer the reader to section F of the Supplemental Material for more detailed coverage of the benefits. The benefits include:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -412,7 +412,7 @@ We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the 
 \section{4. Tutorials}\label{tutorials}
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
-Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the supplemental material for a list of the custom functions).
+Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the Supplemental Material for a list of the custom functions).
 
 Our list of tutorials is as follows:
 
@@ -566,7 +566,7 @@ In the code of Tutorial 1a, this is accomplished as follows.
 
 \normalsize
 
-Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see section A of the supplementary material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group\_nest() function, and supply a user-defined censoring time and bin width to our custom function ``censor()'', as follows.
+Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see section A of the Supplemental Material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group\_nest() function, and supply a user-defined censoring time and bin width to our custom function ``censor()'', as follows.
 
 \footnotesize
 
@@ -694,7 +694,7 @@ In this third tutorial, we illustrate how to fit Bayesian multilevel regression 
 
 \subsubsection{4.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section C in the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
@@ -729,7 +729,7 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial\_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs (Gelman, Vehtari, et al., 2020).
 
-The middle column of Figure 15 in section E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 15 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
+The middle column of Supplementary Figure 2 (section E of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 2 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
 
 \subsubsection{4.3.3 Model M0i: A null model with index coding}\label{model-m0i-a-null-model-with-index-coding}
 
@@ -1188,9 +1188,6 @@ Halley, E. (1693). VI. An estimate of the degrees of the mortality of mankind; d
 \bibitem[\citeproctext]{ref-heiss2021}
 Heiss, A. (2021, November 10). A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel {Bayesian} Models. \url{https://doi.org/10.59350/wbn93-edb02}
 
-\bibitem[\citeproctext]{ref-holdenDispersionResponseTimes2009}
-Holden, J. G., Van Orden, G. C., \& Turvey, M. T. (2009). Dispersion of response times reveals cognitive dynamics. \emph{Psychological Review}, \emph{116}(2), 318--342. \url{https://doi.org/10.1037/a0014849}
-
 \bibitem[\citeproctext]{ref-hosmerAppliedSurvivalAnalysis2011}
 Hosmer, D. W., Lemeshow, S., \& May, S. (2011). \emph{Applied {Survival Analysis}: {Regression Modeling} of {Time} to {Event Data}} (2nd ed). Hoboken: John Wiley \& Sons.
 
@@ -1202,9 +1199,6 @@ Kantowitz, B. H., \& Pachella, R. G. (2021). The {Interpretation} of {Reaction T
 
 \bibitem[\citeproctext]{ref-R-tidybayes}
 Kay, M. (2023). \emph{{tidybayes}: Tidy data and geoms for {Bayesian} models}. \url{https://doi.org/10.5281/zenodo.1308151}
-
-\bibitem[\citeproctext]{ref-kelsoOutlineGeneralTheory2013}
-Kelso, J. A. S., Dumas, G., \& Tognoli, E. (2013). Outline of a general theory of behavior and brain coordination. \emph{Neural Networks: The Official Journal of the International Neural Network Society}, \emph{37}, 120--131. \url{https://doi.org/10.1016/j.neunet.2012.09.003}
 
 \bibitem[\citeproctext]{ref-kruschkeBayesianNewStatistics2018}
 Kruschke, J. K., \& Liddell, T. M. (2018). The {Bayesian New Statistics}: {Hypothesis} testing, estimation, meta-analysis, and power analysis from a {Bayesian} perspective. \emph{Psychonomic Bulletin \& Review}, \emph{25}(1), 178--206. \url{https://doi.org/10.3758/s13423-016-1221-4}
@@ -1220,9 +1214,6 @@ Lakens, D. (2022). Sample {Size Justification}. \emph{Collabra: Psychology}, \em
 
 \bibitem[\citeproctext]{ref-landesIntroductionEventHistory2020}
 Landes, J., Engelhardt, S. C., \& Pelletier, F. (2020). An introduction to event history analyses for ecologists. \emph{Ecosphere}, \emph{11}(10), e03238. \url{https://doi.org/10.1002/ecs2.3238}
-
-\bibitem[\citeproctext]{ref-luceResponseTimesTheir1991}
-Luce, R. D. (1991). \emph{Response times: Their role in inferring elementary mental organization} (1. issued as paperback). Oxford: Univ. Press.
 
 \bibitem[\citeproctext]{ref-williammatthewmakehamLawMortalityConstruction1860}
 Makeham, W. M. (1860). \emph{On the {Law} of {Mortality} and the {Construction} of {Annuity Tables}}. {The Assurance Magazine, and Journal of the Institute of Actuaries}.
@@ -1290,9 +1281,6 @@ Teachman, J. D. (1983). Analyzing social processes: {Life} tables and proportion
 \bibitem[\citeproctext]{ref-tongStatisticalInferenceEnables2019}
 Tong, C. (2019). Statistical {Inference Enables Bad Science}; {Statistical Thinking Enables Good Science}. \emph{The American Statistician}, \emph{73}(sup1), 246--261. \url{https://doi.org/10.1080/00031305.2018.1518264}
 
-\bibitem[\citeproctext]{ref-townsendTruthConsequencesOrdinal1990}
-Townsend, J. T. (1990). Truth and consequences of ordinal differences in statistical distributions: {Toward} a theory of hierarchical inference. \emph{Psychological Bulletin}, \emph{108}(3), 551--567. \url{https://doi.org/10.1037/0033-2909.108.3.551}
-
 \bibitem[\citeproctext]{ref-wickelgrenSpeedaccuracyTradeoffInformation1977}
 Wickelgren, W. A. (1977). Speed-accuracy tradeoff and information processing dynamics. \emph{Acta Psychologica}, \emph{41}(1), 67--85. \url{https://doi.org/10.1016/0001-6918(77)90012-9}
 
@@ -1330,133 +1318,6 @@ Winter, B. (2019). \emph{Statistics for {Linguists}: {An Introduction Using R}}.
 Wolkersdorfer, M. P., Panis, S., \& Schmidt, T. (2020). Temporal dynamics of sequential motor activation in a dual-prime paradigm: {Insights} from conditional accuracy and hazard functions. \emph{Attention, Perception, \& Psychophysics}, \emph{82}(5), 2581--2602. \url{https://doi.org/10.3758/s13414-020-02010-5}
 
 \end{CSLReferences}
-
-\newpage
-
-\section{Supplementary material}\label{supplementary-material}
-
-\subsection{A. Definitions of discrete-time hazard, surivor, probability mass, and conditional accuracy functions}\label{a.-definitions-of-discrete-time-hazard-surivor-probability-mass-and-conditional-accuracy-functions}
-
-The shape of a distribution of waiting times can be described in multiple ways (Luce, 1991). After dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition.
-Because waiting times can only increase, discrete-time EHA focuses on the discrete-time hazard function
-
-\noindent h(t) = P(RT = t\textbar{} RT \(\geq\) t) \hfill  (1)
-
-\noindent and the discrete-time survivor function
-
-\noindent S(t) = P(RT \(>\) t) = {[}1-h(t){]}.{[}1-h(t-1){]}.{[}1-h(t-2){]}\ldots{[}1-h(1){]} \hfill  (2)
-
-\noindent and not on the probability mass function
-
-\noindent P(t) = P(RT = t) = h(t).S(t-1) \hfill  (3)
-
-\noindent nor the cumulative distribution function
-
-\noindent F(t) = P(RT \(\leq\) t) = 1-S(t) \hfill  (4)
-
-The discrete-time hazard function of event occurrence gives you for each bin the probability that the event occurs (sometime) in that bin, given that the event has not occurred yet in previous bins. This conditionality in the definition of hazard is what makes the hazard function so diagnostic for studying event occurrence, as an event can physically not occur when it has already occurred before. While the discrete-time hazard function assesses the unique risk of event occurrence associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the probability that the event occurs afer bin t. The probability mass function cumulates the risk of event occurrence in bin t with the risks of event nonoccurrence in bins 1 to t-1. From equation 3 we find that hazard in bin t is equal to P(t)/S(t-1).
-
-For two-choice RT data, the discrete-time hazard function can be extended with the discrete-time conditional accuracy function
-
-\noindent ca(t) = P(correct \textbar{} RT = t) \hfill  (5)
-
-\noindent which gives you for each bin the probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977). The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
-
-The survivor function provides a context for the hazard function, as S(t-1) = P(RT \textgreater{} t-1) = P(RT \(\geq\) t) tells you on how many percent of the trials the estimate h(t) = P(RT = t\textbar{} RT \(\geq\) t) is based. The probability mass function provides a context for the conditional accuracy function, as P(t) = P(RT = t) tells you on how many percent of the trials the estimate ca(t) = P(correct \textbar{} RT = t) is based.
-
-While psychological RT data is typically measured in small, continuous units (e.g., milliseconds), discrete-time EHA treats the RT data as interval-censored data, because it only uses the information that the response occurred sometime in a particular bin of time (x,y{]}: x \textless{} RT \(\leq\) y. If we want to use the exact event times, then we treat time as a continuous variable, and let RT be a continous random variable denoting a particular person's response time in a particular experimental condition. Continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT \(\leq\) t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT \(>\) t) and the hazard rate function \(\lambda\)(t) = f(t)/S(t). The hazard rate function gives you the instantaneous \emph{rate} of event occurrence at time point t, given that the event has not occurred yet.
-
-\subsection{B. Custom functions for descriptive discrete-time hazard analysis}\label{b.-custom-functions-for-descriptive-discrete-time-hazard-analysis}
-
-We defined 12 custom functions that we list here.
-
-\begin{itemize}
-\tightlist
-\item
-  censor(df,timeout,bin\_width) : divide the time segment (0,timeout{]} in bins, identify any right-censored observations, and determine the discrete RT (time bin rank)
-\item
-  ptb(df) : transform the person-trial data set to the person-trial-bin data set
-\item
-  setup\_lt(ptb) : set up a life table for each level of 1 independent variable
-\item
-  setup\_lt\_2IV(ptb) : set up a life table for each combination of levels of 2 independent variables
-\item
-  calc\_ca(df) : estimate the conditinal accuracies when there is 1 independent variable
-\item
-  calc\_ca\_2IV(df) : estimate the conditional accuraies when there are 2 independent variables
-\item
-  join\_lt\_ca(df1,df2) : add the ca(t) estimates to the life tables (1 independent variable)
-\item
-  join\_lt\_ca\_2IV(df1, df2) : add the ca(t) estimates to the life tables (2 independent variables)
-\item
-  extract\_median(df) : estimate quantiles S(t)\textsubscript{.50} (1 independent variable)
-\item
-  extract\_median\_2IV(df) : estimate quantiles S(t)\textsubscript{.50} (2 independent variables)
-\item
-  plot\_eha(df, subj, haz\_yaxis=1, first\_bin\_shown=1, aggregated\_data=F, Nsubj=6) : create plots of the discrete-time functions (1 independent variable), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
-\item
-  plot\_eha\_2IV(df, subj, haz\_yaxis=1, first\_bin\_shown=1, aggregated\_data=F, Nsubj=6) : create plots of the discrete-time functions (2 independent variables), and specify the upper limit of the y-axis in the hazard plot, with which bin to start plotting, whether the data is aggregated across participants, and across how many participants
-\end{itemize}
-
-When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc\_ca() and join\_lt\_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot\_eha().
-When you want to analyse simple RT data from a detection experiment with two independent variables, the functions calc\_ca\_2IV() and join\_lt\_ca\_2IV() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot\_eha\_2IV().
-
-\subsection{C. Link functions}\label{c.-link-functions}
-
-Popular link functions include the logit link and the complementary log-log link, as shown in Figure 14.
-
-
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/linkfunctions} 
-
-}
-
-\caption{The logit and cloglog link functions.}\label{fig:plot-link-functions}
-\end{figure}
-
-\subsection{D. Regression equations}\label{d.-regression-equations}
-
-An example (single-level) discrete-time hazard model with three predictors (TIME, X\textsubscript{1}, X\textsubscript{2}), the cloglog link function, and a second-order polynomial specification for TIME can be written as follows:
-
-\noindent cloglog{[}h(t){]} = ln(-ln{[}1-h(t){]}) = {[}\(\beta\)\textsubscript{0}ONE + \(\beta\)\textsubscript{1}(TIME-9) + \(\beta\)\textsubscript{2}(TIME-9)\(^2\){]} + {[}\(\beta\)\textsubscript{3}X\textsubscript{1} + \(\beta\)\textsubscript{4}X\textsubscript{2} + \(\beta\)\textsubscript{5}X\textsubscript{2}(TIME-9){]} \hfill  (6)
-
-The main predictor variable TIME is the time bin index t that is centered on value 9 in this example. The first set of terms within brackets, the parameters \(\beta\)\textsubscript{0} to \(\beta\)\textsubscript{2} multiplied by their polynomial specifications of (centered) time, represents the shape of the baseline cloglog-hazard function (i.e., when all predictors X\textsubscript{i} take on a value of zero). The second set of terms (the beta parameters \(\beta\)\textsubscript{3} to \(\beta\)\textsubscript{5}) represents the vertical shift in the baseline cloglog-hazard for a 1 unit increase in the respective predictor variable. Predictors can be discrete, continuous, and time-varying or time-invariant. For example, the effect of a 1 unit increase in X\textsubscript{1} is to vertically shift the whole baseline cloglog-hazard function by \(\beta\)\textsubscript{3} cloglog-hazard units. However, if the predictor interacts linearly with TIME (see X\textsubscript{2} in the example), then the effect of a 1 unit increase in X\textsubscript{2} is to vertically shift the predicted cloglog-hazard in bin 9 by \(\beta\)\textsubscript{4} cloglog-hazard units (when TIME-9 = 0), in bin 10 by \(\beta\)\textsubscript{4} + \(\beta\)\textsubscript{5} cloglog-hazard units (when TIME-9 = 1), and so forth. To interpret the effects of a predictor, its \(\beta\) parameter is exponentiated, resulting in a hazard ratio (due to the use of the cloglog link). When using the logit link, exponentiating a \(\beta\) parameter results in an odds ratio.
-
-An example (single-level) discrete-time hazard model with a general specification for TIME (separate intercepts for each of six bins, where D1 to D6 are binary indicator variables identifying each bin) and a single predictor (X\textsubscript{1}) can be written as follows:
-
-\noindent cloglog{[}h(t){]} = {[}\(\beta\)\textsubscript{0}D1 + \(\beta\)\textsubscript{1}D2 + \(\beta\)\textsubscript{2}D3 + \(\beta\)\textsubscript{3}D4 + \(\beta\)\textsubscript{4}D5 + \(\beta\)\textsubscript{5}D6{]} + {[}\(\beta\)\textsubscript{6}X\textsubscript{1}{]} \hfill  (7)
-
-\subsection{E. Prior distributions}\label{e.-prior-distributions}
-
-To gain a sense of what prior \emph{logit} values would approximate a uniform distribution on the probability scale, Kurz (2023a) simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Figure 15 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to Kurz (2023a), such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
-
-
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/plot_of_priors} 
-
-}
-
-\caption{Prior distributions for the Intercept on the logit and/or cloglog scales (middle column), and their implications on the probability scale after applying the inverse-logit (or logistic) transformation (left column), and the inverse-cloglog transformation (right column).}\label{fig:plot-priors}
-\end{figure}
-
-To gain a sense of what prior \emph{cloglog} values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale.
-However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model.
-
-\subsection{F. Advantages of hazard analysis}\label{f.-advantages-of-hazard-analysis}
-
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by Holden, Van Orden, and Turvey (2009), ``probability density {[}and mass{]} functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions'' (p.~331) when one is interested in studying the detailed shape of a RT distribution (see also Figure 1 in Panis, Schmidt, et al., 2020). Therefore, when the goal is to study how psychological effects change over time, hazard and conditional accuracy functions are the preferred ways to describe the RT + accuracy data.
-
-Second, because RT distributions may differ from one another in multiple ways, Townsend (1990) developed a dominance hierarchy of statistical differences between two arbitrary distributions A and B. For example, if h\textsubscript{A}(t) \textgreater{} h\textsubscript{B}(t) for all t, then both hazard functions are said to show a complete ordering. Townsend (1990) concluded that stronger conclusions can be drawn from data when comparing the hazard functions using EHA. For example, when mean A \textless{} mean B, the hazard functions might show a complete ordering (i.e., for all t), a partial ordering (e.g., only for t \textgreater{} 300 ms, or only for t \textless{} 500 ms), or they may cross each other one or more times.
-
-Third, EHA does not discard right-censored observations when estimating hazard functions, that is, trials for which we do not observe a response during the data collection period in a trial so that we only know that the RT must be larger than some value (e.g., the response deadline). This is important because although a few right-censored observations are inevitable in most RT tasks, a lot of right-censored observations are expected in experiments on masking, the attentional blink, and so forth. In other words, by using EHA you can analyze RT data from experiments that typically do not measure response times. As a result, EHA can also deal with long RTs in experiments without a response deadline, which are typically treated as outliers and are discarded before calculating a mean. This orthodox procedure leads to underestimation of the true mean. By introducing a fixed censoring time for all trials at the end of the analysis time window, trials with long RTs are not discarded but contribute to the risk set of each bin.
-
-Fourth, hazard modeling allows incorporating time-varying explanatory covariates such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. (Allison, 2010). This is useful for linking physiological effects to behavioral effects when performing cognitive psychophysiology (Meyer et al., 1988).
-
-Finally, as explained by Kelso, Dumas, and Tognoli (2013), it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and possibly ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models can often predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data (Panis, Moran, et al., 2020; Panis \& Schmidt, 2016).
 
 
 \end{document}

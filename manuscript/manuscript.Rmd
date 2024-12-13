@@ -37,7 +37,7 @@ figurelist        : no
 tablelist         : no
 footnotelist      : no
 classoption       : "man, donotrepeattitle"
-appendix          : SupplementaryMaterial.Rmd
+#appendix          : SupplementaryMaterial.Rmd
 output            : papaja::apa6_pdf
 # output            : papaja::apa6_word
 editor_options: 
@@ -130,7 +130,7 @@ Therefore, our ultimate goal is twofold: first, we want to convince readers of t
 
 # 2. A brief introduction to event history analysis
 
-We recommend several excellent textbooks for a comprehensive background context to EHA [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010] and for a more general introduction to understanding regression equations [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the supplementary material.
+We recommend several excellent textbooks for a comprehensive background context to EHA [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010] and for a more general introduction to understanding regression equations [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
 
 ## 2.1 Basic features of event history analysis 
 
@@ -144,7 +144,7 @@ To apply EHA, one must be able to:
 
 In EHA, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. Since our focus here is on hazard models that use discrete time units, we describe that approach. After dividing time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 timebins), let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. For example, the first response might occur at 546 ms and it would be in timebin 6 (any RTs from 501 ms to 600 ms). 
 
-Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in part A of the supplementary material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins. 
+Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in part A of the Supplemental Material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins. 
 
 
 (ref:descr-plot2-caption) Discrete-time hazard and survivor functions. Discrete time-to-event data were simulated for 200 trials of 1 experimental condition. Error bars represent +/- 1 standard error of the respective proportion. While the hazard function is the vehicle for inferring the time course of cognitive processes, the survival probability S(t-1) can help to qualify or provide context to the interpretation of the hazard probability h(t). For example, the high hazard of .60 = h(t=6) is experienced only by 44 percent of the trials, as S(t=5) = .44. 
@@ -156,7 +156,7 @@ knitr::include_graphics("../sims/figures/haz_surv_single.jpeg")
 
 ## 2.2 Benefits of event history analysis
 
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks. Instead, we briefly list the benefits below, and refer the reader to section F of the supplementary material for more detailed coverage of the benefits. The benefits include:
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks. Instead, we briefly list the benefits below, and refer the reader to section F of the Supplemental Material for more detailed coverage of the benefits. The benefits include:
 
 1. Hazard functions are more diagnostic than density functions when one is interested in studying the detailed shape of a RT distribution (Holden et al., 2009).
 
@@ -222,7 +222,7 @@ We used `r my_r_citation$r` for all reported analyses. The content of the tutori
 # 4. Tutorials
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
-Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the supplemental material for a list of the custom functions).
+Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the Supplemental Material for a list of the custom functions).
 
 Our list of tutorials is as follows:
 
@@ -323,7 +323,7 @@ data_wr <- data_wr %>%
 ```
 \normalsize
 
-Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see section A of the supplementary material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
+Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see section A of the Supplemental Material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
 
 \footnotesize
 ```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
@@ -414,7 +414,7 @@ In this third tutorial, we illustrate how to fit Bayesian multilevel regression 
 
 ### 4.3.1 Hazard model considerations 
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section C in the supplementary material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by @mcelreathStatisticalRethinkingBayesian2020, the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section C in the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by @mcelreathStatisticalRethinkingBayesian2020, the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-*N* design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set [@allisonSurvivalAnalysisUsing2010]. When there is clustering in the data, as in the case of a small-*N* design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models [@allisonSurvivalAnalysisUsing2010]. 
 
@@ -445,7 +445,7 @@ mutate(timebin = factor(period, levels = c(6:15)),
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs [@gelmanBayesianWorkflow2020].
 
-The middle column of Figure 15 in section E of the supplementary material shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B in Figure 15 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
+The middle column of Supplementary Figure 2 (section E of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 2 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
 
 ### 4.3.3 Model M0i: A null model with index coding
 
@@ -745,7 +745,3 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 ::: {#refs custom-style="Bibliography"}
 :::
 
-\newpage
-
-```{r child = "SupplementaryMaterial.Rmd"}
-```
