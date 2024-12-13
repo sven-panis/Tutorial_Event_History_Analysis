@@ -969,6 +969,22 @@ Add Disclosures to ms.
 ->
 
 
+Generate html files...
+
+->
+
+Create combined file (ms + supps) for PsychArxiv
+
+->
+
+Put on Psycharchiv
+
+->
+
+Submit to Advances in Methods and Practices in Psychological Science
+
+->
+
 
 
 # Rich Dec 10th

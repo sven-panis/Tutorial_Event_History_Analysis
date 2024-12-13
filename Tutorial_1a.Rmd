@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 This Tutorial_1a file wrangles raw data from Experiment 1 of Panis and Schmidt (2016), and illustrates how to calculate descriptive statistics. It uses functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
-To set up a life table, the user has to select a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (i.e., a cutoff time, or timeout). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
+To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (i.e., a cutoff time, or timeout). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
 
 # 1. Load the libraries that we will be using. 
 
@@ -125,7 +125,7 @@ summary(data_wr)
 
 # 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
 
-Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function **plot_eha** (line 134-136 in custom_functions.R) as above (lines 96-99).
+Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function **plot_eha** (line 164-166 in custom_functions.R) as above (lines 119-122).
 
 ```{r load-functions}
 source("custom_functions.R")
