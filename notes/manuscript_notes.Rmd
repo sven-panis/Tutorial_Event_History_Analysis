@@ -949,7 +949,7 @@ Mention tut 2b priors line 101, ...)
 
 change Figure comparison for ca
 
--> 
+-> Done.
 
 
 check for timebin -> time bin
@@ -986,7 +986,7 @@ very minor point. I would make figure smaller in height. There is a lot of white
 I would also fatten the point and the lines to make them easier to see.
 Add more dodge if necessary.
 
-->
+-> Done.
 
 ## conclusion ##
 
