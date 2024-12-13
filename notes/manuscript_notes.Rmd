@@ -954,28 +954,36 @@ change Figure comparison for ca
 
 check for timebin -> time bin
 
--> 
+-> 1 hour...
 
 Change grand average to population-level expectations... and participant-level expectations...
 
-->
+-> 30 min..
+
+
 
 Cover letter, reviewers, PsychArchiv
 
-->
+-> 1 hour...
 
 Add Disclosures to ms.
 
-->
+-> 30 minutes...
+
+
+
 
 
 Generate html files...
 
-->
+-> Done.   !!!!!! Tutorial 4 -> eval=F in general settings !!!!!!!!
+
+
+
 
 Create combined file (ms + supps) for PsychArxiv
 
-->
+-> 20 minutes....
 
 Put on Psycharchiv
 
