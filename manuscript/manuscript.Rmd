@@ -7,16 +7,16 @@ author:
     corresponding : yes    # Define only one corresponding author
     address       : "ETH GLC, room G16.2, Gloriastrasse 37/39, 8006 Zürich"
     email         : "sven.panis@hest.ethz.ch"
-    role: # Contributorship roles (e.g., CRediT, https://credit.niso.org/)
-      - "Conceptualization"
-      - "Writing - Original Draft Preparation"
-      - "Writing - Review & Editing"
+#    role: # Contributorship roles (e.g., CRediT, https://credit.niso.org/)
+#      - "Conceptualization"
+#      - "Writing - Original Draft Preparation"
+#      - "Writing - Review & Editing"
   - name          : "Richard Ramsey"
     affiliation   : "1"
-    role:
-      - "Conceptualization"
-      - "Writing - Review & Editing"
-      - "Supervision"
+#    role:
+#      - "Conceptualization"
+#      - "Writing - Review & Editing"
+#      - "Supervision"
 affiliation:
   - id            : "1"
     institution   : "ETH Zürich"
