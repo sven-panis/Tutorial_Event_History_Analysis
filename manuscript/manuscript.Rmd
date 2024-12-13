@@ -314,8 +314,8 @@ In the code of Tutorial 1a, this is accomplished as follows.
 \footnotesize
 ```{r setup-data-tut1, echo=TRUE}
 data_wr<-read_csv("../Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
-colnames(data_wr) <- c("pid","bl","tr","condition","resp","acc","rt","trial") 
 data_wr <- data_wr %>% 
+  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr) %>% 
   mutate(condition = condition + 1, # original levels were 0, 1, 2.
          condition = factor(condition, 
                             levels=c(1,2,3), 

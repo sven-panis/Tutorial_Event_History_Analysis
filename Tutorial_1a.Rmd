@@ -107,7 +107,7 @@ head(data_wr)
 
 # change some variable names to required names: pid, trial, condition, rt, and acc.
 data_wr <- data_wr %>% 
-  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr)
+  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr) %>%
 
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
@@ -116,7 +116,6 @@ data_wr <- data_wr %>%
 # acc to indicate column with accuracies (1/0)
 
 # create factor for condition (prime type)
-data_wr <- data_wr %>% 
   mutate(condition = condition + 1,
          condition = factor(condition,
                             levels = c(1,2,3), 
