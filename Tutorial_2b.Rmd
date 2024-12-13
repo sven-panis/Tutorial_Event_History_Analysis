@@ -100,6 +100,8 @@ head(data_M1i_ca)
 
 ## Set up priors for M1i_ca.
 
+As we expect conditional accuracies ranging between (and including) 0 and 1, we use a flat prior on the logit scale for our intercepts (see section E in the supplemental material).
+
 ```{r priors-cloglog-M1i-ca}
 priors_M1i_ca <- c(
   set_prior("student_t(7.61, 0, 1.57)", class = "b"), # use flat prior on logit scale for the proportion ca 
@@ -207,45 +209,6 @@ p_tidy_fixed_ca
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png", width = 10, height = 8, dpi = 800)
 ```
 
-#
-```{r plot-post-M0i-ca-alt}
-tidy_fixed_ca <- post_ca %>% 
-  select(starts_with("b_"), .chain, .iteration, .draw) %>% 
-  rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
-  pivot_longer(-c(chain, draw, iter)) %>% 
-  mutate(timebin = str_sub(name,10,11),
-         timebin = factor(str_remove(timebin,":"),levels=c(6:15)),
-         condition = str_sub(name,17,18),
-         condition = factor(str_remove(condition,"e"),
-                            levels=c(1,2,3),
-                            labels=c("blank","congruent","incongruent")))
-head(tidy_fixed_ca)
-tail(tidy_fixed_ca)
-
-# plot
-p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill=condition)) +  
-  stat_halfeye(point_interval = "median_qi",
-               .width = c(.80,.95),
-               alpha=0.7,
-               position = pd) +
-  labs(title = 'Posterior distributions for population-level\neffects in Model M1i_ca',
-       x = "time bin", 
-       y = "logit-ca") +
-  scale_fill_brewer(palette = "Dark2") +
-  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
-  scale_y_continuous(limits=c(-10,10)) +
-  theme(axis.text.x = element_text(angle=90)) #+
-  #facet_wrap(~condition)
-p_tidy_fixed_ca
-```
-
-```{r save-post-alt, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_postdistr_alt.png", width = 10, height = 8, dpi = 800)
-```
-
-#
-
-
 ## Plot predicted conditional accuracy functions 
 
 ### Grand mean
@@ -346,14 +309,12 @@ p1_theme <- p1 + theme(legend.position = "none")
     theme(legend.position = "bottom")
 ```
 
-Save plot.
+Save combined plot.
 
 ```{r save-combined-pred, eval=F}
 # save combined plot
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png", width = 10, height = 12, dpi = 800)
 ```
-
-
 
 ## Plot average marginal effects (AMEs)
 
@@ -389,7 +350,7 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
 ```
 
 ```{r grand-ame-plot}
- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca, 
+p11 <- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca, 
                        fill=contrast)) +
   stat_lineribbon(alpha = 0.5, 
                   point_interval = "mean_qi",
@@ -404,8 +365,9 @@ write_csv(table, file="Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
   scale_color_brewer(palette = "Dark2") +
   theme(axis.text.x = element_text(angle=90)) +
   labs(y = "difference in predicted ca") +
-  ggtitle("Grand average marginal effect") +
+#  ggtitle("Grand average marginal effect") +
   facet_wrap(~contrast)
+p11
 ```
 
 ```{r save-grand-AMEs, eval=F}
@@ -439,7 +401,7 @@ epreds_pid_diffs %>%
 ```
 
 ```{r epred-pid-ame-plot}
- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca, 
+p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca, 
                        fill=contrast, color=contrast)) +
     stat_lineribbon(alpha = 0.5, 
                     point_interval = "mean_qi",
@@ -452,10 +414,36 @@ epreds_pid_diffs %>%
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(-1,1)) +
     labs(y = "difference in predicted ca") +
-    ggtitle("Subject-specific AMEs") +
+   # ggtitle("Subject-specific AMEs") +
     facet_wrap(~pid, ncol=3)
+p22
 ```
 
 ```{r save-pid-AMEs, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pid_AMEs.png", width = 10, height = 8, dpi = 800)
 ```
+
+Combine the plots.
+
+```{r save-ames-combined-ca, eval=F}
+# combine 2 plots
+p11_theme <- p11 + theme(legend.position = "none")
+
+(p11_theme / p22) +
+    plot_annotation(tag_levels = 'A') +
+   # plot_layout(guides = "collect",
+  #              axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save combined plot.
+
+```{r save-combined-ames-ca, eval=F}
+# save combined plot
+ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 10, height = 12, dpi = 800)
+```
+
+
+
+
+
