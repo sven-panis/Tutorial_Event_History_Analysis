@@ -1249,7 +1249,7 @@ ggsave("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png", width = 10, height = 8, d
 knitr::include_graphics("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png")
 ```
 
-The shape of the prior predictive distribution for 1 bin looks as expected (compare with Figure 16 (row F) in the supplementary material): hazard values below .5 are more likely than hazard values above .5.
+The shape of the prior predictive distribution for 1 bin looks as expected (compare with Supplementary Figure 2 (row F) in the Supplemental Material): hazard values below .5 are more likely than hazard values above .5.
 
 Now use add_predicted_draws() to simulate prior-based data for our 10 bins and 6 subjects, while taking into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
 
