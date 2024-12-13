@@ -90,7 +90,7 @@ save(model_M1i_ca_f, file="Tutorial_3_Frequentist/model_M1i_ca_f.RData")
 
 ```{r effects-M1i-ca-f}
 load("Tutorial_3_Frequentist/model_M1i_ca_f.RData")
-summary(model_M1i_ca_f)
+fixef(model_M1i_ca_f)
 ```
 
 # 4. Compare MLE estimates from model_M1i_ca_f with the posterior mean estimates from model_M1i_ca.
