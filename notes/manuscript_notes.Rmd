@@ -941,13 +941,14 @@ appendix/separate Rmd file... + {var} in functions...?
 
 clean up html files 2a (delete old figures, 
 
-->
+-> Done.
 
 Mention tut 2b priors line 101, ...)
 -> Done.
 
 
 change Figure comparison for ca
+
 -> 
 
 
