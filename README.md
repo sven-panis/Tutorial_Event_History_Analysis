@@ -5,7 +5,7 @@ A set of tutorials on how to perform descriptive and inferential (Bayesian and F
 # Intended audience
 
 This is mainly for experimental psychologists and cognitive neuroscientists.
-But other folks might also find it useful as a general way to analyse time-to-event data.
+But other folks might also find EHA/SAT useful as a general way to analyse time-to-event data and timed accuracy data.
 
 # Basic components of the workflow
 
@@ -20,7 +20,7 @@ But other folks might also find it useful as a general way to analyse time-to-ev
 
 If you want to see and work with the code, then:
 
-1. Clone or download the project from github to your local machine.
+1. Clone or download the project from github (https://github.com/sven-panis/Tutorial_Event_History_Analysis) to your local machine.
 2. Open the reproducible_workflow.Rproj file and renv() will automatically bootstrap itself.
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
 4. At this point, you can use the project with the same package versions that were stored in the renv.lock file.
@@ -42,31 +42,36 @@ If you want to see and work with the code, then:
 - Tutorial_4.Rmd (Simulating data sets, power and precision)
 
 - Folder manuscript 
-manuscript.Rmd (papaja Template)
-manuscript.pdf
-manuscript.tex
-r-references.bib
-extrareferences.bib
-SupplementaryMaterial.Rmd
-SupplementaryMaterial.html
+
+* manuscript.Rmd (papaja Template)
+* manuscript.pdf
+* manuscript.tex
+* r-references.bib
+* extrareferences.bib (backup)
+* extrareferences2.bib
+* folder Suppl_material
 
 - Folder sims (code for Figures 1, 2, and 3)
-sims.Rmd
-folder figures
+
+* sims.Rmd
+* folder figures
 
 - Folder Tutorial_1_descriptive_stats
-folder data
-folder figures
-folder tables
+
+* folder data
+* folder figures
+* folder tables
 
 - Folder Tutorial_2_Bayesian 
-folder models
-folder figures
-folder tables
+
+* folder models
+* folder figures
+* folder tables
 
 - Folder Tutorial_3_Frequentist 
 
 - Folder Tutorial_4_planning
-folder data
-folder figures
-folder models
+
+* folder data
+* folder figures
+* folder models
