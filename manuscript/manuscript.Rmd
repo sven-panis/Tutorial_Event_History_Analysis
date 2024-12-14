@@ -119,7 +119,7 @@ We provide seven different tutorials, which are written in the R programming lan
 
 In Tutorial 1a, we illustrate how to process or "wrangle" a previously published RT + accuracy data set to calculate descriptive statistics when there is one independent variable. The descriptive statistics are plotted, and we comment on their interpretation. In Tutorial 1b we provide a generalisation of this approach to illustrate how one can calculate the descriptive statistics when using a more complex design, such as when there are two independent variables. 
 
-In Tutorial 2a, we illustrate how one can fit Bayesian multilevel regression models to RT data using the R package brms. We also perform prior predictive checks, compare models, and interpret the plots of the predicted hazard functions for the selected model, and the posterior distributions of our contrasts of interest. In Tutorial 2b we fit Bayesian multilevel regression models to *timed* accuracy data to perform a micro-level speed-accuracy tradeoff (SAT) analysis, which complements the EHA of RT data for choice RT data. 
+In Tutorial 2a, we illustrate how one can fit Bayesian multilevel regression models to RT data using the R package brms. We perform prior predictive checks, compare models, and interpret the plots of the predicted hazard functions for the selected model, and the posterior distributions of our contrasts of interest. In Tutorial 2b we fit Bayesian multilevel regression models to *timed* accuracy data to perform a micro-level speed-accuracy tradeoff (SAT) analysis, which complements the EHA of RT data for choice RT data. 
 
 In Tutorial 3a, we shortly illustrate how to fit similar multilevel regression models for RT data in a frequentist framework using the R package lme4. We then briefly compare and contrast these inferential frameworks when applied to EHA. In Tutorial 3b, we illustrate how to perform the SAT analysis in a frequentist framework.
 
@@ -144,7 +144,7 @@ To apply EHA, one must be able to:
 
 In EHA, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. Since our focus here is on hazard models that use discrete time units, we describe that approach. After dividing time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 timebins), let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular experimental condition. For example, the first response might occur at 546 ms and it would be in timebin 6 (any RTs from 501 ms to 600 ms). 
 
-Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in part A of the Supplemental Material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins. 
+Discrete-time EHA focuses on the discrete-time hazard function of event occurrence and the discrete-time survivor function (Figure 2). The equations that define both of these functions are reported in section A of the Supplemental Material. The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins. In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet occurred in the past, i.e., in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the survival probability, the probability that the event occurs after bin t. In other words, the survivor function gives you for each time bin the likelihood that the event occurs in the future, i.e., in one of the subsequent timebins. 
 
 
 (ref:descr-plot2-caption) Discrete-time hazard and survivor functions. Discrete time-to-event data were simulated for 200 trials of 1 experimental condition. Error bars represent +/- 1 standard error of the respective proportion. While the hazard function is the vehicle for inferring the time course of cognitive processes, the survival probability S(t-1) can help to qualify or provide context to the interpretation of the hazard probability h(t). For example, the high hazard of .60 = h(t=6) is experienced only by 44 percent of the trials, as S(t=5) = .44. 
@@ -513,19 +513,19 @@ To make inferences from the parameter estimates in model M1i, we first plot the 
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
 ```
 
-Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- for the grand average (Figure 6A), and for each participant in the data set (Figure 6B).
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- at the population level (Figure 6A), and for each participant in the data set (Figure 6B).
 
 
-(ref:descr-plot6-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the grand average (A), and for each participant (B).
+(ref:descr-plot6-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).
 
 ```{r plot-pred-grand-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_combined.png")
 ```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both for the grand average (Figure 7A; grand average marginal effect) and for each participant in the data set (Figure 7B; subject-specific average marginal effect). 
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both at the population level (Figure 7A; grand average marginal effect) and at the participant level (Figure 7B; subject-specific average marginal effect). 
 
 
-(ref:descr-plot7-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin for the grand average (A), and for each participant (B).
+(ref:descr-plot7-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level (A), and for each participant (B).
 
 ```{r plot-grand-ame-effects, fig.cap = "(ref:descr-plot7-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ame_combined.png")
@@ -560,23 +560,23 @@ To make inferences from the parameter estimates in model M1i_ca, we first plot t
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
 ```
 
-Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- for the grand average (Figure 9A), and for each participant in the data set (Figure 9B).
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 9A), and for each participant in the data set (Figure 9B).
 
-(ref:plot9-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin for the grand average (A), and for each participant (B).
+(ref:plot9-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).
 
 ```{r plot-pred-grand-effects-ca, fig.cap = "(ref:plot9-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png")
 ```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects for the grand average (Figure 10A; grand average marginal effect), and for each participant (Figure 10B).
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 10A; grand average marginal effect), and for each participant (Figure 10B).
 
-(ref:descr-plot10-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin for the grand average (A), and for each participant (B).
+(ref:descr-plot10-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level (A), and for each participant (B).
 
 ```{r plot-ca-grand-ame-effects, fig.cap = "(ref:descr-plot10-caption)", out.width='80%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png")
 ```
 
-Based on Figure 10A we see that congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], (280,320], and (320,360], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 10A). 
+Based on Figure 10A we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], (280,320], and (320,360], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 10A). 
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first time bins, relative to the estimates in the baseline condition.
 
 ## 4.5 Tutorial 3a: Fitting Frequentist hazard models
