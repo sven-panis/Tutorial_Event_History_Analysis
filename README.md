@@ -43,35 +43,35 @@ If you want to see and work with the code, then:
 
 - Folder manuscript 
 
-* manuscript.Rmd (papaja Template)
-* manuscript.pdf
-* manuscript.tex
-* r-references.bib
-* extrareferences.bib (backup)
-* extrareferences2.bib
-* folder Suppl_material
+  * manuscript.Rmd (papaja Template)
+  * manuscript.pdf
+  * manuscript.tex
+  * r-references.bib
+  * extrareferences.bib (backup)
+  * extrareferences2.bib
+  * folder Suppl_material
 
 - Folder sims (code for Figures 1, 2, and 3)
 
-* sims.Rmd
-* folder figures
+  * sims.Rmd
+  * folder figures
 
 - Folder Tutorial_1_descriptive_stats
 
-* folder data
-* folder figures
-* folder tables
+  * folder data
+  * folder figures
+  * folder tables
 
 - Folder Tutorial_2_Bayesian 
 
-* folder models
-* folder figures
-* folder tables
+  * folder models
+  * folder figures
+  * folder tables
 
 - Folder Tutorial_3_Frequentist 
 
 - Folder Tutorial_4_planning
 
-* folder data
-* folder figures
-* folder models
+  * folder data
+  * folder figures
+  * folder models
