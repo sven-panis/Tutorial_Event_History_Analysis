@@ -951,24 +951,22 @@ change Figure comparison for ca
 
 -> Done.
 
-
-check for timebin -> time bin
-
--> 1 hour...
-
-
-
 Change grand average to population-level  and participant-level 
 
 -> Done.
 
 
 
+
+check for timebin -> time bin
+
+-> 20 minutes:  Figure 1 and Figure 2!!! 3,  6,  7   9.  10.  
+
 Cover letter, reviewers, PsychArchiv
 
 -> 2 hours : sunday
 
-Add Disclosures to ms.
+Add Disclosures to ms.    CREDIT. and. No conflict of interest... + link psycharchiv + github
 
 -> 30 minutes...
 
