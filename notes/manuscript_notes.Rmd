@@ -955,12 +955,9 @@ Change grand average to population-level  and participant-level
 
 -> Done.
 
-
-
-
 check for timebin -> time bin
 
--> 20 minutes:  Figure 1 and Figure 2!!! 3,         6,  7   9.  10.  
+-> Done, including Figures.  
 
 
 Cover letter, reviewers
