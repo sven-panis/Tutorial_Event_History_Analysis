@@ -493,7 +493,7 @@ haz_plot <- function(df_pid, df_group) {
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
   scale_colour_brewer(palette = "Dark2") +
-  labs(x="timebin",
+  labs(x="time bin",
        y="probability")
 }
 ```
@@ -930,8 +930,8 @@ p7.3 <- (p7.2 / p7.1) +
   plot_annotation(tag_levels = 'A')
 p7.3
 
-ggsave("sims/figures/rt_haz.jpeg",
-       width = 12, height = 8, dpi=800)
+#ggsave("sims/figures/rt_haz.jpeg",
+#      width = 12, height = 8, dpi=800)
 ```
 
 
@@ -1362,8 +1362,8 @@ p9.7 <-ggplot(data_hs, aes(x = timebin, y = probability,
   ggtitle("hazard and survivor functions") 
 p9.7
 
-ggsave("sims/figures/haz_surv.jpeg",
-       width = 7, height = 5, dpi=800)
+#ggsave("sims/figures/haz_surv.jpeg",
+#       width = 7, height = 5, dpi=800)
 ```
 
 # Section 11 (Figure 2): Simulate hazard data for 1 subject, 1 condition, 200 trials, and plot empirical hazard and survivor functions with error bars
@@ -1430,7 +1430,7 @@ p11.1 <-ggplot(minimallt, aes(x = period, y = probability,
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
   ggtitle("hazard and survivor functions") +
-  xlab("timebin")
+  xlab("time bin")
 p11.1
 
 ggsave("sims/figures/haz_surv_single.jpeg",
@@ -1510,7 +1510,7 @@ p12.1 <-ggplot(lifetable2, aes(x = period, y = hazard,
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
   ggtitle("hazard")  +
-  xlab("timebin") + ylab("probability") + guides(color=guide_legend(title="prime type"))
+  xlab("time bin") + ylab("probability") + guides(color=guide_legend(title="prime type"))
 p12.1
 ```
 
@@ -1525,7 +1525,7 @@ p12.2 <-ggplot(ca, aes(x = period, y = ca,
   scale_colour_brewer(palette = "Dark2") + 
   scale_x_continuous(breaks = 1:10) +
   scale_y_continuous(limits = c(0,1)) +
-  xlab("timebin") +
+  xlab("time bin") +
   ylab("probability") +
   ggtitle("conditional accuracy") + 
   guides(color=guide_legend(title="prime type"))
