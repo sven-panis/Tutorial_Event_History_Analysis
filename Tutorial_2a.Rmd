@@ -582,7 +582,7 @@ epreds_grand %>%
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,.7)) +
-    labs(y = "predicted hazard") 
+    labs(x = "time bin", y = "predicted hazard") 
 
 p1
 ```
@@ -603,7 +603,7 @@ ggplot(aes(x=timebin, y=haz,
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,.6)) +
-    labs(y = "predicted hazard") 
+    labs(x = "time bin", y = "predicted hazard") 
 ```
 
 Second, for each participant in the data set.
@@ -638,7 +638,7 @@ p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred,
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
-    labs(y = "predicted hazard") +
+    labs(x = "time bin", y = "predicted hazard") +
    # ggtitle("Each participant (N = 6)") +
     facet_wrap(~pid, ncol=3)
 
@@ -724,7 +724,7 @@ Plot.
   scale_fill_brewer(palette = "Dark2") +
   scale_color_brewer(palette = "Dark2") +
   theme(axis.text.x = element_text(angle=90)) +
-  labs(y = "difference in predicted hazard") +
+  labs(x = "time bin", y = "difference in predicted hazard") +
   #ggtitle("Grand average marginal effect") +
   facet_wrap(~contrast)
 
@@ -841,7 +841,7 @@ Plot the contrasts in predicted hazard values.
     scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(-0.6,0.6)) +
-    labs(y = "difference in predicted hazard") +
+    labs(x = "time bin", y = "difference in predicted hazard") +
     #ggtitle("Subject-specific AMEs") +
     facet_wrap(~pid, ncol=3)
 
