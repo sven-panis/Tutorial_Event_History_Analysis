@@ -27,7 +27,7 @@ authornote: |
 abstract: |
   Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widerspread impact on our understanding of human cognition. However, the orthodox method for analysing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and duration. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterise the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design, as well as how to manage inter-individual differences. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
-wordcount         : "11539 (body) + 1528 (references)"
+wordcount         : "11643 (body) + 1528 (references)"
 bibliography      : ["extrareferences2.bib", "r-references.bib"]
 floatsintext      : yes
 linenumbers       : yes
@@ -737,6 +737,37 @@ Also, the predictor variables in this tutorial are time-invariant, i.e., their v
 # 6. Conclusions
 
 Estimating the temporal distributions of RT and accuracy provide a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing EHA and investigating the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
+
+\newpage
+
+# Author contributions
+
+Conceptualization: S. Panis and R. Ramsey; Software: S. Panis and R. Ramsey; Writing - Original Draft Preparation: S. Panis; Writing - Review & Editing: S. Panis and R. Ramsey; Supervision: R. Ramsey.
+
+# Conflicts of Interest
+
+The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
+
+# Prior versions
+
+All of the submitted manuscript and Supplemental Material was previously posted to a preprint archive: 
+
+# Supplemental Material
+
+
+# Disclosures
+
+## Data, materials, and online resources
+
+Link to public archive: https://github.com/sven-panis/Tutorial_Event_History_Analysis
+
+Supplemental Material:  
+
+
+## Ethical approval
+
+Ethical approval was not required for this tutorial in which we reanalyze existing data sets.
+
 
 \newpage
 

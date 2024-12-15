@@ -962,13 +962,14 @@ check for timebin -> time bin
 
 -> 20 minutes:  Figure 1 and Figure 2!!! 3,  6,  7   9.  10.  
 
-Cover letter, reviewers, PsychArchiv
 
--> 2 hours : sunday
+Cover letter, reviewers
 
-Add Disclosures to ms.    CREDIT. and. No conflict of interest... + link psycharchiv + github
+-> Done.
 
--> 30 minutes...
+Add Disclosures to ms.    CREDIT. and. No conflict of interest... 
+
+->Done.
 
 
 
@@ -976,7 +977,7 @@ Add Disclosures to ms.    CREDIT. and. No conflict of interest... + link psychar
 
 Generate html files...
 
--> Done.   !!!!!! Tutorial 4 -> eval=F in general settings !!!!!!!!
+-> Done.   !!!!!! Tutorial 4 -> eval=F in general settings for now !!!!!!!!
 
 
 
