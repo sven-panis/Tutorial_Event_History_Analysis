@@ -981,7 +981,7 @@ Generate html files...
 
 Create combined file (ms + supps) for PsychArxiv
 
--> 20 minutes....
+-> 
 
 Put on Psycharchiv
 
