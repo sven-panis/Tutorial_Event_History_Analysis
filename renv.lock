@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.4.1",
+    "Version": "4.4.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -677,7 +677,7 @@
         "rlang",
         "withr"
       ],
-      "Hash": "092e286493b86bd5d257861d1a5f6f21"
+      "Hash": "a6f104242d93163563c11dc8a1698aa3"
     },
     "coda": {
       "Package": "coda",
@@ -2129,7 +2129,7 @@
         "yaml",
         "zip"
       ],
-      "Hash": "c201b5f6f4a57754aeab6f66458c994a"
+      "Hash": "8be556a792a3e99e5ebf1f268d62ec37"
     },
     "parallelly": {
       "Package": "parallelly",
