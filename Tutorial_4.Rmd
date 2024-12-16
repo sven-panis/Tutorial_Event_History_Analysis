@@ -13,7 +13,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval=F)
+knitr::opts_chunk$set(echo = TRUE, eval=T)
 ```
 
 Tutorial 4 shows one way to plan the design of a future experiment using EHA.
@@ -23,7 +23,7 @@ Tutorial 4 shows one way to plan the design of a future experiment using EHA.
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
          "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux",
-         "rstan")
+         "rstan", "osfr")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -74,7 +74,7 @@ The basic structure and code follows the examples outlined by Solomon Kurz in hi
 For Solomon's blog posts, see here: [https://solomonkurz.netlify.app/tags/power/](https://solomonkurz.netlify.app/tags/power/)
 
 For Lisa's faux package, see here: [https://debruine.github.io/faux/](https://debruine.github.io/faux/).
-The vignettes provided by the faux package are particularly helpful and worth following before you take a deep dive in the below code. 
+The vignettes provided by the faux package are particularly helpful and worth following before you take a deep dive into the below code. 
 There is also an associated [journal article](https://doi.org/10.1177/2515245920965119), which is worth reading. 
 
 And for some simpler worked examples of the general workflow (i.e., simpler than using EHA), then take a look at these examples by Rich, which show how you might simulate multi-level data for a range of factorial designs: [https://github.com/rich-ramsey/sim_demo](https://github.com/rich-ramsey/sim_demo)
@@ -233,7 +233,7 @@ visualize("normal(0, 2)", "normal(0, 1)", "normal(0, 0.5)",
 (0,2) looks like it covers all of our likely values, even if it is too broad.
 
 For simplicity, we use these normal(0,2) priors for the mean per condition.
-However, if we were doing this for real, we would probably choose different priors that are similar to ones that were discussed in Tutorial_2a as well as in Supplmentary Materials.
+However, if we were doing this for real, we would probably choose different priors that are similar to ones that were discussed in Tutorial_2a, as well as in Supplementary Materials.
 
 ## set priors ##
 
@@ -866,9 +866,32 @@ write_csv(sx1, "Tutorial_4_planning/data/sim1/sim1_data.csv")
 
 ## calculate summary data ##
 
-read in the file, if it is already computed
+read in the file, if it is already computed.
 
-```{r load-sim1, eval=F}
+If necessary, read it from the OSF to start with (because it is a large file). 
+This step is only required to be done once.
+After that, the file will be in your local directory and you can skip this chunk in the future.
+To do so, set eval=TRUE in the chunk below, then re-set to FALSE once the data have been downloaded.
+
+```{r load-osf-sim1, eval=F}
+## create a relevant folder
+dir.create("Tutorial_4_planning/data/sim1/")
+
+## read in the data from the OSF and store it in a relevant folder
+osf_sim1_data <-
+  # retrieve the OSF (main) project
+  osf_retrieve_node("3dbcs") %>% ## this is just one project picked at random
+  # list files in this repository - there must be a more efficient way than this...
+  osf_ls_files(pattern = "Tutorial_4_planning") %>%
+  osf_ls_files(pattern = "data") %>%
+  osf_ls_files(pattern = "sim1") %>%
+  osf_ls_files(pattern = "sim1_data") %>%
+  osf_download(path = "./Tutorial_4_planning/data/sim1/")
+```
+
+read the file from a local folder
+
+```{r load-sim1, eval=T}
 sx1 <- read_csv("Tutorial_4_planning/data/sim1/sim1_data.csv") %>%
   mutate(exp=factor(exp),
          subj_n=factor(subj_n),
@@ -883,7 +906,7 @@ sx1
 
 at the exp level
 
-```{r exp-summary-sim1, eval=F}
+```{r exp-summary-sim1, eval=T}
 sx1_exp <- sx1 %>% 
   group_by(exp, subj_n, rep_n, b6c, condition, bin) %>% 
   summarise(exp_mean_outcome = mean(mean_outcome, na.rm = TRUE),
@@ -898,7 +921,7 @@ sx1_exp
 
 at the sim level
 
-```{r sim-summary-sim1, eval=F}
+```{r sim-summary-sim1, eval=T}
 sx1_sim <- sx1_exp %>% 
   group_by(subj_n, rep_n, b6c, condition, bin) %>% 
   summarise(sim_mean_outcome = mean(exp_mean_outcome, na.rm = TRUE),
@@ -913,7 +936,7 @@ sx1_sim
 
 a quick plot of the data
 
-```{r sim1-violin, eval=F}
+```{r sim1-violin, eval=T}
 p9.1 <- ggplot(sx1_sim, 
                 aes(x = bin, y = sim_mean_outcome, 
                     colour = condition)) +
@@ -1225,9 +1248,32 @@ write_csv(sx2, "Tutorial_4_planning/data/sim2/sim2_data.csv")
 
 ## calculate summary data ##
 
-read in the file, if it is already computed
+read in the file, if it is already computed.
 
-```{r load-sim2}
+If necessary, read it from the OSF to start with (because it is a large file). 
+This step is only required to be done once.
+After that, the file will be in your local directory and you can skip this chunk in the future.
+To do so, set eval=TRUE in the chunk below, then re-set to FALSE once the data have been downloaded.
+
+```{r load-osf-sim2, eval=F}
+## create a relevant folder
+dir.create("Tutorial_4_planning/data/sim2/")
+
+## read in the data from the OSF and store it in a relevant folder
+osf_sim2_data <-
+  # retrieve the OSF (main) project
+  osf_retrieve_node("3dbcs") %>% ## this is just one project picked at random
+  # list files in this repository - there must be a more efficient way than this...
+  osf_ls_files(pattern = "Tutorial_4_planning") %>%
+  osf_ls_files(pattern = "data") %>%
+  osf_ls_files(pattern = "sim2") %>%
+  osf_ls_files(pattern = "sim2_data") %>%
+  osf_download(path = "./Tutorial_4_planning/data/sim2/")
+```
+
+read the file from a local folder
+
+```{r load-sim2, eval=T}
 sx2 <- read_csv("Tutorial_4_planning/data/sim2/sim2_data.csv") %>%
   mutate(exp=factor(exp),
          subj_n=factor(subj_n),
@@ -1521,7 +1567,7 @@ Pick 0.4 or 0.5 as a target effect size since this is much smaller than that obs
 
 Join the power column plots together from sim1 and sim2.
 
-```{r}
+```{r sim1-sim2-power-plot}
 p12.1 <- (p10.4 | p11.6) +
   plot_annotation(tag_levels = 'A') +
   plot_layout(axes = 'collect')
