@@ -47,7 +47,7 @@ If you want to see and work with the code, then:
   * manuscript.pdf
   * manuscript.tex
   * r-references.bib
-  * extrareferences.bib (backup)
+  * extrareferences.bib (non-Zotero)
   * extrareferences2.bib
   * folder Suppl_material
 

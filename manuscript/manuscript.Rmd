@@ -54,7 +54,7 @@ lapply(pkg1, library, character.only = TRUE)
 
 
 pkg2 <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel")
+         "brms", "tidybayes", "bayesplot", "future", "parallel", "rstan")
 
 lapply(pkg2, library, character.only = TRUE)
 
@@ -606,7 +606,7 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 ### 4.7.1 Background
 
 The general approach to planning that we adopt here involves simulating reasonably structured data to help guide what you might be able to expect from your data once you collect it [@gelmanBayesianWorkflow2020].
-The basic structure and code follows the examples outlined by Solomon Kurz in his 'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as the related paper [@debruineUnderstandingMixedEffectsModels2021]. 
+The basic structure and code follows the examples outlined by Solomon Kurz in his 'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as these related papers [@debruineUnderstandingMixedEffectsModels2021; @pargentTutorialTailoredSimulationBased2024]. 
 
 ### 4.7.2 Basic workflow
 

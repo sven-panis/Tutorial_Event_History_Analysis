@@ -204,10 +204,11 @@
 \makeatletter
 \xapptocmd\appendix
   {\xapptocmd\section
-    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi\\: #1}}
+    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi: #1}}
     {}{\InnerPatchFailed}%
   }
 {}{\PatchFailed}
+\makeatother
 \keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11643 (body) + 1528 (references) + 2394 (supplemental material)}
 \usepackage{lineno}
 
@@ -287,7 +288,7 @@ In this paper, we focus on a distributional method for time-to-event data known 
 
 We first provide a brief overview of EHA to orient the reader to the basic concepts that we will use throughout the paper. However, this will remain relatively short, as this has been covered in detail before (Allison, 1982, 2010; Singer \& Willett, 2003). Indeed, our primary aim here is to introduce the set of tutorials, which explain \textbf{how} to do such analyses, rather than repeat in any detail \textbf{why} you may do them.
 
-We provide seven different tutorials, which are written in the R programming language and publicly available on our Github page (\url{https://github.com/sven-panis/} Tutorial\_Event\_History\_Analysis), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can apply EHA to their own time-to-event data. Each tutorial is provided as an RMarkdown file, so that others can download and adapt the code to fit their own purposes. Additionally, each tutorial is made available as a .html file, so that it can be viewed by any web browser, and thus available to those that do not use R. Finally, the manuscript itself is written in R using the papaja package (Aust \& Barth, 2024), which makes it computationally reproducible, in terms of the underlying data and figures.
+We provide seven different tutorials, which are written in the R programming language and publicly available on our Github page (\url{https://github.com/sven-panis/} Tutorial\_Event\_History\_Analysis), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, so that others can apply EHA to their own time-to-event data. Each tutorial is provided as an RMarkdown file, so that others can download and adapt the code to fit their own purposes. Additionally, each tutorial is made available as a .html file, so that it can be viewed by any web browser, and thus available to those that do not use R. Finally, the manuscript itself is written in R using the papaja package (Aust \& Barth, 2024a), which makes it computationally reproducible, in terms of the underlying data and figures.
 
 In Tutorial 1a, we illustrate how to process or ``wrangle'' a previously published RT + accuracy data set to calculate descriptive statistics when there is one independent variable. The descriptive statistics are plotted, and we comment on their interpretation. In Tutorial 1b we provide a generalisation of this approach to illustrate how one can calculate the descriptive statistics when using a more complex design, such as when there are two independent variables.
 
@@ -405,7 +406,7 @@ To make inferences, we use two main approaches. We compare models of different c
 
 \subsection{3.3 Implementation}\label{implementation}
 
-We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.21.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.0; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.2.9000; Aust \& Barth, 2023), \emph{patchwork} (Version 1.2.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.12; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.6; Kay, 2023), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019), and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
+We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.1; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024b), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.13.1; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{rstan} (Version 2.32.6; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
 
 \section{4. Tutorials}\label{tutorials}
 
@@ -934,7 +935,7 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 \subsubsection{4.7.1 Background}\label{background}
 
 The general approach to planning that we adopt here involves simulating reasonably structured data to help guide what you might be able to expect from your data once you collect it (Gelman, Vehtari, et al., 2020).
-The basic structure and code follows the examples outlined by Solomon Kurz in his `power' blog posts (\url{https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/}) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}) as well as the related paper (DeBruine \& Barr, 2021).
+The basic structure and code follows the examples outlined by Solomon Kurz in his `power' blog posts (\url{https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/}) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}) as well as these related papers (DeBruine \& Barr, 2021; Pargent, Koch, Kleine, Lermer, \& Gaube, 2024).
 
 \subsubsection{4.7.2 Basic workflow}\label{basic-workflow}
 
@@ -1142,11 +1143,11 @@ Allison, P. D. (2010). \emph{Survival analysis using {SAS}: A practical guide} (
 \bibitem[\citeproctext]{ref-R-citr}
 Aust, F. (2019). \emph{Citr: 'RStudio' add-in to insert markdown citations}. Retrieved from \url{https://github.com/crsh/citr}
 
-\bibitem[\citeproctext]{ref-R-papaja}
-Aust, F., \& Barth, M. (2023). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. Retrieved from \url{https://github.com/crsh/papaja}
-
 \bibitem[\citeproctext]{ref-pap2024}
-Aust, F., \& Barth, M. (2024). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. \url{https://doi.org/10.32614/CRAN.package.papaja}
+Aust, F., \& Barth, M. (2024a). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. \url{https://doi.org/10.32614/CRAN.package.papaja}
+
+\bibitem[\citeproctext]{ref-R-papaja}
+Aust, F., \& Barth, M. (2024b). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. \url{https://doi.org/10.32614/CRAN.package.papaja}
 
 \bibitem[\citeproctext]{ref-bakerPowerContoursOptimising2021}
 Baker, D. H., Vilidaite, G., Lygo, F. A., Smith, A. K., Flack, T. R., Gouws, A. D., \& Andrews, T. J. (2021). Power contours: {Optimising} sample size and precision in experimental psychology and human neuroscience. \emph{Psychological Methods}, \emph{26}(3), 295--314. \url{https://doi.org/10.1037/met0000337}
@@ -1161,7 +1162,7 @@ Barth, M. (2023). \emph{{tinylabels}: Lightweight variable labels}. Retrieved fr
 Bates, D., Mächler, M., Bolker, B., \& Walker, S. (2015). Fitting linear mixed-effects models using {lme4}. \emph{Journal of Statistical Software}, \emph{67}(1), 1--48. \url{https://doi.org/10.18637/jss.v067.i01}
 
 \bibitem[\citeproctext]{ref-R-Matrix}
-Bates, D., Maechler, M., \& Jagan, M. (2024). \emph{Matrix: Sparse and dense matrix classes and methods}. Retrieved from \url{https://CRAN.R-project.org/package=Matrix}
+Bates, D., Maechler, M., \& Jagan, M. (2024). \emph{Matrix: Sparse and dense matrix classes and methods}. Retrieved from \url{https://Matrix.R-forge.R-project.org}
 
 \bibitem[\citeproctext]{ref-R-RJ-2021-048}
 Bengtsson, H. (2021). A unifying framework for parallel and distributed processing in r using futures. \emph{The R Journal}, \emph{13}(2), 208--227. \url{https://doi.org/10.32614/RJ-2021-048}
@@ -1224,7 +1225,7 @@ Ince, R. A., Paton, A. T., Kay, J. W., \& Schyns, P. G. (2021). Bayesian inferen
 Kantowitz, B. H., \& Pachella, R. G. (2021). The {Interpretation} of {Reaction Time} in {Information-Processing Research} 1. \emph{Human Information Processing}, 41--82. \url{https://doi.org/10.4324/9781003176688-2}
 
 \bibitem[\citeproctext]{ref-R-tidybayes}
-Kay, M. (2023). \emph{{tidybayes}: Tidy data and geoms for {Bayesian} models}. \url{https://doi.org/10.5281/zenodo.1308151}
+Kay, M. (2024). \emph{{tidybayes}: Tidy data and geoms for {Bayesian} models}. \url{https://doi.org/10.5281/zenodo.1308151}
 
 \bibitem[\citeproctext]{ref-kruschkeBayesianNewStatistics2018}
 Kruschke, J. K., \& Liddell, T. M. (2018). The {Bayesian New Statistics}: {Hypothesis} testing, estimation, meta-analysis, and power analysis from a {Bayesian} perspective. \emph{Psychonomic Bulletin \& Review}, \emph{25}(1), 178--206. \url{https://doi.org/10.3758/s13423-016-1221-4}
@@ -1280,8 +1281,11 @@ Panis, S., Torfs, K., Gillebert, C. R., Wagemans, J., \& Humphreys, G. W. (2017)
 \bibitem[\citeproctext]{ref-panisTimecourseContingenciesPerceptual2009}
 Panis, S., \& Wagemans, J. (2009). Time-course contingencies in perceptual organization and identification of fragmented object outlines. \emph{Journal of Experimental Psychology: Human Perception and Performance}, \emph{35}(3), 661--687. \url{https://doi.org/10.1037/a0013547}
 
+\bibitem[\citeproctext]{ref-pargentTutorialTailoredSimulationBased2024}
+Pargent, F., Koch, T. K., Kleine, A.-K., Lermer, E., \& Gaube, S. (2024). A {Tutorial} on {Tailored Simulation-Based Sample-Size Planning} for {Experimental Designs With Generalized Linear Mixed Models}. \emph{Advances in Methods and Practices in Psychological Science}, \emph{7}(4), 25152459241287132. \url{https://doi.org/10.1177/25152459241287132}
+
 \bibitem[\citeproctext]{ref-R-patchwork}
-Pedersen, T. L. (2024). \emph{Patchwork: The composer of plots}. Retrieved from \url{https://CRAN.R-project.org/package=patchwork}
+Pedersen, T. L. (2024). \emph{Patchwork: The composer of plots}. Retrieved from \url{https://patchwork.data-imaginist.com}
 
 \bibitem[\citeproctext]{ref-R-nlme}
 Pinheiro, J. C., \& Bates, D. M. (2000). \emph{Mixed-effects models in s and s-PLUS}. New York: Springer. \url{https://doi.org/10.1007/b98882}
@@ -1297,6 +1301,12 @@ Singer, J. D., \& Willett, J. B. (2003). \emph{Applied {Longitudinal Data Analys
 
 \bibitem[\citeproctext]{ref-smithSmallBeautifulDefense2018}
 Smith, P. L., \& Little, D. R. (2018). Small is beautiful: {In} defense of the small-{N} design. \emph{Psychonomic Bulletin \& Review}, \emph{25}(6), 2083--2101. \url{https://doi.org/10.3758/s13423-018-1451-8}
+
+\bibitem[\citeproctext]{ref-R-StanHeaders}
+Stan Development Team. (2020). \emph{{StanHeaders}: Headers for the {R} interface to {Stan}}. Retrieved from \url{https://mc-stan.org/}
+
+\bibitem[\citeproctext]{ref-R-rstan}
+Stan Development Team. (2024). \emph{{RStan}: The {R} interface to {Stan}}. Retrieved from \url{https://mc-stan.org/}
 
 \bibitem[\citeproctext]{ref-steeleGeneralMultilevelMultistate2004}
 Steele, F., Goldstein, H., \& Browne, W. (2004). A general multilevel multistate competing risks model for event history data, with an application to a study of contraceptive use dynamics. \emph{Statistical Modelling}, \emph{4}(2), 145--159. \url{https://doi.org/10.1191/1471082X04st069oa}
