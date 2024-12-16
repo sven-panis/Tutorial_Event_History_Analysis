@@ -11,9 +11,9 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
-<title>Tutorial_3a</title>
+<title>Tutorial 3a</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1485,9 +1485,9 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">Tutorial_3a</h1>
+<h1 class="title toc-ignore">Tutorial 3a</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2024-12-13</h4>
+<h4 class="date">2024-12-16</h4>
 
 </div>
 
@@ -1497,7 +1497,7 @@ first experiment of Panis and Schmidt (2016) using only the no-mask
 trials (prime = blank, congruent, or incongruent).</p>
 <div id="load-the-libraries-that-we-will-be-using" class="section level1">
 <h1>1. Load the libraries that we will be using</h1>
-<pre class="r"><code>pkg &lt;- c(&quot;tidyverse&quot;, &quot;RColorBrewer&quot;, &quot;patchwork&quot;, &quot;lme4&quot;, &quot;nlme&quot;, &quot;broom.mixed&quot;)
+<pre class="r"><code>pkg &lt;- c(&quot;tidyverse&quot;, &quot;RColorBrewer&quot;, &quot;patchwork&quot;, &quot;lme4&quot;, &quot;nlme&quot;, &quot;broom.mixed&quot;, &quot;rstan&quot;)
 
 lapply(pkg, library, character.only = TRUE)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
@@ -1532,7 +1532,31 @@ lapply(pkg, library, character.only = TRUE)</code></pre>
 ## 
 ## The following object is masked from &#39;package:dplyr&#39;:
 ## 
-##     collapse</code></pre>
+##     collapse
+## 
+## 
+## Loading required package: StanHeaders
+## 
+## 
+## rstan version 2.32.6 (Stan version 2.32.2)
+## 
+## 
+## For execution on a local, multicore CPU with excess RAM we recommend calling
+## options(mc.cores = parallel::detectCores()).
+## To avoid recompilation of unchanged Stan programs, we recommend calling
+## rstan_options(auto_write = TRUE)
+## For within-chain threading using `reduce_sum()` or `map_rect()` Stan functions,
+## change `threads_per_chain` option:
+## rstan_options(threads_per_chain = 1)
+## 
+## 
+## 
+## Attaching package: &#39;rstan&#39;
+## 
+## 
+## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     extract</code></pre>
 <p>Theme settings for ggplot.</p>
 <pre class="r"><code>theme_set(
   theme_bw() +

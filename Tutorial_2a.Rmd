@@ -1,5 +1,5 @@
 ---
-title: "Tutorial_2a"
+title: "Tutorial 2a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
 output: 
@@ -1354,7 +1354,7 @@ p2<-ggplot(dat, aes(x=x))+
 p1|p2
 ```
 
-For example, the coefficients for x vary from -0.13 to 0.6, and we might specify N(.3,.25) as a prior distribution, Those for x-squared vary from -0.11 to 0.12, and we might specify N(0,.06) as a prior distribution.
+For example, the coefficients for x vary from -0.13 to 0.6, and we might specify N(.3,.25) as a prior distribution. Those for x-squared vary from -0.11 to 0.12, and we might specify N(0,.06) as a prior distribution.
 
 Suppose we expect (cloglog-)hazard functions that increase almost linearly with time. We also set the standard deviation of the normal prior for class "sd" to a low value, to minimize the effect of the random effects while inspecting the relation between the selected priors for period_9 and period_9_sq and the shape of the prior predictive distributions.
 
@@ -1555,7 +1555,7 @@ ggsave("Tutorial_2_Bayesian/figures/M0c_ppc2.png", width = 10, height = 8, dpi =
 knitr::include_graphics("Tutorial_2_Bayesian/figures/M0c_ppc2.png")
 ```
 
-Finally, perform a ppc for the selected prior distributions for M0c (see lines 369-374), and increase the standard deviation for the normal prior for class "sd" somewhat.
+Finally, perform a ppc for the selected prior distributions for M0c (see lines 220-224), and increase the standard deviation for the normal prior for class "sd" somewhat.
 
 ```{r priors-M0c-ppc3}
 priors_M0c_ppc3 <- c(

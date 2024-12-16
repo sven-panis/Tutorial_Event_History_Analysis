@@ -1,5 +1,5 @@
 ---
-title: "Tutorial_2b"
+title: "Tutorial 2b"
 author: "sven panis"
 date: "2024-10-18"
 output: 
@@ -100,7 +100,7 @@ head(data_M1i_ca)
 
 ## Set up priors for M1i_ca.
 
-As we expect conditional accuracies ranging between (and including) 0 and 1, we use a flat prior on the logit scale for our intercepts (see section E in the supplemental material).
+As we expect conditional accuracies ranging between (and including) 0 and 1, we use a flat prior on the logit scale for our intercepts (see Supplementary Figure 2 in section E of the Supplemental Material).
 
 ```{r priors-cloglog-M1i-ca}
 priors_M1i_ca <- c(
@@ -250,10 +250,6 @@ epreds_grand %>%
 p1
 ```
 
-```{r save-epred-grand, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_grand.png", width = 10, height = 8, dpi = 800)
-```
-
 ### Subject-specific
 
 ```{r epred-pid}
@@ -290,10 +286,6 @@ p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred,
    # ggtitle("Each participant (N = 6)") +
     facet_wrap(~pid, ncol=3)
 p2
-```
-
-```{r save-epred-pid, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_pid.png", width = 10, height = 8, dpi = 800)
 ```
 
 Combine the plots.
@@ -370,10 +362,6 @@ p11 <- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca,
 p11
 ```
 
-```{r save-grand-AMEs, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_grand_AME.png", width = 10, height = 8, dpi = 800)
-```
-
 ### Subject-specific AMEs
 
 To calculate the subject-specific AMEs for each time bin, we create contrasts between the conditional means.
@@ -417,10 +405,6 @@ p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca,
    # ggtitle("Subject-specific AMEs") +
     facet_wrap(~pid, ncol=3)
 p22
-```
-
-```{r save-pid-AMEs, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pid_AMEs.png", width = 10, height = 8, dpi = 800)
 ```
 
 Combine the plots.

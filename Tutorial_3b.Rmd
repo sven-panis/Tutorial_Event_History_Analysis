@@ -1,5 +1,5 @@
 ---
-title: "Tutorial_3b"
+title: "Tutorial 3b"
 author: "sven panis"
 date: "2024-10-18"
 output:
@@ -21,7 +21,7 @@ In this tutorial 3b we fit a Frequentist regression model to conditional accurac
 # 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
-pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme", "broom.mixed")
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "lme4", "nlme", "broom.mixed", "rstan")
 
 lapply(pkg, library, character.only = TRUE)
 ```
