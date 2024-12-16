@@ -23,7 +23,7 @@ Tutorial 4 shows one way to plan the design of a future experiment using EHA.
 ```{r load-pkg, results='hide'}
 pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
          "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux",
-         "rstan", "osfr")
+         "rstan", "osfr", "here")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -871,22 +871,26 @@ read in the file, if it is already computed.
 If necessary, read it from the OSF to start with (because it is a large file). 
 This step is only required to be done once.
 After that, the file will be in your local directory and you can skip this chunk in the future.
-To do so, set eval=TRUE in the chunk below, then re-set to FALSE once the data have been downloaded.
 
-```{r load-osf-sim1, eval=F}
-## create a relevant folder
-dir.create("Tutorial_4_planning/data/sim1/")
+```{r load-osf-sim1, eval=T}
+## create a relevant folder, if it does not already exist
+sim1_output_dir <- here("Tutorial_4_planning/data/sim1/")
 
-## read in the data from the OSF and store it in a relevant folder
-osf_sim1_data <-
-  # retrieve the OSF (main) project
+if (!dir.exists(here(sim1_output_dir))) {
+  dir.create(here(sim1_output_dir))
+}
+
+## read in the data from the OSF and store it in a relevant folder, if it does not already exist
+sim1_file_name <- here("Tutorial_4_planning/data/sim1/sim1_data.csv")
+
+if (!file.exists(here(sim1_file_name))) {
   osf_retrieve_node("3dbcs") %>% 
-  # list files in this repository - there must be a more efficient way than this...
   osf_ls_files(pattern = "Tutorial_4_planning") %>%
   osf_ls_files(pattern = "data") %>%
   osf_ls_files(pattern = "sim1") %>%
   osf_ls_files(pattern = "sim1_data") %>%
-  osf_download(path = "./Tutorial_4_planning/data/sim1/")
+  osf_download(path = sim1_output_dir)
+}
 ```
 
 read the file from a local folder
@@ -1255,20 +1259,25 @@ This step is only required to be done once.
 After that, the file will be in your local directory and you can skip this chunk in the future.
 To do so, set eval=TRUE in the chunk below, then re-set to FALSE once the data have been downloaded.
 
-```{r load-osf-sim2, eval=F}
-## create a relevant folder
-dir.create("Tutorial_4_planning/data/sim2/")
+```{r load-osf-sim2, eval=T}
+## create a relevant folder, if it does not already exist
+sim2_output_dir <- here("Tutorial_4_planning/data/sim2/")
 
-## read in the data from the OSF and store it in a relevant folder
-osf_sim2_data <-
-  # retrieve the OSF (main) project
+if (!dir.exists(here(sim2_output_dir))) {
+  dir.create(here(sim2_output_dir))
+}
+
+## read in the data from the OSF and store it in a relevant folder, if it does not already exist
+sim2_file_name <- here("Tutorial_4_planning/data/sim2/sim2_data.csv")
+
+if (!file.exists(here(sim2_file_name))) {
   osf_retrieve_node("3dbcs") %>% 
-  # list files in this repository - there must be a more efficient way than this...
   osf_ls_files(pattern = "Tutorial_4_planning") %>%
   osf_ls_files(pattern = "data") %>%
   osf_ls_files(pattern = "sim2") %>%
   osf_ls_files(pattern = "sim2_data") %>%
-  osf_download(path = "./Tutorial_4_planning/data/sim2/")
+  osf_download(path = sim2_output_dir)
+}
 ```
 
 read the file from a local folder
