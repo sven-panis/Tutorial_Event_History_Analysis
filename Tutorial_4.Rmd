@@ -880,7 +880,7 @@ dir.create("Tutorial_4_planning/data/sim1/")
 ## read in the data from the OSF and store it in a relevant folder
 osf_sim1_data <-
   # retrieve the OSF (main) project
-  osf_retrieve_node("3dbcs") %>% ## this is just one project picked at random
+  osf_retrieve_node("3dbcs") %>% 
   # list files in this repository - there must be a more efficient way than this...
   osf_ls_files(pattern = "Tutorial_4_planning") %>%
   osf_ls_files(pattern = "data") %>%
@@ -1262,7 +1262,7 @@ dir.create("Tutorial_4_planning/data/sim2/")
 ## read in the data from the OSF and store it in a relevant folder
 osf_sim2_data <-
   # retrieve the OSF (main) project
-  osf_retrieve_node("3dbcs") %>% ## this is just one project picked at random
+  osf_retrieve_node("3dbcs") %>% 
   # list files in this repository - there must be a more efficient way than this...
   osf_ls_files(pattern = "Tutorial_4_planning") %>%
   osf_ls_files(pattern = "data") %>%
