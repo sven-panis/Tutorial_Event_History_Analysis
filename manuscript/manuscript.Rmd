@@ -27,7 +27,7 @@ authornote: |
 abstract: |
   Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and duration. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design, as well as how to manage inter-individual differences. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
-wordcount         : "11643 (body) + 1528 (references) + 2394 (supplemental material)"
+wordcount         : "11664 (body) + 1593 (references) + 2394 (supplemental material)"
 bibliography      : ["extrareferences2.bib", "r-references.bib"]
 floatsintext      : yes
 linenumbers       : yes
@@ -761,7 +761,7 @@ All of the submitted manuscript and Supplemental Material was previously posted 
 
 Link to public archive: https://github.com/sven-panis/Tutorial_Event_History_Analysis
 
-Supplemental Material:  
+Supplemental Material: Panis_Ramsey_suppl_material.pdf
 
 
 ## Ethical approval

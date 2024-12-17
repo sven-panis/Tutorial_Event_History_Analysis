@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2024-12-17" />
 
 <title>Tutorial 1a</title>
 
@@ -1487,22 +1487,22 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Tutorial 1a</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2024-12-16</h4>
+<h4 class="date">2024-12-17</h4>
 
 </div>
 
 
-<p>This Tutorial_1a file wrangles raw data from Experiment 1 of Panis
-and Schmidt (2016), and illustrates how to calculate descriptive
-statistics. It uses functional programming to set up life tables, and
-plot the discrete-time hazard, survivor, probability mass, and
-conditional accuracy functions, when there is one independent variable.
-To set up a life table, the user has to supply both a width in ms for
-the time bins, and a censoring time, the last time point for which the
-trials are considered under investigation (i.e., a cutoff time, or
-timeout). The goal is to find the optimal bin width and censoring time
-(both in ms) to portray the effects of interest. Note that all response
-times must be positive.</p>
+<p>In Tutorial 1a we wrangle raw data from Experiment 1 of Panis and
+Schmidt (2016), and illustrate how to calculate descriptive statistics.
+We use functional programming to set up life tables, and plot the
+discrete-time hazard, survivor, probability mass, and conditional
+accuracy functions, when there is one independent variable. To set up a
+life table, the user has to supply both a width in ms for the time bins,
+and a censoring time, the last time point for which the trials are
+considered under investigation (i.e., a cutoff time, or timeout). The
+goal is to find the optimal bin width and censoring time (both in ms) to
+portray the effects of interest. Note that all response times must be
+positive.</p>
 <div id="load-the-libraries-that-we-will-be-using." class="section level1">
 <h1>1. Load the libraries that we will be using.</h1>
 <pre class="r"><code>pkg &lt;- c(&quot;tidyverse&quot;, &quot;patchwork&quot;)
