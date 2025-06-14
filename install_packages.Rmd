@@ -37,7 +37,11 @@ renv::settings$snapshot.type("all")
 Next, general packages for data wrangling and visualisation used in various scripts.
 
 ```{r}
-install.packages(c("tidyverse", "RColorBrewer", "patchwork", "ggridges"))
+install.packages(c("tidyverse", "RColorBrewer", "patchwork", "ggridges","cowplot"))
+
+install.packages("ggtext")
+
+install.packages("xfun")
 ```
 
 Next, packages for simulation (Figures 1, 2, and 3)
