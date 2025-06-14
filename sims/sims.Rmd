@@ -236,6 +236,9 @@ test it by varying the subj_n
 
 ```{r}
 data_n10 <- sim_haz(subj_n = 10, rep_n = 200)
+head(data_n10)
+
+
 data_n20 <- sim_haz(subj_n = 20, rep_n = 200)
 ```
 
@@ -1540,7 +1543,275 @@ p12.3 <- (p12.1 / p12.2) +
               axes = 'collect')
 p12.3
 
-ggsave("sims/figures/haz_acc_single.jpeg",
-       width = 7, height = 6, dpi=800)
+#ggsave("sims/figures/haz_acc_single.jpeg",
+#       width = 7, height = 6, dpi=800)
 
 ```
+
+
+
+
+
+# section 13: REVISION 1: Create New Figure 1
+
+In Figure 1 of the revision, we want to display for 1 subject the hazard and ca functions for 2 conditions, and the corresponding four means.
+
+Steps:
+
+## 1. Generate discrete time-to-event data for 1 subject, 2 conditions, 100 trials, and 10 time bins;
+
+Adjust function:
+
+```{r}
+sim_haz <- function(subj_n = 10, rep_n = 200, bin_n = 10, cond_n = 2,  # these can be changed when calling the f
+               hazard_cond1 = c(0, 0.02, 0.08, 0.19, 0.42, 0.52, 0.43, 0.41, 0.41, 0.39),
+               hazard_cond2 = hazard_cond1*c(1, 1, 1, 1, .5, 0.3, 0.7, 1, 1,1),
+               hazard = c(hazard_cond1, hazard_cond2),   # 
+                ... # helps the function work with pmap() below
+                ) {
+
+  # set up data structure
+  data <- add_random(subj = subj_n, rep = rep_n) %>% 
+  add_within("subj", condition = c("cond1", "cond2")) %>%
+  add_contrast("condition", "treatment", add_cols = TRUE, colnames = c("contrast")) %>%
+  add_within("subj", bin = 1:bin_n) %>% 
+  mutate(hazf = rep(hazard, length.out = subj_n * rep_n * bin_n * cond_n),
+         event = rbinom(n(), 1, hazf)) %>% 
+  group_by(subj, rep, condition) %>%
+  mutate(cumsum = cumsum(event),
+         outcomel = event==1 & cumsum(event) < 2,
+         outcomen = if_else(event==1 & cumsum(event) == 1, 1,
+                     if_else(cumsum(event) >= 1, NA, 0))) %>% 
+  drop_na(outcomen) %>% 
+  ungroup()
+}
+```
+
+Generate data:
+
+```{r}
+## make it reproducible
+set.seed(7)
+
+n_trials=200
+## apply function sim_haz
+data_fig1_hazard <- sim_haz(subj_n = 1, rep_n = n_trials) %>%
+               mutate(subj = factor(subj),
+                      trial = as.integer(str_sub(rep, start=4, end=6)),
+                      acc = ifelse(bin<5 & condition=="cond2",0,1),
+                      acc = ifelse(bin==5 & trial < 100,0,acc)) %>%
+               select(-c("contrast","cumsum","outcomel","outcomen","rep")) 
+
+head(data_fig1_hazard, n=20)
+summary(data_fig1_hazard)
+```
+
+Set up life table for generated data:
+
+```{r}
+lifetable_fig1 <- data_fig1_hazard %>%
+    mutate(event = str_c("event", event)) %>%
+    group_by(condition,bin) %>% 
+    count(event) %>% 
+    ungroup() %>% 
+    pivot_wider(names_from = event,
+                values_from = n) %>% 
+    mutate(event0 = ifelse(is.na(event0),0,event0), # replace NA with 0
+           event1 = ifelse(is.na(event1),0,event1),
+           risk_set = event0 + event1) %>% # define the risk set
+    mutate(hazard = (event1 / risk_set) %>% round(digits = 3)) %>% # calculate hazard estimate
+    mutate(se_haz = sqrt((hazard * (1 - hazard)) / risk_set) %>% round(digits = 4), # standard error for hazard
+           pmass = event1/max(risk_set),
+           se_pmass = sqrt((pmass * (1 - pmass)) / max(risk_set))) %>% 
+    group_by(condition) %>%
+    mutate(survival = (cumprod(1-hazard)) %>% round(digits = 4), # calculate survival estimate
+           term     = (cumsum(hazard / (risk_set * (1 - hazard)))) %>% round(digits = 7), # intermediate calculation
+           se_surv  = (survival * sqrt(term)) %>% round(digits = 5)  ) %>% # Greenwood's (1926) approximation
+    ungroup() 
+```
+
+Calaculate conditional accuracy:
+
+```{r}
+ca <- data_fig1_hazard %>% 
+    filter(event == 1) %>%
+    group_by(condition,bin) %>%
+    summarize(ca = mean(acc) %>% round(digits = 2),
+              n = n(),
+              .groups = 'drop') %>%
+    ungroup() %>%
+    mutate(se_ca = sqrt((ca * (1-ca)) / n) %>% round(digits = 3)) 
+ca
+```
+
+
+## 2. Plot hazard and conditional accuracy
+
+```{r}
+p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
+                         colour = condition)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10, limits = c(1,10),labels = c(1:10)*100) +
+  scale_y_continuous(limits = c(0,1)) +
+ # ggtitle("hazard and conditional accuracy functions") +
+  xlab("time bin endpoint") +
+  theme(axis.text.x = element_text(angle = 90))
+p13.1
+
+#ggsave("sims/figures/haz_surv_single.jpeg",
+#       width = 7, height = 5, dpi=800)
+```
+
+```{r}
+p13.2 <-ggplot(ca, aes(x = bin, y = ca,
+                         colour = condition)) +
+  geom_line(linewidth = 1) +
+  geom_point(size=3) +
+  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
+  scale_colour_brewer(palette = "Dark2") + 
+  scale_x_continuous(breaks = 1:10, limits=c(1,10),labels = c(1:10)*100) +
+  scale_y_continuous(limits = c(0,1)) +
+  xlab("time bin endpoint") +
+    ylab("conditional accuracy") +
+   theme(axis.text.x = element_text(angle = 90))
+
+ # ggtitle("conditional accuracy functions") 
+#+ 
+#  guides(color=guide_legend(title="prime type"))
+p13.2
+```
+
+Combine plots
+
+```{r}
+p13.3 <- (p13.1 / p13.2) +
+  plot_layout(guides = 'collect',
+              axes = 'collect')
+p13.3
+```
+
+## 3. Create RT data (assuming uniform distribution within a bin) and calculate means
+
+use a uniform distribution to provide upper and lower bounds
+
+```{r}
+rt_dat_fig1 <- data_fig1_hazard %>%
+  filter(event==1) %>% 
+  mutate(u = bin*100,
+         l = u-100,
+         m = (l + u)/2) %>% 
+  group_by(subj, trial, condition, bin) %>% 
+  # mutate(rt = rtruncnorm(n=1, mean=m, sd=25, a=l, b=u))
+  mutate(rt = runif(n=1, min=l, max=u))
+
+head(rt_dat_fig1)
+summary(rt_dat_fig1)
+```
+
+create summary RT data per condition at the pid level for plotting mean comparisons
+
+```{r}
+rt_dat_fig1_pid <- rt_dat_fig1 %>%
+  group_by(condition) %>% 
+  summarise(mean = mean(rt),
+            sd = sd(rt),
+            n = n(), # 
+            sem = (sd/sqrt(n)))
+rt_dat_fig1_pid
+```
+
+create summary ACC data per condition at the pid level for plotting mean comparisons
+
+```{r}
+acc_dat_fig1_pid <- rt_dat_fig1 %>%
+  group_by(condition) %>% 
+  summarise(mean = mean(acc),
+            sd = sd(acc),
+            n = n(), # 
+            sem = (sd/sqrt(n)))
+acc_dat_fig1_pid
+```
+
+
+
+## 4. plot rt + accuracy
+
+
+```{r}
+p13.4 <- ggplot(rt_dat_fig1_pid, aes(x = condition, y = mean, fill=condition, color=condition)) +
+  geom_col(alpha = 0.9, width = 0.6) +
+  geom_errorbar(
+    aes(ymin = mean - sem, ymax = mean + sem),
+    width = 0.2,
+    linewidth = 0.8,
+    color = "black"
+  ) +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+ #  ggtitle("mean RT by condition") +
+   scale_y_continuous(limits = c(0, 600), breaks = seq(0, 600, 100)) +
+   ylab("mean RT (ms)")
+p13.4
+```
+
+
+```{r}
+p13.5 <- ggplot(acc_dat_fig1_pid, aes(x = condition, y = mean, fill=condition, color=condition)) +
+  geom_col(alpha = 0.9, width = 0.6) +
+  geom_errorbar(
+    aes(ymin = mean - sem, ymax = mean + sem),
+    width = 0.2,
+    linewidth = 0.8,
+    color = "black"
+  ) +
+   scale_fill_brewer(palette = "Dark2") +
+   scale_colour_brewer(palette = "Dark2") +
+ #  ggtitle("mean accuracy by condition") +
+   scale_y_continuous(limits = c(0, 1)) +
+   ylab("accuracy")
+p13.5
+```
+
+
+
+
+
+plot together 
+
+```{r}
+p13.6 <- (p13.4 / p13.5) +
+  plot_layout(guides = 'collect',
+              axes = 'collect')
+p13.6
+
+
+plot_grid(p13.6, p13.3,
+  nrow = 1,
+  labels = c("A","B"),
+  label_size = 22
+)
+
+```
+
+
+```{r}
+ggsave("sims/figures/Fig1_revision1.jpeg",
+       width = 10, height = 10, dpi=800)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
