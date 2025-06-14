@@ -428,7 +428,7 @@ plot_grid(p_detection, p_discrimination,p_discriminationSOA,p_percept,
 save Figure
 
 ```{r}
-ggsave("REVIEW1/Plot_paradigms.png",dpi = 800,width = 16,height = 17)
+ggsave("manuscript/Plot_paradigms.png",dpi = 800,width = 16,height = 17)
 ```
 
 
