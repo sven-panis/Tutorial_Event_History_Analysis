@@ -21,7 +21,13 @@ But other folks might also find EHA/SAT useful as a general way to analyse time-
 If you want to see and work with the code, then:
 
 1. Clone or download the project from github (https://github.com/sven-panis/Tutorial_Event_History_Analysis) to your local machine.
-2. Open the reproducible_workflow.Rproj file and renv() will automatically bootstrap itself.
+
+Make sure you select the branch "main", which contains the latest version of the manuscript as posted 
+on PsyArXiv: https://doi.org/10.31234/osf.io/57bh6
+
+The branch "revision1" is used by us to work on our first revision, and will later be merged into MAIN.
+
+2. Open the Tutorial_EHA.Rproj file and renv() will automatically bootstrap itself.
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
 4. At this point, you can use the project with the same package versions that were stored in the renv.lock file.
 
