@@ -18,7 +18,7 @@ This file simulates the data used in Figures 1, 2, and 3 of the manuscript and t
 ## load ##
 
 ```{r load-pkg}
-pkg <- c("tidyverse", "RColorBrewer", "patchwork", "truncnorm", "faux", "ggpmisc")
+pkg <- c("tidyverse", "RColorBrewer", "patchwork", "truncnorm", "faux", "ggpmisc","cowplot")
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -1661,7 +1661,7 @@ p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
   ylab("hazard") +
   theme(axis.text.x = element_text(angle = 90),
         panel.grid.minor.x = element_blank()) +
-  annotate("label", x = 2, y = .95,
+  annotate("label", x = 1.7, y = .95,
            label = "h(t) = P(RT = t | RT ≥ t)",
            fill = "white",           # White background
            color = "black", 
@@ -1686,7 +1686,7 @@ p13.2 <-ggplot(ca, aes(x = bin, y = ca,
     ylab("conditional accuracy") +
    theme(axis.text.x = element_text(angle = 90),
          panel.grid.minor.x = element_blank()) +
-   annotate("label", x = 2, y = .25,
+   annotate("label", x = 1.5, y = .25,
            label = "ca(t) = P(correct | RT = t)",
            fill = "white",           # White background
            color = "black", 
