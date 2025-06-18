@@ -94,11 +94,15 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
 
-As a simple illustration, Figure 1 shows how comparing means between two conditions conceal the shapes of the underlying RT and accuracy distributions. We simulated a RT + accuracy data set for a single subject who performed 200 trials (i.e., repeated measurements) in each of two conditions. For example, while this subject is 71 ms faster on average in condition 1 (481 ms) compared to condition 2 (552 ms), the corresponding hazard functions of response occurrence show that the effect starts in time period (400,500] or bin t=5, and is present in three consecutive time bins (i.e., for 300 ms). Similarly, while this subject makes less errors in condition 1 (86% accuracy) compared to condition 2 (64% accuracy), the conditional accuracy functions show that (a) erroneous responses in condition 1 are confined to a single time bin, and (b) the observed conditional accuracies (0, 1, 0.51, 0.48) are never even close to the mean accuracies. 
+As a simple illustration, Figure 1 shows how comparing means between two conditions conceal the shapes of the underlying RT and accuracy distributions. We simulated a RT + accuracy data set for a single subject who performed 200 trials (i.e., repeated measurements) in each of two conditions. For example, while this subject is 71 ms faster on average in condition 1 (481 ms) compared to condition 2 (552 ms), the corresponding hazard functions of response occurrence show that the effect starts in time period (400,500] or bin t=5, and is present in three consecutive time bins (i.e., for 300 ms). Similarly, while this subject makes less errors in condition 1 (86% accuracy) compared to condition 2 (64% accuracy), the conditional accuracy functions show that (a) the effect is present only for responses emitted before 400 ms, (b) erroneous responses in condition 1 are confined to a single time bin, and (c) the observed conditional accuracies (0, 1, 0.51, 0.48) are never even close to the mean accuracies. 
+
+Why does this matter for research in psychology? Compared to the aggregation of data across trials, a distributional approach offers the possibility to reveal the time course of psychological states. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higer in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1.
+
+For many psychological questions, such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes, by adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit. Thus, a distributional approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to better discriminate between different theoretical accounts of psychological and/or brain-based processes.
 
 <!-- For instance, in examples 1-3, mean RT is always comparable between two conditions, while the distributions differ (Figure 1, left). In contrast, in examples 4-6, mean RT is lower in condition 2 compared to condition 1, but the RT distributions differ in each case (Figure 1, right). Therefore, a comparison of means would lead to a similar conclusion in examples 1-3, as well as examples 4-6, whereas a comparison of the distributions would lead to a different conclusion in every case.-->
 
-(ref:descr-fig1-caption) Mean performance versus distributional analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).
+(ref:descr-fig1-caption) Mean performance versus distributional analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). Note that the distributional shapes are inspired by published results from interference paradigms such as priming and cueing tasks (refs). For example, if the target stimulus at time zero is preceded by a prime stimulus that can be congruent (condition 1) or incongruent (condition 2) to the target, then the distributions show that (a) the fastest responses (< 400 ms) are triggered exclusively by the prime, (b) between 400 and 500 ms, the prime-triggered response tendency is actively inhibited (leading to conditional accuracies close to .5), and (c) the slowest responses (>500 ms) are controlled by the target stimulus. 
 
 <!-- For our purposes here, it is enough to know that the distributions plotted represent the probability of an event occurring in that time bin, given that it has not yet occurred. Insets show mean response time per condition.-->
 
@@ -106,9 +110,7 @@ As a simple illustration, Figure 1 shows how comparing means between two conditi
 knitr::include_graphics("../sims/figures/Fig1_revision1.jpeg")
 ```
 
-Why does this matter for research in psychology? Compared to the aggregation of data across trials, a distributional approach offers the possibility to reveal the time course of psychological states. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higer in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1.
 
-For many psychological questions, such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes, by adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit. Thus, a distributional approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to better discriminate between different theoretical accounts of psychological and/or brain-based processes.
 
 
 <!-- For example, the distributions in Figure 1 show that the effect starts between 400 and 500 ms (in time bin 5) and is gone when the waiting time reaches 700 ms or more. 
@@ -141,10 +143,6 @@ In tutorial 4, we illustrate one approach to planning how much data to collect i
 
 # 2. A brief introduction to event history analysis
 
-We recommend several excellent textbooks for a comprehensive background context to EHA [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010] and for a more general introduction to understanding regression equations [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
-
-## 2.1 Basic features of event history analysis 
-
 To apply EHA, one must be able to:
 
 1. define an event of interest that represents a qualitative change that can be situated in time (e.g., a button press, a saccade onset, a fixation offset, etc.);
@@ -152,6 +150,56 @@ To apply EHA, one must be able to:
 2. define time point zero (e.g., target stimulus onset, fixation onset, etc.);
 
 3. measure the passage of time between time point zero and event occurrence in discrete or continuous time units. 
+
+## 2.1 Single, repeatable, and recurrent events
+
+While people can die only once, in experimental RT tasks the events of interest are typically repeatable. For example, in the target-present condition of a one-button detection task the participant is presented in each trial with a faint target stimulus that (s)he has to detect by pressing a button within a certain time window (e.g., 1 second from target onset). The single time-to-detection is thus repeatedly measured across multiple trials. In the parlance of EHA, in each trial the participant is "at risk" for response occurrence as long as the response has not occurred yet.
+
+In a two-button discrimination task, the participant is presented in each trial with a target stimulus that (s)he has to categorize by pressing one of two buttons within a certain time window. This is known as a "competing risks" situation, because in each trial, the participant can transition from an idle state to either a correct response state or an incorrect response state.
+
+In a bistable perception task, the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes, for example, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period (2 minutes). We do not analyse recurrent events in this tutorial. More information about recurrent events analysis can be found in REF and REF...
+
+In secion A of the Supplementary Material we visualize the types of time-to-event data that can be obtained in these RT tasks.
+
+## 2.2 Right censoring vs data trimming
+
+
+
+
+
+## 2.3 Discrete vs continuous time units
+
+All measurements of duration are discrete in nature. However, when the temporal resolution is high relative to the duration of the observation window, 
+- interest in the shape of the hazard function <-> Cox
+- non-smooth functions <-> parametric
+- definition hazard prob and logistic regression
+
+## 2.4 Discrete-time Hazard functions and conditional accuracy fun
+
+def hazard
+
+def survival
+
+def cumulative distribution
+
+def prob mass function
+
+def conditional accuracz function
+
+
+## 2.5 Number of time bins, repeated measures, and samples
+
+
+## 2.6 Bayesian vs. frequentist approach
+
+
+-------------------
+
+We recommend several excellent textbooks for a comprehensive background context to EHA [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010] and for a more general introduction to understanding regression equations [@gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
+
+## 2.1 Basic features of event history analysis 
+
+
 
 In EHA, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. 
 
@@ -221,6 +269,9 @@ To make inferences, we use two main approaches. We compare models of different c
 We used `r my_r_citation$r` for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on @allisonSurvivalAnalysisUsing2010, @singerAppliedLongitudinalData2003, @mcelreathStatisticalRethinkingBayesian2020, @heiss2021,  @kurzAppliedLongitudinalDataAnalysis2023, and @kurzStatisticalRethinkingSecondEd2023.
 
 `r my_r_citation$pkgs` <!-- create footnote -->
+
+
+
 
 # 4. Tutorials
 

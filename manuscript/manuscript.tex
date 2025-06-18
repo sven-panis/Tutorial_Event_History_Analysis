@@ -280,6 +280,10 @@ In experimental psychology, it is standard practice to analyse response times (R
 
 As a simple illustration, Figure 1 shows how comparing means between two conditions conceal the shapes of the underlying RT and accuracy distributions. We simulated a RT + accuracy data set for a single subject who performed 200 trials (i.e., repeated measurements) in each of two conditions. For example, while this subject is 71 ms faster on average in condition 1 (481 ms) compared to condition 2 (552 ms), the corresponding hazard functions of response occurrence show that the effect starts in time period (400,500{]} or bin t=5, and is present in three consecutive time bins (i.e., for 300 ms). Similarly, while this subject makes less errors in condition 1 (86\% accuracy) compared to condition 2 (64\% accuracy), the conditional accuracy functions show that (a) erroneous responses in condition 1 are confined to a single time bin, and (b) the observed conditional accuracies (0, 1, 0.51, 0.48) are never even close to the mean accuracies.
 
+Why does this matter for research in psychology? Compared to the aggregation of data across trials, a distributional approach offers the possibility to reveal the time course of psychological states. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higer in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1.
+
+For many psychological questions, such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes, by adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit. Thus, a distributional approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to better discriminate between different theoretical accounts of psychological and/or brain-based processes.
+
 
 
 \begin{figure}[H]
@@ -290,10 +294,6 @@ As a simple illustration, Figure 1 shows how comparing means between two conditi
 
 \caption{Mean performance versus distributional analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100{]}, the last bin is (900,1000{]}. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
 \end{figure}
-
-Why does this matter for research in psychology? Compared to the aggregation of data across trials, a distributional approach offers the possibility to reveal the time course of psychological states. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the early emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higer in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1.
-
-For many psychological questions, such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes, as well as adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit. Thus, a distributional approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to better discriminate between different theoretical accounts of psychological and/or brain-based processes.
 
 \subsection{1.2 Aims and structure of the paper}\label{aims-and-structure-of-the-paper}
 
@@ -311,10 +311,6 @@ We then provide seven different tutorials, which are written in the R programmin
 
 \section{2. A brief introduction to event history analysis}\label{a-brief-introduction-to-event-history-analysis}
 
-We recommend several excellent textbooks for a comprehensive background context to EHA (Allison, 2010; Singer \& Willett, 2003) and for a more general introduction to understanding regression equations (Gelman, Hill, \& Vehtari, 2020; Winter, 2019). Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
-
-\subsection{2.1 Basic features of event history analysis}\label{basic-features-of-event-history-analysis}
-
 To apply EHA, one must be able to:
 
 \begin{enumerate}
@@ -326,6 +322,45 @@ To apply EHA, one must be able to:
 \item
   measure the passage of time between time point zero and event occurrence in discrete or continuous time units.
 \end{enumerate}
+
+\subsection{2.1 Single, repeatable, and recurrent events}\label{single-repeatable-and-recurrent-events}
+
+While people can die only once, in experimental RT tasks the events of interest - button presses, saccade onsets, etc. - are typically repeatable. For example, in a one-button detection task the participant is presented in each trial with a faint target stimulus that (s)he has to detect by pressing a button within a certain time (e.g., 1 second).
+
+Detection: single event, repeatable: hazard function + clustering
+Discrimination: Two events, repeatable: competing risks
+Bistable perception task: Two events, repeatable, and recurrent
+
+\subsection{2.2 Right censoring vs data trimming}\label{right-censoring-vs-data-trimming}
+
+\subsection{2.3 Discrete vs continuous time units}\label{discrete-vs-continuous-time-units}
+
+All measurements of duration are discrete in nature. However, when the temporal resolution is high relative to the duration of the observation window,
+- interest in the shape of the hazard function \textless-\textgreater{} Cox
+- non-smooth functions \textless-\textgreater{} parametric
+- definition hazard prob and logistic regression
+
+\subsection{2.4 Discrete-time Hazard functions vs cumulative distribution functions}\label{discrete-time-hazard-functions-vs-cumulative-distribution-functions}
+
+def hazard
+
+def survival
+
+def cumulative distribution
+
+def prob mass function
+
+def conditional accuracz function
+
+\subsection{2.5 Number of time bins, repeated measures, and samples}\label{number-of-time-bins-repeated-measures-and-samples}
+
+\subsection{2.6 Bayesian vs.~frequentist approach}\label{bayesian-vs.-frequentist-approach}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+We recommend several excellent textbooks for a comprehensive background context to EHA (Allison, 2010; Singer \& Willett, 2003) and for a more general introduction to understanding regression equations (Gelman, Hill, \& Vehtari, 2020; Winter, 2019). Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
+
+\subsection{2.1 Basic features of event history analysis}\label{basic-features-of-event-history-analysis}
 
 In EHA, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units.
 
