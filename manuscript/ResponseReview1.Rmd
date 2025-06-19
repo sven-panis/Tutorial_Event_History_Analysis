@@ -28,25 +28,17 @@ knitr::opts_chunk$set(echo = F)
 >
 > Dear Dr. Panis:
 >
-> Thank you for submitting your Tutorial (AMPPS-24-0232) entitled "Event History Analysis for psychological time-to-event data: A tutorial in R with examples in Bayesian and frequentist workflows" to Advances in Methods and Practices in Psychological Science (AMPPS). I have now received input from three experts in the field, and you will find the reviews below this message and attached. As you will see, all three reviewers believe your paper can make a strong contribution to the literature. Prior to considering the reviewers' input, I read your paper to form an independent opinion. I share the positive sentiments about this work and invite you to revise and resubmit your manuscript for further consideration at AMPPS.
+> Thank you for submitting your Tutorial  entitled "Event History Analysis for psychological time-to-event data: A tutorial in R with examples in Bayesian and frequentist workflows" . I have now received input from three experts in the field, and you will find the reviews below this message and attached. As you will see, all three reviewers believe your paper can make a strong contribution to the literature. Prior to considering the reviewers' input, I read your paper to form an independent opinion. I share the positive sentiments about this work and invite you to revise and resubmit your manuscript for further consideration.
 
 > The reviews are through and thoughtful, and I will not reiterate all the details here. For my part, I would like your revision to focus on accessibility. Your paper is a bit challenging-- it's long and a little tough to get through. What can make it easier for less familiar readers? Perhaps more of a basic set up earlier? A glossary defining specific terms (e.g., what is an event? how is it defines? censoring? hazards vs. survival curves, conditional probabilities, etc.)? Also, clarify when readers need to shift from frequentist to Bayesian model... and why? The main consideration here is that wish to make the paper much more accessible-- from start to finish-- for readers who are novices and entirely unfamiliar with this area. This can be done any number of ways, and R3 also includes some suggestions for making these reviews. 
 I encourage you to have the revised paper read and pre-reviewed by colleagues who are novices in this area with the explicit goal of making the paper accessible to them-- this will help you hit the more for our broad readership.
 
 > If you choose to submit a revision, please include include a letter detailing your point-by-point responses to each reviewer comment and indicating how you changed the manuscript to address them. The revised manuscript may undergo further peer review. We ask that you submit your revision within three months. Please let us know if you will not be able to meet this deadline.
 
-> To submit your revision, log into http://mc.manuscriptcentral.com/ampps and enter your Author Center, where you will find your manuscript title listed under "Manuscripts with Decisions." Under "Actions," click on "Create a Revision." Your manuscript number has been appended to denote a revision.
-
-> IMPORTANT: Your original files are available to you when you upload your revised manuscript. Please delete any redundant or outdated files before completing the submission.
-
-> Once again, thank you for submitting your manuscript to AMPPS and I look forward to receiving your revision.
 
 > Sincerely,
 
-> David A. Sbarra, Ph.D.
-> Editor, Advances in Methods and Practices in Psychological Science
-
-We tried to focus on accessibility in the revision of our Tutorial AMPPS-24-0232.
+We tried to focus on accessibility in the revision of our Tutorial.
 
 
 
