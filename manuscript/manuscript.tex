@@ -379,21 +379,19 @@ Definition life table\ldots{}
 
 \subsection{2.5 Bayesian vs.~frequentist approaches to regression}\label{bayesian-vs.-frequentist-approaches-to-regression}
 
-To study how the risk of a response, and the accuracy of an emitted response, depends on covariates (i.e., explanatory predictor variables) we can estimate regression models for hazard and for conditional accuracy. Such covariates can be constant over within-trial time (e.g., gender, race, trial number, block number) or vary with within-trial time (e.g., heart rate, eye gaze position, eye pupil dilation). Note that time-varying covariates are not covered in this tutorial.
+To study how the risk of a response, and the accuracy of an emitted response, depends on covariates (i.e., explanatory predictor variables) we can estimate regression models for hazard and for conditional accuracy, i.e., perform inferential EHA/SAT analysis. Such covariates can be constant over within-trial time (e.g., gender, race, trial number, block number) or vary with within-trial time (e.g., heart rate, eye gaze position, eye pupil dilation). Note that time-varying covariates are not covered in this tutorial.
 
-Heterogeneity
-
-Multilevel survival analysis: Methods, Models and Applications
+Heterogeneity -\textgreater{} Multilevel survival analysis: Methods, Models and Applications
 Austin 2017 !!
 
-fitting problems
+fitting problems -\textgreater{} Bayesian
 
 \subsection{2.6 Number of samples, repeated measures, time bins}\label{number-of-samples-repeated-measures-time-bins}
 
 In a typical RT data set from a within-subject design, there are N individuals and M repeated measures or trials per experimental condition.
-To test process models of cognition, researchers tend to use small-N designs, \ldots{}
+To test process models of cognition, .. advises to use small-N designs, \ldots{} eACH SUBJECT REPLICATION UNIT
 
-Power
+Power IS A COMPLEX FUNCTION OF \ldots. (REF A, REF B ON POWER WITH EXPONENTIAL)
 
 Number of time bins?
 
@@ -401,9 +399,9 @@ Number of time bins?
 
 We recommend several excellent textbooks for a comprehensive background context to EHA (Allison, 2010; Singer \& Willett, 2003) and for a more general introduction to understanding regression equations (Gelman, Hill, \& Vehtari, 2020; Winter, 2019). Our focus here is not on providing a detailed account of the underlying regression equations, since this topic has been comprehensively covered many times before. Instead, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. As such, we only supply regression equations in section D of the Supplemental Material.
 
-We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.1; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024b), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.13.1; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{rstan} (Version 2.32.6; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
-
 \section{4. Tutorials}\label{tutorials}
+
+We used R (Version 4.4.0; R Core Team, 2024)\footnote{We, furthermore, used the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.1; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024b), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.13.1; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{rstan} (Version 2.32.6; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.4; Barth, 2023).} for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
 Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the Supplemental Material for a list of the custom functions).
