@@ -1,0 +1,181 @@
+---
+title: "notes"
+author: "Rich"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# June 20th 2025 #
+
+## package loading ##
+
+loading packages at the top of the file is a bit of a mess at the minute and appears rather complicated and it needs cleaning up.
+there are several repeat library loads e.g., tidyverse and patchwork
+
+## r-references ##
+
+this bib r-references r-ref thing file prevented the manuscript from building, so I had to comment it out.
+This needs fixing.
+
+## intro ##
+
+- I made the intro shorter. We still make the same points, just in far fewer words.
+
+## section 2 ##
+
+I took out the following and changed it to be far shorter. 
+If you want to include any of it in supps, then let's discuss it.
+Instead, I chose to focus on picking out the benefits of EHA for research in experimental psychology.
+That way, we are being explicit about what we are aiming to do in this section.
+And we are therefore making it clear that we are NOT providing a detailed description of EHA.
+There is simply not enough space.
+And we look confused and contradictory because we don't actually do what we say. 
+
+You will notice that I have mentioned many of the below points, just not in detail.
+And again, that's becuase that is not the point of the paper. 
+
+- leave the survivor function in supps because it just seems unnecessary, especially since we do not plot it anymore.
+
+- Sven - can you add a relevant reference for the following statement:
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (REF??).
+
+- in section 2.3 can you add a line or two about bin width please?
+
+<!-- ## 2.1 Single, repeatable, and recurrent events -->
+
+<!-- While people can die only once, in experimental RT tasks the events of interest are typically repeatable. For example, in the target-present condition of a one-button detection task the participant is presented in each trial with a faint target stimulus whose presence (s)he has to detect by pressing a button within a certain time window (e.g., the first second after target onset). In EHA parlance, the single event of interest is a button press response, *time zero* is defined as target display onset, the  *observation period* is 1 second long in each trial or repeated measurement, in each trial the participant is *at risk* for response occurrence as long as the response has not occurred yet, and the individual always starts in an "idle" state in each trial and *transitions* to a "detected" state when a response occurs. -->
+
+<!-- In a two-button discrimination task, the participant is presented in each trial with a target stimulus that (s)he has to categorize by pressing one of two buttons within a certain time window. In the world of EHA, this is known as a "competing risks" situation, because in each trial the participant can transition from an idle state to either a "correct response" state or an "incorrect response" state. -->
+
+<!-- In a bistable perception task, the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes, for example, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states.  -->
+
+<!-- In section A of the Supplemental Material we visualize the types of time-to-event data that are obtained in these typical RT tasks (detection, discrimination or categorization, bistable perception). Note that we do not analyse recurrent events in this tutorial. More information about recurrent events analysis can be found in REF and REF... -->
+
+<!-- ## 2.2 Right censoring versus data trimming -->
+
+<!-- What do you do with trials in which no response occurs during the observation period? EHA treats such trials as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. Right-censoring is a type of missing data problem and a nearly universal feature of survival data including RT data. For example, in the one-button detection task example from above, all trials have a *censoring time* of 1 second, but some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.  -->
+
+<!-- EHA can deal in a straight-forward fashion with right-censored time-to-event data. In contrast, experimental psychologists are used to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs before calculating a mean RT (REF). Discarding data can introduce biases, however.  -->
+
+<!-- ## 2.3 Discrete vs continuous time units -->
+
+<!-- All man-made measurements of duration are discrete in nature. However, when the temporal resolution is high relative to the duration of the observation window, researchers typically treat time as continuous. RT data can thus be analysed using continuous-time EHA methods which use the exact event times, including parametric models (e.g., an exponential hazard model, a Weibull hazard model, a lognormal hazard model) and the popular Cox regression model (). -->
+
+<!-- However, in this tutorial we focus on discrete-time methods for three reasons: -->
+<!-- First, we are interested in studying the shape of the hazard function (Cox regression ignores this and only tests the effects of covariates);  -->
+<!-- Second, empirical hazard and conditional accuracy functions from certain RT tasks (e.g., interference tasks; Figure 1B) can show abrupt changes in their shape (parametric methods assume smooth distributions), and the shape of the hazard function in many experimental tasks is still unknown (parametric methods assume well-defined probability distributions); -->
+<!-- Third, in discrete time, hazard is simply defined as a conditional probability (see 2.4) and we can apply logistic regression modeling with which most experimental psychologists are already familiar. -->
+
+<!-- In sum, due to their simplicity and flexibility, we believe that discrete-time methods are a good starting point for experimental psychologists that want to abandon ANOVA and learn to apply EHA, even though continuous-time methods might be more suited in certain situations. -->
+
+<!-- ## 2.4 Discrete-time hazard functions and conditional accuracy functions -->
+
+<!-- After dividing time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 time bins; Figure 1B), let RT be a discrete random variable denoting the *rank* of the time bin in which a particular person's response occurs in a particular experimental condition. For example, the detection response in trial 1 might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms). Thus, the RT data are interval-censored, because we only use the information that a<RT<=b when the response occurs in time bin (a,b]. -->
+
+<!-- While experimental psychologists are familiar with the cumulative distribution function or F(t) = P(RT <= t) and the probability mass function or P(t) = P(RT = t), discrete-time EHA focuses on the discrete-time hazard function of event occurrence: -->
+
+<!-- \noindent h(t) = P(RT = t| RT $\geq$ t)   \hfill  (1) -->
+
+<!-- \noindent and the discrete-time survivor function:  -->
+
+<!-- \noindent S(t) = P(RT $>$ t) = 1 - F(t) =  [1-h(t)].[1-h(t-1)].[1-h(t-2)]...[1-h(1)]  \hfill  (2) -->
+
+
+<!-- The discrete-time hazard function gives you, for each time bin, the conditional probability that the event occurs (sometime) in bin t, given that the event does not occur in previous bins.  -->
+<!-- In other words, it reflects the instantaneous risk that the response occurs in bin t, given that it has not yet occurred in one of the prior bins. In contrast, the discrete-time survivor function cumulates the bin-by-bin risks of event *non*occurrence to obtain the survival probability, the probability that the event does not occur before the endpoint of bin t. As a result, only the hazard function conveys the risk of event occurrence associated with each bin, and ... suited for online tracking of performance.. cfr mouse cursor movements.... -->
+
+<!-- For two-choice RT data, the discrete-time hazard function can be extended with the discrete-time conditional accuracy function  -->
+
+<!-- \noindent ca(t) = P(correct | RT = t)   \hfill  (5) -->
+
+<!-- \noindent which gives you for each bin the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function. -->
+<!-- We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT.  -->
+
+<!-- As we will illustrate in Tutorials 1a and 1b, performing a descriptive EHA/SAT analysis by calculating the sample-based estimates of h(t), S(t) and ca(t) for each combination of participant and condition requires setting up a *life table*. -->
+<!-- Definition life table... -->
+
+
+
+<!-- ## 2.5 Bayesian vs. frequentist approaches to regression -->
+
+<!-- To study how the risk of a response, and the accuracy of an emitted response, depends on covariates (i.e., explanatory predictor variables) we can estimate regression models for hazard and for conditional accuracy, i.e., perform inferential EHA/SAT analysis. Such covariates can be constant over within-trial time (e.g., gender, race, trial number, block number) or vary with within-trial time (e.g., heart rate, eye gaze position, eye pupil dilation). Note that time-varying covariates are not covered in this tutorial. -->
+
+<!-- Heterogeneity -> Multilevel survival analysis: Methods, Models and Applications -->
+<!-- Austin 2017 !! -->
+
+
+<!-- fitting problems -> Bayesian -->
+
+
+<!-- ## 2.6 Number of samples, repeated measures, time bins -->
+
+<!-- In a typical RT data set from a within-subject design, there are N individuals and M repeated measures or trials per experimental condition. -->
+<!-- To test process models of cognition, .. advises  to use small-N designs, ... eACH SUBJECT REPLICATION UNIT -->
+
+<!-- Power IS A COMPLEX FUNCTION OF .... (REF A, REF B ON POWER WITH EXPONENTIAL) -->
+
+<!-- Number of time bins? -->
+
+<!-- bin width -->
+<!-- ------------------- -->
+
+
+## tutorial section ##
+
+- the frequentist tutorial still needs removing and placing in supps. 
+then just refer to it in the main text.
+I commented it out for now.
+
+## 4.1.2 ##
+
+please move the below text to the script or tutorial itself.
+e.g., inlcude a commented out note that explains this can be ignored.
+there is no need for this in the paper itself.
+
+<!-- When creating the plots, some warning messages will likely be generated, like these: -->
+
+<!-- * Removed 2 rows containing missing values or values outside the scale range (`geom_line()`).  -->
+<!-- * Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).  -->
+<!-- * Removed 2 rows containing missing values or values outside the scale range (`geom_segment()`). -->
+
+<!-- The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored. -->
+
+
+page 19. Figure 2. The image warped / wrong size and needs fixing.
+
+## combining figures ##
+
+we currently have a lot of space dedicated to results figures e.g., Figures 3,4,5,6,7,8.
+
+I suggest an alternative, which is more efficient and compact.
+
+Let's at least try it and see how we think it compares. 
+
+I would reduce 6 figures into 2.
+
+One hazard figure.
+
+One ca figure.
+
+Each figure has 3 panels across 3 rows.
+panel a - parameter estimates (current figure 3 e.g.)
+panel b - predicted hazard group level (current figure 4a)
+panel c - condition differences in hazard (current figure 5a).
+
+Then do the same for CA in a separate figure.
+
+And then report individual differences in Supplementary and refer to the figure in the main text.
+
+What I like about this approach is that:
+
+A) we save a tremendous amount of space.
+B) we still make the same points.
+C) we do not really focus in any material way on individual differences, so why both with the plots in the main text.
+D) folks still have easy access to the code and the plots in Supps should they feel they need them.
+E) we are really responding well to reviewers in terms of saving space and being more compact.
+
+## discussion ##
+
+I removed the unnecessary sections that we discussed previously.
