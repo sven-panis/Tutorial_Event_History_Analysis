@@ -119,6 +119,8 @@ In what follows, the paper is organised in three main sections. In Section 2, we
 
 EHA is a statistical approach to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010; @gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. We also supply all relevant regression equations in section D of the Supplemental Material. 
 
+In section A of the Supplemental Material we visualize the types of time-to-event data that are obtained in these typical RT tasks (detection, discrimination or categorization, bistable perception).
+
 ### 2.1.1 Terminolgy and minimum requirements for EHA
 
 To avoid possible confusion in terminology used, it is worth noting that EHA is frequently known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer & Willett, 2003). In this paper, we choose to use the term EHA throughout.
@@ -194,6 +196,9 @@ For instance, in Figure 1B we chose 100ms in an arbitrary manner.
 In reality, however, bin width will need to be set by considering a number of factors simultabeously.
 For example, [[Sven - add a few sentences here]]
 
+The optimal bin width will depend on many factors, including (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of trials per condition per participant, (d) the shape of the hazard function, etc.
+
+Finding an appropriate bin width in a given user case will require testing a number of options, when calculating and plotting the descriptive statistics (see below). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in irregular hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred then.
 
 # 4. Tutorials
 
