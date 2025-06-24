@@ -1,6 +1,6 @@
 ---
 title             : no
-shorttitle        : "A tutorial on hazard analysis"
+shorttitle        : "A tutorial on event history analysis"
 bibliography      : ["extrareferences2.bib"]
 floatsintext      : yes
 linenumbers       : yes
@@ -66,7 +66,7 @@ In EHA parlance, the single event of interest is a button press response, *time 
 
 Right-censoring occurs when we only know that the event time is larger than some value, i.e., the censoring time. The most common type of right-censoring is “singly Type I censoring” which applies when the experiment uses a fixed response deadline for all trials. “Type I” means that the censoring time is fixed and under the control of the experimenter; “Singly” refers to the fact that all observations have the same censoring time (Allison, 2010). Clearly, discarding right-censored observations before calculating the median or mean RT will result in biased estimates, especially in the target-absent condition. 
 
-(ref:descr-plot-RT-tasks-caption) RT tasks and EHA concepts. The timer starts at time 0 (black vertical line) and ends at the censoring time (dotted vertical line). In each trial of each condition of each task, an overt response time (RT) is indicated by a circle. (A) Single-button detection data requires a single-event analysis. (B) Two-button discrimination data requires a competing risks analysis. (C) Competing risk data in combination with an SOA manipulation might require increasing the observation period in each trial. (D) Two-button bistable perception data requires a recurrent event / multistate analysis.
+(ref:descr-plot-RT-tasks-caption) RT tasks and EHA concepts. The timer starts at time 0 (black vertical line) and ends at the censoring time (dotted vertical line). In each trial of each condition of each task, an overt response time (RT) is indicated by a circle. (A) Single-button detection data requires a single-event analysis. (B) Two-button discrimination data requires a competing risks analysis. (C) Competing risk data in combination with an stimulus-onset-asynchrony manipulation might require increasing the observation period in each trial. (D) Two-button bistable perception data requires a recurrent event / multistate analysis.
 
 ```{r plot-RT-tasks, fig.cap = "(ref:descr-plot-RT-tasks-caption)", out.width="80%"}
 knitr::include_graphics("../../manuscript/Suppl_material/Plot_paradigms.png")
@@ -82,7 +82,7 @@ In EHA parlance this is known as a *competing risks* situation, because from tar
 
 There are two ways to deal with a competing-risks situation. One approach is to model the hazard function of correct response occurrence and treat incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c (Allison, 2010). However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another (Burle et al., 2004; Eriksen et al., 1985; Praamstra & Seiss, 2005). Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here (see Figure 1), and many experimental psychologists are familiar with SAT.
 
-Studying the effect of SOA on mean RT is still a popular approach to study the time course of cognitive processes (ref). For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). However, mean RT conceals the possibe presence of responses triggered by the non-target stimulus (Panis, 2020; Panis & Schmidt, 2016). For example, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial onset. Also, when RTs are originally recorded relative to target onset, we have to add a constant time to each (here: + 400 ms) in order to include these "negative" RTs in the analysis (lower x-axis labels). In general, all RTs must be positive for EHA to work.
+Studying the effect of stimulus-onset-asynchrony (SOA) on mean RT is still a popular approach to study the time course of cognitive processes (ref). For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). However, mean RT conceals the possibe presence of responses triggered by the non-target stimulus (Panis, 2020; Panis & Schmidt, 2016). For example, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial onset. Also, when RTs are originally recorded relative to target onset, we have to add a constant time to each (here: + 400 ms) in order to include these "negative" RTs in the analysis (lower x-axis labels). In general, all RTs must be positive for EHA to work.
 
 Finally, in a bistable perception task (Supplementary Figure 1D), the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, for example, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. Note that we do not analyse recurrent events in this tutorial. More information about recurrent events analysis can be found in REF and REF...
 
@@ -121,27 +121,7 @@ The survivor function provides a context for the hazard function, as S(t-1) = P(
 
 While psychological RT data is typically measured in small, continuous units (e.g., milliseconds), discrete-time EHA treats the RT data as interval-censored data, because it only uses the information that the response occurred sometime in a particular bin of time (x,y]: x < RT $\leq$ y. If we want to use the exact event times, then we treat time as a continuous variable, and let RT be a continous random variable denoting a particular person's response time in a particular experimental condition. Continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT $\leq$ t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT $>$ t) and the hazard rate function $\lambda$(t) = f(t)/S(t). The hazard rate function gives you the instantaneous *rate* of event occurrence at time point t, given that the event has not occurred yet. 
 
-## B. Benefits of event history analysis
-
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks. Instead, we briefly list the benefits below, and refer the reader to section F of the Supplemental Material for more detailed coverage of the benefits. The benefits include:
-
-1. Hazard functions are more diagnostic than density functions when one is interested in studying the detailed shape of a RT distribution (Holden et al., 2009).
-
-2. RT distributions may differ from each other in multiple ways, and hazard functions allow one to capture these differences which mean-average comparisons may conceal (Townsend, 1990).
-
-3. EHA takes account of more of the data collected in a typical speeded response experiment, by virtue of not discarding right-censored observations. Trials with very long RTs are not discarded, but instead contribute to the risk set in each time bin (see section 4.1.2 below).
-
-4. Hazard modeling allows one to incorporate time-varying explanatory covariates, such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. [@allisonSurvivalAnalysisUsing2010]. This is useful for linking physiological effects to behavioral effects when performing cognitive psychophysiology [@meyerModernMentalChronometry1988].
-
-5. EHA can help to solve the problem of model mimicry, i.e., the fact that different computational models can often predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. As such, EHA can be a tool to help distinguish between competing theories of cognition and brain function. 
-
-
-
-
-
-
-
-## B. Custom functions for descriptive discrete-time hazard analysis
+## C. Custom functions for descriptive discrete-time hazard analysis
 
 We defined 12 custom functions that we list here. 
 
@@ -161,7 +141,7 @@ We defined 12 custom functions that we list here.
 When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc_ca() and join_lt_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha().
 When you want to analyse simple RT data from a detection experiment with two independent variables, the functions calc_ca_2IV() and join_lt_ca_2IV() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha_2IV().
 
-## C. Link functions
+## D. Link functions
 
 Popular link functions include the logit link and the complementary log-log link, as shown in Supplementary Figure 1.
 
@@ -171,7 +151,7 @@ Popular link functions include the logit link and the complementary log-log link
 knitr::include_graphics("../../Tutorial_2_Bayesian/figures/linkfunctions.png")
 ```
 
-## D. Regression equations
+## E. Regression equations
 
 An example (single-level) discrete-time hazard model with three predictors (TIME, X~1~, X~2~), the cloglog link function, and a second-order polynomial specification for TIME can be written as follows:
 
@@ -183,7 +163,7 @@ An example (single-level) discrete-time hazard model with a general specificatio
 
 \noindent cloglog[h(t)] =  [$\beta$~0~D1 + $\beta$~1~D2 + $\beta$~2~D3 + $\beta$~3~D4 + $\beta$~4~D5 + $\beta$~5~D6] + [$\beta$~6~X~1~]  \hfill  (7)
 
-## E. Prior distributions
+## F. Prior distributions
 
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Supplementary Figure 2 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
@@ -196,7 +176,7 @@ knitr::include_graphics("../../Tutorial_2_Bayesian/figures/plot_of_priors.png")
 To gain a sense of what prior *cloglog* values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale. 
 However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model. 
 
-## F. Advantages of hazard analysis
+## G. Advantages of hazard analysis
 
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by @holdenDispersionResponseTimes2009, “probability density [and mass] functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions” (p. 331) when one is interested in studying the detailed shape of a RT distribution [see also Figure 1 in @panisAnalyzingResponseTimes2020]. Therefore, when the goal is to study how psychological effects change over time, hazard and conditional accuracy functions are the preferred ways to describe the RT + accuracy data. 
 
@@ -204,9 +184,9 @@ Second, because RT distributions may differ from one another in multiple ways, @
 
 Third, EHA does not discard right-censored observations when estimating hazard functions, that is, trials for which we do not observe a response during the data collection period in a trial so that we only know that the RT must be larger than some value (e.g., the response deadline). This is important because although a few right-censored observations are inevitable in most RT tasks, a lot of right-censored observations are expected in experiments on masking, the attentional blink, and so forth. In other words, by using EHA you can analyze RT data from experiments that typically do not measure response times. As a result, EHA can also deal with long RTs in experiments without a response deadline, which are typically treated as outliers and are discarded before calculating a mean. This orthodox procedure leads to underestimation of the true mean. By introducing a fixed censoring time for all trials at the end of the analysis time window, trials with long RTs are not discarded but contribute to the risk set of each bin.
 
-Fourth, hazard modeling allows incorporating time-varying explanatory covariates such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, etc. (Allison, 2010). This is useful for linking physiological effects to behavioral effects when performing cognitive psychophysiology [@meyerModernMentalChronometry1988].
+Fourth, hazard modeling allows one to incorporate time-varying explanatory covariates, such as heart rate, electroencephalogram (EEG) signal amplitude, gaze location, pupil dilation, etc. [@allisonSurvivalAnalysisUsing2010]. This is useful for linking physiological effects to behavioral effects when performing cognitive psychophysiology [@meyerModernMentalChronometry1988].
 
-Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and possibly ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models can often predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data, such as short-lived "dips" that could signal the presence of active top-down respone inhibition processes [@panisStudyingDynamicsVisual2020; @panisWhatShapingRT2016].
+Finally, as explained by @kelsoOutlineGeneralTheory2013, it is crucial to first have a precise description of the macroscopic behavior of a system (here: h(t) and possibly ca(t) functions) in order to know what to derive on the microscopic level. EHA can thus solve the problem of model mimicry, i.e., the fact that different computational models can often predict the same mean RTs as observed in the empirical data, but not necessarily the detailed shapes of the empirical RT hazard distributions. Also, fitting parametric functions or computational models to data without studying the shape of the empirical discrete-time h(t) and ca(t) functions can miss important features in the data, such as short-lived "dips" that could signal the presence of active top-down respone inhibition processes [@panisStudyingDynamicsVisual2020; @panisWhatShapingRT2016]. As such, EHA can be a tool to help distinguish between competing theories of cognition and brain function. 
 
 # References
 
