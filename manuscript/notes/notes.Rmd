@@ -14,19 +14,30 @@ editor_options:
 loading packages at the top of the file is a bit of a mess at the minute and appears rather complicated and it needs cleaning up.
 there are several repeat library loads e.g., tidyverse and patchwork
 
+-> I removed redundant packages.
+
 ## r-references ##
 
 this bib r-references r-ref thing file prevented the manuscript from building, so I had to comment it out.
 This needs fixing.
 
+-> TODO.
+
 ## intro ##
 
 - I made the intro shorter. We still make the same points, just in far fewer words.
+
+-> Well done!
 
 ## section 2 ##
 
 I took out the following and changed it to be far shorter. 
 If you want to include any of it in supps, then let's discuss it.
+
+-> Section A of the revised Suppl. Material now contains the Figure of RT tasks and discussion of the types of time-to-event data obtained in typical RT tasks.
+
+
+
 Instead, I chose to focus on picking out the benefits of EHA for research in experimental psychology.
 That way, we are being explicit about what we are aiming to do in this section.
 And we are therefore making it clear that we are NOT providing a detailed description of EHA.
@@ -38,10 +49,18 @@ And again, that's becuase that is not the point of the paper.
 
 - leave the survivor function in supps because it just seems unnecessary, especially since we do not plot it anymore.
 
+
+-> I agree.
+
+
 - Sven - can you add a relevant reference for the following statement:
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (REF??).
 
+-> TODO.
+
 - in section 2.3 can you add a line or two about bin width please?
+
+-> Done.
 
 <!-- ## 2.1 Single, repeatable, and recurrent events -->
 
@@ -128,6 +147,8 @@ Statisticians and mathematical psychologists recommend focusing on the hazard fu
 then just refer to it in the main text.
 I commented it out for now.
 
+-> TODO.
+
 ## 4.1.2 ##
 
 please move the below text to the script or tutorial itself.
@@ -143,7 +164,12 @@ there is no need for this in the paper itself.
 <!-- The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored. -->
 
 
+-> TODO.
+
 page 19. Figure 2. The image warped / wrong size and needs fixing.
+
+-> Done.
+
 
 ## combining figures ##
 
@@ -176,6 +202,10 @@ C) we do not really focus in any material way on individual differences, so why 
 D) folks still have easy access to the code and the plots in Supps should they feel they need them.
 E) we are really responding well to reviewers in terms of saving space and being more compact.
 
+-> TODO.
+
 ## discussion ##
 
 I removed the unnecessary sections that we discussed previously.
+
+-> ok.
