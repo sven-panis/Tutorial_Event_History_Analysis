@@ -1657,7 +1657,7 @@ p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
   scale_x_continuous(breaks = 1:10, limits = c(1,10),labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
  # ggtitle("hazard and conditional accuracy functions") +
-  xlab("time bin endpoint (ms)") +
+  xlab("time bin t's endpoint (ms)") +
   ylab("hazard") +
   theme(axis.text.x = element_text(angle = 90),
         panel.grid.minor.x = element_blank()) +
@@ -1682,7 +1682,7 @@ p13.2 <-ggplot(ca, aes(x = bin, y = ca,
   scale_colour_brewer(palette = "Dark2") + 
   scale_x_continuous(breaks = 1:10, limits=c(1,10),labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
-  xlab("time bin endpoint (ms)") +
+  xlab("time bin t's endpoint (ms)") +
     ylab("conditional accuracy") +
    theme(axis.text.x = element_text(angle = 90),
          panel.grid.minor.x = element_blank()) +
