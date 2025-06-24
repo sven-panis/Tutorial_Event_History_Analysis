@@ -72,7 +72,7 @@
 
 \title{Review 1: Author responses}
 \author{Panis \& Ramsey}
-\date{12.06.2025}
+\date{24.06.2025}
 
 \begin{document}
 \maketitle
@@ -84,17 +84,16 @@
 
 Dear Dr.~Panis:
 
-Thank you for submitting your Tutorial (AMPPS-24-0232) entitled ``Event
-History Analysis for psychological time-to-event data: A tutorial in R
-with examples in Bayesian and frequentist workflows'' to Advances in
-Methods and Practices in Psychological Science (AMPPS). I have now
-received input from three experts in the field, and you will find the
-reviews below this message and attached. As you will see, all three
-reviewers believe your paper can make a strong contribution to the
-literature. Prior to considering the reviewers' input, I read your paper
-to form an independent opinion. I share the positive sentiments about
-this work and invite you to revise and resubmit your manuscript for
-further consideration at AMPPS.
+Thank you for submitting your Tutorial entitled ``Event History Analysis
+for psychological time-to-event data: A tutorial in R with examples in
+Bayesian and frequentist workflows'' . I have now received input from
+three experts in the field, and you will find the reviews below this
+message and attached. As you will see, all three reviewers believe your
+paper can make a strong contribution to the literature. Prior to
+considering the reviewers' input, I read your paper to form an
+independent opinion. I share the positive sentiments about this work and
+invite you to revise and resubmit your manuscript for further
+consideration.
 \end{quote}
 
 \begin{quote}
@@ -126,36 +125,21 @@ to meet this deadline.
 \end{quote}
 
 \begin{quote}
-To submit your revision, log into
-\url{http://mc.manuscriptcentral.com/ampps} and enter your Author
-Center, where you will find your manuscript title listed under
-``Manuscripts with Decisions.'' Under ``Actions,'' click on ``Create a
-Revision.'' Your manuscript number has been appended to denote a
-revision.
-\end{quote}
-
-\begin{quote}
-IMPORTANT: Your original files are available to you when you upload your
-revised manuscript. Please delete any redundant or outdated files before
-completing the submission.
-\end{quote}
-
-\begin{quote}
-Once again, thank you for submitting your manuscript to AMPPS and I look
-forward to receiving your revision.
-\end{quote}
-
-\begin{quote}
 Sincerely,
 \end{quote}
 
-\begin{quote}
-David A. Sbarra, Ph.D. Editor, Advances in Methods and Practices in
-Psychological Science
-\end{quote}
+Response: Thank you for allowing us to submit a revision of our Tutorial
+(AMPPS-24-0232).
 
-We tried to focus on accessibility in the revision of our Tutorial
-AMPPS-24-0232.
+We tried to focus on accessibility in the revision of our Tutorial in
+several ways. First, we replaced Figure 1 with a simpler Figure that
+directly conveys our message, and deleted Figures 2 and 3. Second, we
+shortened the Introduction and Discussion sections. Third, we added a
+section in the supplementary material (section A) in which we visualize
+the different types of time-to-event data that are obtained in typical
+RT tasks (detection, discrimination, bistable perception). We also
+mention the unique contribution of our work, we removed redundancies,
+and tried to improve the clarity of the paper.
 
 \section{Reviewer: 1}\label{reviewer-1}
 
@@ -189,9 +173,11 @@ consider further emphasizing the specific theoretical contributions that
 using these methods may lead to in the areas of reaction time data etc.
 \end{quote}
 
-Response: In the revised ms. We added the following section: In this
-tutorial we provide code to implement discrete-time hazard models in a
-Bayesian framework, with a focus on cognitive experimental psychology.
+Response: In the revised ms. we frame the unique contribution that this
+works adds on pages 5-6: ``\ldots we are not aware of any tutorials that
+are aimed specifically at psychological RT (+ accuracy) data, and which
+provide worked examples of the key data processing and Bayesian
+multilevel regression modelling steps.''
 
 \begin{quote}
 Lougheed, J. P., Benson, L., Ram, N., \& Cole, P. M. (2019). Multilevel
@@ -223,7 +209,7 @@ events (which are described in the Lougheed and Stoolmiller tutorials
 mentioned above)
 \end{quote}
 
-Response: On page x of the revised ms., we mention that we estimate
+Response: On page 7 of the revised ms., we mention that we measure
 single-event occurrences that are repeatedly measured in each
 participant.
 
@@ -241,8 +227,8 @@ and then constantly using one term throughout the manuscript would be
 helpful.
 \end{quote}
 
-Response: We disambiguate the various term early in the revised ms.
-(page x).
+Response: We disambiguate the various term in the revised ms. on page 7,
+and use one term throughout.
 
 \begin{quote}
 Page 5: it would be helpful to refer to the same time unit in reference
@@ -250,7 +236,7 @@ to Figure 1, which shows time bins along the x-axis but the examples
 discussed in the manuscript refer to units of milliseconds.
 \end{quote}
 
-Response: We refer to the same time unit in Figure 1 and the text.
+Response: Figure 1 has been replaced.
 
 \begin{quote}
 Page 7: The authors state that they are not aware of EHA tutorials for
@@ -276,15 +262,31 @@ presented on this on Page 50, but it would be helpful to make this
 information known to the reader earlier in the manuscript.
 \end{quote}
 
-Response: We address the issue of treating time as discrete or
-continuous on page x of the revised ms.
+Response: We address our choice for discrete-time methods on pages 7-8
+of the revised ms.:
+
+``\ldots the definition of hazard and the type of models employed depend
+on whether one is using continuous or discrete time units. As a lab, and
+mainly for practical reasons, we have much more experience using
+discrete-time EHA, and that is the approach that we describe and focus
+on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms
+of EHA require much more data to estimate the continuous-time hazard
+(rate) function well. Thus, by trading a bit of temporal resolution for
+a lower number of trials, discrete-time methods seem ideal for dealing
+with typical psychological RT data sets for which there are less than
+\textasciitilde200 trials per condition per experiment. Moreover, as
+indicated by Allison (2010), learning discrete-time EHA methods first
+will help in learning continuous-time methods, so it seems like a good
+starting point.''
 
 \begin{quote}
 Page 8-9, excellent and accessible explanations of the survival function
 in the discrete time framework.
 \end{quote}
 
-Response:
+Response: We moved the explanation of the survival function to the
+Supplementary Material in the revised ms.
 
 \begin{quote}
 Page 11: In my experience, researchers in psychology are generally not
@@ -294,7 +296,8 @@ definition would be helpful. For example, the parenthetical definition
 on page 48 could be provided on page 11.
 \end{quote}
 
-Response: We define right-censoring on page x of the revised ms.
+Response: We introduce the definition of right-censoring on page 10 of
+the revised ms.
 
 \begin{quote}
 Taken together, this is an excellent manuscript with the potential to
@@ -350,8 +353,27 @@ when conducting an analysis? An example comparing results when bin width
 varies could be both interesting and informative.
 \end{quote}
 
-Response: We discuss the issue of defining bins on page x of the revised
-ms.
+Response: We discuss the issue of defining bins on page 11 of the
+revised ms.:
+
+``Third, the width of each time bin will need to be determined. For
+instance, in Figure 1B we chose 100ms in an arbitrary manner. In
+reality, however, bin width will need to be set by considering a number
+of factors simultaneously. The optimal bin width will depend on (a) the
+length of the observation period in each trial, (b) the rarity of event
+occurrence, (c) the number of repeated measures (or trials) per
+condition per participant, and (d) the shape of the hazard function.
+Finding an appropriate bin width in a given user case before fitting
+models will require testing a number of options, when calculating and
+plotting the descriptive statistics (see section 3.1). The goal is to
+find the smallest bin width that is supported by the amount of data
+available. Based on our experience, a bin width of 50 ms is a good
+starting value when the number of repeated measures is 100 or less. Too
+small bin widths will result in erratic hazard functions as many bins
+will have no events, and thus hazard estimates of zero. Interestingly,
+the time bins do not need to have the same width. For example, Panis
+(2020) used larger bins towards the end of the observation period, as
+fewer events occurred there.''
 
 \begin{quote}
 \begin{enumerate}
@@ -382,8 +404,23 @@ ms.
 \end{enumerate}
 \end{quote}
 
-Response: We include a short comparison of both methods on page x of the
-revised ms.
+Response: We address our choice for discrete-time methods on pages 7-8
+of the revised ms.:
+
+``\ldots the definition of hazard and the type of models employed depend
+on whether one is using continuous or discrete time units. As a lab, and
+mainly for practical reasons, we have much more experience using
+discrete-time EHA, and that is the approach that we describe and focus
+on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms
+of EHA require much more data to estimate the continuous-time hazard
+(rate) function well. Thus, by trading a bit of temporal resolution for
+a lower number of trials, discrete-time methods seem ideal for dealing
+with typical psychological RT data sets for which there are less than
+\textasciitilde200 trials per condition per experiment. Moreover, as
+indicated by Allison (2010), learning discrete-time EHA methods first
+will help in learning continuous-time methods, so it seems like a good
+starting point.''
 
 \begin{quote}
 \begin{enumerate}
@@ -399,7 +436,8 @@ revised ms.
 \end{enumerate}
 \end{quote}
 
-Response: We define (right-)censoring on page x of the revised ms.
+Response: We introduce the definition of right-censoring on page 10 of
+the revised ms.
 
 \begin{quote}
 \begin{enumerate}
@@ -430,8 +468,8 @@ Response: We shortened this section and removed the overlap.
 \end{enumerate}
 \end{quote}
 
-Response: We added the following section on page x of the revised ms.:
-\ldots{}
+Response: We created a new Figure 1 that makes the intended point, and
+removed section 2.3.2.
 
 \begin{quote}
 \begin{enumerate}
@@ -451,8 +489,10 @@ Response: We added the following section on page x of the revised ms.:
 \end{enumerate}
 \end{quote}
 
-Response: We explain model weights on page x, include a reference for
-dWAIC, and report the weights with 3 digits.
+Response: TODO\ldots{}
+
+We explain model weights on page x, include a reference for dWAIC, and
+report the weights with 3 digits.
 
 \begin{quote}
 \begin{enumerate}
@@ -473,8 +513,7 @@ dWAIC, and report the weights with 3 digits.
 \end{enumerate}
 \end{quote}
 
-Response: We removed the frequentist examples from the main text into
-the supplementary material.
+Response: We removed the frequentist examples from the main text.
 
 \begin{quote}
 Minor comments: 1. Is ``mean-average comparison'' standard terminology?
@@ -495,7 +534,7 @@ Response: We removed this term.
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: The old Figure 1 has been replaced.
 
 \begin{quote}
 \begin{enumerate}
@@ -510,7 +549,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO
 
 \begin{quote}
 \begin{enumerate}
@@ -523,7 +562,8 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: Figure 2 has been removed. We only discuss the survival
+function in the Supplemental Material (section B) of the revised ms.
 
 \begin{quote}
 \begin{enumerate}
@@ -537,7 +577,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: We removed this section.
 
 \begin{quote}
 \begin{enumerate}
@@ -552,7 +592,8 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: We follow this definition in section B of the Supplemental
+Material.
 
 \begin{quote}
 \begin{enumerate}
@@ -581,7 +622,7 @@ ms.
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: Section 3 has been removed in the revised ms.
 
 \begin{quote}
 \begin{enumerate}
@@ -595,7 +636,8 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: We added data visualizations in section A of the Supplemental
+Material.
 
 \begin{quote}
 \begin{enumerate}
@@ -607,7 +649,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO
 
 \begin{quote}
 \begin{enumerate}
@@ -622,7 +664,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO
 
 \begin{quote}
 \begin{enumerate}
@@ -652,7 +694,7 @@ we included a short discussion.
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO -\textgreater{} correction needed.
 
 \begin{quote}
 \begin{enumerate}
@@ -668,7 +710,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 \begin{enumerate}
@@ -681,7 +723,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 \begin{enumerate}
@@ -694,7 +736,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 \begin{enumerate}
@@ -707,7 +749,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 \begin{enumerate}
@@ -721,7 +763,7 @@ Response:
 \end{enumerate}
 \end{quote}
 
-Response:
+Response: Yes this has been corrected now.
 
 \section{Reviewer: 3}\label{reviewer-3}
 
@@ -753,9 +795,10 @@ enhance its clarity and accuracy.
 \end{quote}
 
 Response: We discuss the main contributions above and beyond existing
-works on page x of the revised ms. We address the issue of treating time
-as discrete or continuous on page x of the revised ms. We removed
-redundancies and included more precise explanations of technical jargon.
+works on pages 5-6 of the revised ms. We address the issue of treating
+time as discrete or continuous on pages 7-8 of the revised ms. We
+removed redundancies, get to the tutorial section quicker (page 11) and
+included more precise explanations of technical jargon.
 
 \begin{quote}
 Code for the tutorials: I went to the github page and found a folder for
@@ -775,10 +818,10 @@ RMarkdowns were somewhat more standalone e.g., by including a brief
 description of what a life table is and how to interpret the plot.
 \end{quote}
 
-Response: We explain the location of the files in the README file. We
-included a brief description of a life table and how to interpret the
-plot in the R Mardown tutorial files. A single download step is possible
-by either cloning the project, or downloading the ZIP file.
+Response: We explain the location of the files in the README file. A
+single download step is possible by either cloning the project, or
+downloading the ZIP file. We included a brief description of a life
+table and how to interpret the plot in the R Markdown tutorial files.
 
 \begin{quote}
 Contribution of this tutorial: It wasn't clear to me as a reader what
@@ -801,21 +844,12 @@ the other will make the tutorial content much easier for readers to
 absorb.
 \end{quote}
 
-Response: This is a tutorial specifically focused on Bayesian methods
-and cognitive experimental psychology data, such as response times and
-saccade latencies. Analyzing such event latencies with EHA can give
-better answers about the time course of psychological processes compared
-to (a) ANOVA on means and (b) currently popular quantile-based
-distributional methods. Information about the time course of cognitive
-processes is present in the detailed shape of the hazard function which
-quantifies the moment-to-moment changes in behavioral performance, in
-terms of the risk of response occurrence, and the accuracy of responses
-emitted. EHA thus allows answering research questions about the onset of
-psychological effects, about time-locking of effects to stimuli, and
-about how the effect changes on multiple time scales, i.e., with the
-passage of time within trials, across trials, across blocks within a
-session, etc. Applying EHA also has implications for experimental
-design, such as response deadlines, timer on trial onset, etc.
+Response: This tutorial is meant to specifically focus on experimental
+psychology RT data and this type of data has special characteristics
+that necessitate their own stand-alone tutorial. Therefore, we added
+visualizations of the types of time-to-event data that are obtained in
+typical RT tasks (detection, discrimination, bistable perception) in
+section A of the Supplemental Material.
 
 \begin{quote}
 On page 7, it states that there are not tutorials aimed at psychological
@@ -831,10 +865,11 @@ tutorial/ what gaps in the existing textbooks/empirical
 articles/tutorials the present tutorial serves to fill.
 \end{quote}
 
-Response: We believe a stand-alone tutorial for cognitive experimental
-psychology is necessary because (a) psychologists are reluctant to
-abandon ANOVA and switch to EHA/SAT for several reasons, (b) as far as
-we know, none of the existing tutorials focuses on Bayesian methods.
+Response: In the revised ms. we frame the unique contribution that this
+works adds on pages 5-6: ``\ldots we are not aware of any tutorials that
+are aimed specifically at psychological RT (+ accuracy) data, and which
+provide worked examples of the key data processing and Bayesian
+multilevel regression modelling steps.''
 
 \begin{quote}
 Lougheed, J. P., Benson, L., Cole, P. M., \& Ram, N. (2019). Multilevel
@@ -873,9 +908,9 @@ streamlined, with major cuts to both the introduction and the discussion
 sections.
 \end{quote}
 
-Response: We focus primarily on the Bayesian models in the revised ms.
-We also made major cuts to both the introduction and the discussion
-sections.
+Response: We focus primarily on the Bayesian models in the revised ms.,
+and keep Tutorial 4. We also made major cuts to both the introduction
+and the discussion sections to shorten the ms.
 
 \begin{quote}
 Clarity and accuracy: -There are several instances where jargon terms
@@ -885,8 +920,9 @@ provided. For example, clearer descriptions of censoring and risk sets
 (plus what it means to be at risk) should be given in the introduction.
 \end{quote}
 
-Response: We provide clear descriptions of censoring and risk sets on
-page x of the revised ms.
+Response: We introduce the definition of right-censoring on page 10 of
+the revised ms. We discuss what it means to be at risk in section A of
+the Supplemental Material.
 
 \begin{quote}
 Additionally, many key details, such as the EHA equations are relegated
@@ -895,9 +931,8 @@ makes the tutorial more accessible and precise should not be in
 supplementary materials.
 \end{quote}
 
-Response: We placed the equations for h(t), S(t), and ca(t) in the
-revised ms. on page x. The equations for P(t) are still in the
-supplementary material.
+Response: We placed the equations for h(t) and ca(t) in Figure 1 of the
+revised ms.
 
 \begin{quote}
 There are many abbreviations that were difficult to follow. EHA is
@@ -918,7 +953,7 @@ the methods presented are clearly presented in each section. I think
 that currently they are getting lost in the tutorial.
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 There are several opportunities to describe the method more precisely.
@@ -926,7 +961,8 @@ For example, the discrete time hazard function gives a `conditional'
 probability (pg. 9).
 \end{quote}
 
-Response:
+Response: Indeed, this was a big error on our part. Thank you for
+pointing this out.
 
 \begin{quote}
 Additionally, it may be helpful to use more standard notations such as
@@ -935,7 +971,7 @@ in bin j for individual i, given that the individual had not already
 experienced the event in a previous time period (lines 159-160, pg. 9).
 \end{quote}
 
-Response:
+Response: TODO. We add indexes for individual and trial.
 
 \begin{quote}
 Similarly, the survival probability is the probability that the event
@@ -943,14 +979,15 @@ occurs after bin j, \emph{given that the individual lhas survived up
 until bin j}.
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 Throughout the tutorial, reference to individuals in the notation is
 missing.
 \end{quote}
 
-Response: We added reference to individuals in the notation.
+Response: TODO. We added reference to individuals and trials (repeated
+measures) in the notation.
 
 \begin{quote}
 Another inaccuracy is that in the discrete time framework, it is not an
@@ -958,7 +995,8 @@ instantaneous likelihood (line 161, pg. 9).
 \end{quote}
 
 Response: Indeed, only continuous-time hazard can be called an
-instantaneous likelihood.
+instantaneous likelihood. We replaced the term ``likelihood'' with
+``risk''.
 
 \begin{quote}
 Introduction: -Section 1.1 -- I had a difficult time understanding this
@@ -967,7 +1005,7 @@ out of place/abrupt. felt too vague to be understandable as the opening
 to the tutorial.
 \end{quote}
 
-Response:
+Response: We rewrote this section.
 
 \begin{quote}
 Given that the speed-accuracy tradeoff analysis is described as central
@@ -975,7 +1013,8 @@ to this tutorial, it may benefit from being introduced earlier than pg.
 7.
 \end{quote}
 
-Response: We introduce SAT analysis already on page x in the revised ms.
+Response: We introduce conditional accuracy functions already in Figure
+1 of the revised ms.
 
 \begin{quote}
 It seems that comparing and contrasting Bayesian and frequentist methods
@@ -997,7 +1036,8 @@ Censoring is a key component of survival analysis that is missing from
 the introduction
 \end{quote}
 
-Response:
+Response: We introduce the definition of right-censoring on page 10 of
+the revised ms.
 
 \begin{quote}
 It might be useful to indicate early on the distinctions between
@@ -1005,12 +1045,10 @@ multilevel data, single events, and recurring events -- and that this
 particular tutorial is only focused on single events.
 \end{quote}
 
-Response: We included the following text on page x of the revised ms.:
-This tutorial deals with single-event analyses which focus on the time
-until a single event occurs in a trial (e.g., a button press), with
-repeated measures obtained for each individual. Recurrent event analysis
-deals with multiple events that can happen repeatedly to the same
-individual within a single observation period.
+Response: On page 7 of the revised ms., we mention that we measure
+single-event occurrences that are repeatedly measured in each
+participant. In section A of the Supplemental Material we mention that
+this Tutorial does not cover recurrent events.
 
 \begin{quote}
 It's not clear why a discrete time framework is used given the granular
@@ -1022,7 +1060,23 @@ justification for the discrete time framework and separating the data
 into bins would be helpful.
 \end{quote}
 
-Response:
+Response: We address our choice for discrete-time methods on pages 7-8
+of the revised ms.:
+
+``\ldots the definition of hazard and the type of models employed depend
+on whether one is using continuous or discrete time units. As a lab, and
+mainly for practical reasons, we have much more experience using
+discrete-time EHA, and that is the approach that we describe and focus
+on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms
+of EHA require much more data to estimate the continuous-time hazard
+(rate) function well. Thus, by trading a bit of temporal resolution for
+a lower number of trials, discrete-time methods seem ideal for dealing
+with typical psychological RT data sets for which there are less than
+\textasciitilde200 trials per condition per experiment. Moreover, as
+indicated by Allison (2010), learning discrete-time EHA methods first
+will help in learning continuous-time methods, so it seems like a good
+starting point.''
 
 \begin{quote}
 Clearer description of the data would be helpful for readers (as well as
@@ -1035,7 +1089,7 @@ those extra trials after an event occurred handled in the data wrangling
 and analysis. Can events occur more than once?
 \end{quote}
 
-Response:
+Response: We provided a clearer description of the data.
 
 \begin{quote}
 Section 2.2 (pg. 10, lines 168-169), if describing what `statisticians
@@ -1043,7 +1097,8 @@ and mathematical psychologists say', it would be helpful to provide
 supporting references.
 \end{quote}
 
-Response: We provide supporting references on page x of the revised ms.
+Response: TODO. We provide supporting references on page x of the
+revised ms.
 
 \begin{quote}
 The numbered list on pg. 11 contained jargon statements without
@@ -1063,12 +1118,9 @@ that starting the tutorial at section 2.3 (with a few extra details
 filled in), may be an alternative.
 \end{quote}
 
-Response: We follow the suggestion of this reviewer to start the
-tutorial at section 2.3. That is, we immediately provide an example
-experiment/data set with a descriptive analysis that illustrates the
-benefits of applying EHA to psychological time-to-event data such as
-response times and saccade latencies. This new example data set is taken
-from Panis \& Schmidt (2022).
+Response: Section 2.3 has been rewritten. The new Figure 1 in the
+tutorial directly focuses on the comparison between analysing means
+vs.~event occurrence.
 
 \begin{quote}
 Again, section 2.3.1 (the majority of pg. 12) was unclear and difficult
@@ -1076,7 +1128,7 @@ to follow for someone who already has knowledge of survival analysis,
 but not much familiarity with cognitive process/reaction time data.
 \end{quote}
 
-Response:
+Response: Section 2.3.1 has been removed.
 
 \begin{quote}
 From what is written, I did not have a clear sense of how temporal
@@ -1089,13 +1141,14 @@ readers. Similarly, the statement on pg. 14 (lines 238-239) felt rather
 strong without any references, and also out of scope for a tutorial.
 \end{quote}
 
-Response:
+Response: We explain the idea of temporal states of cognitive processes
+now on page 5 of the revised ms. and illustrate it in Figure 1.
 
 \begin{quote}
 It wasn't clear how section 3.1 added value to the tutorial
 \end{quote}
 
-Response:
+Response: Section 3 has been removed.
 
 \begin{quote}
 Section 3.2 -- it would be helpful if there was clarification in the
@@ -1107,14 +1160,14 @@ model should even be presented if it does not converge when it includes
 random slopes\ldots)
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 Additionally in section 3.2, the text on pg. 16 is vague and does not
 give much detail to readers.
 \end{quote}
 
-Response:
+Response: Section 3 has been removed.
 
 \begin{quote}
 Overall, the introduction spans across 16 pages, which feels long even
@@ -1123,7 +1176,7 @@ written, I think many readers will get lost before even getting to the
 tutorials section.
 \end{quote}
 
-Response: We restructured and shortened the introduction.
+Response: We agree, and restructured and shortened the introduction.
 
 \begin{quote}
 Tutorials section: -Rather than only using h(t), and ca(t), suggest to
@@ -1139,14 +1192,15 @@ body of the revised ms.
 Similarly, P(t) is never defined for readers.
 \end{quote}
 
-Response: P(t) is defined only in the supplementary material.
+Response: P(t) was and still is defined only in the Supplementary
+Material (section B).
 
 \begin{quote}
 Section 4.1.1. -- it would be helpful to clarify that the risk set also
 pertains to individuals (not just bins)
 \end{quote}
 
-Response: We clarify this on page x of the revised ms.
+Response: TODO.
 
 \begin{quote}
 The connection between trials and bins could be made clearer (this is in
@@ -1154,7 +1208,8 @@ reference to the text on pg. 18, but I think the clarity would need to
 come earlier on in the tutorial when describing the data)
 \end{quote}
 
-Response:
+Response: This connection should be clear now based on section A of the
+Supplemental Material, and based on the text on pages 7 and 8.
 
 \begin{quote}
 Comprehension of the text on pg. 18 would be enhanced if both right and
@@ -1165,7 +1220,8 @@ data types in psychology, left censoring would certainly be relevant to
 many other use cases.
 \end{quote}
 
-Response: We introduce types of censoring on page x of the revised ms.
+Response: We introduce various types of censoring in section A of the
+Supplemental Material.
 
 \begin{quote}
 Section 4.1.2 was a clearer data description than had been presented up
@@ -1176,7 +1232,7 @@ place (e.g., data descriptions).
 \end{quote}
 
 Response: We provide the information on data descriptions in a single
-place (page x of the revised ms.).
+place in the revised ms.
 
 \begin{quote}
 Suggest to be more precise with the language on pg. 21 (line 355) --
@@ -1184,13 +1240,13 @@ which data are nested within participants? The trial data? The binned
 data?
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 pg. 22 (line 358) the way that censoring is described here is confusing.
 \end{quote}
 
-Response:
+Response: TODO. We agree and adjusted the description.
 
 \begin{quote}
 pg. 22 discusses warning messages and lets readers know these can be
@@ -1199,7 +1255,12 @@ tutorial, it may be helpful to have at least some explanation as to why
 the warning can be ignored.
 \end{quote}
 
-Response:
+Response: On line 362 it was stated that ``the warning messages are
+generated because some bins have no hazard and ca(t) estimates, and no
+error bars. They can thus safely be ignored''.
+
+We removed these messages from the paper and mention them now only in
+the tutorial itself.
 
 \begin{quote}
 pg. 22 -- since this is a tutorial, it might also be helpful to unpack
@@ -1208,8 +1269,7 @@ guessing etc -- especially since these are very important
 considerations.
 \end{quote}
 
-Response: We unpack in more detail how individuals can be identified
-that may be guessing, or that do not perform the task as intended.
+Response: TODO.
 
 \begin{quote}
 section 4.3.1 -- (line 451) it would be helpful if more details is given
@@ -1218,7 +1278,7 @@ Given that this is a tutorial, these types of detail are critical for
 readers to be able to implement the method in their own work
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 section 4.3.1 (line 453) -- more detail is needed on the cloglog link
@@ -1226,14 +1286,15 @@ function and how it differs from the more commonly known about logit
 link.
 \end{quote}
 
-Response:
+Response: A comparison between the cloglog and logit link functions is
+provided in section C of the Supplemental Material.
 
 \begin{quote}
 section 4.3.1 (line 456) -- what goes into the decision about whether to
 treat time as a categorical or continuous predictor?
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 section 4.3.3. -- it might be helpful to give a brief indicator up front
@@ -1243,8 +1304,7 @@ would be helpful to give a bit more detail on the purpose of the
 comparison of M0i and M1i (given that this is a didactic tutorial).
 \end{quote}
 
-Response: We provide a brief description of the rationale of comparing
-models M0i and M1i on page x of the revised ms.
+Response: TODO.
 
 \begin{quote}
 section 4.3.6. -- same thing here -- since this is a tutorial, at least
@@ -1254,27 +1314,30 @@ interval so that more novice readers don't confuse it with a confidence
 interval.
 \end{quote}
 
-Response:
+Response: TODO.
 
 \begin{quote}
 The term SOA is used on pg. 34, but had never previously been defined or
 described.
 \end{quote}
 
-Response:
+Response: Stimulus-onset-asynchrony (SOA) is a well-known concept in
+experimental psychology.
 
 \begin{quote}
 The text on pg. 35 (lines 567-574) seems too in-depth for a tutorial
 \end{quote}
 
-Response:
+Response: We decided to keep this example, as it can help readers with
+interpreting effects in hazard and conditional accuracy functions.
 
 \begin{quote}
 pg. 36 -- it would be helpful to give more detail on how to interpret
 the logit-ca scale
 \end{quote}
 
-Response:
+Response: We decided not to include more detail because logistic
+regression is very familiar to experimental psychologists.
 
 \begin{quote}
 section 4.7 -- as previously mentioned, it is possible that tutorial 4
@@ -1283,7 +1346,8 @@ needed up front to tell readers what the purpose is and why this is
 useful.
 \end{quote}
 
-Response:
+Response: We decided to keep tutorial 4, and discuss its usefulness on
+page 45 of the revised ms.
 
 \begin{quote}
 Discussion section: The Discussion section would benefit from being
@@ -1302,12 +1366,15 @@ Response: It is more accurate to say `whether and when' psychological
 states occur. However, based on those results, we can deduce information
 about how long a psychological state lasts within a trial.
 
+Nevertheless, we replaced this with ``how effects evolve with increasing
+waiting time''.
+
 \begin{quote}
 pg. 47 (lines 753-761) -- I had a difficult time understanding this
 section
 \end{quote}
 
-Response: We rewrote this section.
+Response: TODO.
 
 \begin{quote}
 section 5.5 -- unclear that the multi-state model is actually an example
@@ -1316,7 +1383,7 @@ example given seems like it would be more linked to either a hidden
 Markov model or recurring event survival model)
 \end{quote}
 
-Response: We provide a better example in the revised ms.
+Response: We removed section 5.5.
 
 \begin{quote}
 Figures: -Figure 1 is difficult to follow. It is unclear how the means
@@ -1332,7 +1399,7 @@ effect started at bin 4 and ended at bin 8. Clarification (and perhaps
 simplifying) this figure would be useful.
 \end{quote}
 
-Response:
+Response: We created a new Figure 1.
 
 \begin{quote}
 The description for figure 2 is unclear, particularly with respect to
@@ -1340,6 +1407,6 @@ the contrasting knowledge that can be gained from the survival function
 and hazard function
 \end{quote}
 
-Response:
+Response: Figure 2 has been removed.
 
 \end{document}
