@@ -1,6 +1,6 @@
 ---
 title             : "Event History Analysis for psychological time-to-event data: A tutorial in R with examples in Bayesian and frequentist workflows"
-shorttitle        : "A tutorial on hazard analysis"
+shorttitle        : "A tutorial on event history analysis"
 author: 
   - name          : "Sven Panis"
     affiliation   : "1"
@@ -25,7 +25,7 @@ authornote: |
   Social Brain Sciences lab, Department of Humanities, Social and Political Sciences (D-GESS).
   <!-- Enter author note here. -->
 abstract: |
-  Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and duration. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design, as well as how to manage inter-individual differences. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
+  Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve with increasing waiting time. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
 wordcount         : "11664 (body) + 1593 (references) + 2394 (supplemental material)"
 bibliography      : ["extrareferences2.bib", "r-references.bib"]
@@ -52,7 +52,7 @@ pkg1 <- c("papaja", "citr", "tidyverse", "RColorBrewer", "patchwork")
 lapply(pkg1, library, character.only = TRUE)
 
 
-pkg2 <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
+pkg2 <- c("cmdstanr", "standist", 
          "brms", "tidybayes", "bayesplot", "future", "parallel", "rstan")
 
 lapply(pkg2, library, character.only = TRUE)
@@ -91,23 +91,25 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 ## 1.1 Motivation and background context: Comparing means versus distributional shapes 
 
-In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values are truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger et al., 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
 
-As a simple illustration, Figure 1 summarises simulated data that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1.
+As a simple illustration, Figure 1 summarises simulated single-subject data (200 trials per condition) that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). 
 
-Why does this matter for research in psychology? For many psychological questions, the estimation of such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes and by adding a relatively under-used dimension -- the passage of time -- to the theory building toolkit. Thus, a distributional approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to better discriminate between different theoretical accounts of psychological and/or brain-based processes.
-
-(ref:descr-fig1-caption) Simulated data showing mean performance versus distributional analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
+(ref:descr-fig1-caption) Simulated data showing mean performance versus distributional (EHA/SAT) analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
 
 ```{r plot1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../sims/figures/Fig1_revision1.jpeg")
 ```
 
+For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1 [see also @panisWhatShapingRT2016].
+
+Why does this matter for research in psychology? For many psychological questions, the estimation of such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible answer to the recent call for better temporal methods (ref1, ref2).
+
 ## 1.2 Aims 
 
 Our ultimate aim in this paper is twofold: first, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data, and second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a discrete-time EHA on RT data, as well as a complementary discrete-time speed-accuracy tradeoff (SAT) analysis on timed accuracy data in case of choice RT data.
 
-Even though EHA is a widely used statistical tool and there already exist many excellent reviews [e.g., @singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @blossfeldTechniquesEventHistory2002; @hosmerAppliedSurvivalAnalysis2011; @teachmanAnalyzingSocialProcesses1983; @box-steffensmeierEventHistoryModeling2004] and tutorials [e.g., @allisonSurvivalAnalysisUsing2010; @landesIntroductionEventHistory2020], we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. Set within this context, our overall aim is to introduce a set of tutorials, which explain **how** to do such analyses in the context of experimental psychology, rather than repeat in any detail **why** you may do them. Therefore, we hope that our tutorials will provide a pathway for research avenues in experimental psychology that have the potential to benefit from using EHA in the future. 
+Even though EHA is a widely used statistical tool and there already exist many excellent reviews [e.g., @singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @blossfeldTechniquesEventHistory2002; @hosmerAppliedSurvivalAnalysis2011; @teachmanAnalyzingSocialProcesses1983; @box-steffensmeierEventHistoryModeling2004] and tutorials [e.g., @allisonSurvivalAnalysisUsing2010; @landesIntroductionEventHistory2020], we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. Set within this context, our overall aim is to introduce a set of tutorials, which explain **how** to do such analyses in the context of experimental psychology, rather than repeat in any detail **why** you may do them. Therefore, we hope that our tutorials will provide a pathway for research avenues in experimental psychology that have the potential to benefit from using EHAf in the future. 
 
 ## 1.3 Structure
 
@@ -117,21 +119,19 @@ In what follows, the paper is organised in three main sections. In Section 2, we
 
 ## 2.1 A brief introduction to event history analysis
 
-EHA is a statistical approach to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010; @gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. We also supply all relevant regression equations in section D of the Supplemental Material. 
-
-In section A of the Supplemental Material we visualize the types of time-to-event data that are obtained in these typical RT tasks (detection, discrimination or categorization, bistable perception).
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010; @gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019]. We also visualize and discuss the types of time-to-event data that are obtained in typical RT tasks in section A of the Supplemental Material, and supply relevant regression equations in section E of the Supplemental Material. 
 
 ### 2.1.1 Terminolgy and minimum requirements for EHA
 
-To avoid possible confusion in terminology used, it is worth noting that EHA is frequently known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer & Willett, 2003). In this paper, we choose to use the term EHA throughout.
+To avoid possible confusion in terminology used, it is worth noting that EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer & Willett, 2003). In this paper, we choose to use the term EHA throughout.
 
-In terms of minimum requirements to apply EHA, one must be able to:
+In terms of minimum requirements to apply a single-event EHA, one must be able to:
 
 1. define an event of interest that represents a qualitative change - a transition from one discrete state to another - that can be situated in time (e.g., a button press, a saccade onset, a fixation offset, etc.);
 
-2. define time point zero (e.g., target stimulus onset, fixation onset, etc.);
+2. define time point zero in each trial (e.g., target stimulus onset, fixation onset, etc.);
 
-3. measure the passage of time between time point zero and event occurrence in discrete or continuous time units. 
+3. measure the passage of time between time point zero and event occurrence in discrete or continuous time units in each trial. 
 
 ### 2.1.2 Types of EHA
 
@@ -139,73 +139,75 @@ There are different types of EHA.
 For example, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. 
 As a lab, and mainly for practical reasons, we have much more experience using discrete time EHA, and that is the approach that we describe and focus on in this paper. 
 This choice may seem counter-intuitive, given that RT is typically treated as a continuous variable. 
-However, continuous forms of EHA require much more data to estimate the continuous-time hazard (rate) function well. 
-Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological time-to-event data sets for which there are less than ~200 trials per condition per experiment.
+However, continuous forms of EHA require much more data to estimate the continuous-time hazard (rate) function well (REFS). 
+Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than ~200 trials per condition per experiment (REF PANIS).
 Moreover, as indicated by @allisonSurvivalAnalysisUsing2010, learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good starting point.
 
-To apply discrete time EHA, one divides time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 time bins; Figure 1B).
-Then let t be a discrete random variable denoting the rank of the time bin in which a particular person’s response occurs in a particular experimental condition. 
-For example, a response on a single trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
-One then calculates the discrete-time hazard function of event occurrence.
-The discrete-time hazard function gives you, for each time bin, the probability that the event occurs (sometime) in
+To apply discrete-time EHA, one divides the within-trial time in discrete, contiguous time bins indexed by t (e.g., t = 1:10 time bins; Figure 1B).
+Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person’s response occurs in a particular trial (i.e., repeated measure). 
+For example, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
+One then calculates the sample-based estimate of the discrete-time hazard function of event occurrence for each experimental condition (Figure 1B top).
+The discrete-time hazard function gives you, for each time bin, the conditional probability that the event occurs (sometime) in
 bin t, given that the event does not occur in previous bins. 
-In other words, it reflects the instantaneous likelihood that the event occurs in the current bin, given that it has not yet
-occurred in the past, i.e., in one of the prior bins.
+In other words, it reflects the instantaneous risk that the event occurs in the current bin t, given that it has not yet
+occurred in the past, i.e., in one of the prior bins (t-1, t-2, ..., 1).
 
 In the context of experimental psychology, it is often (but not always), the case that responses can be classified as correct or incorrect.
-In those cases, one can also calculate the conditional accuracy function (Figure B).
-The conditional accuracy function gives you for each time bin the probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. 
+In those cases, one can also calculate the conditional accuracy function (Figure 1B bottom).
+The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. 
 The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
 We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT.
+
+The definitions of these and other discrete-time functions is given in section B of the Supplemental Material.
 
 ## 2.2 Benefits of event history analysis for research in experimental psychology
 
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (REF?? - Sven please cite a relevant REF here). 
-We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks (section F of the Supplemental Material). 
+We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks (see also section F of the Supplemental Material). 
 Instead, here we focus on the benefits as we see them for common research programmes in experimental psychology.
 
 We highlight three benefits that we think are relevant to the domain of experimental psychology. 
-First, as illustrated in Figure 1, compared to averaging data across trials, integrating results between hazard and conditional accuracy functions for choice RT data can be informative for understanding psychological processes, in terms of inferences about cognition and theoretical development.
+First, as illustrated in Figure 1, compared to averaging data across trials, integrating results between hazard functions and their associated conditional accuracy functions for choice RT data can be informative for understanding psychological processes, in terms of inferences about the microgenesis and temporal organization of cognition and theoretical development.
 As such, the approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to discriminate between theoretical accounts of psychological and/or brain-based processes. 
-For example, what kind of theory or theories could account for the effects reported in Figure 1B? 
-Are there new auxiliary assumptions that theories need to adopt? 
+For example, what kind of theory or set of mechanisms could account for the shape of the functions and the temporally localized effects reported in Figure 1B? 
+Are there new auxiliary assumptions that computational models need to adopt (ref search)? 
+Will the temporal effect patterns align nicely with EEG findings (ref IOR)?
 And are there new experiments that need to be performed to test the novel predictions that follow from these analyses? 
 
-Second, compared to more conventional analytical approaches, EHA uses more of the data and deals with msising data differently.
-It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs before calculating a mean RT (REF). 
+
+Second, compared to more conventional analytical approaches, EHA uses more of the data because it deals with missing data differently.
+It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT (REF). 
 Discarding data can introduce biases, however.
 Rather than treat non-responses as missing data, EHA treats such trials as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. 
-Right-censoring is a type of missing data problem and a nearly universal feature of survival data including RT data. 
-For example, if the censor time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
-The use of right-censoring in EHA, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology.
+Right-censoring is a type of missing data problem and a nearly universal feature of survival data including RT data.
+For example, if the censoring time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
+The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (ANOVA, linear regression, delta plots).
 
-Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable percpetion tasks (Supp Fig X). 
-EHA can also be used with a range of common experimental manipualtions, such as stimulus-onset-asynchrony (Supp Fig X). 
-The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the domain of experimental psychology.
+Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable percpetion tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material). 
+The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (REFS).
 
 
 ## 2.3 Implications for research design in experimental psychology
 
 Performing EHA in experimental psychology has implications for how experiments are designed. 
-More specifically, we consider two implications that researchers will need to consider when using discrete time EHA.
+More specifically, we consider three implications that researchers will need to consider when using discrete-time EHA.
 
-First, since the number of trials per condition are spread across bins, it is important to have a relatively large number of trial repetitions per participant and per condition. Accordingly, experimental designs using this approach typically focus on factorial, within-subject designs, in which a large number of observations are made on a relatively small number of participants (so-called small-*N* designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018]. Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-*N* designs can still achieve what are generally considered acceptable levels of statistical power, if they have a sufficient amount of data overall [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018].
+First, one can use a response deadline in each trial because EHA deals with right-censored observations.
 
-Second, the width of each time bin will need to be determined. 
+Second, since the number of trials per condition are spread across bins, it is important to have a relatively large number of trial repetitions per participant and per condition. Accordingly, experimental designs using this approach typically focus on factorial, within-subject designs, in which a large number of observations are made on a relatively small number of participants (so-called small-*N* designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018]. Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-*N* designs can still achieve what are generally considered acceptable levels of statistical power, if they have a sufficient amount of data overall [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018].
+
+Third, the width of each time bin will need to be determined. 
 For instance, in Figure 1B we chose 100ms in an arbitrary manner.
-In reality, however, bin width will need to be set by considering a number of factors simultabeously.
-For example, [[Sven - add a few sentences here]]
+In reality, however, bin width will need to be set by considering a number of factors simultaneously.
+The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
+Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred there.
 
-The optimal bin width will depend on many factors, including (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of trials per condition per participant, (d) the shape of the hazard function, etc.
-
-Finding an appropriate bin width in a given user case will require testing a number of options, when calculating and plotting the descriptive statistics (see below). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in irregular hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred then.
-
-# 4. Tutorials
+# 3. Tutorials
 
 We used r my_r_citation$r for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on @allisonSurvivalAnalysisUsing2010, @singerAppliedLongitudinalData2003, @mcelreathStatisticalRethinkingBayesian2020, @heiss2021,  @kurzAppliedLongitudinalDataAnalysis2023, and @kurzStatisticalRethinkingSecondEd2023.
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
-Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section B in the Supplemental Material for a list of the custom functions).
+Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section C in the Supplemental Material for a list of the custom functions).
 
 Our list of tutorials is as follows:
 
@@ -217,11 +219,11 @@ Our list of tutorials is as follows:
 * 3b. Frequentist multilevel modeling for ca(t)
 * 4.  Simulation and power analysis for planning experiments
 
-## 4.1 Tutorial 1a: Calculating descriptive statistics using a life table
+## 3.1 Tutorial 1a: Calculating descriptive statistics using a life table
 
-### 4.1.1 Data wrangling aims 
+### 3.1.1 Data wrangling aims 
 
-Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics that relate to our main research questions about the time course of psychological processes, using a life table. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of h(t), S(t), P(t), possibly ca(t), and their estimated standard errors (se). 
+Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics using a life table. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard function h(t), survivor function S(t), probability mass function P(t), possibly the conditional accuracy function ca(t), and their estimated standard errors (se). The definitions of these functions are provided in section A of the Supplemental Material.
 
 Second, we want to produce two different data sets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as 'person-trial' data and 'person-trial-bin' data. The 'person-trial' data (Table 1) will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. This data set is used when fitting conditional accuracy models (Tutorials 2b and 3b). 
 
@@ -277,7 +279,7 @@ apa_table(
 )
 ```
 
-### 4.1.2 A real data wrangling example 
+### 3.1.2 A real data wrangling example 
 
 To illustrate how to quickly set up life tables for calculating the descriptive statistics (functions of discrete time), we use a published data set on masked response priming from @panisWhatShapingRT2016. 
 In their first experiment, @panisWhatShapingRT2016 presented a double arrow for 94 ms that pointed left or right as the target stimulus with an onset at time point zero in each trial. Participants had to indicate the direction in which the double arrow pointed using their corresponding index finger, within 800 ms after target onset. Response time and accuracy were recorded on each trial. Prime type (blank, congruent, incongruent) and mask type were manipulated. Here we focus on the subset of trials in which no mask was presented. The 13-ms prime stimulus was a double arrow presented 187 ms before target onset in the congruent (same direction as target) and incongruent (opposite direction as target) prime conditions.
@@ -306,7 +308,7 @@ data_wr <- data_wr %>%
 ```
 \normalsize
 
-Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t) -- see section A of the Supplemental Material for their definitions. To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
+Next, we can set up the life tables and plots of the discrete-time functions h(t), S(t), ca(t), and P(t). To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
 
 \footnotesize
 ```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
@@ -327,13 +329,14 @@ data_final <- data_nested %>%
 ```
 \normalsize
 
-Note that the censoring time should be a multiple of the bin width (both in ms). The censoring time should be a time point after which no informative responses are expected anymore. In experiments that implement a response deadline in each trial the censoring time can equal that deadline time point. Trials with a RT larger than the censoring time, or trials in which no response is emitted during the data collection period, are treated as right-censored observations in EHA. In other words, these trials are not discarded, because they contain the information that the event did not occur before the censoring time. Removing such trials before calculating the mean event time will result in underestimation of the true mean. 
+Note that the censoring time (here: 600 ms) should be a multiple of the bin width (here: 40 ms). The censoring time should be a time point after which no informative responses are expected anymore. In experiments that implement a response deadline in each trial the censoring time can equal that deadline time point. Trials with a RT larger than the censoring time, or trials in which no response is emitted during the data collection period, are treated as right-censored observations in EHA. In other words, these trials are not discarded, because they contain the information that the event did not occur before the censoring time. Removing such trials before calculating the mean event time will result in underestimation of the true mean. 
 
 The person-trial-bin oriented data set is created by our custom function ptb(), and it has one row for each time bin (of each trial) that is at risk for event occurrence. The variable "event" in the person-trial-bin oriented data set indicates whether a response occurs (1) or not (0) for each bin.
 
 The next step is to set up the life table using our custom function setup_lt(), calculate the conditional accuracies using our custom function calc_ca(), add the ca(t) estimates to the life table using our custom function join_lt_ca(), and then plot the descriptive statistics using our custom function plot_eha(). 
 One can now inspect different aspects, including the life table for a particular condition of a particular subject, and a plot of the different functions for a particular participant. 
-In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior. 
+
+In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may be guessing (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior. Also, to select a bin width for fitting models, one should test and compare various bin widths in the censor function, and select the smallest one that is supported by the data. Too small bin widths will result in erratic hazard functions because many bins will have estimates equal to zero.
 
 Table 3 shows the life table for condition "blank" (no prime stimulus presented) for participant 6.
 
@@ -359,7 +362,7 @@ Figure 4 displays the discrete-time hazard, survivor, conditional accuracy, and 
 
 (ref:descr-plot4-caption) Estimated discrete-time hazard (h), survivor (S), conditional accuracy (ca) and probability mass (P) functions for participant 6. Vertical dotted lines indicate the estimated median RTs. Error bars represent +/- 1 standard error of the respective proportion.
 
-```{r eha-plot, fig.cap = "(ref:descr-plot4-caption)"}
+```{r eha-plot, fig.cap = "(ref:descr-plot4-caption)", out.width="90%"}
 knitr::include_graphics("../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png")
 ```
 
@@ -379,20 +382,20 @@ In general, these results go against the (often implicit) assumption in research
   
 At this point, we have calculated, summarised and plotted descriptive statistics for the key variables in EHA/SAT. As we will show in later Tutorials, statistical models for h(t) and ca(t) can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for two independent variables. 
 
-## 4.2 Tutorial 1b: Generalising to a more complex design
+## 3.2 Tutorial 1b: Generalising to a more complex design
 
 So far in this paper, we have used a simple experimental design, which involved one condition with three levels. But psychological experiments are often more complex, with crossed factorial designs and/or conditions with more than three levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We felt that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
 To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial_1b.Rmd for those that are interested.
 
-## 4.3 Tutorial 2a: Fitting Bayesian hazard models to discrete time-to-event data
+## 3.3 Tutorial 2a: Fitting Bayesian hazard models to discrete time-to-event data
 
 In this third tutorial, we illustrate how to fit Bayesian multilevel regression models to the RT data of the masked response priming data used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
 In general, when fitting regression models, our lab adopts an estimation approach to multilevel regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2020; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach to specifying varying (or random) effects [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant.
 To make inferences, we use two main approaches. We compare models of different complexity, using information criteria (e.g., WAIC) and cross-validation (e.g., LOO), to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2020]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates. 
 
-### 4.3.1 Hazard model considerations 
+### 3.3.1 Hazard model considerations 
 
 There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, one has to select an analysis time window, i.e., a contiguous set of bins for which there is enough data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section C in the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data [@singerAppliedLongitudinalData2003]. Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. And when you treat a variable as a categorical predictor, you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by @mcelreathStatisticalRethinkingBayesian2020, the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
@@ -420,14 +423,14 @@ mutate(timebin = factor(period, levels = c(6:15)),
 ```
 \normalsize
 
-### 4.3.2 Prior distributions
+### 3.3.2 Prior distributions
 
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs [@gelmanBayesianWorkflow2020].
 
 The middle column of Supplementary Figure 2 (section E of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 2 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. 
 
-### 4.3.3 Model M0i: A null model with index coding
+### 3.3.3 Model M0i: A null model with index coding
 
 When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first model, we use a general specification of TIME using index coding, and do not include experimental predictors. We call this model "M0i".
 
@@ -450,7 +453,7 @@ model_M0i <-
 
 After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
-### 4.3.4 Model M1i: Adding the effects of prime-target congruency
+### 3.3.4 Model M1i: Adding the effects of prime-target congruency
 
 Previous research has shown that psychological effects typically change over time [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhenDoesInhibition2022]. In the next model, therefore, we use index coding for both TIME (variable "timebin") and the categorical predictor prime-target-congruency (variable "prime"), so that we get 30 grand intercepts, one for each combination of timebin level and prime level. Here is the model formula of this model that we call "M1i".
 
@@ -460,7 +463,7 @@ event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
 
 Estimating model M1i took about 124 minutes.
 
-### 4.3.5 Compare the models.
+### 3.3.5 Compare the models.
 
 We can compare the two models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
 
@@ -483,7 +486,7 @@ model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 2)
 
 Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other simpler model. 
 
-### 4.3.6 Evaluating parameter estimates in model M1i
+### 3.3.6 Evaluating parameter estimates in model M1i
 
 To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80% and 95% credible intervals).
 
@@ -515,7 +518,7 @@ The point estimates and quantile intervals can be reported in a table (see Tutor
 
 #### Example conclusions for M1i
 
-What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
+What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target stimulus-onset-asynchrony of 187 ms)?
 
 If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on Figure 7A. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin (240,280]) (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin (320,360] (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin (360,400] (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin (400,440] (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. 
@@ -528,7 +531,7 @@ Future studies could (a) increase the number of participants to estimate the pro
 
 Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time (Figure 7B). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formulae that should get you going.
 
-## 4.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
+## 3.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
 
 In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regression model to the timed accuracy data from the masked response priming data used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the logit link function, and (c) we change the priors. To keep the tutorial short, we only fit one conditional accuracy model, which was based on model M1i from Tutorial 2a and labelled M1i_ca.
 
@@ -579,16 +582,16 @@ Incongruent primes have a negative effect on the conditional accuracy of emitted
 
 <!-- In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data used in Tutorial 1a. To be concise, we only fit effects from model M1i_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. The resulting conditional accuracy model, which we labelled M1i_ca_f, did not converge and resulted in a singular fit. Again, this just highlights some of the difficulties in fitting reasonably complex varying/random effects structures in frequentist workflows. -->
 
-## 4.7 Tutorial 4: Planning
+## 3.5 Tutorial 4: Planning
 
 In the final tutorial, we look at planning a future experiment, which uses EHA.
 
-### 4.7.1 Background
+### 3.5.1 Background
 
 The general approach to planning that we adopt here involves simulating reasonably structured data to help guide what you might be able to expect from your data once you collect it [@gelmanBayesianWorkflow2020].
 The basic structure and code follows the examples outlined by Solomon Kurz in his 'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/) as well as these related papers [@debruineUnderstandingMixedEffectsModels2021; @pargentTutorialTailoredSimulationBased2024]. 
 
-### 4.7.2 Basic workflow
+### 3.5.2 Basic workflow
 
 The basic workflow is as follows:
 
@@ -601,7 +604,7 @@ Ideally, in the above workflow, we would also fit a model to each dataset and su
 
 In the below, we only provide a high-level summary of the process and let readers dive into the details within the tutorial should they feel so inclined.
 
-### 4.7.3 Fit a regression model and simulate one dataset
+### 3.5.3 Fit a regression model and simulate one dataset
 
 We again use the data from @panisWhatShapingRT2016 to provide a worked example.
 We fit an index coding model on a subset of time bins (six time bins in total) and for two prime conditions (congruent and incongruent). We chose to focus on a subsample of the data to ease the computational burden. We also used a full varying effects structure, with the model formula as follows:
@@ -618,7 +621,7 @@ We then took parameters from this model and used them to create a single dataset
 knitr::include_graphics("../Tutorial_4_Planning/figures/raw_vs_d1.jpeg")
 ```
 
-### 4.7.4 Simulate and summarise data across a range of parameter values
+### 3.5.4 Simulate and summarise data across a range of parameter values
 
 Here we use the same data simulation process as used above, but instead of simulating one dataset, we simulate 1000 datasets per variation in parameter values.
 Specifically, in Simulation 1, we vary the number of trials per condition (100, 200, and 400), as well as the effect size in bin 6. 
@@ -652,7 +655,7 @@ A summary of these power calculations might be as follows (trial count = 200 per
 knitr::include_graphics("../Tutorial_4_Planning/figures/bin6_power_col.jpeg")
 ```
 
-### 4.7.5 Planning decisions
+### 3.5.5 Planning decisions
 
 Now that we have summarised our simulated data, what planning decisions could we make about a future study?
 More concretely, how many trials per condition should we collect and how many participants should we test? 
@@ -677,31 +680,31 @@ Then, we would look for common patterns across two or more experiments, rather t
 
 # 4. Discussion
 
-This main motivation for writing this paper is the observation that EHA and SAT analysis remain under-used in psychological research. As a consequence, the field of psychological research is not taking full advantage of the many benefits EHA/SAT provides compared to more conventional analyses. By providing a freely available set of tutorials, which provide step-by-step guidelines and ready-to-use R code, we hope that researchers will feel more comfortable using EHA/SAT in the future. Indeed, we hope that our tutorials may help to overcome a barrier to entry with EHA/SAT, which is that such approaches require more analytical complexity compared to mean-average comparisons. While we have focused here on within-subject, factorial, small-*N* designs, it is important to realize that EHA/SAT can be applied to other designs as well (large-*N* designs with only one measurement per subject, between-subject designs, etc.). As such, the general workflow and associated code can be modified and applied more broadly to other contexts and research questions. In the following, we discuss issues relating to model complexity and interpretability, individual differences, as well as limitations of the approach and future extensions.
+This main motivation for writing this paper is the observation that EHA and SAT analysis remain under-used in psychological research. As a consequence, the field of psychological research is not taking full advantage of the many benefits EHA/SAT provides compared to more conventional analyses. By providing a freely available set of tutorials, which provide step-by-step guidelines and ready-to-use R code, we hope that researchers will feel more comfortable using EHA/SAT in the future. Indeed, we hope that our tutorials may help to overcome a barrier to entry with EHA/SAT, which is that such approaches require more analytical complexity compared to mean-average comparisons. While we have focused here on within-subject, factorial, small-*N* designs, it is important to realize that EHA/SAT can be applied to other designs as well (large-*N* designs with only one measurement per subject, between-subject designs, etc.). As such, the general workflow and associated code can be modified and applied more broadly to other contexts and research questions. In the following, we discuss the main use-cases, issues relating to model complexity and interpretability, as well as limitations of the approach and future extensions.
 
 ## 4.1 What are the main use-cases of EHA for understanding cognition and brain function?
 
-For those researchers, like ourselves, who are primarily interested in understanding human cognitive and brain systems, we consider two broadly-defined, main use-cases of EHA. First, as we hope to have made clear by this point, EHA is one way to investigating a "temporal states" approach to cognitive processes. EHA provides one way to uncover when cognitive states may start and stop, as well as what they may be tied to or interact with. Therefore, if your research questions concern **when** and **for how long** psychological states occur, our EHA tutorials could be useful tools for you to use.
+For those researchers, like ourselves, who are primarily interested in understanding human cognitive and brain systems, we consider two broadly-defined, main use-cases of EHA. First, as we hope to have made clear by this point, EHA is one way to investigating a "temporal states" approach to cognitive processes. EHA provides one way to uncover the microgenesis of cognitive effects, by revealing when cognitive states may start and stop, how states are replaced with others, as well as what they may be tied to or interact with. Therefore, if your research questions concern **when psychological states occur, and how they are temporally organized**, our EHA tutorials could be useful tools for you to use.
 
-Second, even if you are not primarily interested in studying the temporal states of cognition, EHA could still be a useful tool to consider using, in order to qualify inferences that are being made based on mean-average comparisons. Given that distinctly different inferences can be made from the same data based on whether one computes a mean-average across trials or a RT distribution of events (Figure 1), it may be important for researchers to supplement mean-average comparisons with EHA. One could envisage scenarios where the implicit assumption of an effect manifesting across all of the time bins measured would not be supported by EHA. Therefore, the conclusion of interest would not apply to all responses, but instead it would be restricted to certain aspects of time.
+Second, even if you are not primarily interested in studying the temporal organization of cognitive states, EHA could still be a useful tool to consider using, in order to qualify inferences that are being made based on comparisons between means. Given that distinctly different inferences can be made from the same data based on whether one computes a mean across trials or a RT distribution of events (Figure 1), it may be important for researchers to supplement comparisons between means with EHA. One could envisage scenarios where the implicit assumption of an effect in mean RTs manifesting across all of the time bins measured would not be supported by EHA. Therefore, the conclusion of interest would not apply to all responses, but instead it would be restricted to certain periods of within-trial time.
 
 ## 4.2 Model complexity versus interpretability
 
 EHA can quickly become very complex when adding more than one time scale, due to the many possible higher-order interactions. 
 For example, some of the models discussed in Tutorial 2a, which we did not focus on in the main text, contain two time scales as covariates: the passage of time on the within-trial time scale, and the passage of time on the across-trial (or within-experiment) time scale. However, when trials are presented in blocks, and blocks of trials within sessions, and when the experiment comprises three sessions, then four time scales can be defined (within-trial, within-block, within-session, and within-experiment).
-From a theoretical perspective, adding more than one time scale -- and their interactions -- can be important to capture plasticity and other learning effects that may play out on such longer time scales, and that are probably present in each experiment in general.
+From a theoretical perspective, adding more than one time scale -- and their interactions -- can be important to capture plasticity and other learning effects that may play out on such longer time scales, and that are probably present in each experiment in general (REF DFT).
 From a practical perspective, therefore, some choices need to be made to balance the amount of data that is being collected per participant, condition and across the varying timescales. As one example, if there are several timescales of relevance, then it might be prudent for interpretational purposes to limit the number of experimental predictor variables (conditions).
 This is of course where planning and data simulation efforts would be important to provide a guide to experimental design choices (see Tutorial 4).
 
 ## 4.3 Limitations
 
-Compared to the orthodox method -- comparing mean-averages between conditions -- the most important limitation of multilevel hazard and conditional accuracy modeling is that it might take a long time to estimate the parameters using Bayesian methods or the model might have to be simplified significantly to use frequentist methods.
+Compared to the orthodox method -- comparing means between conditions -- the most important limitation of multilevel hazard and conditional accuracy modeling is that it might take a long time to estimate the parameters using Bayesian methods or the model might have to be simplified significantly to use frequentist methods.
 
-Another issue is that you need a relatively large number of trials per condition to estimate the hazard function with high temporal resolution, which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. Finally, there is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process (Baker et al., 2021).
+Another issue is that you need a relatively large number of trials per condition to estimate the hazard function with high temporal resolution, which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the discete-time hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. Finally, there is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process (Baker et al., 2021).
 
 # 5. Conclusions
 
-Estimating the temporal distributions of RT and accuracy provide a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing EHA and investigating the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
+Estimating the temporal distributions of RT and accuracy provide a rich source of information on the time course of cognitive processing, which have been largely undervalued in the history of experimental psychology and cognitive neuroscience. We hope that by providing a set of hands-on, step-by-step tutorials, which come with custom-built and freely available code, researchers will feel more comfortable embracing EHA and investigating the shape of empirical hazard functions and the temporal profile of cognitive states. On a broader level, we think that wider adoption of such approaches will have a meaningful impact on the inferences drawn from data, as well as the development of theories regarding the structure of cognition.
 
 \newpage
 
