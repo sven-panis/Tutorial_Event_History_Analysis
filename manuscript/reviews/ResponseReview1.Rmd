@@ -405,7 +405,7 @@ provide worked examples of the key data processing and Bayesian multilevel regre
 
 > Mills, M. (2011). The fundamentals of survival and event history analysis. Introducing Survival Analysis and Event History Analysis. London: SAGE Publications, 1-17.
 
-Response: We included these references in the revised ms.
+Response: We included these references in the revised ms. 
 
 
 
