@@ -21,7 +21,8 @@ there are several repeat library loads e.g., tidyverse and patchwork
 this bib r-references r-ref thing file prevented the manuscript from building, so I had to comment it out.
 This needs fixing.
 
--> TODO.
+-> I got it working but packages are (for now) mentioned in text instead of in footnote...
+
 
 ## intro ##
 
@@ -56,7 +57,7 @@ And again, that's becuase that is not the point of the paper.
 - Sven - can you add a relevant reference for the following statement:
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (REF??).
 
--> TODO.
+-> Done.
 
 - in section 2.3 can you add a line or two about bin width please?
 
