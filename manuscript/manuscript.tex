@@ -276,7 +276,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 \subsection{1.1 Motivation and background context: Comparing means versus distributional shapes}\label{motivation-and-background-context-comparing-means-versus-distributional-shapes}
 
-In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values are truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger et al., 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020). Such information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020).
+In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values are truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020). Such information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020).
 
 As a simple illustration, Figure 1 summarises simulated single-subject data (200 trials per condition) that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B).
 
@@ -293,13 +293,13 @@ As a simple illustration, Figure 1 summarises simulated single-subject data (200
 
 For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1 (see also Panis \& Schmidt, 2016).
 
-Why does this matter for research in psychology? For many psychological questions, the estimation of such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible answer to the recent call for better temporal methods (ref1, ref2).
+Why does this matter for research in psychology? For many psychological questions, the estimation of such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible answer to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
 
 \subsection{1.2 Aims}\label{aims}
 
-Our ultimate aim in this paper is twofold: first, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data, and second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a discrete-time EHA on RT data, as well as a complementary discrete-time speed-accuracy tradeoff (SAT) analysis on timed accuracy data in case of choice RT data.
+Our ultimate aim in this paper is twofold: first, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data, and second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a discrete-time EHA on RT data, as well as a complementary discrete-time speed-accuracy tradeoff (SAT) analysis on timed accuracy data in case of choice RT data (Figure 1B).
 
-Even though EHA is a widely used statistical tool and there already exist many excellent reviews (Allison, 1982; Blossfeld \& Rohwer, 2002; Box-Steffensmeier, 2004; Hosmer, Lemeshow, \& May, 2011; e.g., Singer \& Willett, 2003; Teachman, 1983) and tutorials (e.g., Allison, 2010; Landes, Engelhardt, \& Pelletier, 2020), we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. Set within this context, our overall aim is to introduce a set of tutorials, which explain \textbf{how} to do such analyses in the context of experimental psychology, rather than repeat in any detail \textbf{why} you may do them. Therefore, we hope that our tutorials will provide a pathway for research avenues in experimental psychology that have the potential to benefit from using EHAf in the future.
+Even though EHA is a widely used statistical tool and there already exist many excellent reviews (Allison, 1982; Blossfeld \& Rohwer, 2002; Box-Steffensmeier, 2004; Hosmer, Lemeshow, \& May, 2011; e.g., Singer \& Willett, 2003; Teachman, 1983) and tutorials (e.g., Allison, 2010; Landes, Engelhardt, \& Pelletier, 2020), we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. Set within this context, our overall aim is to introduce a set of tutorials, which explain \textbf{how} to do such analyses in the context of experimental psychology, rather than repeat in any detail \textbf{why} you may do them. Therefore, we hope that our tutorials will provide a pathway for research avenues in experimental psychology that have the potential to benefit from using EHA in the future.
 
 \subsection{1.3 Structure}\label{structure}
 
@@ -309,7 +309,7 @@ In what follows, the paper is organised in three main sections. In Section 2, we
 
 \subsection{2.1 A brief introduction to event history analysis}\label{a-brief-introduction-to-event-history-analysis}
 
-EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics (Allison, 2010; Gelman, Hill, \& Vehtari, 2020; Singer \& Willett, 2003; Winter, 2019). We also visualize and discuss the types of time-to-event data that are obtained in typical RT tasks in section A of the Supplemental Material, and supply relevant regression equations in section E of the Supplemental Material.
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics (Allison, 2010; Gelman, Hill, \& Vehtari, 2020; Singer \& Willett, 2003; Winter, 2019). We also visualize and discuss the types of time-to-event data that are obtained in typical RT tasks and supply relevant regression equations in sections A and E of the Supplemental Material, respectively.
 
 \subsubsection{2.1.1 Terminolgy and minimum requirements for EHA}\label{terminolgy-and-minimum-requirements-for-eha}
 
@@ -331,7 +331,7 @@ In terms of minimum requirements to apply a single-event EHA, one must be able t
 
 There are different types of EHA.
 For example, the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units.
-As a lab, and mainly for practical reasons, we have much more experience using discrete time EHA, and that is the approach that we describe and focus on in this paper.
+As a lab, and mainly for practical reasons, we have much more experience using discrete-time EHA, and that is the approach that we describe and focus on in this paper.
 This choice may seem counter-intuitive, given that RT is typically treated as a continuous variable.
 However, continuous forms of EHA require much more data to estimate the continuous-time hazard (rate) function well (REFS).
 Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than \textasciitilde200 trials per condition per experiment (REF PANIS).
@@ -350,26 +350,24 @@ In the context of experimental psychology, it is often (but not always), the cas
 In those cases, one can also calculate the conditional accuracy function (Figure 1B bottom).
 The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977).
 The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
-We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT.
-
-The definitions of these and other discrete-time functions is given in section B of the Supplemental Material.
+We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT. The definitions of these and other discrete-time functions are given in section B of the Supplemental Material.
 
 \subsection{2.2 Benefits of event history analysis for research in experimental psychology}\label{benefits-of-event-history-analysis-for-research-in-experimental-psychology}
 
-Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (REF?? - Sven please cite a relevant REF here).
+Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (Holden, Van Orden, \& Turvey, 2009; Luce, 1991; Townsend, 1990).
 We do not cover these benefits in detail here, as these are more general topics that have been covered elsewhere in textbooks (see also section F of the Supplemental Material).
 Instead, here we focus on the benefits as we see them for common research programmes in experimental psychology.
 
 We highlight three benefits that we think are relevant to the domain of experimental psychology.
 First, as illustrated in Figure 1, compared to averaging data across trials, integrating results between hazard functions and their associated conditional accuracy functions for choice RT data can be informative for understanding psychological processes, in terms of inferences about the microgenesis and temporal organization of cognition and theoretical development.
 As such, the approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to discriminate between theoretical accounts of psychological and/or brain-based processes.
-For example, what kind of theory or set of mechanisms could account for the shape of the functions and the temporally localized effects reported in Figure 1B?
-Are there new auxiliary assumptions that computational models need to adopt (ref search)?
-Will the temporal effect patterns align nicely with EEG findings (ref IOR)?
+For example, what kind of theory or set of mechanisms could account for the shape of the functions and the temporally localized effects reported in Figure 1B (Panis \& Schmidt, 2016)?
+Are there new auxiliary assumptions that computational models need to adopt (Panis, Moran, et al., 2020)?
+Will the temporal effect patterns align nicely with EEG findings (Panis \& Schmidt, 2022)?
 And are there new experiments that need to be performed to test the novel predictions that follow from these analyses?
 
 Second, compared to more conventional analytical approaches, EHA uses more of the data because it deals with missing data differently.
-It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT (REF).
+It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT (Berger \& Kiefer, 2021).
 Discarding data can introduce biases, however.
 Rather than treat non-responses as missing data, EHA treats such trials as \emph{right-censored} observations on the variable RT, because all we know is that RT is greater than some value.
 Right-censoring is a type of missing data problem and a nearly universal feature of survival data including RT data.
@@ -377,7 +375,7 @@ For example, if the censoring time was 1 second, then some trials result in obse
 The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (ANOVA, linear regression, delta plots).
 
 Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable percpetion tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material).
-The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (REFS).
+The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (Barack \& Krakauer, 2021).
 
 \subsection{2.3 Implications for research design in experimental psychology}\label{implications-for-research-design-in-experimental-psychology}
 
@@ -396,9 +394,7 @@ Finding an appropriate bin width in a given user case before fitting models will
 
 \section{3. Tutorials}\label{tutorials}
 
-We used r my\_r\_citation\$r for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
-
-Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework.
+Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework. Tutorial 4 shows how to use simulation and power analysis for planning experiments.
 Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section C in the Supplemental Material for a list of the custom functions).
 
 Our list of tutorials is as follows:
@@ -426,6 +422,8 @@ Our list of tutorials is as follows:
     Simulation and power analysis for planning experiments
   \end{enumerate}
 \end{itemize}
+
+We used R (Version 4.4.0; R Core Team, 2024) and the R-packages \emph{bayesplot} (Version 1.11.1; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.8.1.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.1; Wickham, 2016), \emph{lme4} (Version 1.1.35.5; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.3; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.1; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.166; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.2; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.13.1; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021), \emph{rstan} (Version 2.32.6; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.2.1; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.4; Barth, 2023) for all reported analyses. The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b).
 
 \subsection{3.1 Tutorial 1a: Calculating descriptive statistics using a life table}\label{tutorial-1a-calculating-descriptive-statistics-using-a-life-table}
 
@@ -1092,26 +1090,77 @@ Ethical approval was not required for this tutorial in which we reanalyze existi
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-ABNEY2025}
+Abney, D. H., Fausey, C. M., Suarez-Rivera, C., \& Tamis-LeMonda, C. S. (2025). Advancing a temporal science of behavior. \emph{Trends in Cognitive Sciences}. \url{https://doi.org/10.1016/j.tics.2025.05.010}
+
 \bibitem[\citeproctext]{ref-allisonDiscreteTimeMethodsAnalysis1982}
 Allison, P. D. (1982). Discrete-{Time Methods} for the {Analysis} of {Event Histories}. \emph{Sociological Methodology}, \emph{13}, 61. \url{https://doi.org/10.2307/270718}
 
 \bibitem[\citeproctext]{ref-allisonSurvivalAnalysisUsing2010}
 Allison, P. D. (2010). \emph{Survival analysis using {SAS}: A practical guide} (2. ed). Cary, NC: SAS Press.
 
+\bibitem[\citeproctext]{ref-R-citr}
+Aust, F. (2019). \emph{Citr: 'RStudio' add-in to insert markdown citations}. Retrieved from \url{https://github.com/crsh/citr}
+
+\bibitem[\citeproctext]{ref-R-papaja}
+Aust, F., \& Barth, M. (2024). \emph{{papaja}: {Prepare} reproducible {APA} journal articles with {R Markdown}}. \url{https://doi.org/10.32614/CRAN.package.papaja}
+
 \bibitem[\citeproctext]{ref-bakerPowerContoursOptimising2021}
 Baker, D. H., Vilidaite, G., Lygo, F. A., Smith, A. K., Flack, T. R., Gouws, A. D., \& Andrews, T. J. (2021). Power contours: {Optimising} sample size and precision in experimental psychology and human neuroscience. \emph{Psychological Methods}, \emph{26}(3), 295--314. \url{https://doi.org/10.1037/met0000337}
+
+\bibitem[\citeproctext]{ref-barackTwoViewsCognitive2021}
+Barack, D. L., \& Krakauer, J. W. (2021). Two views on the cognitive brain. \emph{Nature Reviews Neuroscience}, \emph{22}(6), 359--371. \url{https://doi.org/10.1038/s41583-021-00448-6}
 
 \bibitem[\citeproctext]{ref-barrRandomEffectsStructure2013}
 Barr, D. J., Levy, R., Scheepers, C., \& Tily, H. J. (2013). Random effects structure for confirmatory hypothesis testing: {Keep} it maximal. \emph{Journal of Memory and Language}, \emph{68}(3), 10.1016/j.jml.2012.11.001. \url{https://doi.org/10.1016/j.jml.2012.11.001}
 
+\bibitem[\citeproctext]{ref-R-tinylabels}
+Barth, M. (2023). \emph{{tinylabels}: Lightweight variable labels}. Retrieved from \url{https://cran.r-project.org/package=tinylabels}
+
+\bibitem[\citeproctext]{ref-R-lme4}
+Bates, D., Mächler, M., Bolker, B., \& Walker, S. (2015). Fitting linear mixed-effects models using {lme4}. \emph{Journal of Statistical Software}, \emph{67}(1), 1--48. \url{https://doi.org/10.18637/jss.v067.i01}
+
+\bibitem[\citeproctext]{ref-R-Matrix}
+Bates, D., Maechler, M., \& Jagan, M. (2024). \emph{Matrix: Sparse and dense matrix classes and methods}. Retrieved from \url{https://Matrix.R-forge.R-project.org}
+
+\bibitem[\citeproctext]{ref-R-RJ-2021-048}
+Bengtsson, H. (2021). A unifying framework for parallel and distributed processing in r using futures. \emph{The R Journal}, \emph{13}(2), 208--227. \url{https://doi.org/10.32614/RJ-2021-048}
+
+\bibitem[\citeproctext]{ref-bergerComparisonDifferentResponse2021}
+Berger, A., \& Kiefer, M. (2021). Comparison of {Different Response Time Outlier Exclusion Methods}: {A Simulation Study}. \emph{Frontiers in Psychology}, \emph{12}, 675558. \url{https://doi.org/10.3389/fpsyg.2021.675558}
+
 \bibitem[\citeproctext]{ref-blossfeldTechniquesEventHistory2002}
 Blossfeld, H.-P., \& Rohwer, G. (2002). \emph{Techniques of event history modeling: {New} approaches to causal analysis, 2nd ed} (pp. x, 310). Mahwah, NJ, US: Lawrence Erlbaum Associates Publishers.
+
+\bibitem[\citeproctext]{ref-bolgerCausalProcessesPsychology2019}
+Bolger, N., Zee, K. S., Rossignac-Milon, M., \& Hassin, R. R. (2019). Causal processes in psychology are heterogeneous. \emph{Journal of Experimental Psychology: General}, \emph{148}(4), 601--618. \url{https://doi.org/10.1037/xge0000558}
 
 \bibitem[\citeproctext]{ref-box-steffensmeierEventHistoryModeling2004}
 Box-Steffensmeier, J. M. (2004). Event history modeling: A guide for social scientists. Cambridge: University Press.
 
+\bibitem[\citeproctext]{ref-R-brms_a}
+Bürkner, P.-C. (2017). {brms}: An {R} package for {Bayesian} multilevel models using {Stan}. \emph{Journal of Statistical Software}, \emph{80}(1), 1--28. \url{https://doi.org/10.18637/jss.v080.i01}
+
+\bibitem[\citeproctext]{ref-R-brms_b}
+Bürkner, P.-C. (2018). Advanced {Bayesian} multilevel modeling with the {R} package {brms}. \emph{The R Journal}, \emph{10}(1), 395--411. \url{https://doi.org/10.32614/RJ-2018-017}
+
+\bibitem[\citeproctext]{ref-R-brms_c}
+Bürkner, P.-C. (2021). Bayesian item response modeling in {R} with {brms} and {Stan}. \emph{Journal of Statistical Software}, \emph{100}(5), 1--54. \url{https://doi.org/10.18637/jss.v100.i05}
+
 \bibitem[\citeproctext]{ref-debruineUnderstandingMixedEffectsModels2021}
 DeBruine, L. M., \& Barr, D. J. (2021). Understanding {Mixed-Effects Models Through Data Simulation}. \emph{Advances in Methods and Practices in Psychological Science}, \emph{4}(1), 2515245920965119. \url{https://doi.org/10.1177/2515245920965119}
+
+\bibitem[\citeproctext]{ref-R-Rcpp_b}
+Eddelbuettel, D., \& Balamuta, J. J. (2018). {Extending {R} with {C++}: A Brief Introduction to {Rcpp}}. \emph{The American Statistician}, \emph{72}(1), 28--36. \url{https://doi.org/10.1080/00031305.2017.1375990}
+
+\bibitem[\citeproctext]{ref-R-Rcpp_a}
+Eddelbuettel, D., \& François, R. (2011). {Rcpp}: Seamless {R} and {C++} integration. \emph{Journal of Statistical Software}, \emph{40}(8), 1--18. \url{https://doi.org/10.18637/jss.v040.i08}
+
+\bibitem[\citeproctext]{ref-R-cmdstanr}
+Gabry, J., Češnovar, R., Johnson, A., \& Bronder, S. (2024). \emph{Cmdstanr: R interface to 'CmdStan'}. Retrieved from \url{https://github.com/stan-dev/cmdstanr}
+
+\bibitem[\citeproctext]{ref-R-bayesplot}
+Gabry, J., Simpson, D., Vehtari, A., Betancourt, M., \& Gelman, A. (2019). Visualization in bayesian workflow. \emph{J. R. Stat. Soc. A}, \emph{182}, 389--402. \url{https://doi.org/10.1111/rssa.12378}
 
 \bibitem[\citeproctext]{ref-gelmanRegressionOtherStories2020}
 Gelman, A., Hill, J., \& Vehtari, A. (2020). Regression and {Other Stories}. https://www.cambridge.org/highereducation/books/regression-and-other-stories/DD20DD6C9057118581076E54E40C372C; Cambridge University Press. \url{https://doi.org/10.1017/9781139161879}
@@ -1119,14 +1168,26 @@ Gelman, A., Hill, J., \& Vehtari, A. (2020). Regression and {Other Stories}. htt
 \bibitem[\citeproctext]{ref-gelmanBayesianWorkflow2020}
 Gelman, A., Vehtari, A., Simpson, D., Margossian, C. C., Carpenter, B., Yao, Y., \ldots{} Modrák, M. (2020). \emph{Bayesian {Workflow}}. arXiv. \url{https://doi.org/10.48550/arXiv.2011.01808}
 
+\bibitem[\citeproctext]{ref-R-standist}
+Girard, J. (2024). \emph{Standist: What the package does (one line, title case)}. Retrieved from \url{https://github.com/jmgirard/standist}
+
+\bibitem[\citeproctext]{ref-R-lubridate}
+Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with {lubridate}. \emph{Journal of Statistical Software}, \emph{40}(3), 1--25. Retrieved from \url{https://www.jstatsoft.org/v40/i03/}
+
 \bibitem[\citeproctext]{ref-heiss2021}
 Heiss, A. (2021, November 10). A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel {Bayesian} Models. \url{https://doi.org/10.59350/wbn93-edb02}
+
+\bibitem[\citeproctext]{ref-holdenDispersionResponseTimes2009}
+Holden, J. G., Van Orden, G. C., \& Turvey, M. T. (2009). Dispersion of response times reveals cognitive dynamics. \emph{Psychological Review}, \emph{116}(2), 318--342. \url{https://doi.org/10.1037/a0014849}
 
 \bibitem[\citeproctext]{ref-hosmerAppliedSurvivalAnalysis2011}
 Hosmer, D. W., Lemeshow, S., \& May, S. (2011). \emph{Applied {Survival Analysis}: {Regression Modeling} of {Time} to {Event Data}} (2nd ed). Hoboken: John Wiley \& Sons.
 
 \bibitem[\citeproctext]{ref-kantowitzInterpretationReactionTime2021}
 Kantowitz, B. H., \& Pachella, R. G. (2021). The {Interpretation} of {Reaction Time} in {Information-Processing Research} 1. \emph{Human Information Processing}, 41--82. \url{https://doi.org/10.4324/9781003176688-2}
+
+\bibitem[\citeproctext]{ref-R-tidybayes}
+Kay, M. (2024). \emph{{tidybayes}: Tidy data and geoms for {Bayesian} models}. \url{https://doi.org/10.5281/zenodo.1308151}
 
 \bibitem[\citeproctext]{ref-kruschkeBayesianNewStatistics2018}
 Kruschke, J. K., \& Liddell, T. M. (2018). The {Bayesian New Statistics}: {Hypothesis} testing, estimation, meta-analysis, and power analysis from a {Bayesian} perspective. \emph{Psychonomic Bulletin \& Review}, \emph{25}(1), 178--206. \url{https://doi.org/10.3758/s13423-016-1221-4}
@@ -1143,11 +1204,20 @@ Lakens, D. (2022). Sample {Size Justification}. \emph{Collabra: Psychology}, \em
 \bibitem[\citeproctext]{ref-landesIntroductionEventHistory2020}
 Landes, J., Engelhardt, S. C., \& Pelletier, F. (2020). An introduction to event history analyses for ecologists. \emph{Ecosphere}, \emph{11}(10), e03238. \url{https://doi.org/10.1002/ecs2.3238}
 
+\bibitem[\citeproctext]{ref-luceResponseTimesTheir1991}
+Luce, R. D. (1991). \emph{Response times: Their role in inferring elementary mental organization} (1. issued as paperback). Oxford: Univ. Press.
+
 \bibitem[\citeproctext]{ref-mcelreathStatisticalRethinkingBayesian2020}
 McElreath, R. (2020). \emph{Statistical {Rethinking}: {A Bayesian Course} with {Examples} in {R} and {STAN}} (2nd ed.). New York: {Chapman and Hall/CRC}. \url{https://doi.org/10.1201/9780429029608}
 
+\bibitem[\citeproctext]{ref-R-tibble}
+Müller, K., \& Wickham, H. (2023). \emph{Tibble: Simple data frames}. Retrieved from \url{https://CRAN.R-project.org/package=tibble}
+
 \bibitem[\citeproctext]{ref-nelderStatisticsStatisticalScience1999}
 Nelder, J. A. (1999). From {Statistics} to {Statistical Science}. \emph{Journal of the Royal Statistical Society. Series D (The Statistician)}, \emph{48}(2), 257--269. Retrieved from \url{https://www.jstor.org/stable/2681191}
+
+\bibitem[\citeproctext]{ref-R-RColorBrewer}
+Neuwirth, E. (2022). \emph{RColorBrewer: ColorBrewer palettes}. Retrieved from \url{https://CRAN.R-project.org/package=RColorBrewer}
 
 \bibitem[\citeproctext]{ref-panisHowCanWe2020}
 Panis, S. (2020). How can we learn what attention is? {Response} gating via multiple direct routes kept in check by inhibitory control processes. \emph{Open Psychology}, \emph{2}(1), 238--279. \url{https://doi.org/10.1515/psych-2020-0107}
@@ -1173,11 +1243,26 @@ Panis, S., \& Wagemans, J. (2009). Time-course contingencies in perceptual organ
 \bibitem[\citeproctext]{ref-pargentTutorialTailoredSimulationBased2024}
 Pargent, F., Koch, T. K., Kleine, A.-K., Lermer, E., \& Gaube, S. (2024). A {Tutorial} on {Tailored Simulation-Based Sample-Size Planning} for {Experimental Designs With Generalized Linear Mixed Models}. \emph{Advances in Methods and Practices in Psychological Science}, \emph{7}(4), 25152459241287132. \url{https://doi.org/10.1177/25152459241287132}
 
+\bibitem[\citeproctext]{ref-R-patchwork}
+Pedersen, T. L. (2024). \emph{Patchwork: The composer of plots}. Retrieved from \url{https://patchwork.data-imaginist.com}
+
+\bibitem[\citeproctext]{ref-R-nlme}
+Pinheiro, J. C., \& Bates, D. M. (2000). \emph{Mixed-effects models in s and s-PLUS}. New York: Springer. \url{https://doi.org/10.1007/b98882}
+
+\bibitem[\citeproctext]{ref-R-base}
+R Core Team. (2024). \emph{R: A language and environment for statistical computing}. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from \url{https://www.R-project.org/}
+
 \bibitem[\citeproctext]{ref-singerAppliedLongitudinalData2003}
 Singer, J. D., \& Willett, J. B. (2003). \emph{Applied {Longitudinal Data Analysis}: {Modeling Change} and {Event Occurrence}}. Oxford, New York: Oxford University Press.
 
 \bibitem[\citeproctext]{ref-smithSmallBeautifulDefense2018}
 Smith, P. L., \& Little, D. R. (2018). Small is beautiful: {In} defense of the small-{N} design. \emph{Psychonomic Bulletin \& Review}, \emph{25}(6), 2083--2101. \url{https://doi.org/10.3758/s13423-018-1451-8}
+
+\bibitem[\citeproctext]{ref-R-StanHeaders}
+Stan Development Team. (2020). \emph{{StanHeaders}: Headers for the {R} interface to {Stan}}. Retrieved from \url{https://mc-stan.org/}
+
+\bibitem[\citeproctext]{ref-R-rstan}
+Stan Development Team. (2024). \emph{{RStan}: The {R} interface to {Stan}}. Retrieved from \url{https://mc-stan.org/}
 
 \bibitem[\citeproctext]{ref-teachmanAnalyzingSocialProcesses1983}
 Teachman, J. D. (1983). Analyzing social processes: {Life} tables and proportional hazards models. \emph{Social Science Research}, \emph{12}(3), 263--301. \url{https://doi.org/10.1016/0049-089X(83)90015-7}
@@ -1185,8 +1270,35 @@ Teachman, J. D. (1983). Analyzing social processes: {Life} tables and proportion
 \bibitem[\citeproctext]{ref-tongStatisticalInferenceEnables2019}
 Tong, C. (2019). Statistical {Inference Enables Bad Science}; {Statistical Thinking Enables Good Science}. \emph{The American Statistician}, \emph{73}(sup1), 246--261. \url{https://doi.org/10.1080/00031305.2018.1518264}
 
+\bibitem[\citeproctext]{ref-townsendTruthConsequencesOrdinal1990}
+Townsend, J. T. (1990). Truth and consequences of ordinal differences in statistical distributions: {Toward} a theory of hierarchical inference. \emph{Psychological Bulletin}, \emph{108}(3), 551--567. \url{https://doi.org/10.1037/0033-2909.108.3.551}
+
 \bibitem[\citeproctext]{ref-wickelgrenSpeedaccuracyTradeoffInformation1977}
 Wickelgren, W. A. (1977). Speed-accuracy tradeoff and information processing dynamics. \emph{Acta Psychologica}, \emph{41}(1), 67--85. \url{https://doi.org/10.1016/0001-6918(77)90012-9}
+
+\bibitem[\citeproctext]{ref-R-ggplot2}
+Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer-Verlag New York. Retrieved from \url{https://ggplot2.tidyverse.org}
+
+\bibitem[\citeproctext]{ref-R-forcats}
+Wickham, H. (2023a). \emph{Forcats: Tools for working with categorical variables (factors)}. Retrieved from \url{https://forcats.tidyverse.org/}
+
+\bibitem[\citeproctext]{ref-R-stringr}
+Wickham, H. (2023b). \emph{Stringr: Simple, consistent wrappers for common string operations}. Retrieved from \url{https://stringr.tidyverse.org}
+
+\bibitem[\citeproctext]{ref-R-tidyverse}
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., \ldots{} Yutani, H. (2019). Welcome to the {tidyverse}. \emph{Journal of Open Source Software}, \emph{4}(43), 1686. \url{https://doi.org/10.21105/joss.01686}
+
+\bibitem[\citeproctext]{ref-R-dplyr}
+Wickham, H., François, R., Henry, L., Müller, K., \& Vaughan, D. (2023). \emph{Dplyr: A grammar of data manipulation}. Retrieved from \url{https://dplyr.tidyverse.org}
+
+\bibitem[\citeproctext]{ref-R-purrr}
+Wickham, H., \& Henry, L. (2023). \emph{Purrr: Functional programming tools}. Retrieved from \url{https://purrr.tidyverse.org/}
+
+\bibitem[\citeproctext]{ref-R-readr}
+Wickham, H., Hester, J., \& Bryan, J. (2024). \emph{Readr: Read rectangular text data}. Retrieved from \url{https://readr.tidyverse.org}
+
+\bibitem[\citeproctext]{ref-R-tidyr}
+Wickham, H., Vaughan, D., \& Girlich, M. (2024). \emph{Tidyr: Tidy messy data}. Retrieved from \url{https://tidyr.tidyverse.org}
 
 \bibitem[\citeproctext]{ref-winterStatisticsLinguistsIntroduction2019}
 Winter, B. (2019). \emph{Statistics for {Linguists}: {An Introduction Using R}}. New York: Routledge. \url{https://doi.org/10.4324/9781315165547}
