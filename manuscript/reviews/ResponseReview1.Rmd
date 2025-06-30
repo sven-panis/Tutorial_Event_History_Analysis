@@ -38,13 +38,14 @@ I encourage you to have the revised paper read and pre-reviewed by colleagues wh
 
 > Sincerely,
 
-Response: Thank you for allowing us to submit a revision of our Tutorial (AMPPS-24-0232).
+Response: Thank you for providing constructive feedback and allowing us to submit a revision of our manuscript (AMPPS-24-0232).
 
 We tried to focus on accessibility in the revision of our Tutorial in several ways. 
 First, we replaced Figure 1 with a simpler Figure that directly conveys our message, and deleted Figures 2 and 3.
 Second, we shortened the Introduction and Discussion sections.
 Third, we added a section in the supplementary material (section A) in which we visualize the different types of time-to-event data that are obtained in typical RT tasks (detection, discrimination, bistable perception).
 We also mention the unique contribution of our work, we removed redundancies, and tried to improve the clarity of the paper.
+As such, we have substantially revised the manuscript in accordance with feedback from you as well as the reviewers.
 
 # Reviewer: 1
 
@@ -78,7 +79,7 @@ Response: On page 7 of the revised ms., we mention that we measure single-event 
 
 > The authors use several different terms to refer to time-to-event models throughout the manuscript. The title refers to EHA, and the running head refers to Hazard analysis. Survival analysis is also a common term in Psychology (see tutorials by Lougheed et al., 2019, and Stoolmiller & Snyder, 2006). Disambiguating the various terms early in the manuscript and then constantly using one term throughout the manuscript would be helpful.
 
-Response: We disambiguate the various term in the revised ms. on page 7, and use one term throughout.
+Response: We disambiguate the various terms in the revised ms. on page 7, and we now only use one term throughout.
 
 
 > Page 5: it would be helpful to refer to the same time unit in reference to Figure 1, which shows time bins along the x-axis but the examples discussed in the manuscript refer to units of milliseconds.
@@ -109,7 +110,8 @@ it seems like a good starting point."
 
 > Page 8-9, excellent and accessible explanations of the survival function in the discrete time framework.
 
-Response: We moved the explanation of the survival function to the Supplementary Material in the revised ms.
+Response: Thank you for the positive feedback. 
+To make the manuscript more accessible and shorter and to respond to some other comments from the editor and other reviewers, we moved the explanation of the survival function to the Supplementary Material in the revised ms.
 
 
 > Page 11: In my experience, researchers in psychology are generally not familiar with the concept of right censored data. This term is first used on page 11 with no explanation— a brief, even parenthetical, definition would be helpful. For example, the parenthetical definition on page 48 could be provided on page 11.
@@ -119,7 +121,7 @@ Response: We introduce the definition of right-censoring on page 10 of the revis
 
 > Taken together, this is an excellent manuscript with the potential to further bring survival analysis methods into Psychology, where time-to-event and right-censored cases abound, yet very few people seem to consider these issues.
 
-
+Thank you very much for your helpful and positive feedback.
 
 # Reviewer: 2
 
@@ -145,7 +147,7 @@ improvement in a number of areas (see comments below). The writing is approachab
 and could be a bit more polished; additional editing with a focus on clarity and brevity
 would be beneficial.
 
-Response: We removed repetitive text, and try to focus on clarity and brevity in the revised ms.
+Response: Thanks for your constructive and encouraging feedback. As we also noted in our response to the editor, we have made substantial revisions to the manuscript that include removing repetitive text, and placing a stronger focus on clarity and brevity in the revised ms.
 
 
 > Major comments:
@@ -381,8 +383,10 @@ Response: We discuss the main contributions above and beyond existing works on p
 
 > <b>Code for the tutorials:</b> I went to the github page and found a folder for each of the 4 tutorials, which included sub-folders for data, figures, and tables. It took a minute for me to realize that the actual R code for each tutorial was in the main folder, not within each sub-folder. This may also be confusing to readers. Additionally, each of the 4 tutorials, along with their sub-tutorials are provided in separate .Rmd files. There were several download steps needed to get all the information. To me, this made the user experience tedious, and made the tutorials seem disjointed from one another. The authors might consider a more comprehensive single Rmd file that is neatly organized with an interactive table of contents (in the knitted html file). To me, this would make the experience much more enjoyable and useful for readers. Given that this is a tutorial, it would also be nice if the the RMarkdowns were somewhat more standalone e.g., by including a brief description of what a life table is and how to interpret the plot.
 
-Response: We explain the location of the files in the README file. A single download step is possible by either cloning the project, or downloading the ZIP file.
-We included a brief description of a life table and how to interpret the plot in the R Markdown tutorial files.
+Response: We explain the location of the files and the folder structure in the README file. In addition we make it clear that s single download step is possible by either cloning the project, or downloading the ZIP file.
+We also included a brief description of a life table and how to interpret the plot in the R Markdown tutorial files.
+At this point, we also prefer a modular approach to the tutorials rather than combining them. 
+We appreciate that not everyone might share this preference, but we think there are many benefits to a modular workflow in this instance.
 
 > <b>Contribution of this tutorial:</b>
 It wasn’t clear to me as a reader what the unique contribution is for this tutorial and what gaps in the literature it fills beyond existing texts and tutorials. For example, is this a tutorial that is meant to specifically focus on experimental psychology cognitive task data – and that this type of data has special characteristics/associated research questions that necessitate their own stand-alone tutorial? If so, it may be helpful to give more detail on what these specific characteristics tend to be that may make it different from the many other types of psychology data. Or, is this a tutorial on discrete time survival analysis that is meant to be broadly applicable to psychological scientists, and the cognitive reaction time data is just for illustrative purposes. If so, then much less emphasis should be placed on the specific data type and more emphasis should be placed more broadly on types of psychological data/ research questions this method could be applied to. I think the distinction makes a big difference in the entire framing of the tutorial, and choosing one or the other will make the tutorial content much easier for readers to absorb.
@@ -428,6 +432,9 @@ Response: We introduce the definition of right-censoring on page 10 of the revis
 > Additionally, many key details, such as the EHA equations are relegated to supplementary materials. In my opinion, any key information that makes the tutorial more accessible and precise should not be in supplementary materials.
 
 Response: We placed the equations for h(t) and ca(t) in Figure 1 of the revised ms. 
+Beyond Figure 1, we still choose to keep any further reference of equations to supplementary materials. 
+This is because we feel that one barrier to uptake of these methods is an aversion to equations.
+And by placing them in supplementary materials we feel that we strike a nice balance between non-technical accessibility and a fullness of mathemathical explanation for key ideas and concepts that remain easily accessible to interested readers.
 
 > There are many abbreviations that were difficult to follow. EHA is arguably standard, but SAT (for speed/accuracy trade-off) is less familiar, and may therefore benefit from not being an abbreviation. Similarly referring to hazard function as h(t), conditional accuracy function as c(t) was less clear than just saying hazard function and conditional accuracy function.
 
@@ -475,7 +482,7 @@ Response: We agree and focus now on the Bayesian models in the revised ms.
 
 > As mentioned above, tutorial 4 – while related – could potentially be its own stand-alone tutorial.
 
-Response: We decided to keep tutorial 4.
+Response: We decided to keep tutorial 4, as we feel that planning future studies is an important and difficult step to take in these kinds of studies, which we wanted to keep close to the rest of the material for ease of understanding a reasonably complete workflow.
 
 
 

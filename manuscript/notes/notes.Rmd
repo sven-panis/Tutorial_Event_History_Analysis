@@ -210,3 +210,29 @@ E) we are really responding well to reviewers in terms of saving space and being
 I removed the unnecessary sections that we discussed previously.
 
 -> ok.
+
+
+# June 30th 2025 #
+
+## section 1.1 ##
+
+- re-combine paragraphs 2 and 3. That way, you don't start a paragraph with "For example ..."
+
+## section 2.3 ##
+
+- para 2. 1 sentence is not a paragraph. is this not finished yet? I don't understand hopw that sentence fits.
+
+## response to reviewers ##
+
+- the formatting really helps distinguish between editor/reviewer comments and our responses. Nice one. it is so much easier to read.
+
+
+- the below quote is not contradictory, but it sure sounds it. Can we rework it? Do you see what I mean? single events that repeat... Maybe just an extra sentence or two to make the relevant distinction clear.
+
+>Response: On page 7 of the revised ms., we mention that we measure single-event occurrences that are repeatedly measured in each participant.
+
+on line 510 of the response, you say:
+
+>Response: We provided a clearer description of the data.
+
+I think it is essential to always provide page, para and/or line numbers for reviewers so that they can easily check things. This same logic should be applied to all of our responses where necessary. Once the page numbers change, it can be a nightmare to find and verufy changes as a reviewer.
