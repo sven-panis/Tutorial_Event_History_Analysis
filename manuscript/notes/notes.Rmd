@@ -148,7 +148,7 @@ Statisticians and mathematical psychologists recommend focusing on the hazard fu
 then just refer to it in the main text.
 I commented it out for now.
 
--> TODO.
+-> Done.
 
 ## 4.1.2 ##
 
@@ -165,7 +165,7 @@ there is no need for this in the paper itself.
 <!-- The warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored. -->
 
 
--> TODO.
+-> Done.
 
 page 19. Figure 2. The image warped / wrong size and needs fixing.
 
@@ -218,21 +218,35 @@ I removed the unnecessary sections that we discussed previously.
 
 - re-combine paragraphs 2 and 3. That way, you don't start a paragraph with "For example ..."
 
+-> Done. I separated them before to avoid an almost blank page in the ms...
+
 ## section 2.3 ##
 
 - para 2. 1 sentence is not a paragraph. is this not finished yet? I don't understand hopw that sentence fits.
 
+-> Changed.
+
 ## response to reviewers ##
 
 - the formatting really helps distinguish between editor/reviewer comments and our responses. Nice one. it is so much easier to read.
+
+-> I agree.
+
 
 
 - the below quote is not contradictory, but it sure sounds it. Can we rework it? Do you see what I mean? single events that repeat... Maybe just an extra sentence or two to make the relevant distinction clear.
 
 >Response: On page 7 of the revised ms., we mention that we measure single-event occurrences that are repeatedly measured in each participant.
 
+-> This sentence has been removed. I added this sentence: "These minimal requirements are fulfilled by the RT data obtained in single-button detection tasks, where the time-to-response is repeatedly measured in different trials in the same individual. In section A of the Supplemental Material we visualize this and other types of time-to-event data which are typically obtained in discrimination and bistable perception tasks."
+Thus, based on section A in the Supplemental Material, the distinction between single event and repeated events should be clear now.
+
+
+
 on line 510 of the response, you say:
 
 >Response: We provided a clearer description of the data.
 
 I think it is essential to always provide page, para and/or line numbers for reviewers so that they can easily check things. This same logic should be applied to all of our responses where necessary. Once the page numbers change, it can be a nightmare to find and verufy changes as a reviewer.
+
+-> I agree.
