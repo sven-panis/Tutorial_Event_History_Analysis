@@ -244,7 +244,7 @@ text, I’d suggest including more than 2 digits so that it is clear if the repo
 weights are actually 0 and 1 or if rounding has just made them appear so.
 
 Response: We briefly explain model weights for loo and waic on page 28 of the revised ms.
-A discussion of WAIC in Kurz (2023a) can be found in section 4.6.4., so we did not include a reference for dWAIC in the revised ms. Lastly, we report more digits when reporting the model weights.
+A discussion of WAIC in Kurz (2023a) can be found in section 4.6.4., so we did not include a reference for dWAIC in the revised ms. Lastly, we print more digits when reporting the model weights.
 
 > 7. Tutorials 3a and 3b: Rather than simply stating that the frequentist models did
 not converge and resulted in singular fits, it would be helpful to provide more
@@ -316,7 +316,7 @@ Response: We added data visualizations in section A of the Supplemental Material
 
 > 9. Figure 4: Why is there no bin 40?
 
-Response: Because no responses occurred in the first bin with endpoint 40 ms. However, we added this bin back in Figure 2 (previously 4) of the revised ms.
+Response: Because no responses occurred in the first bin with endpoint 40 ms. However, we added this bin back in Figure 2 (previously 4) of the revised ms to avoid confusion.
 
 > 10. Line 423: The phrase “early responses” is confusing as it implies temporal
 ordering of the responses (i.e., early vs. late trials). I’d suggest using “fast
@@ -429,7 +429,6 @@ Response: We now discuss general research questions on page 10 of the revised ms
 
 We did not add more information about possible research questions in each section of Tutorial 2a, because we feel that (a) research questions are highly dependent on the field of study (perception, behavioral control, memory), (b) this would make the tutorial even longer, and (c) we mention in the paper that we do not discuss **why** you might perform EHA. In other words, we think that the knowledge of experimental psychologists on regression modeling should be large enough for them to link the model structure to possible research questions, once they have read the paper and worked through the code examples.
 
-
 > There are several opportunities to describe the method more precisely. For example, the discrete time hazard function gives a ‘conditional’ probability (pg. 9). 
 
 Response: Indeed, this was a big error on our part, which we corrected in the revised ms. Thank you for pointing this out.
@@ -452,7 +451,6 @@ Furthermore, we feel that the information provided by our new description on pag
 > Another inaccuracy is that in the discrete time framework, it is not an instantaneous likelihood (line 161, pg. 9).
 
 Response: Indeed, only continuous-time hazard can be called an instantaneous likelihood. We replaced the term "likelihood" with "risk".
-
 
 >  <b>Introduction:</b>
 -Section 1.1 – I had a difficult time understanding this section as the opening to the tutorial, and the last paragraph seemed out of place/abrupt. felt too vague to be understandable as the opening to the tutorial.
@@ -495,7 +493,6 @@ participant (Panis, Schmidt, et al., 2020). Moreover, as indicated by Allison (2
 learning discrete-time EHA methods first will help in learning continuous-time methods, so
 it seems like a good starting point."
 
-
 > Clearer description of the data would be helpful for readers (as well as only having this description in one place in the tutorial to be more concise). For example, on pg. 10 it is indicated that 200 trials of 1 experimental condition are simulated. Can the event occur at any time in those 200 trials? If the event occurs in trial 150, do the remaining 50 trials still occur, or does the time series end for that person? How are those extra trials after an event occurred handled in the data wrangling and analysis. Can events occur more than once?
 
 Response: We think that there is a misunderstanding of what "trial" means. We now provide a clear description of the meaning of "trial" and of the various types of time-to-data obtained in typical RT tasks in section A of the Supplemental Material.
@@ -510,7 +507,7 @@ Response: We removed the numbered list in the revised ms.
 
 > In section 2.3, suggest to lead with the data and research questions of interest and then show how features of survival analysis make it a good method to examine the research questions. I also felt that up until now, the tutorial has been very confusing and hard to follow. It could be that starting the tutorial at section 2.3 (with a few extra details filled in), may be an alternative.
 
-Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses  on the comparison between analysing means vs. distributional shapes. We also discuss general research questions on page 10 of the revised ms.
+Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses on the comparison between analysing means vs. distributional shapes. We also discuss general research questions on page 10 of the revised ms.
 
 > Again, section 2.3.1 (the majority of pg. 12) was unclear and difficult to follow for someone who already has knowledge of survival analysis, but not much familiarity with cognitive process/reaction time data.
 
@@ -520,11 +517,9 @@ Response: Section 2.3.1 has been removed.
 
 Response: We explain the idea of temporal states of cognitive processes now on pages 3-4 of the revised ms. and illustrate it in Figure 1.
 
-
 > It wasn’t clear how section 3.1 added value to the tutorial
 
 Response: Section 3 has been removed.
-
 
 > Section 3.2 – it would be helpful if there was clarification in the text on when it would not be possible to include varying intercepts and slopes (i.e., at least clarifying that random intercepts are a requirement, but sometimes random slopes are removed based on model convergence issues – however, this also begs the question of whether a model should even be presented if it does not converge when it includes random slopes…)
 
@@ -545,7 +540,7 @@ Response: We try to limit the number of abbreviations used in the main body of t
 
 > Similarly, P(t) is never defined for readers.
 
-Response: P(t) was and still is defined only in the Supplementary Material (section B).
+Response: P(t) was and still is defined only in the Supplementary Material (section B in the revised version).
 
 > Section 4.1.1. – it would be helpful to clarify that the risk set also pertains to individuals (not just bins)
 
@@ -567,7 +562,6 @@ Response: We provide the information on data descriptions in a single place in t
 
 Response: We specify "person-trial data" in the revised ms.
 
-
 > pg. 22 (line 358) the way that censoring is described here is confusing.
 
 Response: We agree and adjusted the description (see pages 10-11 of the revised ms.).
@@ -576,7 +570,6 @@ Response: We agree and adjusted the description (see pages 10-11 of the revised 
 
 Response: On line 362 it was stated that "the warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored".
 We now removed these messages from the paper and mention them now only in the tutorial itself.
-
 
 > pg. 22 – since this is a tutorial, it might also be helpful to unpack in more detail the section about identifying individuals who may be guessing etc – especially since these are very important considerations.
 
@@ -594,48 +587,41 @@ Response: A visual comparison between the cloglog and logit link functions is pr
 > section 4.3.1 (line 456) – what goes into the decision about whether to treat time as a categorical or continuous predictor?
 
 Response: We added the following information on page 24 of the revised ms.:
-"Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see also section E of the Supplemental Material). For example, when you want to know if cloglog-hazard is changing linearly or quadracticly over time, you should treat TIME as a continuous predictor.
+"Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see also section E of the Supplemental Material). For example, when you want to know if cloglog-hazard is changing linearly or quadraticly over time, you should treat TIME as a continuous predictor.
 When you are only interested in the effect of covariates on hazard, you can treat TIME as a categorical predictor (i.e., fit an intercept for each bin), in which case you can choose between reference coding and index coding."
 
 > section 4.3.3. – it might be helpful to give a brief indicator up front to readers about the rationale/purpose of fitting both M0i and M1i, especially given that no interpretation is given for M0i. Similarly, it would be helpful to give a bit more detail on the purpose of the comparison of M0i and M1i (given that this is a didactic tutorial).
 
-Response: We mention now that model M0i is a baseline or reference model, to be compared with model M01 (see page 26 of the revised ms.).
+Response: We mention now that model M0i is a baseline or reference model, to be compared with model M01 (see page 26 of the revised ms.). We also mention that we only report 2 models in the paper from a larger set of models that are fitted in the file Tutorial_2a.Rmd.
 
 > section 4.3.6. – same thing here – since this is a tutorial, at least brief details on what the purpose of this section is would be helpful. It might also be helpful here to define what is meant by credible interval so that more novice readers don’t confuse it with a confidence interval.
 
 Response: We added the purpose ("To make causal inferences...") and define a credible interval on page 29 of the revised ms.
 
-
 > The term SOA is used on pg. 34, but had never previously been defined or described.
 
 Response: Stimulus-onset-asynchrony (SOA) is a well-known concept in experimental psychology. We now only use the term SOA in the Supplemental Material.
 
-
 > The text on pg. 35 (lines 567-574) seems too in-depth for a tutorial
 
-Response: We decided to keep this example, as it can help readers with interpreting effects in hazard and conditional accuracy functions.
+Response: We removed this text.
 
 > pg. 36 – it would be helpful to give more detail on how to interpret the logit-ca scale
 
 Response: We decided not to include more detail because logistic regression is very familiar to experimental psychologists.
 
-
 > section 4.7 – as previously mentioned, it is possible that tutorial 4 could be a stand alone tutorial. If it’s not though, more details are needed up front to tell readers what the purpose is and why this is useful.
 
-Response: We decided to keep tutorial 4, and discuss its usefulness on page 45 of the revised ms.
-
+Response: We decided to keep tutorial 4, and discuss its usefulness on pages 45-46 of the revised ms.
 
 > <b>Discussion section:</b> The Discussion section would benefit from being shortened (AMPPS guidelines indicate discussions should be a brief summary of their contents rather than a general discussion).
 
-Response: We shortened the discussion section.
-
+Response: We shortened the Discussion section.
 
 > is ‘how long’ a component of survival analysis – or is it more accurate to say ‘whether and when psychological states occur’?
 
 Response: It is more accurate to say ‘whether and when’ psychological states occur. However, based on those results, we can deduce information about how long a psychological state lasts within a trial.
 Nevertheless, we replaced this with "how effects evolve with increasing waiting time".
-
-
 
 > pg. 47 (lines 753-761) – I had a difficult time understanding this section
 
@@ -645,12 +631,10 @@ Response: We rewrote this section.
 
 Response: We removed section 5.5.
 
-
 >  <b>Figures:</b>
 -Figure 1 is difficult to follow. It is unclear how the means are being calculated. For example, it seems like in examples 2 and 3, the means between conditions should be different. I was also confused in example 4 because the difference in probability between the two conditions in time bin 2 seems tiny. I was also confused because it still looked like there was a big difference in probability between the two conditions at bin 5. Was bin 6 by chance what was meant instead of bin 5? It also still looked like there were differences later on such as in bin 7. Example 5 also left me confused. It looked to me like the effect started at bin 4 and ended at bin 8. Clarification (and perhaps simplifying) this figure would be useful.
 
 Response: We created a new Figure 1.
-
 
 > The description for figure 2 is unclear, particularly with respect to the contrasting knowledge that can be gained from the survival function and hazard function
 
