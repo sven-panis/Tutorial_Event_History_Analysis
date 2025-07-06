@@ -104,6 +104,8 @@ remotes::install_github("ThinkR-open/remedy")
 devtools::install_github("ropenscilabs/gramr")
 ```
 
+
+
 Finally, use renv() to take a snapshot of installed packages and update the lock.file 
 
 ```{r snapshot-renv}
