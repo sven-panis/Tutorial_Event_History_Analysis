@@ -264,7 +264,7 @@ Correspondence concerning this article should be addressed to Sven Panis, ETH GL
 \affiliation{\vspace{0.5cm}\textsuperscript{1} ETH Zürich}
 
 \abstract{%
-Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve with increasing waiting time. The ability to reveal finer-grained, ``temporal states'' of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations and future directions of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.
+Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve with increasing waiting time. The ability to reveal finer-grained, ``temporal states'' of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as the limitations of this work. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.
 }
 
 
@@ -288,7 +288,7 @@ As a simple illustration, Figure 1 summarises simulated single-subject data (200
 
 }
 
-\caption{Simulated data showing mean performance versus distributional (EHA/SAT) analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100{]}, the last bin is (900,1000{]}. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus distributional (EHA/SAT) analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms. The first bin is (0,100{]}, the last bin is (900,1000{]}. Two hundred trials were simulated in each condition. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
 \end{figure}
 
 Why does this matter for research in psychology? For many psychological questions, the estimation of such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible answer to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
@@ -307,7 +307,7 @@ In what follows, the paper is organised in three main sections. In Section 2, we
 
 \subsection{2.1 A brief introduction to event history analysis}\label{a-brief-introduction-to-event-history-analysis}
 
-EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics (Allison, 2010; Gelman, Hill, \& Vehtari, 2020; Singer \& Willett, 2003; Winter, 2019). We supply a few regression equations in section E of the Supplemental Material.
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations (Allison, 2010). In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics (Allison, 2010; Gelman, Hill, \& Vehtari, 2020; Mills, 2011; Singer \& Willett, 2003; Winter, 2019). We supply a few regression equations in section E of the Supplemental Material.
 
 \subsubsection{2.1.1 Terminolgy and minimum requirements for EHA}\label{terminolgy-and-minimum-requirements-for-eha}
 
@@ -388,20 +388,20 @@ Third, the width of each time bin will need to be determined.
 For instance, in Figure 1B we chose 100 ms in an arbitrary manner.
 In reality, however, bin width will need to be set by considering a number of factors simultaneously.
 The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
-Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 40 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred there.
+Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred there.
 
 \section{3. Tutorials}\label{tutorials}
 
 Tutorials 1a and 1b show how to calculate and plot the descriptive statistics of EHA/SAT when there are one or two independent variables, respectively. Tutorials 2a and 2b illustrate how to use Bayesian multilevel modeling to fit hazard and conditional accuracy models, respectively. Tutorials 3a and 3b show how to implement, respectively, multilevel models for hazard and conditional accuracy in the frequentist framework. Tutorial 4 shows how to use simulation and power analysis for planning experiments.
 Additionally, to further simplify the process for other users, the first two tutorials rely on a set of our own custom functions that make sub-processes easier to automate, such as data wrangling and plotting functions (see section C of the Supplemental Material for a list of the custom functions).
 
-The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b). We used R (Version 4.5.1; R Core Team, 2024) and the R-packages \emph{bayesplot} (Version 1.13.0; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.9.0.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.2; Wickham, 2016), \emph{lme4} (Version 1.1.37; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.4; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.3; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.168; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.4; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.14; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021), \emph{rstan} (Version 2.32.7; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.3.0; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.5; Barth, 2023) for all reported analyses.
+The content of the tutorials, in terms of EHA and multilevel regression modelling, is mainly based on Allison (2010), Singer and Willett (2003), McElreath (2020), Heiss (2021), Kurz (2023a), and Kurz (2023b). We used R (Version 4.5.1; R Core Team, 2024) and the R-packages \emph{bayesplot} (Version 1.13.0; Gabry, Simpson, Vehtari, Betancourt, \& Gelman, 2019), \emph{brms} (Version 2.22.0; Bürkner, 2017, 2018, 2021), \emph{citr} (Version 0.3.2; Aust, 2019), \emph{cmdstanr} (Version 0.9.0.9000; Gabry, Češnovar, Johnson, \& Bronder, 2024), \emph{dplyr} (Version 1.1.4; Wickham, François, Henry, Müller, \& Vaughan, 2023), \emph{forcats} (Version 1.0.0; Wickham, 2023a), \emph{ggplot2} (Version 3.5.2; Wickham, 2016), \emph{lme4} (Version 1.1.37; Bates, Mächler, Bolker, \& Walker, 2015), \emph{lubridate} (Version 1.9.4; Grolemund \& Wickham, 2011), \emph{Matrix} (Version 1.7.3; Bates, Maechler, \& Jagan, 2024), \emph{nlme} (Version 3.1.168; Pinheiro \& Bates, 2000), \emph{papaja} (Version 0.1.3; Aust \& Barth, 2024), \emph{patchwork} (Version 1.3.0; Pedersen, 2024), \emph{purrr} (Version 1.0.4; Wickham \& Henry, 2023), \emph{RColorBrewer} (Version 1.1.3; Neuwirth, 2022), \emph{Rcpp} (Eddelbuettel \& Balamuta, 2018; Version 1.0.14; Eddelbuettel \& François, 2011), \emph{readr} (Version 2.1.5; Wickham, Hester, \& Bryan, 2024), \emph{RJ-2021-048} (Bengtsson, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021), \emph{rstan} (Version 2.32.7; Stan Development Team, 2024), \emph{standist} (Version 0.0.0.9000; Girard, 2024), \emph{StanHeaders} (Version 2.32.10; Stan Development Team, 2020), \emph{stringr} (Version 1.5.1; Wickham, 2023b), \emph{tibble} (Version 3.3.0; Müller \& Wickham, 2023), \emph{tidybayes} (Version 3.0.7; Kay, 2024), \emph{tidyr} (Version 1.3.1; Wickham, Vaughan, \& Girlich, 2024), \emph{tidyverse} (Version 2.0.0; Wickham et al., 2019) and \emph{tinylabels} (Version 0.2.5; Barth, 2023) for all reported analyses.
 
 \subsection{3.1 Tutorial 1a: Calculating descriptive statistics using a life table}\label{tutorial-1a-calculating-descriptive-statistics-using-a-life-table}
 
 \subsubsection{3.1.1 Data wrangling aims}\label{data-wrangling-aims}
 
-Our data wrangling procedures serve two related purposes. First, we want to summarise and visualise descriptive statistics using a life table. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t), survival probability S(t), probability mass P(t), possibly the conditional accuracy ca(t), and their estimated standard errors (se). The definitions of these quantities are provided in section B of the Supplemental Material.
+Our data wrangling procedures serve two related purposes. First, we want to calculate descriptive statistics for each condition in each individual using a life table. A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t), survival probability S(t), probability mass P(t), possibly the conditional accuracy ca(t), and their estimated standard errors (se). The definitions of these quantities are provided in section B of the Supplemental Material.
 
 Second, we want to produce two different data sets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as `person-trial' data and `person-trial-bin' data. The `person-trial' data (Table 1) will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. This data set is used when fitting conditional accuracy models (Tutorials 2b and 3b).
 
@@ -601,7 +601,7 @@ bin & \multicolumn{1}{c}{risk\_set} & \multicolumn{1}{c}{events} & \multicolumn{
 
 \end{table}
 
-Figure 4 displays the discrete-time hazard, survivor, conditional accuracy, and probability mass functions for each prime condition for participant 6. By using discrete-time hazard functions of event occurrence -- in combination with conditional accuracy functions for two-choice tasks -- one can provide an unbiased, time-varying, and probabilistic description of the latency and accuracy of responses based on all trials of any RT data set.
+Figure 2 displays the discrete-time hazard, survivor, conditional accuracy, and probability mass functions for each prime condition for participant 6. By using discrete-time hazard functions of event occurrence -- in combination with conditional accuracy functions for two-choice tasks -- one can provide an unbiased, time-varying, and probabilistic description of the latency and accuracy of responses based on all trials of any RT data set.
 
 
 
@@ -622,7 +622,7 @@ However, when the waiting time has increased until \emph{400 ms} after target on
 
 These distributional results suggest that participant 6 is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only slower responses are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. When participants show qualitatively similar distributional patterns, one might consider aggregating their data and plotting the group-average distribution per condition (see Tutorial\_1a.Rmd). More generally, these results go against the (often implicit) assumption in research on priming that all observed responses are primed responses to the target stimulus. Instead, the distributional data show that fast responses are triggered exclusively by the prime stimulus, while only the slower responses reflect primed responses to the target stimulus.
 
-At this point, we have calculated and plotted the descriptive statistics for each type of prime stimulus in EHA/SAT. As we will show in later Tutorials, statistical models for hazard and conditional accuracy functions can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for within-subject designs with two independent variables.
+At this point, we have calculated and plotted the descriptive statistics for each type of prime stimulus. As we will show in later Tutorials, statistical models for hazard and conditional accuracy functions can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for within-subject designs with two independent variables.
 
 \subsection{3.2 Tutorial 1b: Generalising to a more complex design}\label{tutorial-1b-generalising-to-a-more-complex-design}
 
@@ -675,7 +675,7 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial\_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs (Gelman, Vehtari, et al., 2020).
 
-The middle column of Supplementary Figure 3 (section F of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 3 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
+The middle column of Supplementary Figure 2 (section D of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 2 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1.
 
 \subsubsection{3.3.3 Model M0i: A null model with index coding}\label{model-m0i-a-null-model-with-index-coding}
 
@@ -748,7 +748,7 @@ Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M
 
 \subsubsection{3.3.6 Evaluating parameter estimates in model M1i}\label{evaluating-parameter-estimates-in-model-m1i}
 
-To make causal inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80\% and 95\% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
+To make causal inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3, together with point (median) and interval estimates (80\% and 95\% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
 
 
 
@@ -761,7 +761,7 @@ To make causal inferences from the parameter estimates in model M1i, we first pl
 \caption{Medians and 80/95\% credible intervals of the posterior distributions of the population-level parameters of model M1i.}\label{fig:plot-fixed-effects}
 \end{figure}
 
-Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- at the population level (Figure 6A), and for each participant in the data set (Figure 6B).
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- at the population level (Figure 4A), and for each participant in the data set (Figure 4B).
 
 
 
@@ -774,7 +774,7 @@ Because the parameter estimates are on the cloglog-hazard scale, we can ease our
 \caption{Point (median) and 80/95\% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).}\label{fig:plot-pred-grand-effects}
 \end{figure}
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both at the population level (Figure 7A) and at the participant level (Figure 7B).
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both at the population level (Figure 5A) and at the participant level (Figure 5B).
 
 
 
@@ -793,20 +793,18 @@ The point estimates and quantile intervals can also be reported in a table (see 
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target stimulus-onset-asynchrony of 187 ms)?
 
-If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 4A. The contrast ``congruent minus blank'' was estimated to be 0.09 hazard units in bin (200,240{]} (95\% CrI = {[}0.02, 0.17{]}), and 0.14 hazard units in bin (240,280{]}) (95\% CrI = {[}0.04, 0.25{]}). For the other bins, the 95\% credible interval contained zero.
+If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 5A. The contrast ``congruent minus blank'' was estimated to be 0.09 hazard units in bin (200,240{]} (95\% CrI = {[}0.02, 0.17{]}), and 0.14 hazard units in bin (240,280{]}) (95\% CrI = {[}0.04, 0.25{]}). For the other bins, the 95\% credible interval contained zero.
 The contrast ``incongruent minus blank'' was estimated to be 0.09 hazard units in bin (200,240{]} (95\% CrI = {[}0.01, 0.21{]}), -0.19 hazard units in bin (320,360{]} (95\% CrI = {[}-0.31, -0.06{]}), -0.27 hazard units in bin (360,400{]} (95\% CrI = {[}-0.45, -0.04{]}), and -0.23 hazard units in bin (400,440{]} (95\% CrI = {[}-0.40, -0.03{]}). For the other bins, the 95\% credible interval contained zero.
 
 There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240{]}. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440{]}. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
 
-If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 4B. Note that three participants (1, 2, and 3) show a negative difference for the contrast ``congruent minus incongruent'' in bin (360,400{]} -- subject 2 also in bin (320,360{]}.
-
-Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to ``dip'' around that time (Figure 4B). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formulae that should get you going.
+If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 5B. Note that three participants (1, 2, and 3) show a negative difference for the contrast ``congruent minus incongruent'' in bin (360,400{]} -- subject 2 also in bin (320,360{]}. Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to ``dip'' around that time. Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formulae that should get you going.
 
 \subsection{3.4 Tutorial 2b: Fitting Bayesian conditional accuracy models}\label{tutorial-2b-fitting-bayesian-conditional-accuracy-models}
 
 In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regression model to the timed accuracy data from the masked response priming data used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely). To keep the tutorial short, we only fit one conditional accuracy model, which was based on model M1i from Tutorial 2a and labelled M1i\_ca.
 
-To make inferences from the parameter estimates in model M1i\_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 8, together with point (median) and interval estimates (80\% and 95\% credible intervals).
+To make inferences from the parameter estimates in model M1i\_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 6, together with point (median) and interval estimates (80\% and 95\% credible intervals).
 
 
 
@@ -819,7 +817,7 @@ To make inferences from the parameter estimates in model M1i\_ca, we first plot 
 \caption{Medians and 80/95\% credible intervals of the posterior distributions of the population-level parameters of model M1i\_ca. ca = conditional accuracy.}\label{fig:plot-ca-fixed-effects}
 \end{figure}
 
-Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 9A), and for each participant in the data set (Figure 9B).
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 7A), and for each participant in the data set (Figure 7B).
 
 
 
@@ -832,7 +830,7 @@ Because the parameter estimates are on the logit-ca scale, we can ease our inter
 \caption{Point (median) and 80/95\% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).}\label{fig:plot-pred-grand-effects-ca}
 \end{figure}
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 10A) and for each participant (Figure 10B).
+As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 8A) and for each participant (Figure 8B).
 
 
 
@@ -845,7 +843,7 @@ As we are actually interested in the effects of congruent and incongruent primes
 \caption{Point (mean) and 80/95\% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level (A), and for each participant (B).}\label{fig:plot-ca-grand-ame-effects}
 \end{figure}
 
-Based on Figure 10A we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240{]}, (240,280{]}, (280,320{]}, and (320,360{]}, relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 10A).
+Based on Figure 8A we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240{]}, (240,280{]}, (280,320{]}, and (320,360{]}, relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 8A).
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first time bins, relative to the estimates in the baseline condition.
 
 Before we move to our Tutorial on planning experiments, we also provide code to fit hazard and conditional accuracy models in the frequentist framework (see Tutorial\_3a.Rmd and Tutorial\_3b.Rmd). However, because multilevel generalized linear regression models often do not converge with complex random-coefficient structures, we do not discuss them here.
@@ -891,7 +889,7 @@ We fit an index coding model on a subset of time bins (six time bins in total) a
 \end{Highlighting}
 \end{Shaded}
 
-We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 12 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section.
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 9 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section.
 
 
 
@@ -912,8 +910,8 @@ We focus on bin 6 only, in terms of varying the effect size, just to make things
 The effect size observed in bin 6 in this subsample of data was a 79\% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In other words, a hazard ratio of 0.21 (e.g., 0.085/0.401 = 0.21).
 As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75\%, 50\% and 25\% reduction in hazard value as a function of prime condition.
 
-Summary results from Simulation 1 are shown in Figure 13A.
-Figure 13A depicts statistical ``power'' as calculated by the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent).
+Summary results from Simulation 1 are shown in Figure 10A.
+Figure 10A depicts statistical ``power'' as calculated by the percentage of lower-bound 95\% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent).
 In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
 We are aware that ``power'' is not part of a Bayesian analytical workflow, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
 
@@ -925,7 +923,7 @@ To probe this space a little further, we decided to run a second simulation, whi
 In Simulation 2, we varied the effect size between a different range of values (0.5, 0.4, 0.3), which correspond to a 50\%, 60\% and 70\% reduction in hazard value as a function of prime condition.
 In addition, we varied the number of participants per experiment between 10, 15, and 20 participants.
 Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
-Summary results from Simulation 2 are shown in Figure 13B.
+Summary results from Simulation 2 are shown in Figure 10B.
 A summary of these power calculations might be as follows (trial count = 200 per condition in all cases):
 
 \begin{itemize}
