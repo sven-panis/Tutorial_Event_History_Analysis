@@ -310,6 +310,8 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png", width = 10, heigh
 
 ## Plot average marginal effects (AMEs)
 
+See Heiss (2021) https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects
+
 ### Grand mean AMEs
 
 ```{r grand-ame}
