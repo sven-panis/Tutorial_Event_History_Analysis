@@ -33,7 +33,7 @@ pd <- position_dodge(0.7)
 pd2 <- position_dodge(1)
 ```
 
-# 2. Create Figure on experimental paradigms
+# 2. Create Supplementary Figure 1 on experimental paradigms
 
 create detection data
 
@@ -428,7 +428,7 @@ plot_grid(p_detection, p_discrimination,p_discriminationSOA,p_percept,
 save Figure
 
 ```{r}
-ggsave("manuscript/Plot_paradigms.png",dpi = 800,width = 16,height = 17)
+ggsave("manuscript/Suppl_material/Plot_paradigms.png",dpi = 800,width = 16,height = 17)
 ```
 
 

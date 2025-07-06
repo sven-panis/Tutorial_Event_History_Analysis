@@ -56,7 +56,7 @@ As such, we have substantially revised the manuscript in accordance with feedbac
 
 > The Introduction is really nicely framed in terms of providing compelling information for why this class of statistical models would be useful in some specific areas of psychology (i.e., reaction time data). Given that there are already a couple of tutorial-types of articles introducing specific applications of survival analysis in developmental psychology (references below, both regarding the use of these methods for behavioural observations of emotional expressions in a multilevel framework for recurring events), it would be helpful to further frame the unique contribution that this work adds. The authors may also consider further emphasizing the specific theoretical contributions that using these methods may lead to in the areas of reaction time data etc.
 
-Response: In the revised ms. we frame the unique contribution that this works adds on pages 5-6:
+Response: In the revised ms. we frame the unique contribution that this works adds on page 6:
 "...we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which
 provide worked examples of the key data processing and Bayesian multilevel regression modelling steps." 
 
@@ -67,19 +67,19 @@ provide worked examples of the key data processing and Bayesian multilevel regre
  
 > Stoolmiller, M., & Snyder, J. (2006). Modeling heterogeneity in social interaction processes using multilevel survival analysis. Psychological Methods, 11(2), 164–177. https://doi.org/10.1037/1082-989X.11.2.164
 
-Response: We added these references to the ms.
+Response: We added these references to the revised ms. on page 6.
 
 
 > Similarly, it would be helpful to make it clear that this manuscript pertains to estimating single-event occurrences rather than recurring events (which are described in the Lougheed and Stoolmiller tutorials mentioned above)
 
-Response: On page 7 of the revised ms., we mention that we measure single-event occurrences that are repeatedly measured in each participant.
+Response: We added a section in the Supplemental Material (section A in the revised ms.) which explains the types of time-to-event data typically obtained in RT tasks (detection, discrimination, and bistable perception tasks). This section makes it clear that our tutorials pertain only to estimating single-event occurrences. It also visualizes recurrent events and includes the Lougheed and Stoolmiller tutorials.
 
 
 > Specific comments:
 
 > The authors use several different terms to refer to time-to-event models throughout the manuscript. The title refers to EHA, and the running head refers to Hazard analysis. Survival analysis is also a common term in Psychology (see tutorials by Lougheed et al., 2019, and Stoolmiller & Snyder, 2006). Disambiguating the various terms early in the manuscript and then constantly using one term throughout the manuscript would be helpful.
 
-Response: We disambiguate the various terms in the revised ms. on page 7, and we now only use one term throughout.
+Response: We disambiguate the various terms in the revised ms. on pages 7-8, and we now only use one term throughout.
 
 
 > Page 5: it would be helpful to refer to the same time unit in reference to Figure 1, which shows time bins along the x-axis but the examples discussed in the manuscript refer to units of milliseconds.
@@ -89,21 +89,21 @@ Response: Figure 1 has been replaced.
 
 > Page 7: The authors state that they are not aware of EHA tutorials for psychological time to event data. Previoulsy mentioned tutorial articles by Lougheed and Stoolmiller could be mentioned here— these are demonstrating applications to behavioural observation data within psychology.
 
-Response: We added these 3 references to the revised ms. 
+Response: We added these 3 references to the revised ms. on page 6.
 
 > Page 8: I’m curious about the decision to focus on discrete time rather than continuous time models. It would help the reader to explain the decision either way, or refer the reader to Lougheed et al., 2019 who discuss this distinction and choices that researchers may make regarding how to handle decisions around time given data formats. I don’t work with reaction time data, but it seems to me that many experiments in this area would collect data in continuous time intervals, and it’s not clear to me what the benefit of discretizing into time bins is. Now that I’ve read the entire manuscript, I see that some information is presented on this on Page 50, but it would be helpful to make this information known to the reader earlier in the manuscript.
 
-Response: We address our choice for discrete-time methods on pages 7-8 of the revised ms.:
+Response: We address our choice for discrete-time methods on pages 8-9 of the revised ms.:
 
-"...the definition of hazard and the type of models employed depend on whether one is using
-continuous or discrete time units. As a lab, and mainly for practical reasons, we have much
-more experience using discrete-time EHA, and that is the approach that we describe and
-focus on in this paper. This choice may seem counter-intuitive, given that RT is typically
-treated as a continuous variable. However, continuous forms of EHA require much more
-data to estimate the continuous-time hazard (rate) function well. Thus, by trading
-a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal
-for dealing with typical psychological RT data sets for which there are less than ~200 trials
-per condition per experiment. Moreover, as indicated by Allison (2010),
+"... the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. As a lab, and mainly for practical reasons,
+we have much more experience using discrete-time EHA, and that is the approach that we
+describe and focus on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms of EHA require
+much more data to estimate the continuous-time hazard (rate) function well (Bloxom,
+1984; Luce, 1991; Van Zandt, 2000). Thus, by trading a bit of temporal resolution for a
+lower number of trials, discrete-time methods seem ideal for dealing with typical
+psychological RT data sets for which there are less than ~200 trials per condition per
+participant (Panis, Schmidt, et al., 2020). Moreover, as indicated by Allison (2010),
 learning discrete-time EHA methods first will help in learning continuous-time methods, so
 it seems like a good starting point."
 
@@ -162,17 +162,17 @@ analysts (or potentially these authors too) consider multiple bin widths when
 conducting an analysis? An example comparing results when bin width varies
 could be both interesting and informative.
 
-Response: We discuss the issue of defining bins on page 11 of the revised ms.:
+Response: We discuss the issue of defining bins on page 12 of the revised ms.:
 
 "Third, the width of each time bin will need to be determined. For instance, in Figure
-1B we chose 100ms in an arbitrary manner. In reality, however, bin width will need to be
+1B we chose 100 ms in an arbitrary manner. In reality, however, bin width will need to be
 set by considering a number of factors simultaneously. The optimal bin width will depend
 on (a) the length of the observation period in each trial, (b) the rarity of event occurrence,
 (c) the number of repeated measures (or trials) per condition per participant, and (d) the
 shape of the hazard function. Finding an appropriate bin width in a given user case before
 fitting models will require testing a number of options, when calculating and plotting the
 descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is
-supported by the amount of data available. Based on our experience, a bin width of 50 ms
+supported by the amount of data available. Based on our experience, a bin width of 40 ms
 is a good starting value when the number of repeated measures is 100 or less. Too small
 bin widths will result in erratic hazard functions as many bins will have no events, and
 thus hazard estimates of zero. Interestingly, the time bins do not need to have the same
@@ -198,17 +198,17 @@ is and include a short comparison of discrete vs. continuous time analysis
 methods to help explain your reasoning for choosing to focus on discrete time
 analysis methods.
 
-Response: We address our choice for discrete-time methods on pages 7-8 of the revised ms.:
+Response: We address our choice for discrete-time methods on pages 8-9 of the revised ms.:
 
-"...the definition of hazard and the type of models employed depend on whether one is using
-continuous or discrete time units. As a lab, and mainly for practical reasons, we have much
-more experience using discrete-time EHA, and that is the approach that we describe and
-focus on in this paper. This choice may seem counter-intuitive, given that RT is typically
-treated as a continuous variable. However, continuous forms of EHA require much more
-data to estimate the continuous-time hazard (rate) function well. Thus, by trading
-a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal
-for dealing with typical psychological RT data sets for which there are less than ~200 trials
-per condition per experiment. Moreover, as indicated by Allison (2010),
+"... the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. As a lab, and mainly for practical reasons,
+we have much more experience using discrete-time EHA, and that is the approach that we
+describe and focus on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms of EHA require
+much more data to estimate the continuous-time hazard (rate) function well (Bloxom,
+1984; Luce, 1991; Van Zandt, 2000). Thus, by trading a bit of temporal resolution for a
+lower number of trials, discrete-time methods seem ideal for dealing with typical
+psychological RT data sets for which there are less than ~200 trials per condition per
+participant (Panis, Schmidt, et al., 2020). Moreover, as indicated by Allison (2010),
 learning discrete-time EHA methods first will help in learning continuous-time methods, so
 it seems like a good starting point."
 
@@ -217,16 +217,13 @@ censoring—and how it is (not) accounted for in “orthodox” analysis methods
 discrete time-to-event analysis methods would be useful, beyond the already-
 included mention of censoring in Section 5.3.
 
-
 Response: We introduce the definition of right-censoring on page 10 of the revised ms.
-
 
 > 4. Section 1.2 is a bit long. Please shorten this section to improve the clarity of the
 text and reduce redundancy. There is also overlap between text in Section 1.2
 and the start of Section 4.
 
 Response: We shortened this section and removed the overlap.
-
 
 > 5. Section 2.3.2. I like the idea of making a connection with experimental design,
 but am having trouble seeing how the discussion in this section is specific to EHA
@@ -236,20 +233,18 @@ experimental design implications for EHA vs. the “orthodox method”.
 
 Response: We created a new Figure 1 that makes the intended point, and removed section 2.3.2.
 
-
 > 6. Line 517: What are model weights? Please explain briefly for the reader,
-including how the interpretation differs for loo and waic. Also, in the provided
+including how the interpretation differs for loo and waic. 
+Also, in the provided
 reference (Kruz 2023a), I was only able to find a discussion of dWAIC, rather
 than WAIC, so could you please include a definition of or reference for dWAIC in
-your context? Lastly, when reporting the model weights in the example in the
+your context? 
+Lastly, when reporting the model weights in the example in the
 text, I’d suggest including more than 2 digits so that it is clear if the reported
 weights are actually 0 and 1 or if rounding has just made them appear so.
 
-Response: TODO...
-
-We explain model weights on page x, include a reference for dWAIC, and report the weights with 3 digits.
-
-
+Response: We briefly explain model weights for loo and waic on page 28 of the revised ms.
+A discussion of WAIC in Kurz (2023a) can be found in section 4.6.4., so we did not include a reference for dWAIC in the revised ms. Lastly, we report more digits when reporting the model weights.
 
 > 7. Tutorials 3a and 3b: Rather than simply stating that the frequentist models did
 not converge and resulted in singular fits, it would be helpful to provide more
@@ -261,7 +256,9 @@ strategies that could be used to define a model that will converge or (b) removi
 these examples from the main text and directing the reader to the supplement
 instead.
 
-Response: We removed the frequentist examples from the main text.
+Response: We removed the frequentist examples from the main text and direct the reader to the Tutorials on page 37 of the revised ms.
+We have no specific idea why the models did not converge, so we simply mention on page 37:
+"... because multilevel generalized linear regression models often do not converge with complex random-coefficient structures, we do not discuss them here."
 
 
 > Minor comments:
@@ -269,7 +266,6 @@ Response: We removed the frequentist examples from the main text.
 redundant to me, since means and averages are the same thing.
 
 Response: We removed this term.
-
 
 > 2. Figure 1: In the caption, please state what the small error bars in the inset plots
 are showing.
@@ -288,13 +284,11 @@ survival function…”.
 
 Response: Figure 2 has been removed. We only discuss the survival function in the Supplemental Material (section B) of the revised ms.
 
-
 > b. I am confused by the sentence beginning: “For example, the high hazard
 of …”. Could you please provide some additional explanation or a
 reference for more details on this interpretation?
 
 Response: We removed this section.
-
 
 > 5. Lines 156-166: Generally, survival probabilities are described as probabilities of
 remaining event-free up until a certain point, rather than the probability of an
@@ -323,13 +317,13 @@ Response: We added data visualizations in section A of the Supplemental Material
 
 > 9. Figure 4: Why is there no bin 40?
 
-Response: TODO
+Response:TODO.  To improve the Figure (figure number 2 in the revised ms.). However, we added bin 40 in the revised ms.
 
 > 10. Line 423: The phrase “early responses” is confusing as it implies temporal
 ordering of the responses (i.e., early vs. late trials). I’d suggest using “fast
 response” or “rapid responses”, or some other phrase along those lines.
 
-Response: TODO
+Response: We replace early with fast on page 22 of the revised ms.
 
 > 11. Is the discussion of reference and index coding (lines 457 – 464) needed? In the
 introduction, the authors state that knowledge of regression is assumed so I am
@@ -347,22 +341,23 @@ That is, subject-specific is an effect that is conditional on an individual whil
 “marginal” effect has been marginalized/averaged over individuals. Could you
 please clarify your use of these terms here?
 
-Response: TODO.
+Response: We erroneously used the term marginal. We removed this term in the revised ms.
 
 > 14. Lines 584-587: Since this is a tutorial paper, I’d suggest including explanations
 for why you make changes (a), (b), and (c).
 
-Response: TODO.
+Response: We now write "The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely)." on page 33 of the revised ms. The logit is typically used for logistic regression by experimental psychologists, so we feel that no extra explanation is needed.
 
 > 15. Line 659: What is a “fully varying effects structure”? Please define/explain.
 
-Response: TODO.
+Response: We explain this on page 24 of the revised ms.:
+"We also use a "keep it maximal" approach by specifying a full varying (or random) effects structure. This means that wherever possible we include varying intercepts and slopes per participant."
 
 
 > 16. Line 832-833: Please provide a reference for the statement, “However, they
 require much more data…”.
 
-Response: TODO.
+Response: References are provided on page 8 of the revised ms.
 
 > 17. Github code: Instruction 2 of the README states “open the
 reproducible_workflow.Rproj” – I can’t find this R project, should it be the
@@ -378,12 +373,12 @@ Response: Yes this has been corrected now.
 > Comments to the Author
 This tutorial guides readers through how to wrangle cognitive reaction time data and address research questions pertaining to temporal dynamics of cognition using event history analysis (EHA) and speed/accuracy tradeoff analysis (SAT). Models are illustrated for hazard functions, and conditional accuracy functions. A nice feature of this study is that each model is presented in both the Bayesian and frequentist frameworks. Having both frameworks provides side-by-side comparisons such as when the Bayesian framework might be preferred (e.g., when models do not converge in the Frequentist framework, which is common when modeling multilevel data). The tutorial also includes a section on simulation and power analysis for planning experiments. I believe this tutorial could eventually be a useful contribution to fellow psychological scientists. However, in its current state, it was difficult to follow/ make my way through (despite existing expertise in EHA), and also difficult to understand what the main contributions were above and beyond existing works. Additionally, it was not clear why the discrete time framework was chosen. The temporal granularity of reaction time data seems like it would be better suited for a continuous time framework. Altogether, the tutorial covers important concepts, but it would benefit from greater accuracy and clearer definitions of key terms. Carefully removing redundancies, getting to the tutorial section much quicker (currently not until pg. 17), and being more precise with explanations of technical jargon would enhance its clarity and accuracy.
 
-Response: We discuss the main contributions above and beyond existing works on pages 5-6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 7-8 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 11) and included more precise explanations of technical jargon.
+Response: We discuss the main contributions above and beyond existing works on page 6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 8-9 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 12) and included more precise explanations of technical jargon.
 
 
 > <b>Code for the tutorials:</b> I went to the github page and found a folder for each of the 4 tutorials, which included sub-folders for data, figures, and tables. It took a minute for me to realize that the actual R code for each tutorial was in the main folder, not within each sub-folder. This may also be confusing to readers. Additionally, each of the 4 tutorials, along with their sub-tutorials are provided in separate .Rmd files. There were several download steps needed to get all the information. To me, this made the user experience tedious, and made the tutorials seem disjointed from one another. The authors might consider a more comprehensive single Rmd file that is neatly organized with an interactive table of contents (in the knitted html file). To me, this would make the experience much more enjoyable and useful for readers. Given that this is a tutorial, it would also be nice if the the RMarkdowns were somewhat more standalone e.g., by including a brief description of what a life table is and how to interpret the plot.
 
-Response: We explain the location of the files and the folder structure in the README file. In addition we make it clear that s single download step is possible by either cloning the project, or downloading the ZIP file.
+Response: We explain the location of the files and the folder structure in the README file. In addition we make it clear that a single download step is possible by either cloning the project, or downloading the ZIP file.
 We also included a brief description of a life table and how to interpret the plot in the R Markdown tutorial files.
 At this point, we also prefer a modular approach to the tutorials rather than combining them. 
 We appreciate that not everyone might share this preference, but we think there are many benefits to a modular workflow in this instance.
@@ -396,11 +391,9 @@ Therefore, we added visualizations of the types of time-to-event data that are o
 
 > On page 7, it states that there are not tutorials aimed at psychological time-to-event data. Yet, there are at least a few existing empirical article examples with accompanying tutorials in psychology (listed below), and arguably some of the popular textbooks are also geared toward psychological scientists (e.g., Singer & Willett). Similarly, many of the textbooks contain code to accompany their text. Regardless, even if those are not counted, I still think it will be beneficial for readers if the authors can make a clear case for what is unique about psychological time-to-event data that necessitates a stand alone tutorial/ what gaps in the existing textbooks/empirical articles/tutorials the present tutorial serves to fill.
 
-Response: In the revised ms. we frame the unique contribution that this works adds on pages 5-6:
+Response: In the revised ms. we frame the unique contribution that this works adds on page 6:
 "...we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which
 provide worked examples of the key data processing and Bayesian multilevel regression modelling steps." 
-
-
 
 
 > Lougheed, J. P., Benson, L., Cole, P. M., & Ram, N. (2019). Multilevel survival analysis: Studying the timing of children’s recurring behaviors. Developmental Psychology, 55(1), 53.
@@ -409,32 +402,23 @@ provide worked examples of the key data processing and Bayesian multilevel regre
 
 > Mills, M. (2011). The fundamentals of survival and event history analysis. Introducing Survival Analysis and Event History Analysis. London: SAGE Publications, 1-17.
 
-Response: We included these references in the revised ms. 
-
-
-
-
+Response: We included these references in the revised ms. on page 6.
 
 > <b>Organization of the tutorial:</b>The current version of the tutorial is much longer than a typical AMPPStutorial. There are a few possibilities for dealing with this. First, it may be that the tutorial could be split into 2, such as splitting into tutorials 1-3 and tutorial 4 on its own. Another possibility is that the focus could be primarily on the Bayesian models, and then leave the frequentist models for either a supplement, or to only live in the RMarkdown. This possibility may also be beneficial due to the model convergence issues with at least one of the frequentist models (which is common with multilevel data and why many psychological scientists are moving to the Bayesian framework). A third possibility is that the overall tutorial text could be greatly streamlined, with major cuts to both the introduction and the discussion sections.
 
-
 Response: We focus primarily on the Bayesian models in the revised ms., and keep Tutorial 4.  We also made major cuts to both the introduction and the discussion sections to shorten the ms.
-
-
 
 > <b>Clarity and accuracy: </b>
 -There are several instances where jargon terms and key concepts pertinent to survival analysis need to be defined and/or described in slightly more detail than what is currently provided. For example, clearer descriptions of censoring and risk sets (plus what it means to be at risk) should be given in the introduction. 
 
 Response: We introduce the definition of right-censoring on page 10 of the revised ms. We discuss what it means to be at risk in section A of the Supplemental Material.
 
-
-
 > Additionally, many key details, such as the EHA equations are relegated to supplementary materials. In my opinion, any key information that makes the tutorial more accessible and precise should not be in supplementary materials.
 
 Response: We placed the equations for h(t) and ca(t) in Figure 1 of the revised ms. 
-Beyond Figure 1, we still choose to keep any further reference of equations to supplementary materials. 
+Beyond Figure 1, we still choose to keep any further reference of equations to the supplemental material (section B). 
 This is because we feel that one barrier to uptake of these methods is an aversion to equations.
-And by placing them in supplementary materials we feel that we strike a nice balance between non-technical accessibility and a fullness of mathemathical explanation for key ideas and concepts that remain easily accessible to interested readers.
+And by placing them in the supplemental material we feel that we strike a nice balance between non-technical accessibility and a fullness of mathemathical explanation for key ideas and concepts that remain easily accessible to interested readers.
 
 > There are many abbreviations that were difficult to follow. EHA is arguably standard, but SAT (for speed/accuracy trade-off) is less familiar, and may therefore benefit from not being an abbreviation. Similarly referring to hazard function as h(t), conditional accuracy function as c(t) was less clear than just saying hazard function and conditional accuracy function.
 
@@ -442,24 +426,29 @@ Response: Although SAT is rather standard in cognitive experimental psychology, 
 
 > It would be helpful if the research questions that can be addressed by the methods presented are clearly presented in each section. I think that currently they are getting lost in the tutorial.
 
-Response: TODO.
+Response: We discuss general research questions on page 10 of the revised ms.
+
+And we added research questions in each section of Tutorial 2a.
+
 
 > There are several opportunities to describe the method more precisely. For example, the discrete time hazard function gives a ‘conditional’ probability (pg. 9). 
 
-Response: Indeed, this was a big error on our part. Thank you for pointing this out.
-
+Response: Indeed, this was a big error on our part, which we corrected in the revised ms. Thank you for pointing this out.
 
 > Additionally, it may be helpful to use more standard notations such as h(t_ij) to indicate the conditional probability that the event occurs in bin j for individual i, given that the individual had not already experienced the event in a previous time period (lines 159-160, pg. 9).
 
-Response: TODO. We add indexes for individual and trial.
+Response: We added indexes for individual and trial in the regression model equations in section E of the supplemental material.
+Furthermore, our new description on pages 8 and 9, together with the new section A in the supplemental material, should make this issue clear for the reader.
 
 >  Similarly, the survival probability is the probability that the event occurs after bin j, *given that the individual lhas survived up until bin j*. 
 
-Response: TODO.
+Response: We define S(t) = P(RT > t) now as "the probability that the event does not occur before the endpoint of bin t" in section B of the Supplemental Material.
+
 
 > Throughout the tutorial, reference to individuals in the notation is missing. 
 
-Response: TODO. We added reference to individuals and trials (repeated measures) in the notation.
+Response: We added reference to individuals and trials (repeated measures) in the notation of the model equations in section E of the Supplemental Material.
+Furthermore, we feel that the information provided by our new description on pages 8 and 9, together with the new section A in the supplemental material, is sufficient for understanding what we mean without including a reference to individuals (and trials) in the main text.
 
 > Another inaccuracy is that in the discrete time framework, it is not an instantaneous likelihood (line 161, pg. 9).
 
@@ -470,7 +459,6 @@ Response: Indeed, only continuous-time hazard can be called an instantaneous lik
 -Section 1.1 – I had a difficult time understanding this section as the opening to the tutorial, and the last paragraph seemed out of place/abrupt. felt too vague to be understandable as the opening to the tutorial.
 
 Response: We rewrote this section.
-
 
 > Given that the speed-accuracy tradeoff analysis is described as central to this tutorial, it may benefit from being introduced earlier than pg. 7.
 
@@ -484,68 +472,57 @@ Response: We agree and focus now on the Bayesian models in the revised ms.
 
 Response: We decided to keep tutorial 4, as we feel that planning future studies is an important and difficult step to take in these kinds of studies, which we wanted to keep close to the rest of the material for ease of understanding a reasonably complete workflow.
 
-
-
-
 > Censoring is a key component of survival analysis that is missing from the introduction
 
 Response: We introduce the definition of right-censoring on page 10 of the revised ms.
 
-
 > It might be useful to indicate early on the distinctions between multilevel data, single events, and recurring events – and that this particular tutorial is only focused on single events.
 
-Response: On page 7 of the revised ms., we mention that we measure single-event occurrences that are repeatedly measured in each participant. In section A of the Supplemental Material we mention that this Tutorial does not cover recurrent events.
-
-
+Response: In section A of the Supplemental Material we mention that this Tutorial does not cover recurrent events, and we visualize the different types of time-to-event data that are obtained in typical RT tasks (detection, discrimination, bistable perception tasks). This should make it clear to the reader that we are dealing with single events that are repeatedly measured within the same individual.
 
 > It’s not clear why a discrete time framework is used given the granular temporal resolution of reaction time data – this would also mean that the data would not need to be separated into bins. Most textbooks (e.g., Allison’s) often indicate discrete time methods are common for temporal scales such as months, years, or decades (not milliseconds). Clearer justification for the discrete time framework and separating the data into bins would be helpful.
 
-Response: We address our choice for discrete-time methods on pages 7-8 of the revised ms.:
+Response: We address our choice for discrete-time methods on pages 8-9 of the revised ms.:
 
-"...the definition of hazard and the type of models employed depend on whether one is using
-continuous or discrete time units. As a lab, and mainly for practical reasons, we have much
-more experience using discrete-time EHA, and that is the approach that we describe and
-focus on in this paper. This choice may seem counter-intuitive, given that RT is typically
-treated as a continuous variable. However, continuous forms of EHA require much more
-data to estimate the continuous-time hazard (rate) function well. Thus, by trading
-a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal
-for dealing with typical psychological RT data sets for which there are less than ~200 trials
-per condition per experiment. Moreover, as indicated by Allison (2010),
+"... the definition of hazard and the type of models employed depend on whether one is using continuous or discrete time units. As a lab, and mainly for practical reasons,
+we have much more experience using discrete-time EHA, and that is the approach that we
+describe and focus on in this paper. This choice may seem counter-intuitive, given that RT
+is typically treated as a continuous variable. However, continuous forms of EHA require
+much more data to estimate the continuous-time hazard (rate) function well (Bloxom,
+1984; Luce, 1991; Van Zandt, 2000). Thus, by trading a bit of temporal resolution for a
+lower number of trials, discrete-time methods seem ideal for dealing with typical
+psychological RT data sets for which there are less than ~200 trials per condition per
+participant (Panis, Schmidt, et al., 2020). Moreover, as indicated by Allison (2010),
 learning discrete-time EHA methods first will help in learning continuous-time methods, so
 it seems like a good starting point."
 
 
 > Clearer description of the data would be helpful for readers (as well as only having this description in one place in the tutorial to be more concise). For example, on pg. 10 it is indicated that 200 trials of 1 experimental condition are simulated. Can the event occur at any time in those 200 trials? If the event occurs in trial 150, do the remaining 50 trials still occur, or does the time series end for that person? How are those extra trials after an event occurred handled in the data wrangling and analysis. Can events occur more than once?
 
-Response: We provided a clearer description of the data.
+Response: We think that there is a misunderstanding of what "trial" means. We now provide a clear description of the meaning of "trial" and of the various types of time-to-data obtained in typical RT tasks in section A of the Supplemental Material.
+
 
 
 > Section 2.2 (pg. 10, lines 168-169), if describing what ‘statisticians and mathematical psychologists say’, it would be helpful to provide supporting references.
 
-Response: TODO. We provide supporting references on page x of the revised ms.
+Response: We provide supporting references on pages 9-10 of the revised ms.
 
 
 > The numbered list on pg. 11 contained jargon statements without explanations. Suggest to simplify and keep the focus on the data you are using and specific research questions you are using survival analysis as a tool to address.
 
-
 Response: We removed the numbered list in the revised ms.
-
 
 > In section 2.3, suggest to lead with the data and research questions of interest and then show how features of survival analysis make it a good method to examine the research questions. I also felt that up until now, the tutorial has been very confusing and hard to follow. It could be that starting the tutorial at section 2.3 (with a few extra details filled in), may be an alternative.
 
-Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses  on the comparison between analysing means vs. event occurrence.
-
-
+Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses  on the comparison between analysing means vs. distributional shapes. We also discuss research questions on page 10 of the revised ms.
 
 > Again, section 2.3.1 (the majority of pg. 12) was unclear and difficult to follow for someone who already has knowledge of survival analysis, but not much familiarity with cognitive process/reaction time data.
 
-
 Response: Section 2.3.1 has been removed.
-
 
 > From what is written, I did not have a clear sense of how temporal states of cognitive processes and theory development could occur (pg. 14, lines 231-29). These ideas and the research questions are scattered in many places throughout the tutorial, and are not very clear/straightforward. It may be helpful to locate them in just one place in the tutorial and provide a clearer description to guide readers. Similarly, the statement on pg. 14 (lines 238-239) felt rather strong without any references, and also out of scope for a tutorial.
 
-Response: We explain the idea of temporal states of cognitive processes now on page 5 of the revised ms. and illustrate it in Figure 1.
+Response: We explain the idea of temporal states of cognitive processes now on pages 3-4 of the revised ms. and illustrate it in Figure 1.
 
 
 > It wasn’t clear how section 3.1 added value to the tutorial
@@ -556,15 +533,13 @@ Response: Section 3 has been removed.
 > Section 3.2 – it would be helpful if there was clarification in the text on when it would not be possible to include varying intercepts and slopes (i.e., at least clarifying that random intercepts are a requirement, but sometimes random slopes are removed based on model convergence issues – however, this also begs the question of whether a model should even be presented if it does not converge when it includes random slopes…)
 
 
-Response: TODO.
-
+Response: We do not discuss frequentist approaches in the main text anymore (to save space) and only mention that the reader can consult Tutorials 3a and 3b. We agree that a model should not be presented if it does not converge when it includes random slopes. However, to save space, and because this is an active area of reserch, we do not attempt to clarify when it would not be possible to include varying intercepts and slopes.
 
 > Additionally in section 3.2, the text on pg. 16 is vague and does not give much detail to readers.
 
 Response: Section 3 has been removed.
 
 > Overall, the introduction spans across 16 pages, which feels long even for a standard empirical article, let alone a tutorial. As currently written, I think many readers will get lost before even getting to the tutorials section.
-
 
 Response: We agree, and restructured and shortened the introduction.
 
@@ -581,7 +556,7 @@ Response: P(t) was and still is defined only in the Supplementary Material (sect
 
 > Section 4.1.1. – it would be helpful to clarify that the risk set also pertains to individuals (not just bins)
 
-Response: TODO.
+Response: We clarify this in section A of the Supplemental Material.
 
 > The connection between trials and bins could be made clearer (this is in reference to the text on pg. 18, but I think the clarity would need to come earlier on in the tutorial when describing the data)
 
@@ -589,8 +564,7 @@ Response: This connection should be clear now based on section A of the Suppleme
 
 > Comprehension of the text on pg. 18 would be enhanced if both right and left censoring had been clearly introduced previously. Although left censoring is probably unlikely in the reaction time data used in the tutorial – if it is the case that this tutorial is meant for broader data types in psychology, left censoring would certainly be relevant to many other use cases.
 
-
-Response: We introduce various types of censoring in section A of the Supplemental Material.
+Response: We discuss various types of censoring (right, left, random informative, random uninformative) in section A of the Supplemental Material.
 
 > Section 4.1.2 was a clearer data description than had been presented up until that point in the tutorial. Again, it is suggested that the manuscript/tutorial could be dramatically reduced in length if information was more concisely but descriptively written in a single place (e.g., data descriptions).
 
@@ -598,46 +572,51 @@ Response: We provide the information on data descriptions in a single place in t
 
 > Suggest to be more precise with the language on pg. 21 (line 355) – which data are nested within participants? The trial data? The binned data?
 
-Response: TODO.
+Response: We specify "person-trial data" in the revised ms.
+
 
 > pg. 22 (line 358) the way that censoring is described here is confusing.
 
-Response: TODO. We agree and adjusted the description.
+Response: We agree and adjusted the description (see pages 10-11 of the revised ms.).
 
 > pg. 22 discusses warning messages and lets readers know these can be ignored but does not give details as to why. Since this is a didactic tutorial, it may be helpful to have at least some explanation as to why the warning can be ignored.
 
 Response: On line 362 it was stated that "the warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored".
 
-We removed these messages from the paper and mention them now only in the tutorial itself.
+We now removed these messages from the paper and mention them now only in the tutorial itself.
 
 
 > pg. 22 – since this is a tutorial, it might also be helpful to unpack in more detail the section about identifying individuals who may be guessing etc – especially since these are very important considerations.
 
-Response: TODO.
+Response: We know of no more detail to report.
 
 > section 4.3.1 – (line 451) it would be helpful if more details is given on how to set the analysis time window. What counts as “enough data”? Given that this is a tutorial, these types of detail are critical for readers to be able to implement the method in their own work
 
-Response: TODO.
+Response: We changed this sentence into: "... because the first few bins
+typically contain no responses, one has to select an analysis time window, i.e., a contiguous set of bins for which there is data for each participant." on page 24 of the revised ms.
 
 > section 4.3.1 (line 453) – more detail is needed on the cloglog link function and how it differs from the more commonly known about logit link.
 
-Response: A comparison between the cloglog and logit link functions is provided in section C of the Supplemental Material.
+Response: A visual comparison between the cloglog and logit link functions is provided in section C of the Supplemental Material.
 
 > section 4.3.1 (line 456) – what goes into the decision about whether to treat time as a categorical or continuous predictor?
 
-Response: TODO.
+Response: We added the following information on page 24 of the revised ms.:
+"Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see also section E of the Supplemental Material). For example, when you want to know if cloglog-hazard is changing linearly or quadracticly over time, you should treat TIME as a continuous predictor.
+When you are only interested in the effect of covariates on hazard, you can treat TIME as a categorical predictor (i.e., fit an intercept for each bin), in which case you can choose between reference coding and index coding."
 
 > section 4.3.3. – it might be helpful to give a brief indicator up front to readers about the rationale/purpose of fitting both M0i and M1i, especially given that no interpretation is given for M0i. Similarly, it would be helpful to give a bit more detail on the purpose of the comparison of M0i and M1i (given that this is a didactic tutorial).
 
-Response: TODO.
+Response: We mention now that model M0i is a baseline or reference model, to be compared with model M01 (see page 26 of the revised ms.).
 
 > section 4.3.6. – same thing here – since this is a tutorial, at least brief details on what the purpose of this section is would be helpful. It might also be helpful here to define what is meant by credible interval so that more novice readers don’t confuse it with a confidence interval.
 
-Response: TODO.
+Response: We added the purpose ("To make causal inferences...") and define a credible interval on page 29 of the revised ms.
+
 
 > The term SOA is used on pg. 34, but had never previously been defined or described.
 
-Response: Stimulus-onset-asynchrony (SOA) is a well-known concept in experimental psychology.
+Response: Stimulus-onset-asynchrony (SOA) is a well-known concept in experimental psychology. We now only use the term SOA in the Supplemental Material.
 
 
 > The text on pg. 35 (lines 567-574) seems too in-depth for a tutorial
@@ -662,14 +641,13 @@ Response: We shortened the discussion section.
 > is ‘how long’ a component of survival analysis – or is it more accurate to say ‘whether and when psychological states occur’?
 
 Response: It is more accurate to say ‘whether and when’ psychological states occur. However, based on those results, we can deduce information about how long a psychological state lasts within a trial.
-
 Nevertheless, we replaced this with "how effects evolve with increasing waiting time".
 
 
 
 > pg. 47 (lines 753-761) – I had a difficult time understanding this section
 
-Response: TODO.
+Response: We rewrote this section.
 
 > section 5.5 – unclear that the multi-state model is actually an example where a multi-state model would be relevant… (the conceptual example given seems like it would be more linked to either a hidden Markov model or recurring event survival model)
 
