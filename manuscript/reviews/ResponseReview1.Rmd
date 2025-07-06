@@ -172,7 +172,7 @@ on (a) the length of the observation period in each trial, (b) the rarity of eve
 shape of the hazard function. Finding an appropriate bin width in a given user case before
 fitting models will require testing a number of options, when calculating and plotting the
 descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is
-supported by the amount of data available. Based on our experience, a bin width of 40 ms
+supported by the amount of data available. Based on our experience, a bin width of 50 ms
 is a good starting value when the number of repeated measures is 100 or less. Too small
 bin widths will result in erratic hazard functions as many bins will have no events, and
 thus hazard estimates of zero. Interestingly, the time bins do not need to have the same
@@ -427,7 +427,7 @@ Response: Although SAT is rather standard in cognitive experimental psychology, 
 
 Response: We now discuss general research questions on page 10 of the revised ms.
 
-We did not add more information about possible research questions in each section of Tutorial 2a, because we feel that (a) research questions are highly dependent on the field of study (perception, behavioral control, memory), (b) this would make the tutorial even longer, and (c) the knowledge of experimental psychologists on regression modeling should be large enough for them to link the model structure to possible research questions, once they have read the paper and worked through the code examples.
+We did not add more information about possible research questions in each section of Tutorial 2a, because we feel that (a) research questions are highly dependent on the field of study (perception, behavioral control, memory), (b) this would make the tutorial even longer, and (c) we mention in the paper that we do not discuss **why** you might perform EHA. In other words, we think that the knowledge of experimental psychologists on regression modeling should be large enough for them to link the model structure to possible research questions, once they have read the paper and worked through the code examples.
 
 
 > There are several opportunities to describe the method more precisely. For example, the discrete time hazard function gives a ‘conditional’ probability (pg. 9). 
