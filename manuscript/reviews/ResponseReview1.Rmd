@@ -317,7 +317,7 @@ Response: We added data visualizations in section A of the Supplemental Material
 
 > 9. Figure 4: Why is there no bin 40?
 
-Response:TODO.  To improve the Figure (figure number 2 in the revised ms.). However, we added bin 40 in the revised ms.
+Response: Because no responses occurred in the first bin with endpoint 40 ms. However, we added this bin in Figure 2 (previously 4) of the revised ms.
 
 > 10. Line 423: The phrase “early responses” is confusing as it implies temporal
 ordering of the responses (i.e., early vs. late trials). I’d suggest using “fast
@@ -334,7 +334,7 @@ Response: Index coding is not used a lot in experimental psychology so we includ
 > 12. Figure 6: I only see one width of credible interval for each line on this plot—
 please clarify if you are plotting 80% or 95% credible intervals.
 
-Response: TODO -> correction needed.
+Response: We corrected this (Figure 4 in the revised ms.).
 
 > 13. Line 536: To me, “subject-specific” and “marginal” mean the opposite things.
 That is, subject-specific is an effect that is conditional on an individual while a
@@ -379,7 +379,7 @@ Response: We discuss the main contributions above and beyond existing works on p
 > <b>Code for the tutorials:</b> I went to the github page and found a folder for each of the 4 tutorials, which included sub-folders for data, figures, and tables. It took a minute for me to realize that the actual R code for each tutorial was in the main folder, not within each sub-folder. This may also be confusing to readers. Additionally, each of the 4 tutorials, along with their sub-tutorials are provided in separate .Rmd files. There were several download steps needed to get all the information. To me, this made the user experience tedious, and made the tutorials seem disjointed from one another. The authors might consider a more comprehensive single Rmd file that is neatly organized with an interactive table of contents (in the knitted html file). To me, this would make the experience much more enjoyable and useful for readers. Given that this is a tutorial, it would also be nice if the the RMarkdowns were somewhat more standalone e.g., by including a brief description of what a life table is and how to interpret the plot.
 
 Response: We explain the location of the files and the folder structure in the README file. In addition we make it clear that a single download step is possible by either cloning the project, or downloading the ZIP file.
-We also included a brief description of a life table and how to interpret the plot in the R Markdown tutorial files.
+We also included a brief description of a life table and the definitions of the discrete-time functions in the R Markdown file called Tutorial_1a.Rmd.
 At this point, we also prefer a modular approach to the tutorials rather than combining them. 
 We appreciate that not everyone might share this preference, but we think there are many benefits to a modular workflow in this instance.
 
@@ -514,7 +514,7 @@ Response: We removed the numbered list in the revised ms.
 
 > In section 2.3, suggest to lead with the data and research questions of interest and then show how features of survival analysis make it a good method to examine the research questions. I also felt that up until now, the tutorial has been very confusing and hard to follow. It could be that starting the tutorial at section 2.3 (with a few extra details filled in), may be an alternative.
 
-Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses  on the comparison between analysing means vs. distributional shapes. We also discuss research questions on page 10 of the revised ms.
+Response: Section 2.3 has been rewritten. The new Figure 1 in the tutorial directly focuses  on the comparison between analysing means vs. distributional shapes. We also discuss general research questions on page 10 of the revised ms.
 
 > Again, section 2.3.1 (the majority of pg. 12) was unclear and difficult to follow for someone who already has knowledge of survival analysis, but not much familiarity with cognitive process/reaction time data.
 
@@ -533,7 +533,7 @@ Response: Section 3 has been removed.
 > Section 3.2 – it would be helpful if there was clarification in the text on when it would not be possible to include varying intercepts and slopes (i.e., at least clarifying that random intercepts are a requirement, but sometimes random slopes are removed based on model convergence issues – however, this also begs the question of whether a model should even be presented if it does not converge when it includes random slopes…)
 
 
-Response: We do not discuss frequentist approaches in the main text anymore (to save space) and only mention that the reader can consult Tutorials 3a and 3b. We agree that a model should not be presented if it does not converge when it includes random slopes. However, to save space, and because this is an active area of reserch, we do not attempt to clarify when it would not be possible to include varying intercepts and slopes.
+Response: We do not discuss frequentist approaches in the main text anymore (to save space) and only mention that the reader can consult Tutorials 3a and 3b. We agree that a model should not be presented if it does not converge when it includes random slopes. However, to save space, and because this is an active area of reserch, we do not attempt to clarify when it would not be possible to include varying intercepts and/or slopes.
 
 > Additionally in section 3.2, the text on pg. 16 is vague and does not give much detail to readers.
 
@@ -582,13 +582,12 @@ Response: We agree and adjusted the description (see pages 10-11 of the revised 
 > pg. 22 discusses warning messages and lets readers know these can be ignored but does not give details as to why. Since this is a didactic tutorial, it may be helpful to have at least some explanation as to why the warning can be ignored.
 
 Response: On line 362 it was stated that "the warning messages are generated because some bins have no hazard and ca(t) estimates, and no error bars. They can thus safely be ignored".
-
 We now removed these messages from the paper and mention them now only in the tutorial itself.
 
 
 > pg. 22 – since this is a tutorial, it might also be helpful to unpack in more detail the section about identifying individuals who may be guessing etc – especially since these are very important considerations.
 
-Response: We know of no more detail to report.
+Response: We have no more detail to share on this issue. On page 19 of the revised ms. we now write "In general, it is important to visually inspect the functions first for each participant, in order to identify individuals that may not be following task instructions (e.g., a flat conditional accuracy function at .5 indicates that someone is just guessing), outlying individuals, and/or different groups with qualitatively different behavior.".
 
 > section 4.3.1 – (line 451) it would be helpful if more details is given on how to set the analysis time window. What counts as “enough data”? Given that this is a tutorial, these types of detail are critical for readers to be able to implement the method in their own work
 
