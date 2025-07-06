@@ -155,7 +155,7 @@ occurred in the past, i.e., in one of the prior bins (t-1, t-2, ..., 1).
 In the context of experimental psychology, it is often (but not always), the case that responses can be classified as correct or incorrect.
 In those cases, one can also calculate the conditional accuracy function (Figure 1B bottom).
 The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. 
-The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
+The conditional accuracy function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
 We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT. The definitions of these and other discrete-time functions are given in section B of the Supplemental Material.
 
 ## 2.2 Benefits of event history analysis for research in experimental psychology
@@ -194,7 +194,7 @@ Third, the width of each time bin will need to be determined.
 For instance, in Figure 1B we chose 100 ms in an arbitrary manner.
 In reality, however, bin width will need to be set by considering a number of factors simultaneously.
 The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
-Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, @panisHowCanWe2020 used larger bins towards the end of the observation period, as fewer events occurred there.
+Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 40 ms is a good starting value when the number of repeated measures is 100 or less. Too small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Interestingly, the time bins do not need to have the same width. For example, @panisHowCanWe2020 used larger bins towards the end of the observation period, as fewer events occurred there.
 
 # 3. Tutorials
 
@@ -302,7 +302,7 @@ data_wr <- data_wr %>%
 ```
 \normalsize
 
-Next, we can set up the life tables and plot for each condition the discrete-time hazard function h(t), survivor function S(t), probability mass function P(t), and conditional accuracy function ca(t). To do so using a functional programming approach, one has to nest the data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
+Next, we can set up the life tables and plot for each condition the discrete-time hazard function h(t), survivor function S(t), probability mass function P(t), and conditional accuracy function ca(t). To do so using a functional programming approach, one has to nest the person-trial data within participants using the group_nest() function, and supply a user-defined censoring time and bin width to our custom function "censor()", as follows.
 
 \footnotesize
 ```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
@@ -368,7 +368,7 @@ Furthermore, the estimated conditional accuracy values in bin (240,280] are `r d
 
 However, when the waiting time has increased until *400 ms* after target onset, then the conditional probability of response occurrence in the next 40 ms is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(hazard) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(hazard) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(hazard) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. And when a response does occur in bin (400,440], then the probability that it is correct is estimated to be `r data_final[[7]][[6]] %>% filter(condition=="blank") %>% select(ca) %>% slice(11) %>% pull()`, `r data_final[[7]][[6]] %>% filter(condition=="congruent") %>% select(ca) %>% slice(11) %>% pull()`, and `r data_final[[7]][[6]] %>% filter(condition=="incongruent") %>% select(ca) %>% slice(11) %>% pull()` for the blank, congruent, and incongruent prime conditions, respectively. 
  
-These distributional results suggest that participant 6 is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only slower responses are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. When participants show qualitatively similar distributional patterns, one might consider aggregating their data and plotting the group-average distribution per condition (see Tutorial_1a.Rmd). More generally, these results go against the (often implicit) assumption in research on priming that all observed responses are primed responses to the target stimulus. Instead, the distributional data show that early responses are triggered exclusively by the prime stimulus, while only later responses reflect primed responses to the target stimulus.
+These distributional results suggest that participant 6 is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only slower responses are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. When participants show qualitatively similar distributional patterns, one might consider aggregating their data and plotting the group-average distribution per condition (see Tutorial_1a.Rmd). More generally, these results go against the (often implicit) assumption in research on priming that all observed responses are primed responses to the target stimulus. Instead, the distributional data show that fast responses are triggered exclusively by the prime stimulus, while only the slower responses reflect primed responses to the target stimulus.
   
 At this point, we have calculated and plotted the descriptive statistics for each type of prime stimulus in EHA/SAT. As we will show in later Tutorials, statistical models for hazard and conditional accuracy functions can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for within-subject designs with two independent variables. 
 
@@ -382,8 +382,8 @@ To this end, Tutorial 1b illustrates how to calculate and plot the descriptive s
 
 In this third tutorial, we illustrate how to fit Bayesian multilevel regression models to the RT data of the masked response priming data used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
-In general, when fitting regression models, our lab adopts an estimation approach to multilevel regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2020; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach to specifying varying (or random) effects [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant.
-To make inferences, we use two main approaches. We compare models of different complexity, using information criteria (e.g., WAIC) and cross-validation (e.g., LOO), to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2020]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates. 
+In general, when fitting regression models, our lab adopts an estimation approach to multilevel regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2020; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach by specifying a full varying (or random) effects structure [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant.
+To make inferences, we use two main approaches. We compare models of different complexity using information criteria and cross-validation, to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2020]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates. 
 
 ### 3.3.1 Hazard model considerations 
 
@@ -456,7 +456,7 @@ Estimating model M1i took about 124 minutes.
 
 ### 3.3.5 Compare the models.
 
-We can compare the two models using the Widely Applicable Information Criterion (WAIC) and Leave-One-Out (LOO) cross-validation, and look at model weights for both criteria [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
+There are two popular strategies to evaluate how well models will perform in predicting new data on average: Leave-One-Out (LOO) cross-validation and the Widely Applicable Information Criterion or WAIC [@mcelreathStatisticalRethinkingBayesian2020]. LOO-weights represent the optimal linear combination of models for predictive performance, with higher weights for models with better out-of-sample predictive performance. WAIC-weights represent the relative evidence for each model, with higher weights for models with a better fit while accounting for model complexity [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
 
 ```{r load-models, echo=F, eval=T, echo=F} 
 model_M0i <- readRDS("../Tutorial_2_Bayesian/models/model_M0i.rds") 
@@ -470,16 +470,16 @@ model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
 
 \footnotesize
 ```{r show-weights, echo=T, eval=T}
-model_weights(model_M0i, model_M1i, weights = "loo") %>% round(digits = 2)
-model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 2) 
+model_weights(model_M0i, model_M1i, weights = "loo") %>% round(digits = 2) %>% format(nsmall=2)
+model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 1) %>% format(nsmall=2)
 ```
 \normalsize
 
-Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to the other simpler model. 
+Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M1i, and a weight of 0 to model M0i. 
 
 ### 3.3.6 Evaluating parameter estimates in model M1i
 
-To make inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80% and 95% credible intervals).
+To make causal inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 5, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
 
 (ref:descr-plot5-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i.
 
@@ -511,7 +511,7 @@ The point estimates and quantile intervals can also be reported in a table (see 
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target stimulus-onset-asynchrony of 187 ms)?
 
-If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on Figure 4A. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin (240,280]) (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
+If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 4A. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin (240,280]) (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin (320,360] (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin (360,400] (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin (400,440] (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. 
 
 There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
@@ -524,7 +524,7 @@ Interestingly, all subjects show a tendency in their mean difference (congruent 
 
 ## 3.4 Tutorial 2b: Fitting Bayesian conditional accuracy models
 
-In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regression model to the timed accuracy data from the masked response priming data used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the logit link function, and (c) we change the priors. To keep the tutorial short, we only fit one conditional accuracy model, which was based on model M1i from Tutorial 2a and labelled M1i_ca.
+In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regression model to the timed accuracy data from the masked response priming data used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely). To keep the tutorial short, we only fit one conditional accuracy model, which was based on model M1i from Tutorial 2a and labelled M1i_ca.
 
 To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 8, together with point (median) and interval estimates (80% and 95% credible intervals).
 
