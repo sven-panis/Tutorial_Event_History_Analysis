@@ -247,7 +247,7 @@ There are two ways to deal with a competing-risks situation. One approach is to 
 
 Studying the effect of stimulus-onset-asynchrony (SOA) on mean RT is still a popular approach to study the time course of cognitive processes. For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). However, mean RT conceals the possibe presence of responses triggered by the non-target stimulus (Panis, 2020; Panis \& Schmidt, 2016). For example, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial onset. Also, when RTs are originally recorded relative to target onset, we have to add a constant time to each (here: + 400 ms) in order to include these ``negative'' RTs in the analysis (lower x-axis labels). In general, all RTs must be positive for EHA to work.
 
-Finally, in a bistable perception task (Supplementary Figure 1D), the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, for example, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. Note that we do not analyse recurrent events in this tutorial. More information about recurrent events analysis can be found in Stoolmiller and Snyder (2006) and Mills (2011).
+Finally, in a bistable perception task (Supplementary Figure 1D), the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, for example, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. Note that we do not analyse recurrent events in this tutorial. More information about recurrent events analysis can be found in Stoolmiller and Snyder (2006), Mills (2011), and Lougheed, Benson, Cole, and Ram (2019).
 
 \subsection{B. Definitions of discrete-time hazard, surivor, probability mass, and conditional accuracy functions}\label{b.-definitions-of-discrete-time-hazard-surivor-probability-mass-and-conditional-accuracy-functions}
 
@@ -270,7 +270,7 @@ Because waiting times can only increase, discrete-time EHA focuses on the discre
 
 The discrete-time hazard function of event occurrence gives you for each bin the probability that the event occurs (sometime) in that bin, given that the event has not occurred yet in previous bins. This conditionality in the definition of hazard is what makes the hazard function so diagnostic for studying event occurrence, as an event can physically not occur when it has already occurred before.
 
-While the discrete-time hazard function assesses the unique risk of event occurrence associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the probability that the event occurs afer bin t.
+While the discrete-time hazard function assesses the unique risk of event occurrence associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the probability that the event does not occur before the endpoint of bin t.
 
 The probability mass function cumulates the risk of event occurrence in bin t with the risks of event nonoccurrence in bins 1 to t-1. From equation 3 we find that hazard in bin t is equal to P(t)/S(t-1).
 
@@ -395,6 +395,9 @@ Kelso, J. A. S., Dumas, G., \& Tognoli, E. (2013). Outline of a general theory o
 
 \bibitem[\citeproctext]{ref-kurzAppliedLongitudinalDataAnalysis2023}
 Kurz, A. S. (2023). \emph{Applied longitudinal data analysis in brms and the tidyverse} (version 0.0.3). Retrieved from \url{https://bookdown.org/content/4253/}
+
+\bibitem[\citeproctext]{ref-lougheedMultilevelSurvivalAnalysis2019}
+Lougheed, J. P., Benson, L., Cole, P. M., \& Ram, N. (2019). Multilevel survival analysis: {Studying} the timing of children's recurring behaviors. \emph{Developmental Psychology}, \emph{55}(1), 53--65. \url{https://doi.org/10.1037/dev0000619}
 
 \bibitem[\citeproctext]{ref-luceResponseTimesTheir1991}
 Luce, R. D. (1991). \emph{Response times: Their role in inferring elementary mental organization} (1. issued as paperback). Oxford: Univ. Press.
