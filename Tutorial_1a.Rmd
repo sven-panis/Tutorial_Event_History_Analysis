@@ -16,8 +16,11 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In Tutorial 1a we wrangle raw data from Experiment 1 of Panis and Schmidt (2016), and illustrate how to calculate descriptive statistics. We use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
-To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (i.e., a cutoff time, or timeout). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
+In Tutorial 1a we wrangle raw data from Experiment 1 of Panis and Schmidt (2016), and illustrate how to calculate descriptive statistics (functions of discrete time). We use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
+
+A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t) = P(RT = t | RT >= t), survival probability S(t) = P(Rt > t), probability mass P(t) = P(RT = t), possibly the conditional accuracy ca(t) = P(correct | RT = t), and their estimated standard errors (se).
+
+To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (a cutoff time, or timeout; the response deadline). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
 
 # 1. Load the libraries that we will be using. 
 
@@ -152,7 +155,7 @@ data_final <- data_nested %>%
     # create life tables with ca
     mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%  
     # create plots, and set haz_yaxis to 1, and first_bin_shown to 2
-    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha, 1, 2))  
+    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha, 1, 1))  
     # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
     #            Recommended to set this to 1 when plotting the data of individual subjects.
     # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
@@ -201,7 +204,12 @@ median_tb  <- map(median_rt, ~as_tibble(., rownames = "condition")) %>%
 median_tb
 ```
 
-Save the plots.
+Note that warning messages are generated when plucking a plot, like this:
+"1: Removed 2 rows containing missing values or values outside the scale range".
+These warning messages are generated because some bins have no hazard and ca(t) estimates, and also no error bars. They can thus safely be ignored.
+
+
+Now save the plots.
 
 ```{r save-plots, eval=F}
 # save the plot for each subject
@@ -217,7 +225,7 @@ binsize    <- data_final$censored[[1]] %>%
   pull(bin_width) %>% 
   max(na.rm=T)
 
-# extract the lifetable (column 7 in data_final) for condition 1 (neutral) for subject 6
+# extract the lifetable (column 7 in data_final) for condition 1 (blank) for subject 6
 lifetable_blank_s6 <- data_final[[7]][[6]] %>% 
   filter(condition=="blank") %>% 
   mutate(bin = period*binsize,
