@@ -250,3 +250,68 @@ on line 510 of the response, you say:
 I think it is essential to always provide page, para and/or line numbers for reviewers so that they can easily check things. This same logic should be applied to all of our responses where necessary. Once the page numbers change, it can be a nightmare to find and verufy changes as a reviewer.
 
 -> I agree.
+
+
+# July 7th 2025 #
+
+## repsponse document ##
+
+-page 2. we say:
+>It also visualizes recurrent events and includes the Lougheed and Stoolmiller tutorials.
+
+Do we mean "includes reference to the Lougheed and Stoolmiller tutorials"? If not, it is a little odd to read. 
+
+
+-page 6. we say this, which is a direct quote from the manuscript:
+
+>“... because multilevel generalized linear regression models often do not converge with complex
+random-coefficient structures, we do not discuss them here.”
+
+I also read this in the main text for context. 
+It doesn't make sense as it is written in the main text, so let's move it to supps.
+Instead, in the main text, let's just say this.
+
+> Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework using the R package lme4() (see Tutorial_3a.Rmd and Tutorial_3b.Rmd). 
+
+If we have anything more elaborate to say about model fitting etc., then let's say it in the tutorial/s.
+
+And in the response to the reviewer, let's NOT say "We have no idea why the models did not converge ..."
+Instead, let's say it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure. (We can also say this in the tutorial or supps, as necessary).
+And then can we cite the lme4 tutorial paper or something else to provide a resource for folks to use?
+
+The idea would be that (1) all frequentist stuff is in supps and (2) we provide a reference for others to follow. 
+
+
+-page 16 of the review. Page 28 of the main manuscript.
+
+>To make causal inferences...
+
+Was this language in the original submission? e.g., did we say causal in the original?
+
+If we want to keep this language, can we cite the following textbook (see below)? 
+It has a really nice section on the link between experimental designs and causal inferences. 
+We don't need to say anything else, just insert the reference.
+
+https://experimentology.io/
+
+Frank, M. C., Braginsky, M., Cachia, J., Coles, N. A., Hardwicke, T. E., Hawkins, R. D., Mathur, M. B., & Williams, R. 2025. Experimentology: An Open Science Approach to Experimental Psychology Methods. Stanford University. https://doi.org/10.25936/3JP6-5M50. (Also published by MIT Press, ISBN 978-0-262-55256-1)
+
+BibTex:
+
+@book{experimentology2025,
+  author    = {Frank, Michael C. and Braginsky, Mika and Cachia, Julie and Coles, Nicholas A. and Hardwicke, Tom E. and Hawkins, Robert D. and Mathur, Maya B. and Williams, Rondeline},
+  title     = {{Experimentology: An Open Science Approach to Experimental Psychology Methods}},
+  year      = {2025},
+  publisher = {Stanford University},
+  doi       = {10.25936/3JP6-5M50},
+  note      = {Also published by MIT Press, ISBN 978-0-262-55256-1}
+}
+
+
+## manuscript ##
+
+-page 11. The below sentence:
+
+>First, one can use a response deadline in each trial because EHA deals with right-censored observations.
+
+This still needs explaining/contextualising with an extra sentence or two. It does not stand alone as it is currently written.
