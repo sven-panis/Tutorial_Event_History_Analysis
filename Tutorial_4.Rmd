@@ -151,7 +151,7 @@ quick plot
 
 ```{r quick-summary-plot}
 p3.1 <- ggplot(data_group, aes(x=timebin, y = outcome, colour = prime)) +
-   geom_line(aes(group = prime)) + geom_point() +
+   geom_line(aes(group = prime, linetype = prime)) + geom_point() +
    geom_jitter(data=data_pid, alpha = 0.5, width = 0.1, height = 0) +
    scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
    scale_x_discrete(labels = c(1:6)) +
@@ -564,7 +564,7 @@ event prob
 
 ```{r plot-d1-prob}
 p5.2 <- ggplot(d1_group, aes(x=bin, y = event, colour = condition)) +
-   geom_line(aes(group = condition)) + 
+   geom_line(aes(group = condition, linetype=condition)) + 
    geom_point() +
    geom_jitter(data=d1_pid, alpha = 0.5, width = 0.1, height = 0) +
    scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
@@ -615,7 +615,7 @@ plot outcome using the prime variable to make it comparable to the raw data
 
 ```{r plot-d1-outcome}
 p5.3 <- ggplot(d1_out_group, aes(x = bin, y = outcome, colour = prime)) +
-  geom_line(aes(group = prime)) + 
+  geom_line(aes(group = prime, linetype = prime)) + 
   geom_point() +
   geom_jitter(data=d1_out_pid, alpha=0.5, width = 0.1, height = 0) +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
