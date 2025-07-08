@@ -577,12 +577,16 @@ epreds_grand %>%
 ```{r epred-grand-plot}
  p1 <- ggplot(epreds_grand, aes(x=timebin, y=.epred, 
                           fill=prime, color=prime)) +
-    stat_lineribbon(point_interval="median_qi",.width=c(.8,.95),alpha = 0.5) +
+    stat_lineribbon(aes(linetype=prime),
+                    point_interval="median_qi",
+                    .width=c(.8,.95),
+                    alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), 
+                     breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
-    scale_y_continuous(limits=c(0,.7)) +
+    scale_y_continuous(limits=c(0,.6)) +
     labs(x = "time bin", y = "predicted hazard") 
 
 p1
@@ -596,7 +600,8 @@ tidy_fixed %>%
   
 ggplot(aes(x=timebin, y=haz, 
            fill=condition, color=condition)) +
-    stat_lineribbon(point_interval="median_qi",
+    stat_lineribbon(aes(linetype=condition),
+                    point_interval="median_qi",
                     .width=.95,
                     alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
@@ -631,7 +636,8 @@ epreds_pid %>%
 ```{r epred-pid-plot}
 p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
-    stat_lineribbon(point_interval="median_qi",
+    stat_lineribbon(aes(linetype=prime),
+                    point_interval="median_qi",
                     .width=c(.8,.95),
                     alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
@@ -832,7 +838,8 @@ Plot the contrasts in predicted hazard values.
 ```{r epred-pid-diff-plot}
  p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff, 
                               fill=contrast, color=contrast)) +
-    stat_lineribbon(alpha = 0.4, 
+    stat_lineribbon(aes(linetype=contrast),
+                    alpha = 0.4, 
                     point_interval = "mean_qi",
                     .width=c(.8,.95)) +
     #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
