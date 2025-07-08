@@ -11,7 +11,9 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This file simulates the data used in Figures 1, 2, and 3 of the manuscript and then creates some plots.
+This file simulates the data used in old Figures 1, 2, and 3 of the manuscript and then creates some plots.
+
+Figure 1 of revision 1 can be found in section 13.
 
 # load the libraries that we will be using #
 
@@ -1649,7 +1651,7 @@ ca
 
 ```{r}
 p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
-                         colour = condition)) +
+                         colour = condition, linetype=condition)) +
   geom_line(linewidth = 1) +
   geom_point(size=3) +
   geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
@@ -1675,7 +1677,7 @@ p13.1
 
 ```{r}
 p13.2 <-ggplot(ca, aes(x = bin, y = ca,
-                         colour = condition)) +
+                         colour = condition, linetype=condition)) +
   geom_line(linewidth = 1) +
   geom_point(size=3) +
   geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
