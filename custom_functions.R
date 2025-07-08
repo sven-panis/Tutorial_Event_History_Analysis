@@ -132,30 +132,30 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
   
   # plot the hazard functions
   p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=hazard)) +
-    geom_point(aes(y=hazard), 
-               size=1) + 
+    geom_line(aes(y=hazard), linewidth=1) +
+    geom_point(aes(y=hazard,shape=condition), 
+               size=2.5) + 
     geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
-                   show.legend = F) +
-    scale_color_brewer(palette = "Dark2") +
+                   show.legend = F, linewidth = 0.6) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+  scale_shape_discrete(name ="Condition", solid=T) + 
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,haz_yaxis)) +
     labs(x = "bin endpoints (ms)", 
-         y = "h(t)",
-         color = "Condition") +
+         y = "h(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the survivor functions
   p2 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=survival)) +
-    geom_point(aes(y=survival), 
-               size=1) +
+    geom_line(aes(y=survival), linewidth=1) +
+    geom_point(aes(y=survival,shape=condition), 
+               size=2.5) +
     geom_linerange(aes(ymin=survival-se_surv, ymax=survival+se_surv), 
-                   show.legend = F) +
+                   show.legend = F, linewidth = 0.6) +
     
     # add vertical lines at the median RTs in the plot of the survivor functions using geom_path(). 
     # Make sure you apply the same levels and labels for the factor condition as in Tutorial 1a. 
@@ -166,54 +166,56 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                                labels = c("blank","congruent","incongruent"))),
               data = data_medians, 
               linetype = 3, 
-              show.legend = F) +
-    scale_color_brewer(palette = "Dark2") +
+              show.legend = F,
+              linewidth = 0.8) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+    scale_shape_discrete(name ="Condition", solid=T) + 
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
     labs(x = "bin endpoints (ms)", 
-         y = "S(t)",
-         color = "Condition") +
+         y = "S(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the conditional accuracy functions
   p3 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=ca)) +
-    geom_point(aes(y=ca), 
-               size=1) +
+    geom_line(aes(y=ca), linewidth=1) +
+    geom_point(aes(y=ca, shape=condition), 
+               size=2.5) +
     geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
-                   show.legend = F) +
-    scale_color_brewer(palette = "Dark2") +
+                   show.legend = F, linewidth = 0.6) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+    scale_shape_discrete(name ="Condition", solid=T) + 
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
 
     scale_y_continuous(limits = c(0,1)) +
     labs(x = "bin endpoints (ms)", 
-         y = "ca(t)",
-         color = "Condition") +
+         y = "ca(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
   # plot the probability mass functions
   p4 <-df %>%
     ggplot(aes(x=period, color=condition, group=condition)) +
-    geom_line(aes(y=pmass)) +
-    geom_point(aes(y=pmass), 
-               size=1) +
+    geom_line(aes(y=pmass), linewidth=1) +
+    geom_point(aes(y=pmass, shape=condition), 
+               size=2.5) +
     geom_linerange(aes(ymin=pmass-se_pmass, ymax=pmass+se_pmass), 
-                   show.legend = F) +
-    scale_color_brewer(palette = "Dark2") +
+                   show.legend = F, linewidth = 0.6) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+    scale_shape_discrete(name ="Condition", solid=T) + 
+
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
     labs(x = "bin endpoints (ms)", 
-         y = "P(t)",
-         color = "Condition") +
+         y = "P(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
   
@@ -233,7 +235,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     plot_annotation(title = title) +
     plot_layout(guides = "collect", 
                 axes = "collect_x") & 
-    theme(legend.position = "bottom")
+    theme(legend.position = "top")
  
 }
 

@@ -21,7 +21,7 @@ In Tutorial 1a we wrangle raw data from Experiment 1 of @panisWhatShapingRT2016,
 
 A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t) = P(RT = t | RT >= t), survival probability S(t) = P(Rt > t), probability mass P(t) = P(RT = t), possibly the conditional accuracy ca(t) = P(correct | RT = t), and their estimated standard errors (se).
 
-To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (a cutoff time, or timeout; the response deadline). The goal is to find the optimal bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
+To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (a cutoff time, or timeout; the response deadline if one is used). The goal is to find a good bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
 
 # 1. Load the libraries that we will be using. 
 
