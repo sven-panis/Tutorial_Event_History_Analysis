@@ -11,7 +11,7 @@
 
 <meta name="author" content="sven panis" />
 
-<meta name="date" content="2024-10-18" />
+<meta name="date" content="2025-07-08" />
 
 <title>Tutorial 2b</title>
 
@@ -1487,13 +1487,14 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Tutorial 2b</h1>
 <h4 class="author">sven panis</h4>
-<h4 class="date">2024-10-18</h4>
+<h4 class="date">2025-07-08</h4>
 
 </div>
 
 
 <p>In this Tutorial 2b we fit a Bayesian multilevel model to the
-conditional accuracy data.</p>
+conditional accuracy data, using the input file created in Tutorial
+1a.</p>
 <div id="load-the-libraries-that-we-will-be-using." class="section level1">
 <h1>1. Load the libraries that we will be using.</h1>
 <pre class="r"><code>pkg &lt;- c(&quot;cmdstanr&quot;, &quot;standist&quot;, &quot;tidyverse&quot;, &quot;RColorBrewer&quot;, &quot;patchwork&quot;, 
@@ -1955,7 +1956,7 @@ ggsave(&quot;Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png&quot;, width =
 </div>
 <div id="plot-average-marginal-effects-ames" class="section level2">
 <h2>Plot average marginal effects (AMEs)</h2>
-<p>See Heiss (2021) <a href="https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects" class="uri">https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects</a></p>
+<p>See Heiss (2021).</p>
 <div id="grand-mean-ames" class="section level3">
 <h3>Grand mean AMEs</h3>
 <pre class="r"><code>epreds_grand_diffs &lt;- epreds_grand %&gt;%
@@ -2089,6 +2090,12 @@ p11_theme &lt;- p11 + theme(legend.position = &quot;none&quot;)
 ggsave(&quot;Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png&quot;, width = 10, height = 12, dpi = 800)</code></pre>
 </div>
 </div>
+</div>
+<div id="references." class="section level1">
+<h1>5. References.</h1>
+<p>Heiss, Andrew (2021). “A Guide to Correctly Calculating Posterior
+Predictions and Average Marginal Effects with Multilievel Bayesian
+Models.” November 10, 2021. <a href="https://doi.org/10.59350/wbn93-edb02" class="uri">https://doi.org/10.59350/wbn93-edb02</a>.</p>
 </div>
 
 

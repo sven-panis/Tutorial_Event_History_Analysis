@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2025-07-06" />
+<meta name="date" content="2025-07-08" />
 
 <title>Tutorial 1b</title>
 
@@ -1327,6 +1327,29 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 
 
@@ -1487,16 +1510,15 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Tutorial 1b</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2025-07-06</h4>
+<h4 class="date">2025-07-08</h4>
 
 </div>
 
 
 <p>Tutorial 1b illustrates how to use functional programming to set up
 life tables, and plot the discrete-time hazard, survivor, and
-conditional accuracy functions, for the data of Experiment 1 of Panis
-and Schmidt (2016) when there are TWO independent variables (here: mask
-type and prime type).</p>
+conditional accuracy functions, for the data of Experiment 1 of <span class="citation">Panis and Schmidt (2016)</span> when there are TWO
+independent variables (here: mask type and prime type).</p>
 <div id="load-the-libraries-that-we-will-be-using." class="section level1">
 <h1>1. Load the libraries that we will be using.</h1>
 <pre class="r"><code>pkg &lt;- c(&quot;tidyverse&quot;, &quot;patchwork&quot;)
@@ -1525,7 +1547,8 @@ pd2 &lt;- position_dodge(1)</code></pre>
 </div>
 <div id="read-and-wrangle-data." class="section level1">
 <h1>2. Read and wrangle data.</h1>
-<p>Read in the raw data from Panis and Schmidt (2016).</p>
+<p>Read in the raw data from <span class="citation">Panis and Schmidt
+(2016)</span>. This file can be found on ResearchGate.</p>
 <pre class="r"><code>raw &lt;- read_delim(file=&quot;Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt&quot;, 
                   delim=&quot;\t&quot;,
                   col_names=T) </code></pre>
@@ -1918,6 +1941,18 @@ median_tb %&gt;%
 <pre class="r"><code># save the plot for each subject
 map2(paste0(&quot;Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject&quot;, data_final$pid, &quot;_PanisSchmidt.png&quot;), 
      data_final$plot, ggsave, width = 12, height = 10, dpi = 800)</code></pre>
+</div>
+<div id="references." class="section level1 unnumbered">
+<h1 class="unnumbered">5. References.</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-panisWhatShapingRT2016" class="csl-entry">
+Panis, Sven, and Thomas Schmidt. 2016. <span>“What <span>Is Shaping
+RT</span> and <span>Accuracy Distributions</span>? <span>Active</span>
+and <span>Selective Response Inhibition Causes</span> the <span>Negative
+Compatibility Effect</span>.”</span> <em>Journal of Cognitive
+Neuroscience</em> 28 (11): 1651–71. <a href="https://doi.org/10.1162/jocn_a_00998">https://doi.org/10.1162/jocn_a_00998</a>.
+</div>
+</div>
 </div>
 
 

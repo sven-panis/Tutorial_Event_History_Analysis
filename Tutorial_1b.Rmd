@@ -2,6 +2,7 @@
 title: "Tutorial 1b"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output:
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial 1b illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, for the data of Experiment 1 of Panis and Schmidt (2016) when there are TWO independent variables (here: mask type and prime type).
+Tutorial 1b illustrates how to use functional programming to set up life tables, and plot the discrete-time hazard, survivor, and conditional accuracy functions, for the data of Experiment 1 of @panisWhatShapingRT2016 when there are TWO independent variables (here: mask type and prime type).
 
 # 1. Load the libraries that we will be using. 
 
@@ -42,7 +43,7 @@ pd2 <- position_dodge(1)
 
 # 2. Read and wrangle data.
 
-Read in the raw data from Panis and Schmidt (2016).
+Read in the raw data from @panisWhatShapingRT2016. This file can be found on ResearchGate.
 
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", 
@@ -188,3 +189,5 @@ Save the plots.
 map2(paste0("Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject", data_final$pid, "_PanisSchmidt.png"), 
      data_final$plot, ggsave, width = 12, height = 10, dpi = 800)
 ```
+
+# 5. References.

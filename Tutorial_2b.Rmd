@@ -1,7 +1,8 @@
 ---
 title: "Tutorial 2b"
 author: "sven panis"
-date: "2024-10-18"
+date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output: 
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accuracy data.
+In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accuracy data, using the input file created in Tutorial 1a.
 
 # 1. Load the libraries that we will be using.
 
@@ -310,7 +311,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png", width = 10, heigh
 
 ## Plot average marginal effects (AMEs)
 
-See Heiss (2021) https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects
+See Heiss (2021).
 
 ### Grand mean AMEs
 
@@ -428,3 +429,8 @@ Save combined plot.
 # save combined plot
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 10, height = 12, dpi = 800)
 ```
+
+# 5. References.
+
+Heiss, Andrew (2021). “A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel Bayesian Models.” November 10, 2021. https://doi.org/10.59350/wbn93-edb02.
+

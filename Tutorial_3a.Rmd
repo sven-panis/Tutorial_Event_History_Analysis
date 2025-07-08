@@ -2,6 +2,7 @@
 title: "Tutorial 3a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output:
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In Tutorial 3a we build a Frequentist hazard regression model for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent). Note that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure.
+In Tutorial 3a we build a Frequentist hazard regression model for the first experiment of @panisWhatShapingRT2016 using only the no-mask trials (prime = blank, congruent, or incongruent). Note that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure [@eager2017mixedeffectsmodelsterrible].
 
 # 1. Load the libraries that we will be using
 
@@ -168,3 +169,4 @@ p1
 ggsave("Tutorial_3_Frequentist/Comparison.png", height=4, width=10,dpi=800)
 ```
 
+# 5. References

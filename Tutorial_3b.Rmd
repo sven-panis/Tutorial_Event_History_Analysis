@@ -1,7 +1,8 @@
 ---
 title: "Tutorial 3b"
 author: "sven panis"
-date: "2024-10-18"
+date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output:
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of Panis and Schmidt (2016) using only the no-mask trials (prime = blank, congruent, or incongruent). Note that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure.
+In this tutorial 3b we fit a Frequentist regression model to conditional accuracies, for the first experiment of @panisWhatShapingRT2016 using only the no-mask trials (prime = blank, congruent, or incongruent). Note that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure [@eager2017mixedeffectsmodelsterrible].
 
 # 1. Load the libraries that we will be using.
 
@@ -165,4 +166,5 @@ p1
 ggsave("Tutorial_3_Frequentist/Comparison_ca.png", height=4, width=10,dpi=800)
 ```
 
+# 5. References.
 

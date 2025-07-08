@@ -2,6 +2,7 @@
 title: "Tutorial 1a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output:
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In Tutorial 1a we wrangle raw data from Experiment 1 of Panis and Schmidt (2016), and illustrate how to calculate descriptive statistics (functions of discrete time). We use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
+In Tutorial 1a we wrangle raw data from Experiment 1 of @panisWhatShapingRT2016, and illustrate how to calculate descriptive statistics (functions of discrete time). We use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
 
 A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t) = P(RT = t | RT >= t), survival probability S(t) = P(Rt > t), probability mass P(t) = P(RT = t), possibly the conditional accuracy ca(t) = P(correct | RT = t), and their estimated standard errors (se).
 
@@ -46,7 +47,7 @@ pd2 <- position_dodge(1)
 
 # 2. Read and wrangle data.
 
-Read in the raw data file from Panis and Schmidt (2016) - can be skipped.
+Read in the raw data file from @panisWhatShapingRT2016 - can be skipped. This file can be found on ResearchGate.
 
 ```{r read-raw-data}
 raw <- read_delim(file="Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt", 
@@ -285,7 +286,7 @@ input_modeling_ca <- data_final %>%
 write_csv(input_modeling_ca,   file="Tutorial_1_descriptive_stats/data/inputfile_ca_modeling.csv")
 ```
 
-# 5. Optional: set up life tables and make plots for data aggregated across participants 
+# 5. Optional: set up life tables and make one plot for data aggregated across participants 
 
 Note: This is only recommended when all subjects show the same qualitative patterns.
 
@@ -316,7 +317,7 @@ data_agg_final <- data_agg_nested %>%
   # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
   #.           you can set first_bin_shown to another value, such as 3 (i.e., do not show the 
   #            first3 bins in the plots).
-  # aggregated_data: For a dataset with data aggregated across individuals, set to TRUE. 
+  # aggregated_data: When plotting data aggregated across individuals, set to TRUE. 
   #            This only controls the title of the plots.
   # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.
 ```
@@ -325,3 +326,5 @@ data_agg_final <- data_agg_nested %>%
 # view plot
 pluck(data_agg_final, 8, 1)
 ```
+
+# 6. References.

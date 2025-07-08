@@ -2,6 +2,7 @@
 title: "Tutorial 2a"
 author: "Sven Panis"
 date: "`r Sys.Date()`"
+bibliography: "refs_tutorials.bib"
 output: 
   html_document:
     toc: true
@@ -16,7 +17,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data (section 3). The data are taken from the first experiment of Panis and Schmidt (2016), but using only the no-mask trials (with factor prime = blank, congruent, or incongruent). We performed some prior predictive checks to determine the prior distributions we will employ (section 8). We compare models using WAIC and LOO (section 4), and interpret parameter estimates for one model (section 5). 
+Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data (section 3). The data are taken from the first experiment of @panisWhatShapingRT2016, but using only the no-mask trials (with factor prime = blank, congruent, or incongruent). We performed some prior predictive checks to determine the prior distributions we will employ (section 8). We compare models using WAIC and LOO (section 4), and interpret parameter estimates for one model (section 5). 
 We also plot the logit and cloglog link functions (section 6), and illustrate how various prior distributions for an intercept on the logit and cloglog scales look on the original probability (i.e., hazard) scale (section 7). 
 
 # 1. Load the libraries that we will be using.
@@ -433,7 +434,7 @@ Third, one can use dummy coding for prime type (variable "condition" in ptb_data
 
 # 4. Compare models using loo and waic.
 
-The predictive accuracy of a set of models can be compared using WAIC and LOO.
+The predictive accuracy of a set of models can be compared using WAIC and LOO [@mcelreathStatisticalRethinkingBayesian2018; @kurzStatisticalRethinkingSecondEd2023].
 
 ```{r load-models}
 model_M0i <- readRDS("Tutorial_2_Bayesian/models/model_M0i.rds")
@@ -461,9 +462,9 @@ loo_compare(model_M0i, model_M0d, model_M0c, model_M1i, model_M1d, criterion = "
 ```
 
 ```{r model-weights}
-model_weights(model_M0i, model_M0d, model_M0c, model_M1i, model_M1d, weights = "loo") %>% round(digits = 3)
+model_weights(model_M0i, model_M0d, model_M0c, model_M1i, model_M1d, weights = "loo") %>% round(digits = 3) %>% format(nsmall=2)
 
-model_weights(model_M0i, model_M0d, model_M0c, model_M1i, model_M1d, weights = "waic") %>% round(digits = 3)
+model_weights(model_M0i, model_M0d, model_M0c, model_M1i, model_M1d, weights = "waic") %>% round(digits = 3) %>% format(nsmall=2)
 ```
 
 # 5. Model inference for model M1i.
@@ -548,7 +549,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_postdistr.png", width = 10, height = 8, 
 
 ## Expected value of the posterior predictive distribution
 
-Following Heiss (2021) -https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects-, we can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the "average" participant at the population level, and for each participant in the data set.
+Following Heiss (2021), we can plot the expected value of the posterior predictive distribution -- the predicted hazard values -- for the "average" participant at the population level, and for each participant in the data set.
 
 First, at the population level, using add_epred_draws().
 
@@ -669,7 +670,7 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_pred_combined.png", width = 10, height =
 
 ### Grand AMEs
 
-Following Heiss (2021) - https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects -, we are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
+Following Heiss (2021), we are actually interested in the difference in predicted hazard between congruent and blank primes on the one hand, and between incongruent and blank primes on the other hand, for each time bin. When based on the grand mean, this is known as the grand average marginal effect (AME).
 
 ```{r epred-grand-diff}
 epreds_grand_diffs <- epreds_grand %>%
@@ -947,7 +948,7 @@ ggsave("Tutorial_2_Bayesian/figures/linkfunctions.png", width = 8, height = 8, d
 
 # 7. Visualize different prior distributions on the logit and cloglog scales.
 
-To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, Solomon Kurz simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
+To gain a sense of what prior logit values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t model.
 Here we do the same for prior cloglog values: simulate a large number of draws from U(0,1), convert them to the cloglog metric, and fit a skew-normal model (due to the asymmetry of the cloglog link function), to gain a sense of what prior cloglog values would approximate a uniform distribution on the probability (i.e., discrete-time hazard) scale.
 
 ## Simulate, convert, and fit.
@@ -1162,7 +1163,7 @@ ggsave("Tutorial_2_Bayesian/figures/plot_of_priors.png", width=14, height=13,dpi
 
 ## 8.1. Model M0i
 
-Following Gelman et al. (2020), we perform a prior predictive check to see if the binary observations generated from the specified prior distribution(s) reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
+Following @gelmanBayesianWorkflow2020, we perform a prior predictive check to see if the binary observations generated from the specified prior distribution(s) reflects our prior beliefs. First, sample the prior distributions using sample_prior="only".
 
 ```{r M0i-prior, eval=F}
 plan(multicore)
@@ -1616,6 +1617,9 @@ knitr::include_graphics("Tutorial_2_Bayesian/figures/M0c_ppc3.png")
 
 After these prior predictive checks, we can increase the standard deviation for class "sd" to 1 to cover many possible inter-individual differences, and fit model M0c to get the posterior distributions (see section 3).
 
+# 9. References.
+
+Heiss, Andrew (2021). “A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel Bayesian Models.” November 10, 2021. https://doi.org/10.59350/wbn93-edb02.
 
 
 
