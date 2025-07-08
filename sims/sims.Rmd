@@ -1651,24 +1651,31 @@ ca
 
 ```{r}
 p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
-                         colour = condition, linetype=condition)) +
-  geom_line(linewidth = 1) +
+                         colour = condition)) +
+  geom_line(aes(linetype=condition),
+            linewidth = 1) +
   geom_point(size=3) +
-  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), show.legend = F) +
+  geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
+                 show.legend = F) +
   scale_colour_brewer(palette = "Dark2") + 
-  scale_x_continuous(breaks = 1:10, limits = c(1,10),labels = c(1:10)*100) +
+  scale_x_continuous(breaks = 1:10, 
+                     limits = c(1,10),
+                     labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
- # ggtitle("hazard and conditional accuracy functions") +
   xlab("time bin t's endpoint (ms)") +
   ylab("hazard") +
-  theme(axis.text.x = element_text(angle = 90),
-        panel.grid.minor.x = element_blank()) +
+
   annotate("label", x = 1.7, y = .95,
            label = "h(t) = P(RT = t | RT ≥ t)",
            fill = "white",           # White background
            color = "black", 
            size = 7, 
-           hjust = 0)
+           hjust = 0) +
+    theme(axis.text.x = element_text(angle = 90),
+        panel.grid.minor.x = element_blank(),
+        legend.key.size = unit(1.3, 'cm'))
+
+
 p13.1
 
 #ggsave("sims/figures/haz_surv_single.jpeg",
@@ -1677,23 +1684,28 @@ p13.1
 
 ```{r}
 p13.2 <-ggplot(ca, aes(x = bin, y = ca,
-                         colour = condition, linetype=condition)) +
-  geom_line(linewidth = 1) +
+                         colour = condition)) +
+  geom_line(aes(linetype=condition),
+            linewidth = 1) +
   geom_point(size=3) +
-  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), show.legend = F) +
+  geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
+                 show.legend = F) +
   scale_colour_brewer(palette = "Dark2") + 
-  scale_x_continuous(breaks = 1:10, limits=c(1,10),labels = c(1:10)*100) +
+  scale_x_continuous(breaks = 1:10, 
+                     limits=c(1,10),
+                     labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
   xlab("time bin t's endpoint (ms)") +
     ylab("conditional accuracy") +
-   theme(axis.text.x = element_text(angle = 90),
-         panel.grid.minor.x = element_blank()) +
    annotate("label", x = 1.5, y = .25,
            label = "ca(t) = P(correct | RT = t)",
            fill = "white",           # White background
            color = "black", 
            size = 7, 
-           hjust = 0)
+           hjust = 0) +
+    theme(axis.text.x = element_text(angle = 90),
+        panel.grid.minor.x = element_blank(),
+        legend.key.size = unit(1.3, 'cm'))
 
  # ggtitle("conditional accuracy functions") 
 #+ 
