@@ -188,7 +188,7 @@ The upshot is that one general analytical approach, which holds several potentia
 ## 2.3 Implications for research design in experimental psychology
 
 Performing EHA in experimental psychology has implications for how experiments are designed. 
-More specifically, we consider three implications that researchers will need to consider when using discrete-time EHA. First, one can use a response deadline in each trial because EHA deals with right-censored observations.
+More specifically, we consider three implications that researchers will need to consider when using discrete-time EHA. First, because EHA deals with right-censored observations, one can use a fixed response deadline in each trial. This will increase design efficiency as one does not need to wait for very long RTs that would be trimmed anyway.
 
 Second, since the number of trials per condition are spread across bins, it is important to have a relatively large number of trial repetitions per participant and per condition. Accordingly, experimental designs using this approach typically focus on factorial, within-subject designs, in which a large number of observations are made on a relatively small number of participants (so-called small-*N* designs). This approach emphasizes the precision and reproducibility of data patterns at the individual participant level to increase the inferential validity of the design [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018]. Note that because statistical power derives both from the number of participants and from the number of repeated measures per participant and condition, small-*N* designs can still achieve what are generally considered acceptable levels of statistical power, if they have a sufficient amount of data overall [@bakerPowerContoursOptimising2021; @smithSmallBeautifulDefense2018].
 
@@ -573,7 +573,7 @@ Incongruent primes have a negative effect on the conditional accuracy of emitted
 
 <!-- In this sixth tutorial we illustrate how to fit a multilevel regression model to the timed accuracy data in the frequentist framework, for the data used in Tutorial 1a. To be concise, we only fit effects from model M1i_ca (see Tutorial 2b) using the function glmer() from the R package lme4. Alternatively, one could also use the function glmmPQL() from the R package MASS [@ripleyMASSSupportFunctions2024]. The resulting conditional accuracy model, which we labelled M1i_ca_f, did not converge and resulted in a singular fit. Again, this just highlights some of the difficulties in fitting reasonably complex varying/random effects structures in frequentist workflows. -->
 
-Before we move to our Tutorial on planning experiments, we also provide code to fit hazard and conditional accuracy models in the frequentist framework (see Tutorial_3a.Rmd and Tutorial_3b.Rmd). However, because multilevel generalized linear regression models often do not converge with complex random-coefficient structures, we do not discuss them here.
+Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework using the R package lme4() (see Tutorial_3a.Rmd and Tutorial_3b.Rmd). 
 
 ## 3.5 Tutorial 4: Planning
 
