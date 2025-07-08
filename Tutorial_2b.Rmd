@@ -238,7 +238,8 @@ epreds_grand %>%
 ```{r epred-grand-plot}
  p1 <- ggplot(epreds_grand, aes(x=timebin, y=.epred, 
                           fill=prime, color=prime)) +
-    stat_lineribbon(point_interval="median_qi",
+    stat_lineribbon(aes(linetype=prime),
+                    point_interval="median_qi",
                     alpha = 0.5, 
                     .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
@@ -275,7 +276,8 @@ epreds_pid %>%
 ```{r plot-epred-pid}
 p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred, 
                        fill=prime, color=prime)) +
-    stat_lineribbon(point_interval="median_qi",
+    stat_lineribbon(aes(linetype=prime),
+                    point_interval="median_qi",
                     alpha = 0.5, 
                     .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
@@ -394,7 +396,8 @@ epreds_pid_diffs %>%
 ```{r epred-pid-ame-plot}
 p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca, 
                        fill=contrast, color=contrast)) +
-    stat_lineribbon(alpha = 0.5, 
+    stat_lineribbon(aes(linetype=contrast),
+                    alpha = 0.5, 
                     point_interval = "mean_qi",
                     .width=c(.8,.95)) +
     #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
