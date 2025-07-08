@@ -257,10 +257,7 @@ these examples from the main text and directing the reader to the supplement
 instead.
 
 Response: We removed the frequentist examples from the main text and direct the reader to the Tutorials on page 37 of the revised ms.
-
-We mention in Tutorials 3a and 3b that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure.
-
-
+We mention in Tutorials 3a and 3b that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure, and we provide a reference.
 
 > Minor comments:
 > 1. Is “mean-average comparison” standard terminology? This phrase seems
@@ -278,7 +275,7 @@ in black and white. In addition to using different colors, I’d suggest disting
 the conditions using shapes (e.g., circles vs. triangles) and different line type
 (e.g., solid vs. dashed lines).
 
-Response: TODO
+Response: We updated all plots by distinguishing the conditions using different shapes and/or line types, so that they are understandable when viewed in black and white.
 
 > 4. Figure 2 caption:a. Please provide a reference for the statement beginning, “Because the
 survival function…”.
@@ -341,7 +338,7 @@ That is, subject-specific is an effect that is conditional on an individual whil
 “marginal” effect has been marginalized/averaged over individuals. Could you
 please clarify your use of these terms here?
 
-Response: We feel there is no real consensus in the literature about the use of the term marginal. We thus removed this term in the revised ms. But we kept the term in tutorials 2a and 2b where we base our use of the terms on this cited reference: Heiss (2021) - https://www.andrewheiss.com/blog/2021/11/10/ame-bayes-re-guide/#average-marginal-effects.
+Response: We feel there is no real consensus in the literature about the use of the term marginal. We thus removed this term in the revised ms. But we kept the term in tutorials 2a and 2b where we base our use of the terms on this cited reference: Heiss (2021).
 
 > 14. Lines 584-587: Since this is a tutorial paper, I’d suggest including explanations
 for why you make changes (a), (b), and (c).
