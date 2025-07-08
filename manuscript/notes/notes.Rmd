@@ -261,6 +261,9 @@ I think it is essential to always provide page, para and/or line numbers for rev
 
 Do we mean "includes reference to the Lougheed and Stoolmiller tutorials"? If not, it is a little odd to read. 
 
+-> corrected.
+
+
 
 -page 6. we say this, which is a direct quote from the manuscript:
 
@@ -277,9 +280,14 @@ If we have anything more elaborate to say about model fitting etc., then let's s
 
 And in the response to the reviewer, let's NOT say "We have no idea why the models did not converge ..."
 Instead, let's say it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure. (We can also say this in the tutorial or supps, as necessary).
+
+-> Done.
+
 And then can we cite the lme4 tutorial paper or something else to provide a resource for folks to use?
 
 The idea would be that (1) all frequentist stuff is in supps and (2) we provide a reference for others to follow. 
+
+-> TODO add ref
 
 
 -page 16 of the review. Page 28 of the main manuscript.
@@ -307,6 +315,7 @@ BibTex:
   note      = {Also published by MIT Press, ISBN 978-0-262-55256-1}
 }
 
+-> TODO. Add ref...
 
 ## manuscript ##
 
@@ -315,3 +324,5 @@ BibTex:
 >First, one can use a response deadline in each trial because EHA deals with right-censored observations.
 
 This still needs explaining/contextualising with an extra sentence or two. It does not stand alone as it is currently written.
+
+-> Done.
