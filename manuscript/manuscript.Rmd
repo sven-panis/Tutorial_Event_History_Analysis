@@ -481,7 +481,7 @@ Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M
 
 ### 3.3.6 Evaluating parameter estimates in model M1i
 
-To make causal inferences from the parameter estimates in model M1i, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
+To make causal inferences from the parameter estimates in model M1i [@experimentology2025], we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
 
 (ref:descr-plot3-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i.
 

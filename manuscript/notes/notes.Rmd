@@ -287,7 +287,7 @@ And then can we cite the lme4 tutorial paper or something else to provide a reso
 
 The idea would be that (1) all frequentist stuff is in supps and (2) we provide a reference for others to follow. 
 
--> TODO add ref
+-> I added a reference.
 
 
 -page 16 of the review. Page 28 of the main manuscript.
@@ -295,6 +295,10 @@ The idea would be that (1) all frequentist stuff is in supps and (2) we provide 
 >To make causal inferences...
 
 Was this language in the original submission? e.g., did we say causal in the original?
+
+-> No we did not. I changed this to make a distinction between model prediction (for the model comparison section) and model inference.
+
+
 
 If we want to keep this language, can we cite the following textbook (see below)? 
 It has a really nice section on the link between experimental designs and causal inferences. 
@@ -315,7 +319,8 @@ BibTex:
   note      = {Also published by MIT Press, ISBN 978-0-262-55256-1}
 }
 
--> TODO. Add ref...
+-> I added this reference to the ms.
+
 
 ## manuscript ##
 
