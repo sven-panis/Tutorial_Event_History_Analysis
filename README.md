@@ -52,9 +52,9 @@ The branch "revision1" is used by us to work on our first revision, and will lat
   * manuscript.Rmd (papaja Template)
   * manuscript.pdf
   * manuscript.tex
-  * r-references.bib
-  * extrareferences.bib (non-Zotero)
-  * extrareferences2.bib
+  * r-references.bib (BibTex entries for R and packages)
+  * extrareferences.bib (manually selected BibTeX entries)
+  * extrareferences2.bib (BibTeX entries created using Zotero)
   * folder Suppl_material
 
 - Folder sims (code for Figures 1, 2, and 3)

@@ -352,17 +352,14 @@ p11 <- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca,
   stat_lineribbon(alpha = 0.5, 
                   point_interval = "mean_qi",
                   .width=c(.8,.95)) +
- # stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95))+
   geom_hline(yintercept = 0, 
              color = "red", 
              lty = 3) +
   scale_y_continuous(limits=c(-1,1)) +
   scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
-  scale_fill_brewer(palette = "Dark2") +
-  scale_color_brewer(palette = "Dark2") +
+  scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")) +
   theme(axis.text.x = element_text(angle=90)) +
   labs(x = "time bin", y = "difference in predicted ca") +
-#  ggtitle("Grand average marginal effect") +
   facet_wrap(~contrast)
 p11
 ```
@@ -449,7 +446,7 @@ p11_theme <- p11 + theme(legend.position = "none")
 ```
 
 ```{r save-fig-revision, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 14, height = 16, dpi = 800)
+ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 14, height = 20, dpi = 800)
 ```
 
 
