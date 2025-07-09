@@ -27,8 +27,8 @@ authornote: |
 abstract: |
   Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve with increasing waiting time. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as its limitations. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
-wordcount         : "10082 (body) + 1764 (references) + 3442 ( body supplemental material) + 393 (refs suppl. mat.)"
-bibliography      : ["extrareferences2.bib", "r-references.bib"]
+wordcount         : "10115 (body) + 1764 (references) + 3442 (body supplemental material) + 393 (refs suppl. mat.)"
+bibliography      : ["extrareferences.bib", "extrareferences2.bib", "r-references.bib"]
 floatsintext      : yes
 linenumbers       : yes
 draft             : no
@@ -71,8 +71,10 @@ pkg3 <- c("lme4", "nlme")
 lapply(pkg3, library, character.only = TRUE)
 
 # R references
- r_refs(file = "r-references.bib") #, append=F) # append=F prevents multiple copies of the same citation/ creates a .bib-reference file
- my_r_citation <- cite_r(file = "r-references.bib", footnote = FALSE)
+ r_refs(file = "r-references.bib") # creates a .bib-reference file
+ 
+ my_r_citation <- cite_r(file = "r-references.bib", footnote = TRUE) # use in main text to cite R 
+ 
 ```
 
 ```{r analysis-preferences}
@@ -93,9 +95,9 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology [@bolgerCausalProcessesPsychology2019]. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach known as event history analysis (EHA) offers the possibility to reveal the time course of psychological states (Figure 1B). For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhatShapingRT2016].
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhatShapingRT2016].
 
-(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is [0,100], the last bin is [900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
+(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
 
 ```{r plot1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../sims/figures/Fig1_revision1.jpeg")
@@ -370,8 +372,6 @@ So far in this paper, we have used a simple experimental design, which involved 
 
 To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of @panisWhatShapingRT2016, which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply refer the reader to Tutorial_1b.Rmd. 
 
-<!--present the sample-based functions for each participant as part of Tutorial_1b.Rmd for those that are interested.-->
-
 ## 3.3 Tutorial 2a: Fitting Bayesian hazard models to interval-censored RT data
 
 In this third tutorial, we illustrate how to fit Bayesian multilevel regression models to the RT data of the masked response priming data used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
@@ -477,8 +477,7 @@ To make causal inferences from the parameter estimates in model M1i [@experiment
 
 (ref:descr-plot3-caption) Discrete-time hazard modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i. (B) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level.
 
-```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.width='90%'}
-#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
+```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.height='87%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_hazard.png")
 ```
 
@@ -499,17 +498,16 @@ In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regressi
 
 To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 4A, together with point (median) and interval estimates (80% and 95% credible intervals).
 
-(ref:descr-plot6-caption) Conditional accuracy modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level. ca = conditional accuracy.
+(ref:descr-plot6-caption) Conditional accuracy modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy (ca) estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level.
 
-```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='90%'}
-#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
+```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.height='87%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_ca.png")
 ```
 
 Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 4B). As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 4C). Based on Figure 4C we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], (280,320], and (320,360], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 4C). 
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first three time bins, relative to blank primes.
 
-Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework using the R package lme4() (see Tutorial_3a.Rmd and Tutorial_3b.Rmd). 
+Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework in Tutorial_3a.Rmd and Tutorial_3b.Rmd, using the R package lme4() [@R-lme4]. 
 
 ## 3.5 Tutorial 4: Planning
 

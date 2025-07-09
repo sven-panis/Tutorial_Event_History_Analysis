@@ -341,7 +341,14 @@ This still needs explaining/contextualising with an extra sentence or two. It do
 
 write out EHA/SAT in full. At this stage, these terms have not been defined, so using abbreviations is meaningless. Or just remove the labels completely and say " ... versus a distributional analysis". 
 
+-> EHA/SAT has been removed.
+
+
 the brackets are wrong in the Figure 1 legend. (0,100]. This should be [0,100], right? This happens twice.
+
+-> No this was correct. I changed it again.
+
+
 
 - page 6. first para. EHA is not defined in the main text yet, but we use the abbreviation. We cannot do this. And int he response, don't we say that we are not doing this? This becomes very confusing and incoherent. We have to define any abbreviations we use at their first instance in the main text.
 
@@ -351,18 +358,56 @@ One option would be to add a line on page 3 para 2, like this:
 
 If not here, we need it somewhere else. This is really basic and needs to done consistently.
 
+
+-> Because previous reviewers saw SAT as a separate analysis than EHA, I am reluctant to say "Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach known as event history analysis (EHA)
+offers the possibility to reveal the time course of psychological states (Figure 1B)" as this implies that Figure 1B is an EHA.
+Instead, I added this sentence: "Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis."
+
+
+
+
+
+
 - page 13. tutorials. I would get rid of all of the package references to ease the flow of reading. Can they go in supplementary materials? Or somewhere else? At the moment, it isn't working with them piled into a massive paragraph.
+
+-> I put them back in a footnote. I like it this way. Let me know if you want them in an extra section in the Suppl. Material...
+
+
 
 - page 19. delete the sentence below, as we already say that earlier in the manuscript:
 
 >Too small bin widths...
 
+-> I cannot find this sentence...??
+
+
+
 - Figure 3. Can you make the figure longer? It looks squashed and is hard to see/understand. If it takes up the whole page and the legend goes off the page, then that's ok. Same goes for Figure 4 also. 
+
+-> Done. When the figure gets too large the caption goes off the page without appearing on the next page... I have to see how this can be solved.
+
 
 - Figures 3 and 4. The colours are wrong in panel C. This is really confusing. We need to set the colours to be consistent. e.g., if congruent is orange on A and B, it should be orange in C. To do so, in the code for panel C, you need to use scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")). ANd then choose the relevant hex codes e.g., https://emilhvitfeldt.github.io/r-color-palettes/discrete/RColorBrewer/Dark2/index.html.
 
 Does this make sense? It is really important. Please check the colour codes are correct.
 
+
+-> I changed the colors.
+
+
 - page 33. para 2. We need to cite Bates et al., 2015 for the lme4 package.
 
+-> Done.
+
+
 - in the manuscript.Rmd file, can we delete all text that we are not keeping? It seems really untidy/annoying to have loads of text commented out. Does this make sense? Just delete it and commit the change. I already deleted some stuff, but there is more to do maybe?
+
+
+->  Done.
+
+
+- Just quickly, one thing I noticed, which seems strange, is that we have 6 reference files (.bib files). Some of them are repeats - is this intentional? It seems very strange and a recipe for confusion and difficulty reproducing our workflow. In some cases, I can see the need - e.g., supps or tutorial refs that are separate. But then why do we have things like extrarefernces and extrareferneces2? I really think we should clean this up, so that we have one reference file per document. If we need a separate r-reference file for the manuscript then that’s fine. 
+Can you explain the need or make them more efficient?
+
+-> I explain their needs in README: extrareferences are manually selected references (not in Zotero); extrareferences2.bib is created by exporting a library from Zotero.
+
