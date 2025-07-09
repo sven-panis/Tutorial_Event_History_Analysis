@@ -449,7 +449,7 @@ p11_theme <- p11 + theme(legend.position = "none")
 ```
 
 ```{r save-fig-revision, eval=F}
-ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 10, height = 22, dpi = 800)
+ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 14, height = 16, dpi = 800)
 ```
 
 

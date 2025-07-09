@@ -288,7 +288,7 @@ As a simple illustration, Figure 1 summarises simulated data for one subject tha
 
 }
 
-\caption{Simulated single-subject data showing mean performance versus distributional (EHA/SAT) analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is (0,100{]}, the last bin is (900,1000{]}. Two hundred trials were simulated in each condition. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus distributional (EHA/SAT) analyses. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is (0,100{]}, the last bin is (900,1000{]}. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
 \end{figure}
 
 Why does this matter for research in psychology? For many psychological questions, the estimation of such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible response to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
@@ -339,7 +339,7 @@ However, continuous forms of EHA require much more data to reliably estimate the
 Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than \textasciitilde200 trials per condition per participant (Panis, Schmidt, et al., 2020).
 Moreover, as indicated by Allison (2010), learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good starting point.
 
-To apply discrete-time EHA, one divides the within-trial time in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10 time bins; Figure 1B).
+To apply discrete-time EHA, one divides the within-trial time in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10; Figure 1B).
 Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial (i.e., repeated measure).
 For example, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
 One then calculates the sample-based estimate of the discrete-time hazard function of event occurrence for each experimental condition (Figure 1B upper panel).
@@ -377,7 +377,7 @@ For example, if the censoring time was 1 second, then some trials result in obse
 The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots).
 
 Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable perception tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material).
-The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (Barack \& Krakauer, 2021).
+The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the RT domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (Barack \& Krakauer, 2021).
 
 \subsection{2.3 Implications for research design in experimental psychology}\label{implications-for-research-design-in-experimental-psychology}
 
@@ -630,7 +630,7 @@ At this point, we have calculated and plotted the descriptive statistics for eac
 
 So far in this paper, we have used a simple experimental design, which involved one condition with three levels. But psychological experiments are often more complex, with crossed factorial designs and/or conditions with more than three levels. The purpose of Tutorial 1b, therefore, is to provide a generalisation of the basic approach, which extends to a more complicated design. We feel that this might be useful for researchers in experimental psychology that typically use crossed factorial designs.
 
-To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply present the sample-based functions for each participant as part of Tutorial\_1b.Rmd for those that are interested.
+To this end, Tutorial 1b illustrates how to calculate and plot the descriptive statistics for the full data set of Experiment 1 of Panis and Schmidt (2016), which includes two independent variables: mask type and prime type. As we use the same functional programming approach as in Tutorial 1a, we simply refer the reader to Tutorial\_1b.Rmd.
 
 \subsection{3.3 Tutorial 2a: Fitting Bayesian hazard models to interval-censored RT data}\label{tutorial-2a-fitting-bayesian-hazard-models-to-interval-censored-rt-data}
 
@@ -641,7 +641,7 @@ To make inferences, we use two main approaches. We compare models of different c
 
 \subsubsection{3.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, because the first few bins typically contain no responses, one has to select an analysis time window, i.e., a contiguous set of bins for which there is data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section D of the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see also section E of the Supplemental Material). For example, when you want to know if cloglog-hazard is changing linearly or quadraticly over time, you should treat TIME as a continuous predictor.
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, because the first few bins often contain no responses, one has to select an analysis time window, i.e., a contiguous set of bins for which there is data for each participant. Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section D of the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see also section E of the Supplemental Material). For example, when you want to know if cloglog-hazard is changing linearly or quadraticly over time, you should treat TIME as a continuous predictor.
 When you are only interested in the effect of covariates on hazard, you can treat TIME as a categorical predictor (i.e., fit an intercept for each bin), in which case you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
@@ -784,7 +784,7 @@ To make inferences from the parameter estimates in model M1i\_ca, we first plot 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.8\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_ca} 
+{\centering \includegraphics[width=0.9\linewidth,height=0.67\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_ca} 
 
 }
 

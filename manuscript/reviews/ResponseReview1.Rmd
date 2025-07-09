@@ -72,7 +72,7 @@ Response: We added these references to the revised ms. on page 6.
 
 > Similarly, it would be helpful to make it clear that this manuscript pertains to estimating single-event occurrences rather than recurring events (which are described in the Lougheed and Stoolmiller tutorials mentioned above)
 
-Response: We added a section in the Supplemental Material (section A in the revised ms.) which explains the types of time-to-event data typically obtained in RT tasks (detection, discrimination, and bistable perception tasks). This section makes it clear that our tutorials pertain only to estimating single-event occurrences. It also visualizes recurrent events and includes references to the Lougheed and Stoolmiller tutorials.
+Response: We explicitly mention this on page 6 of the revised ms. Also, we added a section in the Supplemental Material (section A in the revised ms.) which explains the types of time-to-event data typically obtained in RT tasks (detection, discrimination, and bistable perception tasks). This section makes it clear that our tutorials pertain only to estimating single-event occurrences. It also visualizes recurrent events and includes references to the Lougheed and Stoolmiller tutorials.
 
 
 > Specific comments:
