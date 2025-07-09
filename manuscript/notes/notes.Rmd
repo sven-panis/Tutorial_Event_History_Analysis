@@ -384,7 +384,7 @@ Instead, I added this sentence: "Here we apply a distributional method known as 
 
 - Figure 3. Can you make the figure longer? It looks squashed and is hard to see/understand. If it takes up the whole page and the legend goes off the page, then that's ok. Same goes for Figure 4 also. 
 
--> Done. When the figure gets too large the caption goes off the page without appearing on the next page... I have to see how this can be solved.
+-> Done. When I make the figures even larger then the caption goes off the page without appearing on the next page... I have to see how this can be solved.
 
 
 - Figures 3 and 4. The colours are wrong in panel C. This is really confusing. We need to set the colours to be consistent. e.g., if congruent is orange on A and B, it should be orange in C. To do so, in the code for panel C, you need to use scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")). ANd then choose the relevant hex codes e.g., https://emilhvitfeldt.github.io/r-color-palettes/discrete/RColorBrewer/Dark2/index.html.
