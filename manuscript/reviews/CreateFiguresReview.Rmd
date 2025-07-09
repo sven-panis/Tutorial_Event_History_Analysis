@@ -162,7 +162,7 @@ p4 <- data_cat_B %>%
   ggplot(aes(x=RT, y =trial)) +
   geom_vline(xintercept=max_RT,linetype = 3) +
   geom_vline(xintercept=0) +
-    geom_rect(mapping=aes(xmin=0, xmax=100, ymin=7, ymax=6.8), color="black", alpha=0.5) +
+  geom_rect(mapping=aes(xmin=0, xmax=100, ymin=7, ymax=6.8), color="black", alpha=0.5) +
   geom_segment(data = lines_b,
                aes(x= xstart, xend = xend,
                    y = ystart, yend = yend),
@@ -221,7 +221,7 @@ p7 <- data_percept_A %>%
   ggplot(aes(x=RT, y =trial)) +
   geom_vline(xintercept=0) +
   geom_vline(xintercept=max_RT,linetype = 3) +
-  geom_rect(mapping=aes(xmin=0, xmax=120, ymin=2.8, ymax=2.9), color="black", alpha=0.5) +
+  geom_rect(mapping=aes(xmin=0, xmax=120, ymin=2.84, ymax=2.9), color="black", alpha=0.5) +
   geom_segment(data = lines_a,
                aes(x= xstart, xend = xend,
                    y = ystart, yend = yend),
@@ -247,7 +247,7 @@ p8 <- data_percept_B %>%
   ggplot(aes(x=RT, y =trial)) +
   geom_vline(xintercept=max_RT,linetype = 3) +
   geom_vline(xintercept=0) +
-  geom_rect(mapping=aes(xmin=0, xmax=120, ymin=2.8, ymax=2.9), color="black", alpha=0.5) +
+  geom_rect(mapping=aes(xmin=0, xmax=120, ymin=2.84, ymax=2.9), color="black", alpha=0.5) +
   geom_segment(data = lines_b,
                aes(x= xstart, xend = xend,
                    y = ystart, yend = yend),
