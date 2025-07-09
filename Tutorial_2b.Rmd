@@ -433,6 +433,27 @@ Save combined plot.
 ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 10, height = 12, dpi = 800)
 ```
 
+## Create Figure for revised ms.
+
+```{r fig-revision, eval=F}
+# combine 3 plots
+p11_theme <- p11 + theme(legend.position = "none")
+
+
+(p_tidy_fixed_ca / p1 / p11) +
+    plot_annotation(tag_levels = 'A') +
+   # plot_layout(guides = "collect",
+  #              axes = "collect_x") & 
+    theme(legend.position = "bottom")
+
+```
+
+```{r save-fig-revision, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 10, height = 22, dpi = 800)
+```
+
+
+
 # 5. References.
 
 Heiss, Andrew (2021). “A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel Bayesian Models.” November 10, 2021. https://doi.org/10.59350/wbn93-edb02.

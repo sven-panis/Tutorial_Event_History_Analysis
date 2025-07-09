@@ -876,6 +876,27 @@ Save the combined plot.
 ggsave("Tutorial_2_Bayesian/figures/M1i_ame_combined.png", width = 10, height = 12, dpi = 800)
 ```
 
+## Create Figure for revised ms.
+
+```{r fig-revision, eval=F}
+# combine 3 plots
+p11_theme <- p11 + theme(legend.position = "none")
+
+
+(p_tidy_fixed / p1 / p11) +
+    plot_annotation(tag_levels = 'A') +
+   # plot_layout(guides = "collect",
+  #              axes = "collect_x") & 
+    theme(legend.position = "bottom")
+
+```
+
+```{r save-fig-revision, eval=F}
+ggsave("Tutorial_2_Bayesian/figures/Revision_results_hazard.png", width = 10, height = 22, dpi = 800)
+```
+
+
+
 ## Example conclusions for model M1i.
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
