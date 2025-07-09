@@ -430,7 +430,7 @@ Save combined plot.
 
 ```{r save-combined-ames-ca, eval=F}
 # save combined plot
-ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 10, height = 12, dpi = 800)
+ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 14, height = 12, dpi = 800)
 ```
 
 ## Create Figure for revised ms.

@@ -481,44 +481,49 @@ Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M
 
 ### 3.3.6 Evaluating parameter estimates in model M1i
 
-To make causal inferences from the parameter estimates in model M1i [@experimentology2025], we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
+To make causal inferences from the parameter estimates in model M1i [@experimentology2025], we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3A, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
 
-(ref:descr-plot3-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i.
+(ref:descr-plot3-caption) Discrete-time hazard modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i. (B) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level.
 
-```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
+```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.width='90%'}
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_postdistr.png")
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_hazard.png")
 ```
 
-Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- at the population level (Figure 4A), and for each participant in the data set (Figure 4B).
+Because the parameter estimates are on the cloglog-hazard scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted hazard values -- at the population level (Figure 3B). As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 3C). The point estimates and quantile intervals can also be reported in a table (see Tutorial_2a.Rmd for details).
+
+<!-- , and for each participant in the data set (Figure 4B).-->
 
 
-(ref:descr-plot4-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).
+<!-- (ref:descr-plot4-caption) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).-->
 
 ```{r plot-pred-grand-effects, fig.cap = "(ref:descr-plot4-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_combined.png")
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_pred_combined.png")
 ```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects, both at the population level (Figure 5A) and at the participant level (Figure 5B). 
+<!-- As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 3C).-->
+
+<!-- and at the participant level (Figure 5B). -->
 
 
-(ref:descr-plot5-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level (A), and for each participant (B).
+<!-- (ref:descr-plot5-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level (A), and for each participant (B).-->
 
 ```{r plot-grand-ame-effects, fig.cap = "(ref:descr-plot5-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ame_combined.png")
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ame_combined.png")
 ```
 
-The point estimates and quantile intervals can also be reported in a table (see Tutorial_2a.Rmd for details).
+
 
 #### Example conclusions for M1i
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target stimulus-onset-asynchrony of 187 ms)?
 
-If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 5A. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin (240,280]) (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
+If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 3C. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin (240,280]) (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin (200,240] (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin (320,360] (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin (360,400] (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin (400,440] (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. 
 
-There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
+There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset. Future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formulae that should get you going.
 
-If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 5B. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360]. Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time. Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formulae that should get you going.
+<!--If we want to focus more on inter-individual differences, we can study the subject-specific hazard functions in Figure 5B. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360]. Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time. Therefore,--> 
 
 <!-- Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, @panisWhatShapingRT2016 concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to. To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.-->
 
@@ -526,32 +531,37 @@ If we want to focus more on inter-individual differences, we can study the subje
 
 In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regression model to the timed accuracy data from the masked response priming data used in Tutorial 1a. The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely). To keep the tutorial short, we only fit one conditional accuracy model, which was based on model M1i from Tutorial 2a and labelled M1i_ca.
 
-To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 6, together with point (median) and interval estimates (80% and 95% credible intervals).
+To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 4A, together with point (median) and interval estimates (80% and 95% credible intervals).
 
-(ref:descr-plot6-caption) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. ca = conditional accuracy.
+(ref:descr-plot6-caption) Conditional accuracy modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level. ca = conditional accuracy.
 
 ```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png")
+knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_ca.png")
 ```
 
-Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 7A), and for each participant in the data set (Figure 7B).
+Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 4B). As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 4C). Based on Figure 4C we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], (280,320], and (320,360], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 4C). 
+Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first three time bins, relative to blank primes.
 
-(ref:plot7-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).
+<!--, and for each participant in the data set (Figure 7B).-->
+
+<!-- (ref:plot7-caption) Point (median) and 80/95% credible interval summaries of the conditional accuracy estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level (A), and for each participant (B).-->
 
 ```{r plot-pred-grand-effects-ca, fig.cap = "(ref:plot7-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png")
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_pred_combined.png")
 ```
 
-As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 8A) and for each participant (Figure 8B).
 
-(ref:descr-plot8-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level (A), and for each participant (B).
+
+<!-- and for each participant (Figure 8B).-->
+
+<!-- (ref:descr-plot8-caption) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level (A), and for each participant (B).-->
 
 ```{r plot-ca-grand-ame-effects, fig.cap = "(ref:descr-plot8-caption)", out.width='80%'}
-knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png")
+#knitr::include_graphics("../Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png")
 ```
 
-Based on Figure 8A we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins (200,240], (240,280], (280,320], and (320,360], relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 8A). 
-Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first time bins, relative to the estimates in the baseline condition.
+
 
 <!-- ## 4.5 Tutorial 3a: Fitting Frequentist hazard models -->
 
@@ -606,7 +616,7 @@ We fit an index coding model on a subset of time bins (six time bins in total) a
 event ~ 0 + timebin:prime + (0 + timebin:prime | pid)
 ```
 
-We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 9 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
+We then took parameters from this model and used them to create a single dataset with 200 trials per condition for 10 individual participants. The raw data and the simulated data are plotted in Figure 5 and show quite close correspondence, which is re-assuring. But, this is only one dataset. What we really want to do is simulate many datasets and vary parameters of interest, which is what we turn to in the next section. 
 
 (ref:simdat-plot12-caption) Raw data from @panisWhatShapingRT2016 and simulated data from 10 participants.
 
@@ -622,8 +632,8 @@ We focus on bin 6 only, in terms of varying the effect size, just to make things
 The effect size observed in bin 6 in this subsample of data was a 79% reduction in hazard value from the congruent prime (0.401 hazard value) to the incongruent prime condition (0.085 hazard value). In other words, a hazard ratio of 0.21 (e.g., 0.085/0.401 = 0.21). 
 As a starting point, we chose three effect sizes, which covered a fairly broad range of hazard ratios (0.25, 0.5, 0.75), which correspond to a 75%, 50% and 25% reduction in hazard value as a function of prime condition.
 
-Summary results from Simulation 1 are shown in Figure 10A.
-Figure 10A depicts statistical "power" as calculated by the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). 
+Summary results from Simulation 1 are shown in Figure 6A.
+Figure 6A depicts statistical "power" as calculated by the percentage of lower-bound 95% confidence intervals that exclude zero when the difference between prime condition is calculated (congruent - incongruent). 
 In other words, what fraction of the simulated datasets generated an effect of prime that excludes the criterion mark of zero.
 We are aware that "power" is not part of a Bayesian analytical workflow, but we choose to include it here, as it is familiar to most researchers in experimental psychology.
 
@@ -635,7 +645,7 @@ To probe this space a little further, we decided to run a second simulation, whi
 In Simulation 2, we varied the effect size between a different range of values (0.5, 0.4, 0.3), which correspond to a 50%, 60% and 70% reduction in hazard value as a function of prime condition.
 In addition, we varied the number of participants per experiment between 10, 15, and 20 participants.
 Given that trial count per condition made little difference to power in Simulation 1, we fixed trial count at 200 trials per condition in Simulation 2.
-Summary results from Simulation 2 are shown in Figure 10B.
+Summary results from Simulation 2 are shown in Figure 6B.
 A summary of these power calculations might be as follows (trial count = 200 per condition in all cases):
 
 - For a 70% reduction (0.3 hazard ratio), N=10 would give nearly 100% power.
