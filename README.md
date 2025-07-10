@@ -1,6 +1,7 @@
-# A tutorial on hazard analysis
+# A tutorial on event history analysis
 
-A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time hazard analysis (a.k.a. event history analysis (EHA), survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
+A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time event history analysis (EHA; a.k.a. hazard analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. 
+Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
 
@@ -31,23 +32,57 @@ The branch "revision1" is used by us to work on our first revision, and will lat
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
 4. At this point, you can use the project with the same package versions that were stored in the renv.lock file.
 
-# Important files and folders
+# Organization of files and folders
 
-- Tutorial_1a.Rmd (creating descriptive statistics when there is a single independent variable).
+## files
 
-- Tutorial_1b.Rmd (descriptives for 2 independent variables).
+At the top level, there are several files.
 
-- Tutorial_2a.Rmd (generating inferential statistics : Bayesian discrete-time EHA).
+- There is one R project file:
 
-- Tutorial_2b.Rmd (generating inferential statistics : Bayesian discrete-time conditional accuracy analysis).
+**Tutorial_EHA.Rproj**. 
 
-- Tutorial_3a.Rmd (generating inferential statistics : Frequentist discrete-time EHA).
+- There are several R markdown files (and corresponding html files):
 
-- Tutorial_3b.Rmd (generating inferential statistics : Frequentist discrete-time conditional accuracy analysis).
+**Tutorial_1a.Rmd**. This file is used to create descriptive statistics when there is a single independent variable.
 
-- Tutorial_4.Rmd (Simulating data sets, power and precision)
+**Tutorial_1b.Rmd**. This file is used to create descriptive statistics for 2 independent variables.
 
-- Folder manuscript 
+**Tutorial_2a.Rmd**. This file is used to perform Bayesian discrete-time EHA.
+
+**Tutorial_2b.Rmd**. This file is used to perform Bayesian discrete-time conditional accuracy analysis.
+
+**Tutorial_3a.Rmd**. This file is used to perform Frequentist discrete-time EHA.
+
+**Tutorial_3b.Rmd**. This file is used to perform Frequentist discrete-time conditional accuracy analysis.
+
+**Tutorial_4.Rmd**. This file used to simulating data sets, power and precision.
+
+**install_packages.Rmd**. This file is used to initially install packages. You can use renv instead of this file.
+
+- There is one renv.lock file
+
+**renv.lock**. This plain text file is produced by renv() and records all package versions.
+
+- There is one R file:
+
+**custom_functions.R**. This file contains our custom function (see section C in the supplemental material).
+
+- There is one .bib file:
+
+**refs_tutorials.bib**. This file contains the BibTeX entries used in the tutorials.
+
+
+
+
+## folders ##
+
+There are also folders, with self-explanatory titles: 
+
+**/manuscript/**
+
+This is where the manuscript .Rmd file and .pdf files are stored, along with the .bib files that contain references. 
+For more information on using papaja() for manuscripts, see the [papaja manual](https://frederikaust.com/papaja_man/)
 
   * manuscript.Rmd (papaja Template)
   * manuscript.pdf
@@ -55,29 +90,47 @@ The branch "revision1" is used by us to work on our first revision, and will lat
   * r-references.bib (BibTex entries for R and packages)
   * extrareferences.bib (manually selected BibTeX entries)
   * extrareferences2.bib (BibTeX entries created using Zotero)
-  * folder Suppl_material
 
-- Folder sims (code for Figures 1, 2, and 3)
 
-  * sims.Rmd
-  * folder figures
+The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material.
 
-- Folder Tutorial_1_descriptive_stats
+The /reviews/ subfolder contains the corresponding .Rmd and .pdf files for responding to reviewer's comments.
 
-  * folder data
-  * folder figures
-  * folder tables
+**/sims/**
 
-- Folder Tutorial_2_Bayesian 
+This folder contains the file sims.Rmd used to create Figure 1.
 
-  * folder models
-  * folder figures
-  * folder tables
+The /figures/ subfolder contains Fig1_revision1.jpeg.
 
-- Folder Tutorial_3_Frequentist 
 
-- Folder Tutorial_4_planning
+**/renv/**
 
-  * folder data
-  * folder figures
-  * folder models
+This folder contains the typical renv files.
+
+**/Tutorial_1_descriptive_stats/**
+
+This folder contains three subfolders:
+
+* The /data/ subfolder contains the original data file of Panis and Schmidt (2016), the wrangled data file, the input files for modeling, and an .Rdata file with the descriptive statistics.
+* The /figures/ subfolder contains 12 figures (outputs from Tutorial_1a.Rmd and Tutorial_1b.Rmd)
+* The /tables/ subfolder contains a .csv file used to create Table 3.
+
+**/Tutorial_2_Bayesian/**
+
+This folder contains three subfolders:
+
+* The /models/ subfolder contains the fitted models.
+* The /figures/ subfolder contains various figures (outputs from Tutorial_2a.Rmd and Tutorial_2b.Rmd)
+* The /tables/ subfolder contains various .csv files used to create Tables.
+
+**/Tutorial_3_Frequentist/**
+
+This folder contains two .RData files (frequentist models) and 2 Figures (comparing the Bayesian and Frequentist parameter estimates).
+
+**/Tutorial_4_planning/**
+
+This folder contains three subfolders:
+
+* The /models/ subfolder contains a fitted model.
+* The /figures/ subfolder contains various figures (outputs from Tutorial_4.Rmd) and 2 subfolders (sim1 and sim2) containing figures.
+* The /data/ subfolder contains various .csv files.
