@@ -426,12 +426,25 @@ This is the first contact point that folks have with the project so the layout a
 Take a look at this prior project as an example and try to copy the use of bold and section headings.
 https://github.com/rich-ramsey/knot_dmc
 
+-> I copied the use of bold and section headings.
+
+
+
 - The reference files still need fixing. We can't be having loads of extrareferences files. it just makes no sense computationally. Just have one file called references.bib and combine the extrareferences files into it. Then have a separate file called r-references as you already do. It is easy to do as it is just text.
 
 And is there supposed to be a duplicated r-references file in the root folder and the /manuscript/ folder? If so, why? Can this be cleared up. You make no mention of it in the readme. So it seems very odd.
 
+
+
 - r-references in the footnote is fine.
 
--  Like I said before, the brackets cannot stay like that in Figure 1. It just makes no sense. Instead, just use words and no brackets. e.g., The first bin is for responses up to 100ms (or whatever) and the last bin is for responses between 901 and 1000. Or just do [1,100] and [901,1000], if that's easier.
+-> ok.
+
+-  Like I said before, the brackets cannot stay like that in Figure 1. It just makes no sense. Instead, just use words and no brackets. e.g., The first bin is for responses up to 100ms (or whatever) and the last bin is for responses between 901 and 1000. Or just do ]1,100] and [901,1000], if that's easier.
+
+ 
+-> use words..
 
 - Figures 3 and 4. Ok, so, if it is difficult to get things on one page, then just make them as big as possible. Otherwise, the only other option I can see if splitting the figures into two. Parameter estimates in one figure and posterior preds in another. However, I kind of like them all in one place at the moment, because it directly connects model parameters with predictions and it is efficient in terms of space. WHat do you think? Maybe we just accept the limits of visualisation? Or make the legend text single space, but I'm not sure how easy that is in papaja(), as I've never tried it.
+
+-> I will try to make the legend text single space...

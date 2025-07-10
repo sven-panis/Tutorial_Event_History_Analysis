@@ -71,7 +71,7 @@ pkg3 <- c("lme4", "nlme")
 lapply(pkg3, library, character.only = TRUE)
 
 # R references
- r_refs(file = "r-references.bib") # creates a .bib-reference file
+ #r_refs(file = "r-references.bib") # creates a .bib-reference file
  
  my_r_citation <- cite_r(file = "r-references.bib", footnote = TRUE) # use in main text to cite R 
  
