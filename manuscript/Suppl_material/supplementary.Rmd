@@ -1,7 +1,7 @@
 ---
 title             : no
 shorttitle        : "A tutorial on event history analysis"
-bibliography      : ["extrareferences2.bib"]
+bibliography      : ["refs_suppl_material.bib"]
 floatsintext      : yes
 linenumbers       : yes
 draft             : no
