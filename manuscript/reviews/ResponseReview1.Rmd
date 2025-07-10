@@ -1,7 +1,7 @@
 ---
 title: "Review 1: Author responses"
 author: "Panis & Ramsey"
-date: "07.07.2025"
+date: "`r Sys.Date()`"
 output: 
   pdf_document:
       keep_tex: true
@@ -116,7 +116,7 @@ To make the manuscript more accessible and shorter and to respond to some other 
 
 > Page 11: In my experience, researchers in psychology are generally not familiar with the concept of right censored data. This term is first used on page 11 with no explanation— a brief, even parenthetical, definition would be helpful. For example, the parenthetical definition on page 48 could be provided on page 11.
 
-Response: We introduce the definition of right-censoring on page 10 of the revised ms.
+Response: We introduce the concept of right-censoring on page 11 of the revised ms.
 
 
 > Taken together, this is an excellent manuscript with the potential to further bring survival analysis methods into Psychology, where time-to-event and right-censored cases abound, yet very few people seem to consider these issues.
@@ -217,7 +217,7 @@ censoring—and how it is (not) accounted for in “orthodox” analysis methods
 discrete time-to-event analysis methods would be useful, beyond the already-
 included mention of censoring in Section 5.3.
 
-Response: We introduce the definition of right-censoring on page 10 of the revised ms.
+Response: We introduce the concept of right-censoring on page 11 of the revised ms.
 
 > 4. Section 1.2 is a bit long. Please shorten this section to improve the clarity of the
 text and reduce redundancy. There is also overlap between text in Section 1.2
@@ -256,7 +256,7 @@ strategies that could be used to define a model that will converge or (b) removi
 these examples from the main text and directing the reader to the supplement
 instead.
 
-Response: We removed the frequentist examples from the main text and direct the reader to the Tutorials on page 37 of the revised ms.
+Response: We removed the frequentist examples from the main text and direct the reader to the Tutorials on page 34 of the revised ms.
 We mention in Tutorials 3a and 3b that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure, and we provide a reference.
 
 > Minor comments:
@@ -268,7 +268,7 @@ Response: We removed this term.
 > 2. Figure 1: In the caption, please state what the small error bars in the inset plots
 are showing.
 
-Response: The old Figure 1 has been replaced.
+Response: The old Figure 1 has been replaced, and we state what error bars are showing in the new Figure 1.
 
 > 3. Please consider updating all plots so that they are understandable when viewed
 in black and white. In addition to using different colors, I’d suggest distinguishing
@@ -343,7 +343,7 @@ Response: We feel there is no real consensus in the literature about the use of 
 > 14. Lines 584-587: Since this is a tutorial paper, I’d suggest including explanations
 for why you make changes (a), (b), and (c).
 
-Response: We now write "The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely)." on page 33 of the revised ms. The logit is typically used for logistic regression by experimental psychologists, so we feel that no extra explanation is needed.
+Response: We now write "The general process is similar to Tutorial 2a, except that (a) we use the person-trial data, (b) we use the symmetric logit link function, and (c) we change the priors (our prior belief is that conditional accuracy values between 0 and 1 are equally likely)." on page 32 of the revised ms. The logit is typically used for logistic regression by experimental psychologists, so we feel that no extra explanation is needed.
 
 > 15. Line 659: What is a “fully varying effects structure”? Please define/explain.
 
@@ -370,7 +370,7 @@ Response: Yes, this has been corrected now.
 > Comments to the Author
 This tutorial guides readers through how to wrangle cognitive reaction time data and address research questions pertaining to temporal dynamics of cognition using event history analysis (EHA) and speed/accuracy tradeoff analysis (SAT). Models are illustrated for hazard functions, and conditional accuracy functions. A nice feature of this study is that each model is presented in both the Bayesian and frequentist frameworks. Having both frameworks provides side-by-side comparisons such as when the Bayesian framework might be preferred (e.g., when models do not converge in the Frequentist framework, which is common when modeling multilevel data). The tutorial also includes a section on simulation and power analysis for planning experiments. I believe this tutorial could eventually be a useful contribution to fellow psychological scientists. However, in its current state, it was difficult to follow/ make my way through (despite existing expertise in EHA), and also difficult to understand what the main contributions were above and beyond existing works. Additionally, it was not clear why the discrete time framework was chosen. The temporal granularity of reaction time data seems like it would be better suited for a continuous time framework. Altogether, the tutorial covers important concepts, but it would benefit from greater accuracy and clearer definitions of key terms. Carefully removing redundancies, getting to the tutorial section much quicker (currently not until pg. 17), and being more precise with explanations of technical jargon would enhance its clarity and accuracy.
 
-Response: We discuss the main contributions above and beyond existing works on page 6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 8-9 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 12) and included more precise explanations of technical jargon.
+Response: We discuss the main contributions above and beyond existing works on page 6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 8-9 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 13) and included more precise explanations of technical jargon.
 
 
 > <b>Code for the tutorials:</b> I went to the github page and found a folder for each of the 4 tutorials, which included sub-folders for data, figures, and tables. It took a minute for me to realize that the actual R code for each tutorial was in the main folder, not within each sub-folder. This may also be confusing to readers. Additionally, each of the 4 tutorials, along with their sub-tutorials are provided in separate .Rmd files. There were several download steps needed to get all the information. To me, this made the user experience tedious, and made the tutorials seem disjointed from one another. The authors might consider a more comprehensive single Rmd file that is neatly organized with an interactive table of contents (in the knitted html file). To me, this would make the experience much more enjoyable and useful for readers. Given that this is a tutorial, it would also be nice if the the RMarkdowns were somewhat more standalone e.g., by including a brief description of what a life table is and how to interpret the plot.
@@ -419,7 +419,7 @@ And by placing them in the supplemental material we feel that we strike a nice b
 
 > There are many abbreviations that were difficult to follow. EHA is arguably standard, but SAT (for speed/accuracy trade-off) is less familiar, and may therefore benefit from not being an abbreviation. Similarly referring to hazard function as h(t), conditional accuracy function as c(t) was less clear than just saying hazard function and conditional accuracy function.
 
-Response: Although SAT is rather standard in cognitive experimental psychology, we tried to limit the use of abbreviations in main body of the revised ms.
+Response: Although SAT is rather standard in cognitive experimental psychology, we tried to limit the use of abbreviations in the main body of the revised ms.
 
 > It would be helpful if the research questions that can be addressed by the methods presented are clearly presented in each section. I think that currently they are getting lost in the tutorial.
 
@@ -469,7 +469,7 @@ Response: We decided to keep tutorial 4, as we feel that planning future studies
 
 > Censoring is a key component of survival analysis that is missing from the introduction
 
-Response: We introduce the definition of right-censoring on page 10 of the revised ms.
+Response: We introduce the concept of right-censoring on page 11 of the revised ms.
 
 > It might be useful to indicate early on the distinctions between multilevel data, single events, and recurring events – and that this particular tutorial is only focused on single events.
 
@@ -497,7 +497,7 @@ Response: We think that there is a misunderstanding of what "trial" means. We no
 
 > Section 2.2 (pg. 10, lines 168-169), if describing what ‘statisticians and mathematical psychologists say’, it would be helpful to provide supporting references.
 
-Response: We provide supporting references on pages 9-10 of the revised ms.
+Response: We provide supporting references on page 10 of the revised ms.
 
 > The numbered list on pg. 11 contained jargon statements without explanations. Suggest to simplify and keep the focus on the data you are using and specific research questions you are using survival analysis as a tool to address.
 
@@ -521,7 +521,7 @@ Response: Section 3 has been removed.
 
 > Section 3.2 – it would be helpful if there was clarification in the text on when it would not be possible to include varying intercepts and slopes (i.e., at least clarifying that random intercepts are a requirement, but sometimes random slopes are removed based on model convergence issues – however, this also begs the question of whether a model should even be presented if it does not converge when it includes random slopes…)
 
-Response: We do not discuss frequentist approaches in the main text anymore (to save space) and only mention that the reader can consult Tutorials 3a and 3b. We agree that a model should not be presented if it does not converge when it includes random slopes. However, to save space, and because this is an active area of research, we do not attempt to clarify when it would be possible to include varying intercepts and/or slopes.
+Response: We do not discuss frequentist approaches in the main text anymore (to save space) and only mention that the reader can consult Tutorials 3a and 3b. We agree that a model should not be presented if it does not converge when it includes random slopes. However, to save space, and because this is an active area of research, we do not attempt to clarify when it would be possible to include varying intercepts and/or slopes. We do mention in Tutorials 3a and 3b that it is common for models to fail to converge in lme4 when they have a reasonably complex random effects structure, and we provide a reference.
 
 > Additionally in section 3.2, the text on pg. 16 is vague and does not give much detail to readers.
 
@@ -558,7 +558,7 @@ Response: We provide the information on data descriptions in a single place in t
 
 > Suggest to be more precise with the language on pg. 21 (line 355) – which data are nested within participants? The trial data? The binned data?
 
-Response: We specify "person-trial data" in the revised ms.
+Response: We specify "person-trial data" in the revised ms on page 18.
 
 > pg. 22 (line 358) the way that censoring is described here is confusing.
 
@@ -580,7 +580,7 @@ typically contain no responses, one has to select an analysis time window, i.e.,
 
 > section 4.3.1 (line 453) – more detail is needed on the cloglog link function and how it differs from the more commonly known about logit link.
 
-Response: A visual comparison between the cloglog and logit link functions is provided in section C of the Supplemental Material.
+Response: A visual comparison between the cloglog and logit link functions is provided in section D of the Supplemental Material.
 
 > section 4.3.1 (line 456) – what goes into the decision about whether to treat time as a categorical or continuous predictor?
 
@@ -590,11 +590,11 @@ When you are only interested in the effect of covariates on hazard, you can trea
 
 > section 4.3.3. – it might be helpful to give a brief indicator up front to readers about the rationale/purpose of fitting both M0i and M1i, especially given that no interpretation is given for M0i. Similarly, it would be helpful to give a bit more detail on the purpose of the comparison of M0i and M1i (given that this is a didactic tutorial).
 
-Response: We mention now that model M0i is a baseline or reference model, to be compared with model M01 (see page 26 of the revised ms.). We also mention that we only report 2 models in the paper from a larger set of models that are fitted in the file Tutorial_2a.Rmd.
+Response: We mention now that model M0i is a baseline or reference model, to be compared with model M1i (see page 26 of the revised ms.). We also mention that we only report 2 models in the paper from a larger set of models that are fitted in the file Tutorial_2a.Rmd.
 
 > section 4.3.6. – same thing here – since this is a tutorial, at least brief details on what the purpose of this section is would be helpful. It might also be helpful here to define what is meant by credible interval so that more novice readers don’t confuse it with a confidence interval.
 
-Response: We added the purpose ("To make causal inferences...") and define a credible interval on page 29 of the revised ms.
+Response: We added the purpose ("To make causal inferences...") and define a credible interval on page 28 of the revised ms.
 
 > The term SOA is used on pg. 34, but had never previously been defined or described.
 
@@ -610,7 +610,7 @@ Response: We decided not to include more detail because logistic regression is v
 
 > section 4.7 – as previously mentioned, it is possible that tutorial 4 could be a stand alone tutorial. If it’s not though, more details are needed up front to tell readers what the purpose is and why this is useful.
 
-Response: We decided to keep tutorial 4, and discuss its usefulness on pages 45-46 of the revised ms.
+Response: We decided to keep tutorial 4, and discuss its usefulness on pages 42-43 of the revised ms.
 
 > <b>Discussion section:</b> The Discussion section would benefit from being shortened (AMPPS guidelines indicate discussions should be a brief summary of their contents rather than a general discussion).
 
@@ -632,7 +632,7 @@ Response: We removed section 5.5.
 >  <b>Figures:</b>
 -Figure 1 is difficult to follow. It is unclear how the means are being calculated. For example, it seems like in examples 2 and 3, the means between conditions should be different. I was also confused in example 4 because the difference in probability between the two conditions in time bin 2 seems tiny. I was also confused because it still looked like there was a big difference in probability between the two conditions at bin 5. Was bin 6 by chance what was meant instead of bin 5? It also still looked like there were differences later on such as in bin 7. Example 5 also left me confused. It looked to me like the effect started at bin 4 and ended at bin 8. Clarification (and perhaps simplifying) this figure would be useful.
 
-Response: We created a new Figure 1.
+Response: We created a new, simpler Figure 1.
 
 > The description for figure 2 is unclear, particularly with respect to the contrasting knowledge that can be gained from the survival function and hazard function
 

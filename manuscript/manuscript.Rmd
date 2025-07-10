@@ -107,7 +107,7 @@ Why does this matter for research in psychology? For many psychological question
 
 ## 1.2 Aims 
 
-Our ultimate aim in this paper is twofold. First, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (single event) discrete-time EHA on RT data, as well as a complementary discrete-time speed-accuracy tradeoff (SAT) analysis on timed accuracy data in case of choice RT data (Figure 1B).
+Our ultimate aim in this paper is twofold. First, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (single event) discrete-time EHA on RT data, as well as a complementary discrete-time SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).
 
 Even though EHA is a widely used statistical tool and there already exist many excellent reviews [@singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @blossfeldTechniquesEventHistory2002; @hosmerAppliedSurvivalAnalysis2011; @teachmanAnalyzingSocialProcesses1983; @box-steffensmeierEventHistoryModeling2004; @millsIntroducingSurvivalEvent2011] and tutorials [@allisonSurvivalAnalysisUsing2010; @landesIntroductionEventHistory2020; @elmerModelingCategoricalTimetoevent2023; @lougheedMultilevelSurvivalAnalysis2019; @stoolmillerIntroductionUsingMultivariate2015; @stoolmillerModelingHeterogeneitySocial2006], we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. 
 
@@ -475,7 +475,7 @@ Clearly, both the loo and waic weighting schemes assign a weight of 1 to model M
 
 To make causal inferences from the parameter estimates in model M1i [@experimentology2025], we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 3A, together with point (median) and interval estimates (80% and 95% credible intervals). A credible interval is a range of values that contains a parameter's true value with a specified probability, given the observed data and model.
 
-(ref:descr-plot3-caption) Discrete-time hazard modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i. (B) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin at the population level.
+(ref:descr-plot3-caption) Discrete-time hazard modeling results at the population level. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i. (B) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin.
 
 ```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.height='87%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_hazard.png")
@@ -498,7 +498,7 @@ In this fourth tutorial, we illustrate how to fit a Bayesian multilevel regressi
 
 To make inferences from the parameter estimates in model M1i_ca, we first plot the densities of the draws from the posterior distributions of its population-level parameters in Figure 4A, together with point (median) and interval estimates (80% and 95% credible intervals).
 
-(ref:descr-plot6-caption) Conditional accuracy modeling results. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy (ca) estimates (expected values of the draws from the posterior predictive distributions) in each time bin at the population level. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin at the population level.
+(ref:descr-plot6-caption) Conditional accuracy modeling results at the population level. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy (ca) estimates (expected values of the draws from the posterior predictive distributions) in each time bin. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin.
 
 ```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.height='87%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_ca.png")
