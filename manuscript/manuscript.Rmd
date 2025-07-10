@@ -44,6 +44,8 @@ editor_options:
   chunk_output_type: console
 header-includes:
   - \raggedbottom
+  - \usepackage{setspace}
+  - \captionsetup[figure]{font={stretch=1,scriptsize}}
 ---
 
 ```{r setup, include = FALSE}
@@ -97,7 +99,7 @@ In experimental psychology, it is standard practice to analyse response times (R
 
 As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in hazard is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), hazard is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhatShapingRT2016].
 
-(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is (0,100], the last bin is (900,1000]. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
+(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (t = 1 to 10). Each time bin is a half-open interval; for example, the first bin is the interval (0,100], with 0 excluded and 100 included. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
 
 ```{r plot1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../sims/figures/Fig1_revision1.jpeg")
@@ -477,7 +479,7 @@ To make causal inferences from the parameter estimates in model M1i [@experiment
 
 (ref:descr-plot3-caption) Discrete-time hazard modeling results at the population level. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i. (B) Point (median) and 80/95% credible interval summaries of the hazard estimates (expected values of the draws from the posterior predictive distributions) in each time bin. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in hazard in each time bin.
 
-```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.height='87%', out.width='90%'}
+```{r plot-fixed-effects, fig.cap = "(ref:descr-plot3-caption)", out.height='95%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_hazard.png")
 ```
 
@@ -500,7 +502,7 @@ To make inferences from the parameter estimates in model M1i_ca, we first plot t
 
 (ref:descr-plot6-caption) Conditional accuracy modeling results at the population level. (A) Medians and 80/95% credible intervals of the posterior distributions of the population-level parameters of model M1i_ca. (B) Point (median) and 80/95% credible interval summaries of the conditional accuracy (ca) estimates (expected values of the draws from the posterior predictive distributions) in each time bin. (C) Point (mean) and 80/95% credible interval summaries of estimated differences in conditional accuracy in each time bin.
 
-```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.height='87%', out.width='90%'}
+```{r plot-ca-fixed-effects, fig.cap = "(ref:descr-plot6-caption)", out.height='95%', out.width='90%'}
 knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_ca.png")
 ```
 

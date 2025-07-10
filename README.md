@@ -1,6 +1,6 @@
 # A tutorial on event history analysis
 
-A set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time event history analysis (EHA; a.k.a. hazard analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of choice RT data. 
+This project contains a set of tutorials on how to perform descriptive and inferential (Bayesian and Frequentist) discrete-time event history analysis (EHA; a.k.a. hazard analysis, survial analysis, duration analysis, transition analysis, failure-time analysis) for time-to-event data from psychological experiments, and discrete-time speed-accuracy tradeoff (SAT) analysis in case of discrimination data. 
 Examples of time-to-event data include response times, saccade latencies, fixation durations, and perceptual dominance durations.
 
 # Intended audience
@@ -25,8 +25,6 @@ If you want to see and work with the code, then:
 
 Make sure you select the branch "main", which contains the latest version of the manuscript as posted 
 on PsyArXiv: https://doi.org/10.31234/osf.io/57bh6
-
-The branch "revision1" is used by us to work on our first revision, and will later be merged into MAIN.
 
 2. Open the Tutorial_EHA.Rproj file and renv() will automatically bootstrap itself.
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
@@ -77,7 +75,7 @@ At the top level, there are several files.
 
 ## folders ##
 
-There are also folders, with self-explanatory titles: 
+There are also seven folders, with self-explanatory titles: 
 
 **/manuscript/**
 
@@ -92,20 +90,20 @@ For more information on using papaja() for manuscripts, see the [papaja manual](
   * extrareferences2.bib (BibTeX entries created using Zotero)
 
 
-The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material.
+The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material, a .bib file and 1 figure.
 
-The /reviews/ subfolder contains the corresponding .Rmd and .pdf files for responding to reviewer's comments.
+The /reviews/ subfolder contains the corresponding .Rmd and .pdf files for responding to reviewer's comments, and a CreateFiguresReview.Rmd file which creates Supplementary Figure 1.
 
 **/sims/**
 
 This folder contains the file sims.Rmd used to create Figure 1.
 
-The /figures/ subfolder contains Fig1_revision1.jpeg.
+The /figures/ subfolder contains Fig1_revision1.jpeg (and other figures from sims.Rmd).
 
 
 **/renv/**
 
-This folder contains the typical renv files.
+This folder contains the typical renv files and folders.
 
 **/Tutorial_1_descriptive_stats/**
 
@@ -119,18 +117,18 @@ This folder contains three subfolders:
 
 This folder contains three subfolders:
 
-* The /models/ subfolder contains the fitted models.
 * The /figures/ subfolder contains various figures (outputs from Tutorial_2a.Rmd and Tutorial_2b.Rmd)
+* The /models/ subfolder contains the fitted hazard and conditional accuracy models.
 * The /tables/ subfolder contains various .csv files used to create Tables.
 
 **/Tutorial_3_Frequentist/**
 
-This folder contains two .RData files (frequentist models) and 2 Figures (comparing the Bayesian and Frequentist parameter estimates).
+This folder contains two .RData files (frequentist models) and 2 Figures (comparing the Bayesian and Frequentist parameter estimates from hazard or conditional accuracy models).
 
 **/Tutorial_4_planning/**
 
 This folder contains three subfolders:
 
-* The /models/ subfolder contains a fitted model.
+* The /data/ subfolder contains various .csv files (created in Tutorial_4.Rmd).
 * The /figures/ subfolder contains various figures (outputs from Tutorial_4.Rmd) and 2 subfolders (sim1 and sim2) containing figures.
-* The /data/ subfolder contains various .csv files.
+* The /models/ subfolder contains a fitted model (see Tutorial_4.Rmd).

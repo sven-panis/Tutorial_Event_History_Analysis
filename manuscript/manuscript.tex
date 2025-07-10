@@ -228,12 +228,14 @@
   }
 {}{\PatchFailed}
 \makeatother
-\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 10115 (body) + 1764 (references) + 3442 (body supplemental material) + 393 (refs suppl. mat.)}
+\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 10102 (body) + 1742 (references) + 3442 (body supplemental material) + 393 (refs suppl. mat.)}
 \usepackage{lineno}
 
 \linenumbers
 \usepackage{csquotes}
 \raggedbottom
+\usepackage{setspace}
+\captionsetup[figure]{font={stretch=1,scriptsize}}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -288,7 +290,7 @@ As a simple illustration, Figure 1 summarises simulated data for one subject tha
 
 }
 
-\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten bins of 100 ms (t = 1 to 10). The first bin is (0,100{]}, the last bin is (900,1000{]}. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (t = 1 to 10). Each time bin is a half-open interval; for example, the first bin is the interval (0,100{]}, with 0 excluded and 100 included. Note that the hazard and conditional accuracy estimates are plotted at the endpoint of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
 \end{figure}
 
 Why does this matter for research in psychology? For many psychological questions, the estimation of such ``temporal states'' information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible response to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
@@ -758,7 +760,7 @@ To make causal inferences from the parameter estimates in model M1i (Frank et al
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.9\linewidth,height=0.87\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_hazard} 
+{\centering \includegraphics[width=0.9\linewidth,height=0.95\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_hazard} 
 
 }
 
@@ -786,7 +788,7 @@ To make inferences from the parameter estimates in model M1i\_ca, we first plot 
 
 \begin{figure}[H]
 
-{\centering \includegraphics[width=0.9\linewidth,height=0.87\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_ca} 
+{\centering \includegraphics[width=0.9\linewidth,height=0.95\textheight,]{../Tutorial_2_Bayesian/figures/Revision_results_ca} 
 
 }
 
