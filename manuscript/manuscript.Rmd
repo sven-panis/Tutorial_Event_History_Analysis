@@ -45,7 +45,7 @@ editor_options:
 header-includes:
   - \raggedbottom
   - \usepackage{setspace}
-  - \captionsetup[figure]{font={stretch=1,scriptsize}}
+  - \captionsetup[figure]{font={stretch=1,scriptsize}} 
 ---
 
 ```{r setup, include = FALSE}
