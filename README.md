@@ -86,11 +86,9 @@ For more information on using papaja() for manuscripts, see the [papaja manual](
   * manuscript.pdf
   * manuscript.tex
   * r-references.bib (BibTex entries for R and packages)
-  * extrareferences.bib (manually selected BibTeX entries)
-  * extrareferences2.bib (BibTeX entries created using Zotero)
+  * refs_manuscript.bib (BibTeX entries used in the manuscript)
 
-
-The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material, a .bib file and 1 figure.
+The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material, a .bib file (refs_suppl_material.bib) and Supplementary Figure 1 (Plot_paradigms.png).
 
 The /reviews/ subfolder contains the corresponding .Rmd and .pdf files for responding to reviewer's comments, and a CreateFiguresReview.Rmd file which creates Supplementary Figure 1.
 

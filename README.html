@@ -451,7 +451,7 @@ entries used in the tutorials.</p>
 </div>
 <div id="folders" class="section level2">
 <h2>folders</h2>
-<p>There are also folders, with self-explanatory titles:</p>
+<p>There are also seven folders, with self-explanatory titles:</p>
 <p><strong>/manuscript/</strong></p>
 <p>This is where the manuscript .Rmd file and .pdf files are stored,
 along with the .bib files that contain references. For more information
@@ -461,18 +461,21 @@ on using papaja() for manuscripts, see the <a href="https://frederikaust.com/pap
 <li>manuscript.pdf</li>
 <li>manuscript.tex</li>
 <li>r-references.bib (BibTex entries for R and packages)</li>
-<li>extrareferences.bib (manually selected BibTeX entries)</li>
-<li>extrareferences2.bib (BibTeX entries created using Zotero)</li>
+<li>refs_manuscript.bib (BibTeX entries used in the manuscript)</li>
 </ul>
 <p>The /Suppl_material/ subfolder contains the corresponding .Rmd and
-.pdf files for supplemental material.</p>
+.pdf files for supplemental material, a .bib file
+(refs_suppl_material.bib) and Supplementary Figure 1
+(Plot_paradigms.png).</p>
 <p>The /reviews/ subfolder contains the corresponding .Rmd and .pdf
-files for responding to reviewer’s comments.</p>
+files for responding to reviewer’s comments, and a
+CreateFiguresReview.Rmd file which creates Supplementary Figure 1.</p>
 <p><strong>/sims/</strong></p>
 <p>This folder contains the file sims.Rmd used to create Figure 1.</p>
-<p>The /figures/ subfolder contains Fig1_revision1.jpeg.</p>
+<p>The /figures/ subfolder contains Fig1_revision1.jpeg (and other
+figures from sims.Rmd).</p>
 <p><strong>/renv/</strong></p>
-<p>This folder contains the typical renv files.</p>
+<p>This folder contains the typical renv files and folders.</p>
 <p><strong>/Tutorial_1_descriptive_stats/</strong></p>
 <p>This folder contains three subfolders:</p>
 <ul>
@@ -487,24 +490,27 @@ Tutorial_1a.Rmd and Tutorial_1b.Rmd)</li>
 <p><strong>/Tutorial_2_Bayesian/</strong></p>
 <p>This folder contains three subfolders:</p>
 <ul>
-<li>The /models/ subfolder contains the fitted models.</li>
 <li>The /figures/ subfolder contains various figures (outputs from
 Tutorial_2a.Rmd and Tutorial_2b.Rmd)</li>
+<li>The /models/ subfolder contains the fitted hazard and conditional
+accuracy models.</li>
 <li>The /tables/ subfolder contains various .csv files used to create
 Tables.</li>
 </ul>
 <p><strong>/Tutorial_3_Frequentist/</strong></p>
 <p>This folder contains two .RData files (frequentist models) and 2
-Figures (comparing the Bayesian and Frequentist parameter
-estimates).</p>
+Figures (comparing the Bayesian and Frequentist parameter estimates from
+hazard or conditional accuracy models).</p>
 <p><strong>/Tutorial_4_planning/</strong></p>
 <p>This folder contains three subfolders:</p>
 <ul>
-<li>The /models/ subfolder contains a fitted model.</li>
+<li>The /data/ subfolder contains various .csv files (created in
+Tutorial_4.Rmd).</li>
 <li>The /figures/ subfolder contains various figures (outputs from
 Tutorial_4.Rmd) and 2 subfolders (sim1 and sim2) containing
 figures.</li>
-<li>The /data/ subfolder contains various .csv files.</li>
+<li>The /models/ subfolder contains a fitted model (see
+Tutorial_4.Rmd).</li>
 </ul>
 </div>
 </div>
