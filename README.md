@@ -75,7 +75,7 @@ At the top level, there are several files.
 
 ## folders ##
 
-There are also seven folders, with self-explanatory titles: 
+There are also seven folders: 
 
 **/manuscript/**
 
