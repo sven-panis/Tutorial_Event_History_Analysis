@@ -445,7 +445,7 @@ And is there supposed to be a duplicated r-references file in the root folder an
 -  Like I said before, the brackets cannot stay like that in Figure 1. It just makes no sense. Instead, just use words and no brackets. e.g., The first bin is for responses up to 100ms (or whatever) and the last bin is for responses between 901 and 1000. Or just do ]1,100] and [901,1000], if that's easier.
 
  
--> I use words now, and keep 1 example.
+-> I use words now, and keep 1 example for illustration.
 
 
 - Figures 3 and 4. Ok, so, if it is difficult to get things on one page, then just make them as big as possible. Otherwise, the only other option I can see if splitting the figures into two. Parameter estimates in one figure and posterior preds in another. However, I kind of like them all in one place at the moment, because it directly connects model parameters with predictions and it is efficient in terms of space. WHat do you think? Maybe we just accept the limits of visualisation? Or make the legend text single space, but I'm not sure how easy that is in papaja(), as I've never tried it.
@@ -453,9 +453,9 @@ And is there supposed to be a duplicated r-references file in the root folder an
 -> I increased the size of both figures and made the figure (and table) captions smaller using
 header-includes:
   - \usepackage{setspace}
-  - \captionsetup[figure]{font={stretch=1,scriptsize}}
+  - \captionsetup[figure]{font={stretch=1,normalsize}}
 
-This also decreased Table sizes, and footnote size. I think this is fine. But I have to check references to pages again in ResponseReview1.pdf...
+This also decreased Table sizes, and footnote size. I think this is actually fine. 
 
 
 

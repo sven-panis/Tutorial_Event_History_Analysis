@@ -72,7 +72,7 @@
 
 \title{Review 1: Author responses}
 \author{Panis \& Ramsey}
-\date{2025-07-10}
+\date{2025-07-11}
 
 \begin{document}
 \maketitle
@@ -505,7 +505,7 @@ removed section 2.3.2.
 \end{enumerate}
 \end{quote}
 
-Response: We briefly explain model weights for loo and waic on page 28
+Response: We briefly explain model weights for loo and waic on page 27
 of the revised ms. A discussion of WAIC in Kurz (2023a) can be found in
 section 4.6.4., so we did not include a reference for dWAIC in the
 revised ms. Lastly, we print more digits when reporting the model
@@ -531,7 +531,7 @@ weights.
 \end{quote}
 
 Response: We removed the frequentist examples from the main text and
-direct the reader to the Tutorials on page 34 of the revised ms. We
+direct the reader to the Tutorials on page 32 of the revised ms. We
 mention in Tutorials 3a and 3b that it is common for models to fail to
 converge in lme4 when they have a reasonably complex random effects
 structure, and we provide a reference.
@@ -690,7 +690,7 @@ revised ms to avoid confusion.
 \end{enumerate}
 \end{quote}
 
-Response: We replaced early with fast on page 22 of the revised ms.
+Response: We replaced early with fast on page 21 of the revised ms.
 
 \begin{quote}
 \begin{enumerate}
@@ -756,7 +756,7 @@ Response: We now write ``The general process is similar to Tutorial 2a,
 except that (a) we use the person-trial data, (b) we use the symmetric
 logit link function, and (c) we change the priors (our prior belief is
 that conditional accuracy values between 0 and 1 are equally likely).''
-on page 32 of the revised ms. The logit is typically used for logistic
+on page 30 of the revised ms. The logit is typically used for logistic
 regression by experimental psychologists, so we feel that no extra
 explanation is needed.
 
@@ -771,10 +771,10 @@ explanation is needed.
 \end{enumerate}
 \end{quote}
 
-Response: We explain this on page 24 of the revised ms.: ``We also use
-a''keep it maximal'' approach by specifying a full varying (or random)
-effects structure. This means that wherever possible we include varying
-intercepts and slopes per participant.''
+Response: We explain this on pages 22-23 of the revised ms.: ``We also
+use a''keep it maximal'' approach by specifying a full varying (or
+random) effects structure. This means that wherever possible we include
+varying intercepts and slopes per participant.''
 
 \begin{quote}
 \begin{enumerate}
@@ -963,7 +963,7 @@ provided. For example, clearer descriptions of censoring and risk sets
 (plus what it means to be at risk) should be given in the introduction.
 \end{quote}
 
-Response: We introduce the definition of right-censoring on page 10 of
+Response: We introduce the definition of right-censoring on page 11 of
 the revised ms. We discuss what it means to be at risk in section A of
 the Supplemental Material.
 
@@ -1118,12 +1118,13 @@ multilevel data, single events, and recurring events -- and that this
 particular tutorial is only focused on single events.
 \end{quote}
 
-Response: In section A of the Supplemental Material we mention that this
-Tutorial does not cover recurrent events, and we visualize the different
-types of time-to-event data that are obtained in typical RT tasks
-(detection, discrimination, bistable perception tasks). This should make
-it clear to the reader that we are dealing with single events that are
-repeatedly measured within the same individual.
+Response: We explicitly mention ``single event'' on page 6 of the
+revised ms. Also, in section A of the Supplemental Material we mention
+that this Tutorial does not cover recurrent events, and we visualize the
+different types of time-to-event data that are obtained in typical RT
+tasks (detection, discrimination, bistable perception tasks). This
+should make it clear to the reader that we are dealing with single
+events that are repeatedly measured within the same individual.
 
 \begin{quote}
 It's not clear why a discrete time framework is used given the granular
@@ -1244,7 +1245,7 @@ anymore (to save space) and only mention that the reader can consult
 Tutorials 3a and 3b. We agree that a model should not be presented if it
 does not converge when it includes random slopes. However, to save
 space, and because this is an active area of research, we do not attempt
-to clarify when it would be possible to include varying intercepts
+to clarify when it would not be possible to include varying intercepts
 and/or slopes. We do mention in Tutorials 3a and 3b that it is common
 for models to fail to converge in lme4 when they have a reasonably
 complex random effects structure, and we provide a reference.
@@ -1296,7 +1297,7 @@ come earlier on in the tutorial when describing the data)
 \end{quote}
 
 Response: This connection should be clear now based on section A of the
-Supplemental Material, and based on the text on pages 7 and 8.
+Supplemental Material, and based on the text on pages 8 and 9.
 
 \begin{quote}
 Comprehension of the text on pg. 18 would be enhanced if both right and
@@ -1328,7 +1329,7 @@ which data are nested within participants? The trial data? The binned
 data?
 \end{quote}
 
-Response: We specify ``person-trial data'' in the revised ms on page 18.
+Response: We specify ``person-trial data'' in the revised ms on page 17.
 
 \begin{quote}
 pg. 22 (line 358) the way that censoring is described here is confusing.
@@ -1357,7 +1358,7 @@ guessing etc -- especially since these are very important
 considerations.
 \end{quote}
 
-Response: We have no more detail to share on this issue. On page 19 of
+Response: We have no more detail to share on this issue. On page 18 of
 the revised ms. we now write ``In general, it is important to visually
 inspect the functions first for each participant, in order to identify
 individuals that may not be following task instructions (e.g., a flat
@@ -1375,7 +1376,7 @@ readers to be able to implement the method in their own work
 Response: We changed this sentence into: ``\ldots{} because the first
 few bins typically contain no responses, one has to select an analysis
 time window, i.e., a contiguous set of bins for which there is data for
-each participant.'' on page 24 of the revised ms.
+each participant.'' on page 23 of the revised ms.
 
 \begin{quote}
 section 4.3.1 (line 453) -- more detail is needed on the cloglog link
@@ -1391,7 +1392,7 @@ section 4.3.1 (line 456) -- what goes into the decision about whether to
 treat time as a categorical or continuous predictor?
 \end{quote}
 
-Response: We added the following information on page 24 of the revised
+Response: We added the following information on page 23 of the revised
 ms.: ``Third, one has to choose whether to treat TIME (i.e., the time
 bin index t) as a categorical or continuous predictor (see also section
 E of the Supplemental Material). For example, when you want to know if
@@ -1410,7 +1411,7 @@ comparison of M0i and M1i (given that this is a didactic tutorial).
 \end{quote}
 
 Response: We mention now that model M0i is a baseline or reference
-model, to be compared with model M1i (see page 26 of the revised ms.).
+model, to be compared with model M1i (see page 25 of the revised ms.).
 We also mention that we only report 2 models in the paper from a larger
 set of models that are fitted in the file Tutorial\_2a.Rmd.
 
@@ -1423,7 +1424,7 @@ interval.
 \end{quote}
 
 Response: We added the purpose (``To make causal inferences\ldots{}'')
-and define a credible interval on page 28 of the revised ms.
+and define a credible interval on page 27 of the revised ms.
 
 \begin{quote}
 The term SOA is used on pg. 34, but had never previously been defined or
@@ -1456,7 +1457,7 @@ useful.
 \end{quote}
 
 Response: We decided to keep tutorial 4, and discuss its usefulness on
-pages 42-43 of the revised ms.
+pages 40-41 of the revised ms.
 
 \begin{quote}
 Discussion section: The Discussion section would benefit from being
