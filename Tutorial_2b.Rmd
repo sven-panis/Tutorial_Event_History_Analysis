@@ -101,7 +101,7 @@ head(data_M1i_ca)
 
 ## Set up priors for M1i_ca.
 
-As we expect conditional accuracies ranging between (and including) 0 and 1, we use a flat prior on the logit scale for our intercepts (see Supplementary Figure 2 in section E of the Supplemental Material).
+As we expect conditional accuracies ranging between (and including) 0 and 1, we use a flat prior on the logit scale for our intercepts (see Supplementary Figure 3 in section F of the Supplemental Material).
 
 ```{r priors-cloglog-M1i-ca}
 priors_M1i_ca <- c(

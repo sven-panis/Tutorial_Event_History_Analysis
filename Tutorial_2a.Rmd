@@ -117,7 +117,7 @@ This constitutes a general specification of TIME, and can be used if we do not w
 
 There are two ways to implement such a model. First, we can use the index-coding approach, which provides an intercept for each level of TIME (variable timebin in ptb_data).
 
-Prepare the data file, and specify priors. The skew-normal prior is set for each grand intercept on the cloglog scale, and reflects our prior belief that higher hazard values (above .5) are less likely than lower values (below .5). This prior is plotted in row F of Supplementary Figure 2 (section E in the Supplemental Material).
+Prepare the data file, and specify priors. The skew-normal prior is set for each grand intercept on the cloglog scale, and reflects our prior belief that higher hazard values (above .5) are less likely than lower values (below .5). This prior is plotted in row F of Supplementary Figure 3 (section F in the Supplemental Material).
 A prior predictive check is performed in section 8.1.
 
 ```{r data-priors-M0i}
