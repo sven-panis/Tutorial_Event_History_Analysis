@@ -196,10 +196,10 @@ p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill=condit
                .width = c(.80,.95),
                alpha=0.7) +
   labs(title = 'Posterior distributions for population-level\neffects in Model M1i_ca',
-       x = "time bin", 
+       x = "time bin (upper bound in ms)", 
        y = "logit-ca") +
   scale_fill_brewer(palette = "Dark2") +
-  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
   scale_y_continuous(limits=c(-10,10)) +
   theme(axis.text.x = element_text(angle=90)) +
   facet_wrap(~condition)
@@ -244,11 +244,12 @@ epreds_grand %>%
                     .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
-    labs(x = "time bin", y = "predicted conditional accuracy") #+
-    #ggtitle("Average participant")
+    labs(x = "time bin (upper bound in ms)", 
+         y = "predicted conditional accuracy")
+  
 p1
 ```
 
@@ -282,11 +283,11 @@ p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred,
                     .width = c(.8,.95)) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
-    labs(x = "time bin", y = "predicted conditional accuracy") +
-   # ggtitle("Each participant (N = 6)") +
+    labs(x = "time bin (upper bound in ms)", 
+         y = "predicted conditional accuracy") +
     facet_wrap(~pid, ncol=3)
 p2
 ```
@@ -356,11 +357,13 @@ p11 <- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca,
              color = "red", 
              lty = 3) +
   scale_y_continuous(limits=c(-1,1)) +
-  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
   scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")) +
   theme(axis.text.x = element_text(angle=90)) +
-  labs(x = "time bin", y = "difference in predicted ca") +
+  labs(x = "time bin (upper bounds in ms)", 
+       y = "difference in predicted ca") +
   facet_wrap(~contrast)
+
 p11
 ```
 
@@ -379,7 +382,8 @@ epreds_pid_diffs <- epreds_pid %>%
   pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
                names_to = "contrast",
                values_to = "diff_ca") 
-epreds_pid_diffs # 160 000 rows 
+
+epreds_pid_diffs  
 ```
 
 Summarize and plot the contrasts in predicted hazard values.
@@ -397,15 +401,14 @@ p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca,
                     alpha = 0.5, 
                     point_interval = "mean_qi",
                     .width=c(.8,.95)) +
-    #stat_halfeye(point_interval = "mean_qi",.width=c(.8,.95)) +
     geom_hline(yintercept = 0, color = "red", lty = 3) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(-1,1)) +
-    labs(x = "time bin", y = "difference in predicted ca") +
-   # ggtitle("Subject-specific AMEs") +
+    labs(x = "time bin (upper bound in ms)", 
+         y = "difference in predicted ca") +
     facet_wrap(~pid, ncol=3)
 p22
 ```
@@ -418,8 +421,6 @@ p11_theme <- p11 + theme(legend.position = "none")
 
 (p11_theme / p22) +
     plot_annotation(tag_levels = 'A') +
-   # plot_layout(guides = "collect",
-  #              axes = "collect_x") & 
     theme(legend.position = "bottom")
 ```
 
@@ -436,20 +437,14 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 14, height
 # combine 3 plots
 p11_theme <- p11 + theme(legend.position = "none")
 
-
 (p_tidy_fixed_ca / p1 / p11) +
     plot_annotation(tag_levels = 'A') +
-   # plot_layout(guides = "collect",
-  #              axes = "collect_x") & 
     theme(legend.position = "bottom")
-
 ```
 
 ```{r save-fig-revision, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 14, height = 20, dpi = 800)
 ```
-
-
 
 # 5. References.
 

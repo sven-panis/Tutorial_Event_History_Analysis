@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Tutorial 2a shows various ways to fit Bayesian binary regression models to discrete time-to-event data (section 3). The data are taken from the first experiment of @panisWhatShapingRT2016, but using only the no-mask trials (with factor prime = blank, congruent, or incongruent). We performed some prior predictive checks to determine the prior distributions we will employ (section 8). We compare models using WAIC and LOO (section 4), and interpret parameter estimates for one model (section 5). 
-We also plot the logit and cloglog link functions (section 6), and illustrate how various prior distributions for an intercept on the logit and cloglog scales look on the original probability (i.e., hazard) scale (section 7). 
+We also plot the logit and cloglog link functions (section 6), and illustrate how various prior distributions for an intercept on the logit and cloglog scales look on the original probability (i.e., discrete-time hazard) scale (section 7). 
 
 # 1. Load the libraries that we will be using.
 
@@ -533,10 +533,10 @@ p_tidy_fixed <- ggplot(tidy_fixed, aes(x = timebin, y = value, fill=condition)) 
                .width = c(0.80,0.95),
                alpha=0.7) +
   labs(title = 'Posterior distributions for population-level\neffects in Model M1i',
-       x = "time bin", y = "cloglog-hazard") +
+       x = "time bin (upper bound in ms)", y = "cloglog-hazard") +
   scale_fill_brewer(palette = "Dark2") +
-  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
-   theme(axis.text.x = element_text(angle=90)) +
+  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
+  theme(axis.text.x = element_text(angle=90)) +
   facet_wrap(~condition)
 p_tidy_fixed
 ```
@@ -583,11 +583,11 @@ epreds_grand %>%
                     alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), 
+    scale_x_discrete(labels = c(6:15)*40, 
                      breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,.6)) +
-    labs(x = "time bin", y = "predicted hazard") 
+    labs(x = "time bin (upper bound in ms)", y = "predicted hazard") 
 
 p1
 ```
@@ -606,10 +606,10 @@ ggplot(aes(x=timebin, y=haz,
                     alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,.6)) +
-    labs(x = "time bin", y = "predicted hazard") 
+    labs(x = "time bin (upper bound in ms)", y = "predicted hazard") 
 ```
 
 Second, for each participant in the data set.
@@ -642,11 +642,10 @@ p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred,
                     alpha = 0.5) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(0,1)) +
-    labs(x = "time bin", y = "predicted hazard") +
-   # ggtitle("Each participant (N = 6)") +
+    labs(x = "time bin (upper bound in ms)", y = "predicted hazard") +
     facet_wrap(~pid, ncol=3)
 
 p2
@@ -727,11 +726,10 @@ Plot.
              color = "red", 
              lty = 3) +
   scale_y_continuous(limits=c(-0.5,0.3)) +
-  scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
   scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")) +
   theme(axis.text.x = element_text(angle=90)) +
-  labs(x = "time bin", y = "difference in predicted hazard") +
-  #ggtitle("Grand average marginal effect") +
+  labs(x = "time bin (upper bound in ms)", y = "difference in predicted hazard") +
   facet_wrap(~contrast)
 
 p11
@@ -845,11 +843,10 @@ Plot the contrasts in predicted hazard values.
     geom_hline(yintercept = 0, color = "red", lty = 3) +
     scale_fill_brewer(palette = "Dark2") +
     scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = str_c("(",(c(6:15)-1)*40,",",c(6:15)*40,"]"), breaks = 6:15) +
+    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
     theme(axis.text.x = element_text(angle=90)) +
     scale_y_continuous(limits=c(-0.6,0.6)) +
-    labs(x = "time bin", y = "difference in predicted hazard") +
-    #ggtitle("Subject-specific AMEs") +
+    labs(x = "time bin (upper bound in ms)", y = "difference in predicted hazard") +
     facet_wrap(~pid, ncol=3)
 
 p22
@@ -863,8 +860,6 @@ p11_theme <- p11 + theme(legend.position = "none")
 
 (p11_theme / p22) +
     plot_annotation(tag_levels = 'A') +
-   # plot_layout(guides = "collect",
-  #              axes = "collect_x") & 
     theme(legend.position = "bottom")
 ```
 
@@ -881,29 +876,23 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ame_combined.png", width = 10, height = 
 # combine 3 plots
 p11_theme <- p11 + theme(legend.position = "none")
 
-
 (p_tidy_fixed / p1 / p11) +
     plot_annotation(tag_levels = 'A') +
-   # plot_layout(guides = "collect",
-  #              axes = "collect_x") & 
     theme(legend.position = "bottom")
-
 ```
 
 ```{r save-fig-revision, eval=F}
 ggsave("Tutorial_2_Bayesian/figures/Revision_results_hazard.png", width = 14, height = 20, dpi = 800)
 ```
 
-
-
 ## Example conclusions for model M1i.
 
 What can we conclude from model M1i about our research question, i.e., the temporal dynamics of the effect of prime-target congruency on RT? In other words, in which of the 40-ms time bins between 200 and 600 ms after target onset does changing the prime from blank to congruent or incongruent affect the hazard of response occurrence (for a prime-target SOA of 187 ms)?
 
-If we want to study the population-level effect of prime type on hazard, uncontaminated by inter-individual differences, we can base our conclusion on Figure 7A. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin 7 (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
+If we want to study the population-level effect of prime type on hazard, uncontaminated by inter-individual differences, we can base our conclusion on the population-level contrasts. The contrast "congruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.02, 0.17]), and 0.14 hazard units in bin 7 (95% CrI = [0.04, 0.25]). For the other bins, the 95% credible interval contained zero.
 The contrast "incongruent minus blank" was estimated to be 0.09 hazard units in bin 6 (95% CrI = [0.01, 0.21]), -0.19 hazard units in bin 9 (95% CrI = [-0.31, -0.06]), -0.27 hazard units in bin 10 (95% CrI = [-0.45, -0.04]), and -0.23 hazard units in bin 11 (95% CrI = [-0.40, -0.03]). For the other bins, the 95% credible interval contained zero. Note that we could also have calculated hazard ratios instead of hazard differences.
 
-There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period (200, 240]. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period (320,440]. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
+There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in the time period 200-240 ms. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period 320-440 ms. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset.
 
 The posterior distribution of each contrast can also be summarized by considering its proportion below or above some value, like zero.
 For example, here are the proportions that each contrast is larger and smaller than 0:
@@ -934,11 +923,11 @@ kable(table_prop, caption = "Summarizing the posterior distributions of each con
 
 Thus, the probability that the contrast "congruent minus blank" is larger than 0, is larger than .9 in bins 6 to 8. And the probability that the contrast "incongruent minus blank" is smaller than 0, is larger than .9 in bins 9 to 12.
 
-If we want to focus more on inter-individual differences, we can study the subject-specific differences in hazard in Figure 7B. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin (360,400] -- subject 2 also in bin (320,360]. 
+If we want to focus more on inter-individual differences, we can study the subject-specific contrasts. Note that three participants (1, 2, and 3) show a negative difference for the contrast "congruent minus incongruent" in bin 400 -- subject 2 also in bin 360. 
 
 Future studies could (a) increase the number of participants to estimate the proportion of "dippers" in the subject population, and/or (b) try to explain why this dip occurs. For example, @panisWhatShapingRT2016 concluded that active, top-down, task-guided response inhibition effects emerge around 360 ms after the onset of the stimulus following the prime (here: the target stimulus). Such a top-down inhibitory effect might exist in our priming data set, because after some time participants will learn that the first stimulus is not the one they have to respond to; To prevent a premature overt response to the prime they thus might gradually increase a global response threshold during the remainder of the experiment, which could result in a lower hazard in congruent trials compared to blank trials, for bins after ~360 ms, and towards the end of the experiment. This effect might be masked for incongruent primes by the response competition effect.
 
-Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time (Figure 9). Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formula that should get you going.
+Interestingly, all subjects show a tendency in their mean difference (congruent minus blank) to "dip" around that time. Therefore, future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial_2a.Rmd we provide a number of model formula that should get you going.
 
 # 6. Plot the logit and complementary log-log (cloglog) link functions.
 
