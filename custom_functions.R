@@ -350,7 +350,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                       limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,haz_yaxis)) +
-    labs(x = "bin endpoints (ms)",
+    labs(x = "time bin (upper bound in ms)",
         y = "h(t)",
         color = "Prime") +
     theme(panel.grid.minor = element_blank(),
@@ -377,7 +377,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)",
+    labs(x = "time bin (upper bound in ms)",
          y = "S(t)",
          color = "Prime") +
     theme(panel.grid.minor = element_blank(),
@@ -399,7 +399,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)",
+    labs(x = "time bin (upper bound in ms)",
          y = "ca(t)",
          color = "Prime") +
     theme(panel.grid.minor = element_blank(),
@@ -421,7 +421,7 @@ plot_eha_2IV <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
-    labs(x = "bin endpoints (ms)",
+    labs(x = "time bin (upper bound in ms)",
          y = "P(t)",
          color = "Prime") +
     theme(panel.grid.minor = element_blank(),
