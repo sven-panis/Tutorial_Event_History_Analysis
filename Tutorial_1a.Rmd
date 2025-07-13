@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In Tutorial 1a we wrangle raw data from Experiment 1 of @panisWhatShapingRT2016, and illustrate how to calculate descriptive statistics (functions of discrete time). We use functional programming to set up life tables, and plot the discrete-time hazard, survivor, probability mass, and conditional accuracy functions, when there is one independent variable.
 
-A life table includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t) = P(RT = t | RT >= t), survival probability S(t) = P(Rt > t), probability mass P(t) = P(RT = t), possibly the conditional accuracy ca(t) = P(correct | RT = t), and their estimated standard errors (se).
+A life table includes for each time bin indexed by t, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t) = P(RT = t | RT >= t), survival probability S(t) = P(Rt > t), probability mass P(t) = P(RT = t), possibly the conditional accuracy ca(t) = P(correct | RT = t), and their estimated standard errors (se).
 
 To set up a life table, the user has to supply both a width in ms for the time bins, and a censoring time, the last time point for which the trials are considered under investigation (a cutoff time, or timeout; the response deadline if one is used). The goal is to find a good bin width and censoring time (both in ms) to portray the effects of interest. Note that all response times must be positive.
 
@@ -230,9 +230,10 @@ binsize    <- data_final$censored[[1]] %>%
 lifetable_blank_s6 <- data_final[[7]][[6]] %>% 
   filter(condition=="blank") %>% 
   mutate(bin = period*binsize,
+         t = period,
          events = event1) %>%
-  select(bin,risk_set,events,hazard,se_haz,
-         survival,se_surv,ca,se_ca) 
+  select(bin,t,risk_set,events,hazard,se_haz,
+         survival,se_surv,ca,se_ca,pmass,se_pmass) 
 
 # get riskset for first bin
 riskset <- lifetable_blank_s6 %>% 
@@ -241,18 +242,23 @@ riskset <- lifetable_blank_s6 %>%
   pull()
 
 # create a row for time point 0
-row0 <- c(bin=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,
-          survival=1,se_surv=0,ca=NA,se_ca=NA)
+row0 <- c(bin=0,t=0,risk_set=riskset,events=NA,hazard=NA,se_haz=NA,
+          survival=1,se_surv=0,ca=NA,se_ca=NA,pmass=0,se_pmass=0)
 
 # add new row
 lifetable_blank_s6_complete <- lifetable_blank_s6 %>%
   add_row(!!! row0) %>%
   arrange(bin)
+
+# change names
+names(lifetable_blank_s6_complete) <- c("bin","index t", 
+                                        "RS","#events", "h(t)", "se[h(t)])", "S(t)", "se[S(t)]", "ca(t)", "se[ca(t)]", "P(t)", "se[P(t)]")
+
 lifetable_blank_s6_complete
 ```
 
 ```{r save-single-lifetable, eval=F}
-write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_neutral_s6.csv")
+write_csv(lifetable_blank_s6_complete, file="Tutorial_1_descriptive_stats/tables/lifetable_blank_s6.csv")
 ```
 
 Create input file for fitting hazard models.

@@ -11,9 +11,9 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This file simulates the data used in old Figures 1, 2, and 3 of the manuscript and then creates some plots.
+This file simulates the data used in Figures 1, 2, and 3 of the first version of the manuscript and then creates some plots.
 
-Figure 1 of revision 1 can be found in section 13.
+Figure 1 of revised manuscript can be found in section 13.
 
 # load the libraries that we will be using #
 
@@ -32,8 +32,8 @@ theme settings for ggplot
 ```{r plot-settings}
 theme_set(
   theme_bw() +
-    theme(text = element_text(size = 22, face = "bold"), 
-          title = element_text(size = 22, face = "bold"),
+    theme(text = element_text(size = 20, face = "bold"), 
+          title = element_text(size = 20, face = "bold"),
           legend.position = "bottom")
 )
 
@@ -1662,7 +1662,7 @@ p13.1 <-ggplot(lifetable_fig1, aes(x = bin, y = hazard,
                      limits = c(1,10),
                      labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
-  xlab("time bin t's endpoint (ms)") +
+  xlab("time bin (upper bound in ms)") +
   ylab("hazard") +
 
   annotate("label", x = 1.7, y = .95,
@@ -1695,7 +1695,7 @@ p13.2 <-ggplot(ca, aes(x = bin, y = ca,
                      limits=c(1,10),
                      labels = c(1:10)*100) +
   scale_y_continuous(limits = c(0,1)) +
-  xlab("time bin t's endpoint (ms)") +
+  xlab("time bin (upper bound in ms)") +
     ylab("conditional accuracy") +
    annotate("label", x = 1.5, y = .25,
            label = "ca(t) = P(correct | RT = t)",

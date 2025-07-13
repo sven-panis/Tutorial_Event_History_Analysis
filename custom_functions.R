@@ -138,12 +138,12 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
     geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
                    show.legend = F, linewidth = 0.6) +
     scale_color_brewer(palette = "Dark2", name="Condition") +
-  scale_shape_discrete(name ="Condition", solid=T) + 
+    scale_shape_discrete(name ="Condition", solid=T) + 
     scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,haz_yaxis)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "time bin (upper bound in ms)", 
          y = "h(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
@@ -174,7 +174,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "time bin (upper bound in ms)", 
          y = "S(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
@@ -194,7 +194,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                        limits = c(first_bin_shown,cutoff/binsize)) +
 
     scale_y_continuous(limits = c(0,1)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "time bin (upper bound in ms)", 
          y = "ca(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
@@ -214,7 +214,7 @@ plot_eha <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsu
                        labels = c(first_bin_shown:(cutoff/binsize)*binsize),
                        limits = c(first_bin_shown,cutoff/binsize)) +
     scale_y_continuous(limits = c(0,.5)) +
-    labs(x = "bin endpoints (ms)", 
+    labs(x = "time bin (upper bound in ms)", 
          y = "P(t)") +
     theme(panel.grid.minor = element_blank(),
           axis.text.x = element_text(angle=90))
