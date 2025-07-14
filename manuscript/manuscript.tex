@@ -228,7 +228,7 @@
   }
 {}{\PatchFailed}
 \makeatother
-\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 10154 (body) + 1742 (references) + 3453 (body supplemental material) + 428 (refs suppl. mat.)}
+\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 10165 (body) + 1742 (references) + 3458 (body supplemental material) + 539 (refs suppl. mat.)}
 \usepackage{lineno}
 
 \linenumbers
@@ -280,7 +280,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020). Such absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020).
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis \& Schmidt, 2022).
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis, 2020; Panis \& Schmidt, 2016, 2022).
 
 
 
@@ -339,7 +339,7 @@ As a lab, and mainly for practical reasons, we have much more experience using d
 This choice may seem counter-intuitive, given that RT is typically treated as a continuous variable.
 However, continuous forms of EHA require much more data to reliably estimate the continuous-time hazard (rate) function (Bloxom, 1984; Luce, 1991; Van Zandt, 2000).
 Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than \textasciitilde200 trials per condition per participant (Panis, Schmidt, et al., 2020).
-Moreover, as indicated by Allison (2010), learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good starting point.
+Moreover, as indicated by Singer and Willett (2003), learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good starting point.
 
 To apply discrete-time EHA, one divides the within-trial time in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10; Figure 1B).
 Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial across a repeated measures design.
@@ -367,7 +367,7 @@ First, as illustrated in Figure 1, compared to averaging data across trials, int
 As such, the approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to discriminate between theoretical accounts of psychological and/or brain-based processes.
 For example, what kind of theory or set of mechanisms could account for the shape of the functions and the temporally localized effects reported in Figure 1B (Panis \& Schmidt, 2016)?
 Are there new auxiliary assumptions that computational models need to adopt (Panis, Moran, et al., 2020)?
-Will the temporal effect patterns align nicely with EEG findings (Panis \& Schmidt, 2022)?
+Will the temporal effect patterns align nicely with electroencephalography (EEG) findings (Panis \& Schmidt, 2022)?
 And are there new experiments that need to be performed to test the novel predictions that follow from these analyses?
 
 Second, compared to more conventional analytical approaches, EHA uses more of the data because it deals with missing data differently.
@@ -408,7 +408,7 @@ for all reported analyses.
 
 \subsubsection{3.1.1 Data wrangling aims}\label{data-wrangling-aims}
 
-Our data wrangling procedures serve two related purposes. First, we want to calculate descriptive statistics for each condition in each individual using a life table. A life table (see Table 3) includes for each time bin, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t), survival probability S(t), probability mass P(t), possibly the conditional accuracy ca(t), and their estimated standard errors (se). The definitions of these quantities are provided in section B of the Supplemental Material.
+Our data wrangling procedures serve two related purposes. First, we want to calculate descriptive statistics for each condition in each individual using a life table. A life table (see Table 3) includes for each time bin indexed by t, the risk set (i.e., the number of trials that are event-free at the start of the bin), the number of observed events, and the estimates of the discrete-time hazard probability h(t), survival probability S(t), probability mass P(t), possibly the conditional accuracy ca(t), and their estimated standard errors (se). The definitions of these quantities are provided in section B of the Supplemental Material.
 
 Second, we want to produce two different data sets that can each be submitted to different types of inferential modelling approaches. The two types of data structure we label as `person-trial' data and `person-trial-bin' data. The `person-trial' data (Table 1) will be familiar to most researchers who record behavioural responses from participants, as it represents the measured RT and accuracy per trial within an experiment. This data set is used when fitting conditional accuracy models (Tutorials 2b and 3b).
 
@@ -530,7 +530,7 @@ In the code of Tutorial 1a, this is accomplished as follows.
 
 \normalsize
 
-Next, we can set up the life tables and plot for each condition the discrete-time hazard function h(t), survivor function S(t), probability mass function P(t), and conditional accuracy function ca(t). To do so using a functional programming approach, one has to nest the person-trial data within participants using the group\_nest() function, and supply a user-defined censoring time and bin width to our custom function ``censor()'', as follows.
+Next, we can set up the life tables and plot for each participant and condition the discrete-time hazard function h(t), survivor function S(t), probability mass function P(t), and conditional accuracy function ca(t). To do so using a functional programming approach, one has to nest the person-trial data within participants using the group\_nest() function, and supply a user-defined censoring time and bin width to our custom function ``censor()'', as follows.
 
 \footnotesize
 
