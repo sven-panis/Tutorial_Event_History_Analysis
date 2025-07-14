@@ -128,7 +128,7 @@ model_M1i_ca <-
        file = "Tutorial_2_Bayesian/models/model_M1i_ca")
 ```
 
-Model_M1i_ca took about 11 minutes to run.
+Model_M1i_ca took about 11 minutes to run on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ```{r inspect-M1i-ca}
 model_M1i_ca <- readRDS("Tutorial_2_Bayesian/models/model_M1i_ca.rds")

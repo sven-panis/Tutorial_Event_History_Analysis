@@ -83,7 +83,7 @@ model_M1i_ca_f <- glmer(acc ~ 0 + timebin:prime  +
               family = binomial(link="logit"))
 ```
 
-Model_M1i_ca_f took about 90 minutes to fit.
+Model_M1i_ca_f took about 90 minutes to fit on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ```{r save-model, eval=F}
 save(model_M1i_ca_f, file="Tutorial_3_Frequentist/model_M1i_ca_f.RData")
@@ -143,11 +143,9 @@ p1 <- ggplot(data = est, aes(x = position)) +
                 show.legend = F,
                 linewidth = 1.2,
                 position = position_nudge(x = .4)) +
- #geom_hline(yintercept=0,colour = "grey", linetype = 2) +
  scale_x_continuous(breaks = 6:15, labels = 6:15*40) +
  scale_y_continuous(limits=c(-25,25), breaks = c(-25,-20,-15,-10,-5,0,5,10,15,20,25)) +
-  
- labs(x = "bin endpoint", y = "logit-ca") +
+ labs(x = "time bin (upper bound in ms)", y = "logit-ca") +
  scale_color_manual(name = "Model", 
                     breaks = c("c1", "c2"), 
                     values = cols,

@@ -11,7 +11,7 @@
 
 <meta name="author" content="sven panis" />
 
-<meta name="date" content="2025-07-13" />
+<meta name="date" content="2025-07-14" />
 
 <title>Tutorial 2b</title>
 
@@ -1487,7 +1487,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Tutorial 2b</h1>
 <h4 class="author">sven panis</h4>
-<h4 class="date">2025-07-13</h4>
+<h4 class="date">2025-07-14</h4>
 
 </div>
 
@@ -1684,7 +1684,8 @@ model_M1i_ca &lt;-
        control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 14),
        seed = 12, init = &quot;0&quot;,
        file = &quot;Tutorial_2_Bayesian/models/model_M1i_ca&quot;)</code></pre>
-<p>Model_M1i_ca took about 11 minutes to run.</p>
+<p>Model_M1i_ca took about 11 minutes to run on a MacBook Pro (Sonoma
+14.6.1 OS, 18GB Memory, M3 Pro Chip).</p>
 <pre class="r"><code>model_M1i_ca &lt;- readRDS(&quot;Tutorial_2_Bayesian/models/model_M1i_ca.rds&quot;)
 fixef(model_M1i_ca)</code></pre>
 <pre><code>##                    Estimate Est.Error       Q2.5      Q97.5

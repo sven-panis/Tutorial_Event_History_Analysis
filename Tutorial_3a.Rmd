@@ -85,7 +85,7 @@ model_M1i_f <- glmer(event ~ 0 + timebin:prime  +
           family = binomial(link="cloglog"))
 ```
 
-Model_M1i_f took about 3 hours.
+Model_M1i_f took about 3 hours on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ```{r save-M1i-f, eval=F}
 save(model_M1i_f, file="Tutorial_3_Frequentist/model_M1i_f.RData")
@@ -146,11 +146,9 @@ p1 <- ggplot(data = est, aes(x = position)) +
                 show.legend = F, 
                 linewidth = 1.2,
                 position = position_nudge(x = .4)) +
-# geom_hline(yintercept=0,colour = "grey", linetype = 2) +
  scale_x_continuous(breaks = 6:15, labels = 6:15*40) +
  scale_y_continuous(limits=c(-9,3), breaks = c(-9,-6,-3,0,3)) +
-  
- labs(x = "bin endpoint", y = "cloglog-hazard") +
+ labs(x = "time bin (upper bound in ms)", y = "cloglog-hazard") +
  scale_color_manual(name = "Model", 
                     breaks = c("c1", "c2"), 
                     values = cols,

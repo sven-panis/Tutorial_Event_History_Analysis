@@ -129,7 +129,7 @@ summary(data_wr)
 
 # 3. Apply functional programming to set up life tables and plot the discrete-time functions h(t), S(t), ca(t), and P(t)
 
-Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function **plot_eha** (line 164-166 in custom_functions.R) as above (lines 119-122).
+Load our custom functions. Make sure you specify the same levels and labels for factor condition in the function **plot_eha** (line 164-166 in custom_functions.R) as above (lines 124-126).
 
 ```{r load-functions}
 source("custom_functions.R")

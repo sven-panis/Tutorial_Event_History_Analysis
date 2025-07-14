@@ -201,7 +201,7 @@ model_M0d <-
        file = "Tutorial_2_Bayesian/models/model_M0d")
 ```
 
-M0d took about 77 minutes.
+M0d took about 77 minutes using the same MacBook Pro.
 
 ```{r inpect-M0d}
 model_M0d <- readRDS("Tutorial_2_Bayesian/models/model_M0d.rds")
@@ -246,7 +246,7 @@ model_M0c <-
        file = "Tutorial_2_Bayesian/models/model_M0c")
 ```
 
-Model_M0c took about 19 minutes to run.
+Model_M0c took about 19 minutes to run using the same MacBook Pro.
 
 ```{r inspect-M0c}
 model_M0c <- readRDS("Tutorial_2_Bayesian/models/model_M0c.rds")
@@ -290,14 +290,14 @@ model_M1i <-
        file = "Tutorial_2_Bayesian/models/model_M1i")
 ```
 
-Model M1i took about 124 minutes to fit.
+Model M1i took about 124 minutes to fit using the same MacBook Pro.
 
 ```{r inspect-M1i}
 model_M1i <- readRDS("Tutorial_2_Bayesian/models/model_M1i.rds")
 fixef(model_M1i)
 ```
 
-Second, when the shape of the hazard function is rather smooth, as it is for behavioral RT data, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable "condition") and treat TIME as a continuous variable (variable "period_9").
+Second, when the shape of the hazard function is rather smooth, one can fit a more parsimonious model by treating TIME as a continuous variable, and use a polynomial specification of the effect of TIME. Thus, if we want to make assumptions about (1) how hazard changes over TIME in the reference condition (blank prime), and (2) how the effect of congruent and incongruent primes change over TIME (relax the proportionality assumption), then we can switch to a dummy coding approach for prime-target congruency (variable "condition") and treat TIME as a continuous variable (variable "period_9").
 
 For example, we may assume that hazard can change in a linear + quadratic fashion over time for a blank prime, and that the effects of congruent and incongruent primes relative to blank change in a linear + quadratic fashion, and fit the model called "M1d". 
 
@@ -353,7 +353,7 @@ model_M1d <-
 ```
 
 The specification "0 + Intercept + ..." removes the default intercept in brm() and adds an explicit Intercept for which we can set the prior ourselves. The variable period_9_sq is a squared version of period_9. Note that duplicate terms in the model formula (e.g., condition) are ignored.
-Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model_M1d took about 184 minutes to run.
+Because TIME is centered on bin 9, the Intercept represents the estimated cloglog-hazard in bin 9 for the blank prime condition. Model_M1d took about 184 minutes to run using the same MacBook Pro.
 
 ```{r inspect-M1d}
 model_M1d <- readRDS("Tutorial_2_Bayesian/models/model_M1d.rds")
@@ -786,7 +786,6 @@ post %>% # 8000 x 30 = 240000
     scale_color_brewer(palette = "Dark2") +
     theme(axis.text.x = element_text(angle=90)) +
     labs(y = "difference in predicted hazard", x = "timebin") +
-    ggtitle("Grand average marginal effect") +
     facet_wrap(~contrast)
 ```
 
@@ -1266,7 +1265,7 @@ ggsave("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png", width = 10, height = 8, d
 knitr::include_graphics("Tutorial_2_Bayesian/figures/M0i_ppc_1bin.png")
 ```
 
-The shape of the prior predictive distribution for 1 bin looks as expected (compare with Supplementary Figure 2 (row F) in the Supplemental Material): hazard values below .5 are more likely than hazard values above .5.
+The shape of the prior predictive distribution for 1 bin looks as expected (compare with Supplementary Figure 3 (row F) in section F of the Supplemental Material): hazard values below .5 are more likely than hazard values above .5.
 
 Now use add_predicted_draws() to simulate prior-based data for our 10 bins and 6 subjects, while taking into account samples from the priors for the standard deviation of the random effects, and correlations between parameters.
 
