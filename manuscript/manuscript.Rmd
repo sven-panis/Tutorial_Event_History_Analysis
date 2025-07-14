@@ -654,7 +654,7 @@ All of the submitted manuscript and Supplemental Material was previously posted 
 
 Link to public archive: https://github.com/sven-panis/Tutorial_Event_History_Analysis
 
-Supplemental Material: Panis_Ramsey_suppl_material.pdf
+Supplemental Material: Panis_Ramsey_suppl_material_R1.pdf
 
 
 ## Ethical approval
