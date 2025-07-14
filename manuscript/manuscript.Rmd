@@ -27,7 +27,7 @@ authornote: |
 abstract: |
   Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve with increasing waiting time. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as its limitations. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
-wordcount         : "10165 (body) + 1742 (references) + 3458 (body supplemental material) + 539 (refs suppl. mat.)"
+wordcount         : "10167 (body) + 1742 (references) + 3458 (body supplemental material) + 539 (refs suppl. mat.)"
 bibliography      : ["refs_manuscript.bib", "r-references.bib"]
 floatsintext      : yes
 linenumbers       : yes
@@ -388,7 +388,7 @@ In the case of a large-*N* design without repeated measurements, the parameters 
 
 In general, there are three assumptions one can make or relax when adding experimental predictor variables and other covariates: The linearity assumption for continuous predictors (the effect of a 1 unit change is the same anywhere on the scale), the additivity assumption (predictors do not interact), and the proportionality assumption (predictors do not interact with TIME).
 
-In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the 200-600 ms analysis time window, and the cloglog link. Below, we shortly discuss two of these models. The person-trial-bin data set is prepared as follows.
+In tutorial_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized linear mixed models) that differ in complexity to the person-trial-bin oriented data set that we created in Tutorial 1a. We decided to select the 200-600 ms time window for inferential analysis, and the cloglog link. Below, we shortly discuss two of these models. The person-trial-bin data set is prepared as follows.
 
 \footnotesize
 ```{r wrangle-data, eval=F, echo=T}
