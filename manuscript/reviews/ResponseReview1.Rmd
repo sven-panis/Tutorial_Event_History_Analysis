@@ -18,10 +18,6 @@ header-includes:
 knitr::opts_chunk$set(echo = F)
 ```
 
-```{r packages and data, include=F }
-
-```
-
 # Editor
 
 > 15-Mar-2025
@@ -38,10 +34,12 @@ I encourage you to have the revised paper read and pre-reviewed by colleagues wh
 
 > Sincerely,
 
-Response: Thank you for providing constructive feedback and allowing us to submit a revision of our manuscript (AMPPS-24-0232).
+Response: Dear Editor,
+
+thank you for providing constructive feedback and allowing us to submit a revision of our manuscript (AMPPS-24-0232).
 
 We tried to focus on accessibility in the revision of our Tutorial in several ways. 
-First, we replaced Figure 1 with a simpler Figure that directly conveys our message, and deleted Figures 2 and 3.
+First, we reduced the number of Figures: we replaced Figure 1 with a simpler Figure that directly conveys our message and deleted Figures 2 and 3, and we replaced the 6 old figures on modeling results with 2 new figures.
 Second, we shortened the Introduction and Discussion sections.
 Third, we added a section in the supplementary material (section A) in which we visualize the different types of time-to-event data that are obtained in typical RT tasks (detection, discrimination, bistable perception).
 We also mention the unique contribution of our work, we removed redundancies, and tried to improve the clarity of the paper.
@@ -74,7 +72,6 @@ Response: We added these references to the revised ms. on page 6.
 
 Response: We explicitly mention this on page 6 of the revised ms. Also, we added a section in the Supplemental Material (section A in the revised ms.) which explains the types of time-to-event data typically obtained in RT tasks (detection, discrimination, and bistable perception tasks). This section makes it clear that our tutorials pertain only to estimating single-event occurrences. It also visualizes recurrent events and includes references to the Lougheed and Stoolmiller tutorials.
 
-
 > Specific comments:
 
 > The authors use several different terms to refer to time-to-event models throughout the manuscript. The title refers to EHA, and the running head refers to Hazard analysis. Survival analysis is also a common term in Psychology (see tutorials by Lougheed et al., 2019, and Stoolmiller & Snyder, 2006). Disambiguating the various terms early in the manuscript and then constantly using one term throughout the manuscript would be helpful.
@@ -85,7 +82,6 @@ Response: We disambiguate the various terms in the revised ms. on pages 7-8, and
 > Page 5: it would be helpful to refer to the same time unit in reference to Figure 1, which shows time bins along the x-axis but the examples discussed in the manuscript refer to units of milliseconds.
 
 Response: Figure 1 has been replaced.
-
 
 > Page 7: The authors state that they are not aware of EHA tutorials for psychological time to event data. Previoulsy mentioned tutorial articles by Lougheed and Stoolmiller could be mentioned here— these are demonstrating applications to behavioural observation data within psychology.
 
@@ -111,7 +107,7 @@ it seems like a good starting point."
 > Page 8-9, excellent and accessible explanations of the survival function in the discrete time framework.
 
 Response: Thank you for the positive feedback. 
-To make the manuscript more accessible and shorter and to respond to some other comments from the editor and other reviewers, we moved the explanation of the survival function to the Supplementary Material in the revised ms.
+To make the manuscript more accessible and shorter and to respond to some other comments from the editor and other reviewers, we moved the explanation of the survival function to the Supplementary Material in the revised ms (section B).
 
 
 > Page 11: In my experience, researchers in psychology are generally not familiar with the concept of right censored data. This term is first used on page 11 with no explanation— a brief, even parenthetical, definition would be helpful. For example, the parenthetical definition on page 48 could be provided on page 11.
@@ -217,7 +213,7 @@ censoring—and how it is (not) accounted for in “orthodox” analysis methods
 discrete time-to-event analysis methods would be useful, beyond the already-
 included mention of censoring in Section 5.3.
 
-Response: We introduce the concept of right-censoring on page 11 of the revised ms.
+Response: We introduce the concept of right-censoring on page 11 of the revised ms, and the conventional way of dealing with missing data (or very long RTs) on page 10.
 
 > 4. Section 1.2 is a bit long. Please shorten this section to improve the clarity of the
 text and reduce redundancy. There is also overlap between text in Section 1.2
@@ -347,7 +343,7 @@ Response: We now write "The general process is similar to Tutorial 2a, except th
 
 > 15. Line 659: What is a “fully varying effects structure”? Please define/explain.
 
-Response: We explain this on pages 22-23 of the revised ms.:
+Response: We explain this on pages 22 of the revised ms.:
 "We also use a "keep it maximal" approach by specifying a full varying (or random) effects structure. This means that wherever possible we include varying intercepts and slopes per participant."
 
 
@@ -370,7 +366,7 @@ Response: Yes, this has been corrected now.
 > Comments to the Author
 This tutorial guides readers through how to wrangle cognitive reaction time data and address research questions pertaining to temporal dynamics of cognition using event history analysis (EHA) and speed/accuracy tradeoff analysis (SAT). Models are illustrated for hazard functions, and conditional accuracy functions. A nice feature of this study is that each model is presented in both the Bayesian and frequentist frameworks. Having both frameworks provides side-by-side comparisons such as when the Bayesian framework might be preferred (e.g., when models do not converge in the Frequentist framework, which is common when modeling multilevel data). The tutorial also includes a section on simulation and power analysis for planning experiments. I believe this tutorial could eventually be a useful contribution to fellow psychological scientists. However, in its current state, it was difficult to follow/ make my way through (despite existing expertise in EHA), and also difficult to understand what the main contributions were above and beyond existing works. Additionally, it was not clear why the discrete time framework was chosen. The temporal granularity of reaction time data seems like it would be better suited for a continuous time framework. Altogether, the tutorial covers important concepts, but it would benefit from greater accuracy and clearer definitions of key terms. Carefully removing redundancies, getting to the tutorial section much quicker (currently not until pg. 17), and being more precise with explanations of technical jargon would enhance its clarity and accuracy.
 
-Response: We discuss the main contributions above and beyond existing works on page 6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 8-9 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 13) and included more precise explanations of technical jargon.
+Response: Thank you for your constructive feedback. We discuss the main contributions above and beyond existing works on page 6 of the revised ms. We address the issue of treating time as discrete or continuous on pages 8-9 of the revised ms. We removed redundancies, get to the tutorial section quicker (page 13) and included more precise explanations of technical jargon.
 
 
 > <b>Code for the tutorials:</b> I went to the github page and found a folder for each of the 4 tutorials, which included sub-folders for data, figures, and tables. It took a minute for me to realize that the actual R code for each tutorial was in the main folder, not within each sub-folder. This may also be confusing to readers. Additionally, each of the 4 tutorials, along with their sub-tutorials are provided in separate .Rmd files. There were several download steps needed to get all the information. To me, this made the user experience tedious, and made the tutorials seem disjointed from one another. The authors might consider a more comprehensive single Rmd file that is neatly organized with an interactive table of contents (in the knitted html file). To me, this would make the experience much more enjoyable and useful for readers. Given that this is a tutorial, it would also be nice if the the RMarkdowns were somewhat more standalone e.g., by including a brief description of what a life table is and how to interpret the plot.

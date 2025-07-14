@@ -239,13 +239,13 @@ Right-censoring occurs when we only know that the event time is larger than some
 
 Importantly, when estimating the shape of the RT distribution in each experimental condition, EHA takes into account right-censored observations. As a result, EHA has a wider scope than current methods, as it can also be applied to RT data from experimental paradigms in which RTs are typically not measured, such as masking experiments and studies on the attentional blink. Also, EHA allows to increase experimental design efficiency, because we can introduce a response deadline instead of waiting until a response is emitted in each trial, so that we do not have to wait for very slow responses which would be trimmed anyway.
 
-There are different types of censoring. Left censoring occurs when all that is known about an observation on a variable T is that it is less than some value. Interval censoring combines right and left censoring so that all you know about T is that a \textless{} T \textless{} b, for some values of a and b (Allison, 2010). Random censoring occurs when observations are terminated for reasons that are not under the control of the experimenter.
+There are different types of censoring (Allison, 2010). Left censoring occurs when all that is known about an observation on a variable T is that it is less than some value. Interval censoring combines right and left censoring so that all you know about T is that a \textless{} T \textless{} b, for some values of a and b. Random censoring occurs when observations are terminated for reasons that are not under the control of the experimenter.
 
 In Supplementary Figure 1B, we present a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. For example, each trial in each condition might start with a fixation screen for 1 s, followed by a blank screen for 1 s, a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed. Participants are required to press the left button when identifying a male, and the right button when identifying a female. In Supplementary Figure 1B, correct responses are indicated with black dots, error responses with white dots, and the few right-censored observations with crosses.
 
 In EHA parlance this is known as a \emph{competing risks} situation, because from target display screen onset (time zero) onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a ``correct response'' state or an ``incorrect response'' state.
 
-There are two ways to deal with a competing-risks situation. One approach is to model the hazard function of correct response occurrence and treat incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c (Allison, 2010). However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another (Burle et al., 2004; Eriksen et al., 1985; Praamstra \& Seiss, 2005). Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here (see Figure 1B), and many experimental psychologists are familiar with SAT.
+There are two ways to deal with a competing-risks situation. One approach is to model the hazard function of correct response occurrence and treat incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c (Allison, 2010). However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another (Burle, Vidal, Tandonnet, \& Hasbroucq, 2004; Eriksen, Coles, Morris, \& O'hara, 1985; Praamstra \& Seiss, 2005). Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here (see Figure 1B), and many experimental psychologists are familiar with SAT.
 
 Studying the effect of stimulus-onset-asynchrony (SOA) on mean RT is still a popular approach to study the time course of cognitive processes. For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). However, mean RT conceals the possibe presence of responses triggered by the non-target stimulus (Panis, 2020; Panis \& Schmidt, 2016). For example, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial onset. Also, when RTs are originally recorded relative to target onset, we have to add a constant time to each (here: + 400 ms) in order to include these prime-triggered ``negative'' RTs in the analysis (lower x-axis labels). In general, all RTs must be positive for EHA to work.
 
@@ -270,9 +270,9 @@ Because waiting times can only increase, discrete-time EHA focuses on the discre
 
 \noindent F(t) = P(RT \(\leq\) t) = 1-S(t) \hfill  (4)
 
-The discrete-time hazard function of event occurrence gives you for each bin the probability that the event occurs (sometime) in that bin, given that the event has not occurred yet in previous bins. This conditionality in the definition of hazard is what makes the hazard function so diagnostic for studying event occurrence, as an event can physically not occur when it has already occurred before.
+The discrete-time hazard function of event occurrence gives you for each bin the conditional probability that the event occurs (sometime) in that bin, given that the event has not occurred yet in previous bins. This conditionality in the definition of hazard is what makes the hazard function so diagnostic for studying event occurrence, as an event can physically not occur when it has already occurred before.
 
-While the discrete-time hazard function assesses the unique risk of event occurrence associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the probability that the event does not occur before the endpoint of bin t.
+While the discrete-time hazard function assesses the unique risk of event occurrence associated with each time bin, the discrete-time survivor function cumulates the bin-by-bin risks of event \emph{non}occurrence to obtain the probability that the event does not occur before the upper bound of bin t.
 
 The probability mass function cumulates the risk of event occurrence in bin t with the risks of event nonoccurrence in bins 1 to t-1. From equation 3 we find that hazard in bin t is equal to P(t)/S(t-1).
 
@@ -282,7 +282,7 @@ For two-choice RT data, the discrete-time hazard function can be extended with t
 
 \noindent ca(t) = P(correct \textbar{} RT = t) \hfill  (5)
 
-\noindent which gives you for each bin the probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977). The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
+\noindent which gives you for each bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977). The ca(t) function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
 
 While psychological RT data is typically measured in small, continuous units (e.g., milliseconds), discrete-time EHA treats the RT data as interval-censored data, because it only uses the information that the response occurred sometime in a particular bin of time. If we want to use the exact event times, then we treat time as a continuous variable, and let RT be a continous random variable denoting a particular person's response time in a particular trial. Continuous-time EHA does not focus on the cumulative distribution function F(t) = P(RT \(\leq\) t) and its derivative, the probability density function f(t) = F(t)', but on the survivor function S(t) = P(RT \(>\) t) and the hazard rate function \(\lambda\)(t) = f(t)/S(t). The hazard rate function gives you the instantaneous \emph{rate} of event occurrence at time point t, given that the event has not occurred yet. Models for continous-time event data come in three forms: parametric models, Cox regression, and piece-wise exponential models (Singer \& Willett, 2003).
 
@@ -386,6 +386,12 @@ Finally, as explained by Kelso, Dumas, and Tognoli (2013), it is crucial to firs
 \bibitem[\citeproctext]{ref-allisonSurvivalAnalysisUsing2010}
 Allison, P. D. (2010). \emph{Survival analysis using {SAS}: A practical guide} (2. ed). Cary, NC: SAS Press.
 
+\bibitem[\citeproctext]{ref-BURLE2004153}
+Burle, B., Vidal, F., Tandonnet, C., \& Hasbroucq, T. (2004). Physiological evidence for response inhibition in choice reaction time tasks. \emph{Brain and Cognition}, \emph{56}(2), 153--164. \url{https://doi.org/10.1016/j.bandc.2004.06.004}
+
+\bibitem[\citeproctext]{ref-eriksenElectromyographicExaminationResponse1985}
+Eriksen, C. W., Coles, M. G. H., Morris, L. R., \& O'hara, W. P. (1985). An electromyographic examination of response competition. \emph{Bulletin of the Psychonomic Society}, \emph{23}(3), 165--168. \url{https://doi.org/10.3758/BF03329816}
+
 \bibitem[\citeproctext]{ref-holdenDispersionResponseTimes2009}
 Holden, J. G., Van Orden, G. C., \& Turvey, M. T. (2009). Dispersion of response times reveals cognitive dynamics. \emph{Psychological Review}, \emph{116}(2), 318--342. \url{https://doi.org/10.1037/a0014849}
 
@@ -410,6 +416,9 @@ Meyer, D. E., Osman, A. M., Irwin, D. E., \& Yantis, S. (1988). Modern mental ch
 \bibitem[\citeproctext]{ref-millsIntroducingSurvivalEvent2011}
 Mills, M. (2011). \emph{Introducing {Survival} and {Event History Analysis}}. 1 Oliver's Yard,~55 City Road,~London~EC1Y 1SP~United Kingdom: SAGE Publications Ltd. \url{https://doi.org/10.4135/9781446268360}
 
+\bibitem[\citeproctext]{ref-panisHowCanWe2020}
+Panis, S. (2020). How can we learn what attention is? {Response} gating via multiple direct routes kept in check by inhibitory control processes. \emph{Open Psychology}, \emph{2}(1), 238--279. \url{https://doi.org/10.1515/psych-2020-0107}
+
 \bibitem[\citeproctext]{ref-panisStudyingDynamicsVisual2020}
 Panis, S., Moran, R., Wolkersdorfer, M. P., \& Schmidt, T. (2020). Studying the dynamics of visual search behavior using {RT} hazard and micro-level speed--accuracy tradeoff functions: {A} role for recurrent object recognition and cognitive control processes. \emph{Attention, Perception, \& Psychophysics}, \emph{82}(2), 689--714. \url{https://doi.org/10.3758/s13414-019-01897-z}
 
@@ -421,6 +430,9 @@ Panis, S., \& Schmidt, T. (2016). What {Is Shaping RT} and {Accuracy Distributio
 
 \bibitem[\citeproctext]{ref-panisWhenDoesInhibition2022}
 Panis, S., \& Schmidt, T. (2022). When does {``inhibition of return''} occur in spatial cueing tasks? {Temporally} disentangling multiple cue-triggered effects using response history and conditional accuracy analyses. \emph{Open Psychology}, \emph{4}(1), 84--114. \url{https://doi.org/10.1515/psych-2022-0005}
+
+\bibitem[\citeproctext]{ref-praamstra9513}
+Praamstra, P., \& Seiss, E. (2005). The neurophysiology of response competition: {Motor} cortex activation and inhibition following subliminal response priming. \emph{Journal of Cognitive Neuroscience}, \emph{17}(3), 483--493. \url{https://doi.org/10.1162/0898929053279513}
 
 \bibitem[\citeproctext]{ref-singerAppliedLongitudinalData2003}
 Singer, J. D., \& Willett, J. B. (2003). \emph{Applied {Longitudinal Data Analysis}: {Modeling Change} and {Event Occurrence}}. Oxford, New York: Oxford University Press.
