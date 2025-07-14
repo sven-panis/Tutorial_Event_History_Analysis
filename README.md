@@ -54,7 +54,7 @@ At the top level, there are several files.
 
 **Tutorial_3b.Rmd**. This file is used to perform Frequentist discrete-time conditional accuracy analysis.
 
-**Tutorial_4.Rmd**. This file used to simulating data sets, power and precision.
+**Tutorial_4.Rmd**. This file is used to simulate data sets, and estimate power and precision.
 
 **install_packages.Rmd**. This file is used to initially install packages. You can use renv instead of this file.
 
@@ -64,7 +64,7 @@ At the top level, there are several files.
 
 - There is one R file:
 
-**custom_functions.R**. This file contains our custom function (see section C in the supplemental material).
+**custom_functions.R**. This file contains our custom function (see section C in the Supplemental Material).
 
 - There is one .bib file:
 
@@ -88,7 +88,7 @@ For more information on using papaja() for manuscripts, see the [papaja manual](
   * r-references.bib (BibTex entries for R and packages)
   * refs_manuscript.bib (BibTeX entries used in the manuscript)
 
-The /Suppl_material/ subfolder contains the corresponding .Rmd and .pdf files for supplemental material, a .bib file (refs_suppl_material.bib) and Supplementary Figure 1 (Plot_paradigms.png).
+The /Suppl_material/ subfolder contains the .Rmd and .pdf files for the Supplemental Material, a .bib file (refs_suppl_material.bib) and Supplementary Figure 1 (Plot_paradigms.png).
 
 **/sims/**
 
