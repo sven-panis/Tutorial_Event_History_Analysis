@@ -132,6 +132,551 @@ In what follows, the paper is organised in three main sections. In Section 2, we
 Figure 1: plot hazard, S(t), F(t) and P(t) functions for 2 simulated conditions
 
 
+So when we write h(tij), we mean the hazard for time interval t in trial j of individual i, which is the probability of experiencing the event during that interval, given survival to the beginning of that interval.
+
+Response time (RT) tasks can be categorized in several ways depending on what aspect you want to emphasize:
+
+## By Cognitive Complexity
+
+**Simple RT**
+- Single stimulus, single response
+- Press button when light appears
+- Minimal decision-making
+
+**Choice RT**
+- Multiple stimuli, multiple responses
+- Choose correct response based on stimulus (e.g., left button for "A", right for "B")
+- Involves stimulus discrimination and response selection
+
+**Go/No-Go**
+- Respond to target, withhold response to non-target
+- Tests response inhibition
+
+**Stop-Signal**
+- Execute response unless stop signal appears
+- Measures ability to inhibit prepotent responses
+
+## By Processing Demands
+
+**Perceptual Tasks**
+- Stimulus detection (simple)
+- Discrimination (judging differences)
+- Identification (naming/categorizing)
+
+**Memory Tasks**
+- Recognition (old/new judgments)
+- Recall with timed responses
+- Memory search (Sternberg task)
+
+**Attention Tasks**
+- Visual search
+- Stroop task (interference/conflict)
+- Flanker task (selective attention)
+- Attentional blink
+
+**Executive Function Tasks**
+- Task switching
+- N-back
+- Wisconsin Card Sorting
+
+## By Stimulus-Response Relationship
+
+**Compatible**
+- Natural/intuitive mappings (move right joystick for rightward stimulus)
+
+**Incompatible**
+- Arbitrary or conflicting mappings (Simon task, where location conflicts with response)
+
+**Congruent vs. Incongruent**
+- Whether distractors match or mismatch the target
+
+## By Number of Alternatives
+
+- **Binary choice** (2 options)
+- **Multiple choice** (3+ options)
+- Governed by Hick's Law: RT increases logarithmically with number of choices
+
+## By Paradigm/Design
+
+**Speeded vs. Accuracy-Emphasized**
+- Instructions emphasize speed vs. accuracy
+
+**Blocked vs. Mixed**
+- Single condition blocks vs. mixed trial types
+
+**Primed vs. Unprimed**
+- Whether preceding stimulus influences current trial
+
+**Sequential Effects**
+- Examining how previous trial(s) affect current RT
+
+## By Modality
+
+**Input modality:**
+- Visual, auditory, tactile, multimodal
+
+**Output modality:**
+- Manual (button press, keyboard)
+- Vocal
+- Eye movements (saccadic RT)
+
+## Common Specific Tasks
+
+- **Posner cueing** (spatial attention)
+- **Lexical decision** (word/nonword)
+- **Stroop** (color-word interference)
+- **Flanker** (distractor interference)
+- **Simon** (spatial compatibility)
+- **Mental rotation**
+- **Sternberg memory scanning**
+
+The categorization you choose typically depends on your research question - whether you're interested in decision processes, attention, inhibition, memory retrieval, etc.
+
+
+
+
+
+
+
+Great question! Signal detection theory (SDT) paradigms occupy an interesting space in RT research. Here's how they fit:
+
+## SDT Tasks as RT Paradigms
+
+**Yes-No Detection/Discrimination**
+- "Is a signal present?" or "Is this stimulus A or B?"
+- Binary choice RT task
+- Participants make a detection or discrimination judgment
+- RT reflects the decision process plus response execution
+
+**Rating Scale Tasks**
+- Multiple confidence levels (e.g., 1-6 scale)
+- Multiple-choice RT paradigm
+- RT increases with number of rating options (Hick's Law applies)
+
+## Key Distinction: Accuracy vs. Speed Focus
+
+Traditional SDT emphasizes:
+- **Accuracy** (hits, false alarms, d', criterion)
+- Often untimed or self-paced
+- Focus on sensitivity and bias
+
+RT paradigms emphasize:
+- **Speed** of correct responses
+- Speed-accuracy tradeoffs
+- Dynamics of the decision process
+
+## Integration: RT + SDT
+
+Modern approaches combine both:
+
+**Drift Diffusion Models (DDM)**
+- Unify RT distributions and accuracy
+- Evidence accumulation until threshold
+- Parameters map onto SDT concepts:
+  - Drift rate ≈ sensitivity (d')
+  - Starting point ≈ bias (criterion)
+  - Boundary separation = speed-accuracy tradeoff
+
+**Sequential Sampling Models**
+- Treats decisions as accumulating noisy evidence over time
+- RT emerges naturally from when threshold is reached
+- Explains both correct and error RTs
+
+## How to Categorize SDT-RT Tasks
+
+**By stimulus characteristics:**
+- Detection (signal present/absent)
+- Discrimination (which of two signals)
+- Recognition (old/new memory)
+
+**By decision type:**
+- Binary choice RT (yes-no, old-new)
+- Multiple choice RT (rating scales, multiple alternatives)
+
+**By theoretical framework:**
+- Traditional SDT (accuracy-focused)
+- Sequential sampling (RT + accuracy)
+- Speed-accuracy tradeoff paradigms
+
+## Practical Examples
+
+**Yes-No Recognition Memory:**
+- Show word: old or new?
+- Measures both: accuracy (d'), RT for hits vs. correct rejections
+- RT often faster for high-confidence judgments
+
+**Perceptual Discrimination:**
+- "Is tone A higher than tone B?"
+- Choice RT task with SDT analysis
+- Can measure both sensitivity and decision speed
+
+**2AFC (Two-Alternative Forced Choice):**
+- "Which interval contained the signal?"
+- Choice RT + eliminates response bias issues from traditional SDT
+
+## Why Combine RT + SDT?
+
+1. **Richer data**: RT distributions reveal decision dynamics that accuracy alone misses
+2. **Speed-accuracy tradeoffs**: Can't interpret accuracy without knowing time pressure
+3. **Individual differences**: Some people are fast/sloppy, others slow/careful
+4. **Process models**: Modern theories (DDM, LBA) predict both measures simultaneously
+
+So SDT tasks are essentially **choice RT paradigms** where we also care deeply about the accuracy patterns (signal vs. noise trials), not just overall speed. They bridge perceptual/memory processes with decision-making dynamics.
+
+
+
+
+
+
+Here's a comprehensive, updated list of SDT tasks organized by category:
+
+## 1. Detection Tasks
+
+**Visual Detection**
+- Detect dim light/spot on screen
+- Detect Gabor patch in noise
+- Detect motion in random dot kinematogram
+- Detect edge/contour in textured background
+- Detect target object in cluttered scene
+- Visual search (target present/absent)
+
+**Auditory Detection**
+- Detect tone in white noise
+- Detect gap in continuous noise
+- Detect signal in background babble
+- Detect phoneme in speech stream
+
+**Tactile Detection**
+- Detect vibration on skin
+- Detect pressure threshold
+- Detect temperature change
+
+**Multimodal Detection**
+- Detect audiovisual synchrony
+- Cross-modal detection tasks
+
+## 2. Discrimination Tasks
+
+**Visual Discrimination**
+- Brightness discrimination (which is brighter?)
+- Orientation discrimination (tilted left vs. right?)
+- Spatial frequency discrimination
+- Size discrimination
+- Color discrimination
+- Face discrimination (same person or different?)
+- Emotion discrimination (happy vs. sad face?)
+
+**Auditory Discrimination**
+- Pitch discrimination (higher vs. lower?)
+- Loudness discrimination
+- Temporal order discrimination
+- Phoneme discrimination (/ba/ vs. /pa/)
+- Music interval discrimination
+
+**Other Modalities**
+- Texture discrimination (roughness)
+- Weight discrimination
+- Odor discrimination
+- Taste discrimination
+
+## 3. Comparison Tasks
+
+**Magnitude Comparison**
+- Numerical comparison (which number is larger?)
+  - Symbolic (digits: 3 vs. 7)
+  - Non-symbolic (dot arrays)
+- Physical size comparison (which line is longer?)
+- Spatial comparison (which distance is farther?)
+- Angular comparison (which angle is greater?)
+
+**Intensity Comparison**
+- Which tone is louder?
+- Which light is brighter?
+- Which stimulus is heavier/rougher/warmer?
+
+**Temporal Comparison**
+- Which duration was longer?
+- Which event occurred more recently?
+- Which rhythm is faster?
+
+**Cross-Modal Comparison**
+- Which is more intense: this light or this tone?
+
+**Same-Different Tasks**
+- Simultaneous: Are these two stimuli the same or different?
+- Sequential: Is the second stimulus the same as the first?
+- Face matching, pattern matching, color matching
+- Delayed match-to-sample
+
+**Relative Judgment**
+- Which is more pleasant/attractive/valuable?
+- Preference judgments
+- Perceptual quality comparisons
+
+## 4. Recognition Memory
+
+**Verbal Memory**
+- Word recognition (old/new)
+- Sentence recognition
+- Story recognition
+- Source memory (which list/context?)
+
+**Visual Memory**
+- Picture recognition (old/new)
+- Face recognition
+- Scene recognition
+- Object recognition
+- Abstract pattern recognition
+
+**Associative Recognition**
+- Paired associate recognition (were these paired at study?)
+- Face-name association
+- Item-context binding
+- Relational memory
+
+**Temporal Memory**
+- Recency judgments (which was more recent?)
+- Temporal order memory
+
+## 5. Categorization Tasks
+
+**Natural Categories**
+- Animal vs. non-animal
+- Living vs. non-living
+- Face vs. non-face
+- Male vs. female face
+- Natural vs. artificial
+
+**Artificial Categories**
+- Category learning with novel stimuli
+- Prototype classification
+- Rule-based vs. similarity-based categories
+
+**Semantic Categories**
+- Lexical decision (word vs. nonword)
+- Semantic categorization (food vs. tool)
+
+**Perceptual Categories**
+- Classify along continuum (phonetic boundaries)
+- Categorical perception tasks
+
+## 6. Temporal Tasks
+
+**Temporal Order Judgment**
+- Which came first, A or B?
+- Simultaneity judgment (same time or different?)
+
+**Duration Tasks**
+- Duration discrimination (which was longer?)
+- Duration categorization (short vs. long)
+
+**Rhythm Tasks**
+- Regular vs. irregular rhythm detection
+- Beat detection
+
+**Temporal Integration**
+- Detect signal integrated over time
+- Attentional blink (was target 2 present?)
+
+## 7. Clinical and Applied Tasks
+
+**Medical Diagnosis**
+- Disease present/absent from imaging
+- Radiological screening (tumor detection)
+- Mammography screening
+- EKG abnormality detection
+- Symptom detection
+
+**Quality Control and Safety**
+- Defect detection in manufacturing
+- Security screening (threat detection at airports)
+- Food contamination detection
+- Equipment failure detection
+
+**Forensics**
+- Fingerprint matching
+- Face matching for identification
+- Evidence evaluation
+
+**Lie Detection**
+- Deception detection from behavior
+- Concealed information test
+- Credibility assessment
+
+## 8. Social and Emotional Tasks
+
+**Emotion Recognition**
+- Detect emotional expression (present/absent)
+- Discriminate emotions (angry vs. fearful)
+- Emotion intensity judgment
+
+**Social Perception**
+- Detect deception/lying
+- Detect trustworthiness
+- Detect social threat
+- Detect sexual interest/attraction
+- Detect dominance/submission
+
+**Theory of Mind**
+- Detect intentional vs. accidental actions
+- Discriminate beliefs/desires in others
+- False belief detection
+
+**Face Processing**
+- Own-race vs. other-race face recognition
+- Familiar vs. unfamiliar faces
+- Emotion in faces
+- Age/gender classification
+
+## 9. Metacognition Tasks
+
+**Confidence Judgments**
+- Any task with confidence ratings (e.g., 6-point scale)
+- Post-decision wagering
+- Feeling of knowing judgments
+- Judgments of learning
+
+**Type 2 SDT (Metacognitive Sensitivity)**
+- Discrimination of own correct vs. incorrect responses
+- Confidence in memory judgments
+- Perceptual awareness reports
+
+## 10. Language Tasks
+
+**Speech Perception**
+- Phoneme detection/discrimination
+- Voice-onset time categorization
+- Speaker identification (same/different speaker)
+
+**Reading and Lexical Processing**
+- Lexical decision (word/nonword)
+- Letter detection in words
+- Semantic relatedness judgments
+
+**Comprehension**
+- Detect grammatical errors
+- Detect semantic anomalies
+- Text coherence judgments
+
+## 11. Attention Tasks
+
+**Spatial Attention**
+- Detect target at cued vs. uncued location
+- Visual search with set size manipulation
+
+**Feature-Based Attention**
+- Detect target with specific feature
+- Conjunction search (target present/absent)
+
+**Temporal Attention**
+- Attentional blink (T2 detection given T1)
+- Psychological refractory period tasks
+
+**Divided Attention**
+- Dual-task detection/discrimination
+- Multiple target monitoring
+
+## 12. Learning and Statistical Tasks
+
+**Implicit Learning**
+- Detect learned patterns vs. random sequences
+- Statistical learning (detect regularities)
+- Artificial grammar learning (grammatical/ungrammatical)
+
+**Associative Learning**
+- Detect contingency between cues and outcomes
+- Causal judgment (cause present/absent)
+
+**Perceptual Learning**
+- Discrimination after training
+- Texture/expert object discrimination
+
+## 13. Multi-Alternative Forced Choice
+
+**2AFC (Two-Alternative Forced Choice)**
+- Which interval contained the signal? (temporal 2AFC)
+- Which location contained the signal? (spatial 2AFC)
+- Better/worse comparison
+
+**3+ AFC**
+- Which of N intervals/locations contained the signal?
+- Multiple object identification
+- Multiple category choices
+
+**Oddity Tasks**
+- Which of 3+ items is different/odd one out?
+
+## 14. Change Detection
+
+**Visual Change**
+- Did anything change between displays?
+- Change blindness paradigms
+- Flicker paradigm (detect what changed)
+
+**Auditory Change**
+- Detect pitch/timbre change
+- Mismatch detection
+
+**Cross-Modal Change**
+- Detect change across modalities
+
+## 15. Complex/Multidimensional Tasks
+
+**Multidimensional Discrimination**
+- Discriminate on multiple features simultaneously
+- General recognition theory (GRT) paradigms
+
+**Hierarchical Detection**
+- Global vs. local level detection
+- Navon figures (large letter made of small letters)
+
+**Conjunction/Feature Integration**
+- Detect conjunction of features
+- Feature binding tasks
+
+## 16. Action and Motor Tasks
+
+**Motor Detection**
+- Detect own movement vs. external movement
+- Agency detection (did I cause this?)
+
+**Temporal Motor Tasks**
+- Synchronization detection (was action synchronized with event?)
+- Motor timing discrimination
+
+## 17. Specialized Formats
+
+**Adaptive/Staircase Procedures**
+- Any of above with adaptive threshold estimation
+- Quest, PEST, or simple up-down methods
+
+**Rating Scale Variants**
+- 4-point, 6-point, or continuous confidence ratings
+- Likelihood ratings (How likely is signal present?)
+- Unequal variance models
+
+**Sequential/Dynamic Tasks**
+- Multiple observations before decision
+- Evidence accumulation over time
+- Dynamic noise conditions
+
+**Context-Dependent Tasks**
+- Detection/discrimination with varying context
+- Expectation manipulation
+- Prior probability manipulation
+
+## 18. Memory Strength Tasks
+
+**Remember/Know Judgments**
+- Recognition with recollection quality
+- Familiarity vs. recollection
+
+**Plurality Discrimination**
+- Was item seen once or multiple times?
+- Frequency discrimination
+
+The key insight is that SDT can be applied to virtually any task where you're discriminating between two (or more) states, categories, or alternatives based on noisy internal representations. The common thread is the signal detection framework: comparing evidence against a criterion or comparing two distributions of evidence.
+
 ### Censoring
 
 Figure 2: Detection data +
@@ -171,6 +716,8 @@ Figure 3: Discrimination data
 
 ## 2.2 Modeling approaches
 
+
+This distinction is why discrete-time hazard models can be fit using logistic regression - you're modeling a binary outcome (event yes/no) within each discrete time period.
 
  Figure 5: soa manipulation + old Figure 1
  
