@@ -94,6 +94,13 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology [@bolgerCausalProcessesPsychology2019]. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
 
+
+
+
+
+
+
+
 As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin "500" in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhenDoesInhibition2022; @panisWhatShapingRT2016; @panisHowCanWe2020].
 
 (ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
@@ -117,6 +124,85 @@ Set within this context, our overall aim is to introduce a set of tutorials, whi
 In what follows, the paper is organised in three main sections. In Section 2, we provide a brief overview of EHA to orient the reader to the basic concepts that we will use throughout the paper and why such an approach might be relevant for research in experimental psychology. In Section 3, we outline a series of tutorials, which are written in the R programming language and publicly available on our Github page (https://github.com/sven-panis/Tutorial_Event_History_Analysis), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, such as data wrangling, plotting descriptive statistics, model fitting and planning future studies, so that others can apply EHA to their own time-to-event data measured in RT tasks. In Section 4, we discuss the strengths and weaknesses of the approach for researchers in experimental psychology.
 
 # 2. What is event history analysis and why is it relevant to research in experimental psychology?
+
+## 2.1 Basic concepts of EHA
+
+### Hazard and survival functions
+
+Figure 1: plot hazard, S(t), F(t) and P(t) functions for 2 simulated conditions
+
+
+### Censoring
+
+Figure 2: Detection data +
+
+### Repeated vs. recurrent events
+
+In the context of response time experiments with button presses across trials, these would typically be considered repeated events rather than recurrent events in the survival analysis sense.
+Here's why:
+Key Differences
+Recurrent events in survival analysis usually imply:
+
+The event can "re-occur" after happening (like a disease relapse)
+There's genuine risk of the same phenomenon happening again
+Often involves a temporal process where earlier events may influence later ones
+The focus is on when events happen over continuous time
+
+Repeated measures (which button presses across trials represent):
+
+Structured, often experimenter-determined observations
+Each trial is typically independent or pseudo-independent by design
+The focus is usually on the response time itself, not necessarily the temporal spacing between events
+Trials are discrete, planned observations
+
+For Response Time Data
+Button presses across trials are better conceptualized as:
+
+Repeated measures in a standard statistical sense
+Each trial gives you a response time measurement
+You're typically interested in modeling the distribution of response times and how they vary with conditions, not modeling the "survival" to a button press
+
+Figure 4 :  perceptual dominance durations
+
+### Competing risks: correct versus error responses
+
+Figure 3: Discrimination data 
+
+
+## 2.2 Modeling approaches
+
+
+ Figure 5: soa manipulation + old Figure 1
+ 
+ Discrete vs. continuous time
+
+ Parametric, semi-parametric, and nonparametric approaches
+
+
+Key Advantages of Discrete-Time Models
+Easy to incorporate time-varying covariates
+Flexible baseline hazard specification
+Can use standard logistic regression software
+Natural for data collected at discrete intervals
+Can handle ties easily
+The discrete-time approach is particularly well-suited for repeated measures data where observations occur at regular intervals (annual surveys, quarterly measurements, etc.).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 2.1 A brief introduction to event history analysis
 
