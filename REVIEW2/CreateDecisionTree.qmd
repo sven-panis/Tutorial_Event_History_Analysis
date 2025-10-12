@@ -3,7 +3,7 @@ title: "CreateDecisionTree"
 format: html
 ---
 
-# 1. Create and save Decision Tree for selecting a modeling approach
+# Figure 3. Decision Tree for selecting a modeling approach
 
 ```{r}
 library(grid)
@@ -22,7 +22,7 @@ nodes <- data.frame(
     "Parametric\nSurvival Models",
     "Do you care about\nthe shape of the\nhazard function?",
     "Cox\nRegression Model",
-    "Discrete-Time Model\nor Piecewise\nExponential Model"
+    "Piecewise Exponential\nModel or\n Discrete-Time Model"
   ),
   type = c("question", "outcome", "question", "outcome", "outcome")
 )
@@ -67,7 +67,7 @@ ggplot() +
   # Add node text
   geom_text(data = nodes,
             aes(x = x, y = y, label = label),
-            color = "white", fontface = "bold", size = 5, lineheight = 0.9) +
+            color = "white", fontface = "bold", size = 4.5, lineheight = 0.9) +
   
   # Formatting
   coord_cartesian(xlim = c(0, 7), ylim = c(0.5, 7)) +
@@ -86,58 +86,42 @@ ggsave("REVIEW2/DecisionTreeMethods.png", width = 10, height = 10, dpi = 800, bg
 
 ```
 
-# 2. Create a plot for normal distribution
-
+# Figure 2. Ways to describe a RT distribution
 
 ```{r}
+#| label: plot-views-on-RT
+library(gamlss.dist)
 
+set.seed(1)
 
-
+# set values
 ntrials = 100000
 mean = 350
 sd = 60
 bin_width = 20
 
+# sample RT data
 rt_data = tibble(
   rt1 = rnorm(ntrials, mean, sd),
   rt2 = rexGAUS(ntrials,mu = 300, sigma = sd, nu = 100)
 ) %>%
   mutate(N = 1:n())
 
-summary(rt_data$rt1)
-summary(rt_data$rt2)
-
-  
+# Create histograms
 hist1 <- ggplot(rt_data, aes(x=rt1)) +
   geom_histogram(binwidth = bin_width, boundary = bin_width) +
   scale_x_continuous(limits = c(0,1200)) +
   theme_bw()
-hist1
-
 hist2 <- ggplot(rt_data, aes(x=rt2)) +
   geom_histogram(binwidth = bin_width, boundary = bin_width) +
   scale_x_continuous(limits = c(0,1200)) +
   theme_bw()
-hist2
-
-
-
-
 
 # extract bin boundaries and counts
 dat1 <- layer_data(hist1)
-head(dat1)
-dim(dat1)
-tail(dat1)
-
-
 dat2 <- layer_data(hist2)
-head(dat2)
-dim(dat2)
-tail(dat2)
 
-
-# create life table
+# create life tables
 lt1 <- tibble(
   bin = 1:dim(dat1)[1],
   ncount = dat1$count,
@@ -148,7 +132,6 @@ lt1 <- tibble(
   endp = bin*bin_width,
   endpo = dat1$xmax
 )
-dim(lt1)
 
 lt2 <- tibble(
   bin = 1:dim(dat2)[1],
@@ -160,19 +143,15 @@ lt2 <- tibble(
   endp = bin*bin_width,
   endpo = dat2$xmax
 )
-dim(lt2)
 
-# check
-tail(lt1,15)
-head(lt1,15)
+# check start of hazard
+head(lt1)
+head(lt2)
 
-# replace Inf with Nan
-#lt[sapply(lt, is.infinite)] <- NA
+tail(lt1)
+tail(lt2)
 
-# reduce size
-#lt <- lt %>% filter(bin < 37)
-
-# replace NA with 0
+# replace first hazard NA with 0
 lt1 <- lt1 %>% 
   mutate(haz = ifelse(bin == 1, 0, haz)) %>%
   mutate(haz = ifelse(ncount == 0 & cumul > .999999, NA, haz))
@@ -180,38 +159,43 @@ lt2 <- lt2 %>%
   mutate(haz = ifelse(bin == 1, 0, haz)) %>%
   mutate(haz = ifelse(ncount == 0 & cumul > .999999, NA, haz))
 
+tail(lt1,n=30)
+tail(lt2)
 
-
-# check
-tail(lt1,15)
-tail(lt1,15)
+# Define color palette
+cbPalette <- c("#009E73", "#D55E00")
   
-head(lt1)
-
+# discrete-time hazard functions
 p1 <- tibble(
   bin = lt1$bin,
   normal = lt1$haz,
   exgaussian = lt2$haz
 ) %>% 
   pivot_longer(cols = normal:exgaussian,
-               values_to  = "hazard"
+               values_to  = "hazard probability"
                ) %>%
   rename(distribution = name) %>%
-  ggplot(aes(x=bin,y=hazard,group=distribution,colour=distribution)) +
+  # plot
+  ggplot(aes(x=bin,y=`hazard probability`,group=distribution,colour=distribution)) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
-  scale_y_continuous(limits = c(0,1), 
-                     breaks = c(0,.25,.5,.75,1)) +
-  scale_x_continuous(breaks = c(0,seq(2,60,4),60), 
+  scale_color_manual(values = cbPalette) +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
                      limits = c(-0.4,60.1), 
-                     labels = c(0,seq(2,60,4)*20,1200),
+                     labels = c(0,seq(3,60,3)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
-        panel.grid.minor.x = element_blank())
+        panel.grid.minor.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=14))
 p1
 
+# prob. mass functions
 p2 <- tibble(
   bin = lt1$bin,
   normal = lt1$pmass,
@@ -220,17 +204,26 @@ p2 <- tibble(
   pivot_longer(cols = normal:exgaussian,
                values_to  = "probability mass"
                ) %>%
-    rename(distribution = name) %>%
+  rename(distribution = name) %>%
+  # plot
   ggplot(aes(x=bin,y=`probability mass`,group=distribution,colour=distribution)) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
+  scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,.2), 
-                     breaks = c(0,.1,.2))+
-  scale_x_continuous(breaks = seq(1,60,4), limits = c(1,60), labels = seq(1,60,4)*20) +
+                     breaks = c(0,.1,.2),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
-  theme(axis.text.x = element_text(angle=90))
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=14))
 p2
-
+# survivor functions
 p3 <- tibble(
   bin = lt1$bin,
   normal = lt1$surv,
@@ -239,18 +232,28 @@ p3 <- tibble(
   pivot_longer(cols = normal:exgaussian,
                values_to  = "survival probability"
                ) %>%
-    rename(distribution = name) %>%
+  rename(distribution = name) %>%
+  # plot
   ggplot(aes(x=bin,y=`survival probability`,group=distribution,colour=distribution)) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
-  scale_y_continuous(limits = c(0,1), 
-                     breaks = c(0,.25,.5,.75,1))+
-  scale_x_continuous(breaks = seq(1,60,4), limits = c(1,60), labels = seq(1,60,4)*20) +
+  scale_color_manual(values = cbPalette) +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02)))+
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
-        panel.grid.minor.y = element_blank())
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=14))
 p3
 
+# cum. prob. functions
 p4 <- tibble(
   bin = lt1$bin,
   normal = lt1$cumul,
@@ -259,63 +262,950 @@ p4 <- tibble(
   pivot_longer(cols = normal:exgaussian,
                values_to  = "cumulative probability"
                ) %>%
-    rename(distribution = name) %>%
+  rename(distribution = name) %>%
   ggplot(aes(x=bin,y=`cumulative probability`,group=distribution,colour=distribution)) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
-  scale_y_continuous(limits = c(0,1), 
-                     breaks = c(0,.25,.5,.75,1))+
-  scale_x_continuous(breaks = seq(1,60,4), limits = c(1,60), labels = seq(1,60,4)*20) +
+   scale_color_manual(values = cbPalette) +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02)))+
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
-        panel.grid.minor.y = element_blank())
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=14))
 p4
-# plot functions
-# p1 <- ggplot(lt, aes(x=rt,y=cumul)) +
-#                geom_line() + geom_point() + theme_bw()+
-#                scale_y_continuous(limits = c(-0.1,1.1), 
-#                                   breaks = c(0,.25,.5,.75,1))
-#              
-# p2 <- ggplot(lt, aes(x=rt,y=pmass)) +
-#                geom_line() + geom_point() + theme_bw()+
-#                scale_y_continuous(limits = c(-0.1,.5), 
-#                                   breaks = c(0,.25,.5))
-# 
-# p3 <- ggplot(lt, aes(x=rt,y=surv)) +
-#                geom_line() + geom_point() + theme_bw()+
-#                scale_y_continuous(limits = c(-0.1,1.1), 
-#                                   breaks = c(0,.25,.5,.75,1))
-# 
-# p4 <- ggplot(lt, aes(x=rt,y=haz)) +
-#                geom_line() + geom_point() + theme_bw() +
-#                scale_y_continuous(limits = c(-0.1,1.1), 
-#                                   breaks = c(0,.25,.5,.75,1))
-
              
+# Combine         
 p4_theme <- p4 + theme(legend.position = "none")
 p2_theme <- p2 + theme(legend.position = "none")
 p3_theme <- p3 + theme(legend.position = "none")
 
-  (p2_theme / p4_theme / p3_theme / p1) +
-#    plot_annotation(title = title) +
+(p2_theme / p4_theme / p3_theme / p1) +
+    plot_annotation(title = "Four ways to describe a distribution of event times:") +
     plot_layout(guides = "collect",
                 axes = "collect_x") & 
     theme(legend.position = "bottom")
-
-
-
 ```
-
 
 Save the plot
 
 ```{r}
 ggsave("REVIEW2/Plot_distributions.png", width = 10, height = 10, dpi = 800)
+```
+
+# Figure 4. Members of different families
+
+We plot various members of the exGaussian, gamma, and the Ratcliff diffusion model.
+
+## gamma
+
+```{r}
+#| label: gamma
+library(gamlss.dist)
+
+set.seed(2)
+
+# values
+ntrials = 100000
+mean = 350
+sd = 60
+bin_width = 20
+
+# sample
+rt_data = tibble(
+  rt1 = rGA(ntrials, mu = 350, sigma = .3),  # gamma distr
+  rt2 = rGA(ntrials, mu = 325, sigma = .3),
+  rt3 = rGA(ntrials, mu = 350, sigma = .2),
+  rt4 = rGA(ntrials, mu = 325, sigma = .2),
+  rt5 = rGA(ntrials, mu = 450, sigma = .4),
+  rt6 = rGA(ntrials, mu = 450, sigma = .5)
+) %>%
+  mutate(N = 1:n())
+
+# histograms
+hist1 <- ggplot(rt_data, aes(x=rt1)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist2 <- ggplot(rt_data, aes(x=rt2)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist3 <- ggplot(rt_data, aes(x=rt3)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist4 <- ggplot(rt_data, aes(x=rt4)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist5 <- ggplot(rt_data, aes(x=rt5)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist6 <- ggplot(rt_data, aes(x=rt6)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+
+# extract bin boundaries and counts
+dat1 <- layer_data(hist1)
+dat2 <- layer_data(hist2)
+dat3 <- layer_data(hist3)
+dat4 <- layer_data(hist4)
+dat5 <- layer_data(hist5)
+dat6 <- layer_data(hist6)
+
+# create life tables
+lt1 <- tibble(
+  bin = 1:dim(dat1)[1],
+  ncount = dat1$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat1$xmax
+)
+lt2 <- tibble(
+  bin = 1:dim(dat2)[1],
+  ncount = dat2$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat2$xmax
+)
+lt3 <- tibble(
+  bin = 1:dim(dat3)[1],
+  ncount = dat3$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat3$xmax
+)
+lt4 <- tibble(
+  bin = 1:dim(dat4)[1],
+  ncount = dat4$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat4$xmax
+)
+lt5 <- tibble(
+  bin = 1:dim(dat5)[1],
+  ncount = dat5$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat5$xmax
+)
+lt6 <- tibble(
+  bin = 1:dim(dat6)[1],
+  ncount = dat6$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat6$xmax
+)
+
+# check heads
+head(lt1)
+head(lt2)
+head(lt3)
+head(lt4)
+head(lt5)
+head(lt6)
+
+# check tails
+tail(lt1, n=20)
+tail(lt2, n=20)
+tail(lt3)
+tail(lt4, n=30)
+tail(lt5)
+tail(lt6)
+
+# find where hazard reaches 1, and set hazard to NA for later bins
+lt1 <- lt1 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt1 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt1,n=20)
+
+lt2 <- lt2 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt2 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt2,n=20)
+
+lt3 <- lt3 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt3 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt3,n=20)
+
+lt4 <- lt4 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt4 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt4,n=30)
+
+#lt5 <- lt5 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt5 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt5,n=20)
+  
+
+#lt6 <- lt6 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt6 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt6,n=20)
+
+# Define color palette
+cbPalette <- c("#009E73", "#D55E00")
+  
+p1 <- tibble(
+  bin = lt1$bin,
+  `mu=350, sigma=.3` = lt1$haz,
+  `mu=325, sigma=.3` = lt2$haz,
+  `mu=300, sigma=.3` = lt3$haz,
+  `mu=350, sigma=.2` = lt4$haz,
+  `mu=325, sigma=.2` = lt5$haz,
+  `mu=400, sigma=.5` = lt6$haz
+) %>% 
+  pivot_longer(cols = `mu=350, sigma=.3`:`mu=400, sigma=.5`,
+               values_to  = "hazard"
+               ) %>%
+  rename(parameters = name) %>%
+  # plot
+  ggplot(aes(x=bin,y=hazard,group=parameters,colour=parameters)) +
+  geom_line() + 
+  geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "gamma distribution") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "right")
+p1
+```
+
+## exGaussian
+
+```{r}
+#| label: ex-gaussian
+library(gamlss.dist)
+
+# values
+ntrials = 200000
+mean = 350
+sd = 60
+bin_width = 20
+
+# sample
+rt_data = tibble(
+  rt1 = rexGAUS(ntrials, mu = 350, sigma = 60, nu = 100),
+  rt2 = rexGAUS(ntrials, mu = 325, sigma = 60, nu = 50),
+  rt3 = rexGAUS(ntrials, mu = 300, sigma = 55, nu = 100),
+  rt4 = rexGAUS(ntrials, mu = 350, sigma = 55, nu = 50),
+  rt5 = rexGAUS(ntrials, mu = 325, sigma = 50, nu = 100),
+  rt6 = rexGAUS(ntrials, mu = 300, sigma = 50, nu = 50)
+) %>%
+  mutate(N = 1:n())
+
+# histograms
+hist1 <- ggplot(rt_data, aes(x=rt1)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist2 <- ggplot(rt_data, aes(x=rt2)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist3 <- ggplot(rt_data, aes(x=rt3)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist4 <- ggplot(rt_data, aes(x=rt4)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist5 <- ggplot(rt_data, aes(x=rt5)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist6 <- ggplot(rt_data, aes(x=rt6)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+
+# extract bin boundaries and counts
+dat1 <- layer_data(hist1)
+dat2 <- layer_data(hist2)
+dat3 <- layer_data(hist3)
+dat4 <- layer_data(hist4)
+dat5 <- layer_data(hist5)
+dat6 <- layer_data(hist6)
+
+# create life tables
+lt1 <- tibble(
+  bin = 1:dim(dat1)[1],
+  ncount = dat1$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat1$xmax
+)
+lt2 <- tibble(
+  bin = 1:dim(dat2)[1],
+  ncount = dat2$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat2$xmax
+)
+lt3 <- tibble(
+  bin = 1:dim(dat3)[1],
+  ncount = dat3$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat3$xmax
+)
+lt4 <- tibble(
+  bin = 1:dim(dat4)[1],
+  ncount = dat4$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat4$xmax
+)
+lt5 <- tibble(
+  bin = 1:dim(dat5)[1],
+  ncount = dat5$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat5$xmax
+)
+lt6 <- tibble(
+  bin = 1:dim(dat6)[1],
+  ncount = dat6$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat6$xmax
+)
+
+# check heads
+head(lt1)
+head(lt2)
+head(lt3)
+head(lt4)
+head(lt5)
+head(lt6)
+
+# check tails
+tail(lt1, n=20)
+tail(lt2, n=20)
+tail(lt3)
+tail(lt4, n=20)
+tail(lt5)
+tail(lt6, n=20)
+
+# find where hazard reaches 1, and set hazard to NA for later bins
+#lt1 <- lt1 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt1 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt1,n=20)
+
+lt2 <- lt2 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt2 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt2,n=20)
+
+#lt3 <- lt3 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt3 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt3,n=20)
+
+lt4 <- lt4 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt4 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt4,n=30)
+
+#lt5 <- lt5 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt5 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt5,n=20)
+  
+
+lt6 <- lt6 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt6 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt6,n=20)
+
+# Define color palette
+cbPalette <- c("#009E73", "#D55E00")
+
+
+# plot
+p2 <- tibble(
+  bin = lt1$bin,
+  `mu=350, sigma=60, nu=100` = lt1$haz,
+  `mu=325, sigma=60, nu=50` = lt2$haz,
+  `mu=300, sigma=55, nu=100` = lt3$haz,
+  `mu=350, sigma=55, nu=50` = lt4$haz,
+  `mu=325, sigma=50, nu=100` = lt5$haz,
+  `mu=300, sigma=50, nu=50` = lt6$haz
+) %>% 
+  pivot_longer(cols = `mu=350, sigma=60, nu=100`:`mu=300, sigma=50, nu=50`,
+               values_to  = "hazard"
+               ) %>%
+  rename(parameters = name) %>%
+  ggplot(aes(x=bin,y=hazard,group=parameters,colour=parameters)) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "ex-gaussian distribution") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "right")
+p2
+```
+
+## diffusion
+
+```{r}
+#| label: diffusion
+library(rtdists)
+
+# values
+ntrials = 100000
+bin_width = 20
+# a : Threshold separation. Typical range: 0.5 < a < 2
+# v : drift rate. Typical range: -5 < v < 5
+# t0 : non-decision time in s. Typical range: 0.1 < t0 < 0.5
+# z : starting point. Default is 0.5*a (i.e., no bias)
+# d = 0
+# sz : inter-trial-variability of starting point.Values different from 0 can predict fast errors (but can slow computation considerably). Typical range: 0 < sz < 0.5. Default is 0.
+# sv : inter-trial-variability of drift rate. Standard deviation of a normal distributionwith mean v describing the distribution of actual drift rates from specific trials.Values different from 0 can predict slow errors. Typical range: 0 < sv < 2.Default is 0.
+# st0 : inter-trial var. of non-decisional component
+# s = 1
+
+
+# sample
+rt1 = rdiffusion(ntrials, a=1.0, v=2.0, t0=0.2, z, d = 0, sz = 0, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+  
+rt2 = rdiffusion(ntrials, a=1.0, v=1.5, t0=0.2, z, d = 0, sz = 0, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+  
+rt3 = rdiffusion(ntrials, a=1.0, v=1.0, t0=0.2, z, d = 0, sz = 0, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+  
+rt4 = rdiffusion(ntrials, a=1.2, v=1.5, t0=0.3, z, d = 0, sz = 0, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+  
+rt5 = rdiffusion(ntrials, a=1.0, v=1.5, t0=.3, z, d = 0, sz = .4, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+  
+rt6 = rdiffusion(ntrials, a=1.5, v=1.0, t0=.3, z, d = 0, sz = .4, sv = 0,
+               st0 = 0, s = 1, precision = 3, 
+               stop_on_error = TRUE, maxt = 20, method = "fastdm")
+
+rt_data <- tibble(
+    rt1 = rt1$rt*1000,
+    rt2 = rt2$rt*1000,
+    rt3 = rt3$rt*1000,
+    rt4 = rt4$rt*1000,
+    rt5 = rt5$rt*1000,
+    rt6 = rt6$rt*1000
+  ) %>%
+  mutate(N = 1:n()) 
+
+
+# histograms
+hist1 <- ggplot(rt_data, aes(x=rt1)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist2 <- ggplot(rt_data, aes(x=rt2)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist3 <- ggplot(rt_data, aes(x=rt3)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist4 <- ggplot(rt_data, aes(x=rt4)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist5 <- ggplot(rt_data, aes(x=rt5)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist6 <- ggplot(rt_data, aes(x=rt6)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+
+# extract bin boundaries and counts
+dat1 <- layer_data(hist1)
+dat2 <- layer_data(hist2)
+dat3 <- layer_data(hist3)
+dat4 <- layer_data(hist4)
+dat5 <- layer_data(hist5)
+dat6 <- layer_data(hist6)
+
+# create life tables
+lt1 <- tibble(
+  bin = 1:dim(dat1)[1],
+  ncount = dat1$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat1$xmax
+)
+lt2 <- tibble(
+  bin = 1:dim(dat2)[1],
+  ncount = dat2$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat2$xmax
+)
+lt3 <- tibble(
+  bin = 1:dim(dat3)[1],
+  ncount = dat3$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat3$xmax
+)
+lt4 <- tibble(
+  bin = 1:dim(dat4)[1],
+  ncount = dat4$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat4$xmax
+)
+lt5 <- tibble(
+  bin = 1:dim(dat5)[1],
+  ncount = dat5$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat5$xmax
+)
+lt6 <- tibble(
+  bin = 1:dim(dat6)[1],
+  ncount = dat6$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat6$xmax
+)
+
+
+# plot
+p3 <- tibble(
+  bin = lt1$bin,
+  `a=1.0,v=2.0,t0=0.2,sz=0` = lt1$haz,
+  `a=1.0,v=1.5,t0=0.2,sz=0` = lt2$haz,
+  `a=1.0,v=1.0,t0=0.2,sz=0` = lt3$haz,
+  `a=1.2,v=1.5,t0=0.3,sz=0` = lt4$haz,
+  `a=1.0,v=1.5,t0=0.3,sz=0.4` = lt5$haz,
+  `a=1.5,v=1.0,t0=0.3,sz=0.4` = lt6$haz
+) %>% 
+  pivot_longer(cols = `a=1.0,v=2.0,t0=0.2,sz=0`:`a=1.5,v=1.0,t0=0.3,sz=0.4`,
+               values_to  = "hazard"
+               ) %>%
+  rename(parameters = name) %>%
+#  mutate(distribution = factor(distribution,
+#                               levels = #c("diff_10_20","diff_10_15","diff_10_10","diff_14_15","diff_12_15","diff_08_15"))) #%>%
+  
+  ggplot(aes(x=bin,y=hazard,group=parameters,colour=parameters)) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,.2), 
+                     breaks = c(0, 0.05, 0.1,.15,.2),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "Ratcliff diffusion model") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "right")
+p3
+```
+   
+
+
+## lognormal
+
+```{r}
+#| label: log-normal
+library(gamlss.dist)
+
+set.seed(2)
+# values
+ntrials = 200000
+bin_width = 20
+
+# sample
+rt_data = tibble(
+  rt1 = rlnorm(ntrials, 5.8, 0.5),
+  rt2 = rlnorm(ntrials, 5.6, 0.3),
+  rt3 = rlnorm(ntrials, 5.4, 0.2),
+  rt4 = rlnorm(ntrials, 5.4, 0.3),
+  rt5 = rlnorm(ntrials, 5.4, 0.4),
+  rt6 = rlnorm(ntrials, 5.4, 0.5)
+) %>%
+  mutate(N = 1:n())
+
+# histograms
+hist1 <- ggplot(rt_data, aes(x=rt1)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist2 <- ggplot(rt_data, aes(x=rt2)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist3 <- ggplot(rt_data, aes(x=rt3)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+   scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist4 <- ggplot(rt_data, aes(x=rt4)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist5 <- ggplot(rt_data, aes(x=rt5)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+hist6 <- ggplot(rt_data, aes(x=rt6)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  scale_y_continuous(limits = c(0,20000)) +
+  theme_bw()
+
+# extract bin boundaries and counts
+dat1 <- layer_data(hist1)
+dat2 <- layer_data(hist2)
+dat3 <- layer_data(hist3)
+dat4 <- layer_data(hist4)
+dat5 <- layer_data(hist5)
+dat6 <- layer_data(hist6)
+
+# create life tables
+lt1 <- tibble(
+  bin = 1:dim(dat1)[1],
+  ncount = dat1$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat1$xmax
+)
+lt2 <- tibble(
+  bin = 1:dim(dat2)[1],
+  ncount = dat2$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat2$xmax
+)
+lt3 <- tibble(
+  bin = 1:dim(dat3)[1],
+  ncount = dat3$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat3$xmax
+)
+lt4 <- tibble(
+  bin = 1:dim(dat4)[1],
+  ncount = dat4$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat4$xmax
+)
+lt5 <- tibble(
+  bin = 1:dim(dat5)[1],
+  ncount = dat5$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat5$xmax
+)
+lt6 <- tibble(
+  bin = 1:dim(dat6)[1],
+  ncount = dat6$count,
+  pmass = ncount/ntrials,
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz = pmass/lag(surv, 1),
+  endp = bin*bin_width,
+  endpo = dat6$xmax
+)
+
+# check heads
+head(lt1)
+head(lt2)
+head(lt3)
+head(lt4)
+head(lt5)
+head(lt6)
+
+# check tails
+tail(lt1, n=20)
+tail(lt2, n=20)
+tail(lt3, n=20)
+tail(lt4, n=30)
+tail(lt5)
+tail(lt6)
+
+# find where hazard reaches 1, and set hazard to NA for later bins
+#lt1 <- lt1 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt1 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt1,n=20)
+
+lt2 <- lt2 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt2 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt2,n=20)
+
+lt3 <- lt3 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt3 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt3,n=20)
+
+lt4 <- lt4 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt4 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt4,n=30)
+
+lt5 <- lt5 %>% 
+  mutate(haz = ifelse(bin == 1, 0, haz),
+         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+         test = ifelse(bin < (lt5 %>% filter(test == 1) %>% pull(bin)), 1, test),
+         haz = ifelse(test == 0, NA, haz))
+tail(lt5,n=20)
+  
+
+#lt6 <- lt6 %>% 
+#  mutate(haz = ifelse(bin == 1, 0, haz),
+#         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#         test = ifelse(bin < (lt6 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#         haz = ifelse(test == 0, NA, haz))
+#tail(lt6,n=20)
+
+
+
+# plot
+p4 <- tibble(
+  bin = lt1$bin,
+  `meanlog=5.8, sdlog=0.5` = lt1$haz,
+  `meanlog=5.6, sdlog=0.3` = lt2$haz,
+  `meanlog=5.4, sdlog=0.2` = lt3$haz,
+  `meanlog=5.4, sdlog=0.3` = lt4$haz,
+  `meanlog=5.4, sdlog=0.4` = lt5$haz,
+  `meanlog=5.4, sdlog=0.5` = lt6$haz
+) %>% 
+  pivot_longer(cols = `meanlog=5.8, sdlog=0.5`:`meanlog=5.4, sdlog=0.5`,
+               values_to  = "hazard"
+               ) %>%
+  rename(parameters = name) %>%
+  ggplot(aes(x=bin,y=hazard,group=parameters,colour=parameters)) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+                     limits = c(-0.4,60.1), 
+                     labels = c(0,seq(3,60,3)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "lognormal distribution") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "right")
+p4
+```
+
+
+## Combine plots.
+
+```{r}
+#| label: combine-plots-fig4
+
+(p1/p2/p3/p4) 
+             
+p4_theme <- p4 + theme(legend.position = "none")
+p2_theme <- p2 + theme(legend.position = "none")
+p3_theme <- p3 + theme(legend.position = "none")
+
+(p2_theme / p4_theme / p3_theme / p1) +
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save the plot.
+
+```{r}
+ggsave("REVIEW2/Plot_distributions_theoretical.png", width = 10, height = 10, dpi = 800)
+```
+
+# Figure 5: Empirical hazard + ca(t) functions
+
+Visual search: target present vs absent
+
+```{r}
 
 ```
 
 
+Spatial cueing: valid and invalid
 
+stop-signal: no, 80, 120, 160, 200 ms
 
 
 
