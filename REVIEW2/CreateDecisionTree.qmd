@@ -1839,6 +1839,16 @@ tail(data_stop)
 Plot stop signal data.
 
 ```{r}
+
+
+# Color deficient safe palette with grey and black:
+cbPalette <- c(
+  "#000000", "#56B4E9","#E69F00","#F0E442","#CC79A7",
+  "#999999",   "#009E73", 
+  "#0072B2", "#D55E00"
+)
+
+
 p11 <- data_stop %>%
   #rename(present = haz_present, absent = haz_absent) %>%
   pivot_longer(cols = haz_no:haz_200,
@@ -1861,16 +1871,17 @@ p11 <- data_stop %>%
 
 ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
   
-  geom_vline(xintercept = 4, linetype = 1, color = "green") +
-  geom_vline(xintercept = 6, linetype = 1, color = "blue") +
-  geom_vline(xintercept = 8, linetype = 1, color = "orange") +
-  geom_vline(xintercept = 10, linetype = 1, color = "purple") +
+  geom_vline(xintercept = 4, linetype = 1, color = "#56B4E9") +
+  geom_vline(xintercept = 6, linetype = 1, color = "#E69F00") +
+  geom_vline(xintercept = 8, linetype = 1, color = "#F0E442") +
+  geom_vline(xintercept = 10, linetype = 1, color = "#CC79A7") +
   
   
     geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
                    show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
+  scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,.501), 
                      breaks = c(0,.25,.5),
                      expand = expansion(mult = c(0.02, 0.02))) +
@@ -1885,7 +1896,7 @@ ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
          panel.grid.major.x = element_blank(),
-        legend.position = "right")
+        legend.position = "bottom") + guides(colour=guide_legend(nrow=2, byrow=TRUE))
 p11
 
 # plot conditional accuracy
@@ -1904,16 +1915,22 @@ p12 <- data_stop %>%
   ) %>%
   rename(`Trial type` = name) %>%
    mutate(`Trial type` = factor(`Trial type`, 
-                               levels = c("haz_no","haz_80","haz_120","haz_160","haz_200"),
+                               levels = c("ca_no","ca_80","ca_120","ca_160","ca_200"),
                                labels = c("No stop signal", "ssd = 80 ms", "ssd = 120 ms", "ssd = 160 ms", "ssd = 200 ms"))) %>%
   
     filter(bin > 3) %>%
 
 ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
+    geom_vline(xintercept = 4, linetype = 1, color = "#56B4E9") +
+  geom_vline(xintercept = 6, linetype = 1, color = "#E69F00") +
+  geom_vline(xintercept = 8, linetype = 1, color = "#F0E442") +
+  geom_vline(xintercept = 10, linetype = 1, color = "#CC79A7") +
+  
     geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
                    show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
+    scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02))) +
@@ -1928,7 +1945,7 @@ ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
          panel.grid.major.x = element_blank(),
-        legend.position = "right")
+        legend.position = "bottom") + guides(colour=guide_legend(nrow=2, byrow=TRUE))
 p12
 ```
 
@@ -1965,7 +1982,7 @@ ggsave("REVIEW2/visualsearch/searchdata_plot.png", width = 10, height = 10, dpi 
 Save figure 5.
 
 ```{r}
-ggsave("REVIEW2/Plot_distributions_empirical.png", width = 10, height = 10, dpi = 800)
+ggsave("REVIEW2/Plot_distributions_empirical.png", width = 14, height = 10, dpi = 800)
 ```
 
 
