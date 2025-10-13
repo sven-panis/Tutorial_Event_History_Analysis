@@ -1282,6 +1282,12 @@ ggsave("REVIEW2/Plot_distributions_theoretical.png", width = 10, height = 10, dp
 
 
 
+
+
+
+
+
+
 # Figure 5: Empirical hazard + ca(t) functions
 
 ## Visual search: target present vs absent
@@ -1401,6 +1407,14 @@ data_search <- tibble(
 Plot visual search data for subj 5 and setsize 12.
 
 ```{r}
+
+
+# Color deficient safe palette with grey and black:
+cbPalette <- c("#009E73","#D55E00",
+  "#000000", "#56B4E9","#E69F00","#F0E442","#CC79A7",
+  "#999999", "#0072B2"
+)
+
 p5 <- data_search %>%
   rename(present = haz_present, absent = haz_absent) %>%
   pivot_longer(cols = present:absent,
@@ -1412,14 +1426,16 @@ p5 <- data_search %>%
       name == "absent" ~ haz_absent_se)
   ) %>%
   rename(`Target presence` = name) %>%
+  mutate(`Target presence` = factor(`Target presence`, levels = c("present","absent"))) %>%
 
-ggplot(aes(x=bin,y=hazard,group=`Target presence`,colour=`Target presence`)) +
+ggplot(aes(x=bin,y=hazard,group=`Target presence`,colour=`Target presence`, shape = `Target presence`)) +
     geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
-  scale_y_continuous(limits = c(0,1.001), 
-                     breaks = c(0,.25,.5,.75,1),
+  scale_color_manual(values = cbPalette) +
+  scale_y_continuous(limits = c(0,.601), 
+                     breaks = c(0,.2,.4,.6),
                      expand = expansion(mult = c(0.02, 0.02))) +
   scale_x_continuous(breaks = c(0,seq(1,13,1)), 
                      limits = c(-0.4,11.1), 
@@ -1427,7 +1443,7 @@ ggplot(aes(x=bin,y=hazard,group=`Target presence`,colour=`Target presence`)) +
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)",
        y = "hazard probability",
-       title = "conjunction search - setsize 12") +
+       title = "conjunction search task (set-size 12)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -1447,12 +1463,13 @@ p6 <- data_search %>%
       name == "absent" ~ ca_absent_se)
   ) %>%
   rename(`Target presence` = name) %>%
-
-ggplot(aes(x=bin,y=ca,group=`Target presence`,colour=`Target presence`)) +
+  mutate(`Target presence` = factor(`Target presence`, levels = c("present","absent"))) %>%
+ggplot(aes(x=bin,y=ca,group=`Target presence`,colour=`Target presence`, shape = `Target presence`)) +
     geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
+    scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02))) +
@@ -1605,6 +1622,13 @@ data_search <- tibble(
 Plot spatial cueing data for subj 2
 
 ```{r}
+
+# Color deficient safe palette with grey and black:
+cbPalette <- c("#009E73","#D55E00",
+  "#000000", "#56B4E9","#E69F00","#F0E442","#CC79A7",
+  "#999999", "#0072B2"
+)
+
 p7 <- data_search %>%
     rename(valid = haz_valid, invalid = haz_invalid) %>%
   pivot_longer(cols = valid:invalid,
@@ -1615,9 +1639,9 @@ p7 <- data_search %>%
       name == "valid" ~ haz_valid_se,
       name == "invalid" ~ haz_invalid_se)
   ) %>%
-  rename(`Cue validity` = name) %>%
-
-ggplot(aes(x=bin,y=hazard,group=`Cue validity`,colour=`Cue validity`)) +
+  rename(`Peripheral cue validity` = name) %>%
+  mutate(`Peripheral cue validity` = factor(`Peripheral cue validity`, levels = c("valid","invalid"))) %>%
+ggplot(aes(x=bin,y=hazard,group=`Peripheral cue validity`,colour=`Peripheral cue validity`, shape=`Peripheral cue validity`)) +
   
   geom_vline(xintercept = 10, linetype = 3) +
   geom_vline(xintercept = 5.5, linetype = 1) +
@@ -1626,8 +1650,9 @@ ggplot(aes(x=bin,y=hazard,group=`Cue validity`,colour=`Cue validity`)) +
   
   geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
+      scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02))) +
@@ -1636,16 +1661,16 @@ ggplot(aes(x=bin,y=hazard,group=`Cue validity`,colour=`Cue validity`)) +
                      labels = c(seq(-360,400,40)),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)",
-       y = "hazard probability",
-       title = "spatial cueing: 2-choice (left/right) localization task") +
+       y = "",
+       title = "spatial cueing task (left/right target localization)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
          panel.grid.major.x = element_blank(),
         legend.position = "right")
-p8 <- p7  + annotate("text", x = 0.1, y = .5, label = "peripheral cue", angle = 90) +
-  annotate("text", x = 5, y = .5, label = "central cue", angle = 90) +
-  annotate("text", x = 9, y = .5, label = "peripheral target", angle = 90) 
+p8 <- p7  + annotate("text", x = 0.1, y = .6, label = "peripheral cue (left/right)", angle = 90) +
+  annotate("text", x = 4.5, y = .5, label = "central cue", angle = 90) +
+  annotate("text", x = 9, y = .6, label = "peripheral target (left/right)", angle = 90) 
   
 
 
@@ -1660,17 +1685,18 @@ p9 <- data_search %>%
       name == "valid" ~ ca_valid_se,
       name == "invalid" ~ ca_invalid_se)
   ) %>%
-  rename(`Cue validity` = name) %>%
-
-ggplot(aes(x=bin,y=ca,group=`Cue validity`,colour=`Cue validity`)) +
+  rename(`Peripheral cue validity` = name) %>%
+  mutate(`Peripheral cue validity` = factor(`Peripheral cue validity`, levels = c("valid","invalid"))) %>%
+ggplot(aes(x=bin,y=ca,group=`Peripheral cue validity`,colour=`Peripheral cue validity`, shape = `Peripheral cue validity`)) +
   
     geom_vline(xintercept = 10, linetype = 3) +
   geom_vline(xintercept = 5.5, linetype = 1) +
   geom_vline(xintercept = 1, linetype = 2) +
     geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
+      scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02))) +
@@ -1679,14 +1705,15 @@ ggplot(aes(x=bin,y=ca,group=`Cue validity`,colour=`Cue validity`)) +
                      labels = c(seq(-360,400,40)),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)",
-       y = "conditional accuracy") +
+       y = "") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
          panel.grid.major.x = element_blank(),
         legend.position = "right")
-p10 <- p9  + annotate("text", x = 0.1, y = .5, label = "peripheral cue", angle = 90) +
-  annotate("text", x = 5, y = .5, label = "central cue", angle = 90) +
+p10 <- p9  + 
+  annotate("text", x = 0.1, y = .6, label = "peripheral cue (left", angle = 90) +
+  annotate("text", x = 4.5, y = .5, label = "central cue", angle = 90) +
   annotate("text", x = 9, y = .5, label = "peripheral target", angle = 90) 
 ```
 
@@ -1768,7 +1795,7 @@ source("REVIEW2/stopsignal/custom_functions_stopsignal.R")
 Apply the custom functions
 
 ```{r apply-functions-vs}
-results_ss <- data_ss %>% 
+results_vs <- data_ss %>% 
   group_nest(pid) %>% 
     mutate(censored = map(data, censor, 500, 20)) %>%
     mutate(ptb_data = map(censored, ptb)) %>%
@@ -1869,7 +1896,7 @@ p11 <- data_stop %>%
   
   filter(bin > 3) %>%
 
-ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
+ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`, shape=`Trial type`)) +
   
   geom_vline(xintercept = 4, linetype = 1, color = "#56B4E9") +
   geom_vline(xintercept = 6, linetype = 1, color = "#E69F00") +
@@ -1879,7 +1906,7 @@ ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
   
     geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
   scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,.501), 
@@ -1890,7 +1917,7 @@ ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
                      labels = c(seq(4,25,1)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)",
-       y = "hazard probability",
+       y = "",
        title = "stop-signal task") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
@@ -1920,7 +1947,7 @@ p12 <- data_stop %>%
   
     filter(bin > 3) %>%
 
-ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
+ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`, shape = `Trial type`)) +
     geom_vline(xintercept = 4, linetype = 1, color = "#56B4E9") +
   geom_vline(xintercept = 6, linetype = 1, color = "#E69F00") +
   geom_vline(xintercept = 8, linetype = 1, color = "#F0E442") +
@@ -1928,7 +1955,7 @@ ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
   
     geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
                    show.legend = F, linewidth = 0.2) +
-  geom_line() + geom_point(size = .5) +
+  geom_line() + geom_point(size = 1.5) +
   theme_bw() +
     scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
@@ -1939,7 +1966,7 @@ ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
                      labels = c(seq(4,25,1)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)",
-       y = "conditional accuracy") +
+       y = "") +
  #      title = "conjunction search - setsize 12") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
