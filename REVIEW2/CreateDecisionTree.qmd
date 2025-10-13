@@ -3,6 +3,8 @@ title: "CreateDecisionTree"
 format: html
 ---
 
+In this file we create new figures for REVISION 2.
+
 # Figure 3. Decision Tree for selecting a modeling approach
 
 ```{r}
@@ -19,7 +21,7 @@ nodes <- data.frame(
   y = c(6, 4, 4, 2, 2),
   label = c(
     "Do you know the\nshape of the\nhazard function?",
-    "Parametric\nSurvival Models",
+    "Parametric\nSurvival Model",
     "Do you care about\nthe shape of the\nhazard function?",
     "Cox\nRegression Model",
     "Piecewise Exponential\nModel or\n Discrete-Time Model"
@@ -76,14 +78,13 @@ ggplot() +
         plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),
         panel.background = element_rect(fill="white",color="white"),
         plot.background = element_rect(fill="white",color = "white")) +
-  labs(title = "Event History Analysis Model Selection Decision Tree")
+  labs(title = "A decision tree to select among\nEvent History Analysis modeling approaches")
 ```
 
 Save the tree.
 
 ```{r}
 ggsave("REVIEW2/DecisionTreeMethods.png", width = 10, height = 10, dpi = 800, bg = "transparent")
-
 ```
 
 # Figure 2. Ways to describe a RT distribution
@@ -125,10 +126,18 @@ dat2 <- layer_data(hist2)
 lt1 <- tibble(
   bin = 1:dim(dat1)[1],
   ncount = dat1$count,
+  cumcount = cumsum(ncount),
+  riskset2 = ntrials - lag(cumcount),
+  riskset = ifelse(bin==1, ntrials, riskset2),
   pmass = ncount/ntrials,
+  se_pmass = sqrt((pmass * (1 - pmass)) / max(riskset)),
   cumul = cumsum(pmass),
   surv = 1 - cumul,
-  haz = pmass/lag(surv, 1),
+  haz2 = pmass/lag(surv, 1),
+  haz = ifelse(bin==1, 0, haz2),
+  se_haz = sqrt((haz * (1 - haz)) / riskset),
+  temp_surv = cumsum(haz / (riskset * (1 - haz))),
+  se_surv = surv * sqrt(temp_surv),
   endp = bin*bin_width,
   endpo = dat1$xmax
 )
@@ -136,10 +145,18 @@ lt1 <- tibble(
 lt2 <- tibble(
   bin = 1:dim(dat2)[1],
   ncount = dat2$count,
+  cumcount = cumsum(ncount),
+  riskset2 = ntrials - lag(cumcount),
+  riskset = ifelse(bin==1, ntrials, riskset2),
   pmass = ncount/ntrials,
+  se_pmass = sqrt((pmass * (1 - pmass)) / max(riskset)),
   cumul = cumsum(pmass),
   surv = 1 - cumul,
-  haz = pmass/lag(surv, 1),
+  haz2 = pmass/lag(surv, 1),
+  haz = ifelse(bin==1, 0, haz2),
+  se_haz = sqrt((haz * (1 - haz)) / riskset),
+  temp_surv = cumsum(haz / (riskset * (1 - haz))),
+  se_surv = surv * sqrt(temp_surv),
   endp = bin*bin_width,
   endpo = dat2$xmax
 )
@@ -153,102 +170,155 @@ tail(lt2)
 
 # replace first hazard NA with 0
 lt1 <- lt1 %>% 
-  mutate(haz = ifelse(bin == 1, 0, haz)) %>%
+  #mutate(haz = ifelse(bin == 1, 0, haz)) %>%
   mutate(haz = ifelse(ncount == 0 & cumul > .999999, NA, haz))
-lt2 <- lt2 %>% 
-  mutate(haz = ifelse(bin == 1, 0, haz)) %>%
-  mutate(haz = ifelse(ncount == 0 & cumul > .999999, NA, haz))
+#lt2 <- lt2 %>% 
+  #mutate(haz = ifelse(bin == 1, 0, haz)) %>%
+#  mutate(haz = ifelse(ncount == 0 & cumul > .999999, NA, haz))
 
 tail(lt1,n=30)
 tail(lt2)
 
 # Define color palette
 cbPalette <- c("#009E73", "#D55E00")
+
+# Define x-axis labels
+values <- seq(0, 1200, by = 60)
+labels <- c(t(cbind(values, "", "")))
+labels <- head(labels, -2)
   
 # discrete-time hazard functions
 p1 <- tibble(
   bin = lt1$bin,
-  normal = lt1$haz,
-  exgaussian = lt2$haz
+  `normal (mean = 350, sd = 60)` = lt1$haz,
+  `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$haz,
+  se_exgaus = lt2$se_haz,
+  se_norm = lt1$se_haz
 ) %>% 
-  pivot_longer(cols = normal:exgaussian,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
                values_to  = "hazard probability"
                ) %>%
+  mutate(
+    se = case_when(
+      name == "normal (mean = 350, sd = 60)" ~ se_norm,
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+  ) %>%
   rename(distribution = name) %>%
   # plot
   ggplot(aes(x=bin,y=`hazard probability`,group=distribution,colour=distribution)) +
+  geom_vline(xintercept = 0,linetype = 2) +
+  geom_vline(xintercept = 18,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 21,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 31,linetype = 1,color="grey",linewidth=.2) +
+  
+  geom_linerange(aes(ymin=`hazard probability`-se, ymax=`hazard probability`+se), 
+                   show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
   scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02))) +
-  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+  scale_x_continuous(breaks = c(0,seq(1,60,1)), 
                      limits = c(-0.4,60.1), 
-                     labels = c(0,seq(3,60,3)*20),
+                     labels = labels,#c(0,seq(3,60,3)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
         legend.title = element_text(size=14))
 p1
 
+
+
+
 # prob. mass functions
 p2 <- tibble(
   bin = lt1$bin,
-  normal = lt1$pmass,
-  exgaussian = lt2$pmass
+  `normal (mean = 350, sd = 60)` = lt1$pmass,
+  `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$pmass,
+  se_exgaus = lt2$se_pmass,
+  se_norm = lt1$se_pmass
 ) %>% 
-  pivot_longer(cols = normal:exgaussian,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
                values_to  = "probability mass"
                ) %>%
+   mutate(
+    se = case_when(
+      name == "normal (mean = 350, sd = 60)" ~ se_norm,
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+  ) %>%
   rename(distribution = name) %>%
   # plot
   ggplot(aes(x=bin,y=`probability mass`,group=distribution,colour=distribution)) +
+    geom_vline(xintercept = 0,linetype = 2) +
+  geom_vline(xintercept = 18,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 21,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 31,linetype = 1,color="grey",linewidth=.2) +
+  
+    geom_linerange(aes(ymin=`probability mass`-se, ymax=`probability mass`+se), 
+                   show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
   scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,.2), 
                      breaks = c(0,.1,.2),
                      expand = expansion(mult = c(0.02, 0.02))) +
-  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+  scale_x_continuous(breaks = c(0,seq(1,60,1)), 
                      limits = c(-0.4,60.1), 
-                     labels = c(0,seq(3,60,3)*20),
+                     labels = labels,#c(0,seq(3,60,3)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.x = element_blank(),
+             panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
         legend.title = element_text(size=14))
 p2
 # survivor functions
 p3 <- tibble(
   bin = lt1$bin,
-  normal = lt1$surv,
-  exgaussian = lt2$surv
-) %>% 
-  pivot_longer(cols = normal:exgaussian,
+  `normal (mean = 350, sd = 60)` = lt1$surv,
+  `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$surv,
+  se_exgaus = lt2$se_surv,
+  se_norm = lt1$se_surv
+) %>%
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
                values_to  = "survival probability"
                ) %>%
+   mutate(
+    se = case_when(
+      name == "normal (mean = 350, sd = 60)" ~ se_norm,
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+  ) %>%
   rename(distribution = name) %>%
   # plot
   ggplot(aes(x=bin,y=`survival probability`,group=distribution,colour=distribution)) +
+    geom_vline(xintercept = 0,linetype = 2) +
+  geom_vline(xintercept = 18,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 21,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 31,linetype = 1,color="grey",linewidth=.2) +
+  
+    geom_linerange(aes(ymin=`survival probability`-se, ymax=`survival probability`+se), 
+                   show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
   scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02)))+
-  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+  scale_x_continuous(breaks = c(0,seq(1,60,1)), 
                      limits = c(-0.4,60.1), 
-                     labels = c(0,seq(3,60,3)*20),
+                     labels = labels,#c(0,seq(3,60,3)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
+             panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
         legend.title = element_text(size=14))
 p3
@@ -256,28 +326,43 @@ p3
 # cum. prob. functions
 p4 <- tibble(
   bin = lt1$bin,
-  normal = lt1$cumul,
-  exgaussian = lt2$cumul
+  `normal (mean = 350, sd = 60)` = lt1$cumul,
+  `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$cumul,
+  se_exgaus = lt2$se_surv,
+  se_norm = lt1$se_surv
 ) %>% 
-  pivot_longer(cols = normal:exgaussian,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
                values_to  = "cumulative probability"
                ) %>%
+   mutate(
+    se = case_when(
+      name == "normal (mean = 350, sd = 60)" ~ se_norm,
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+  ) %>%
   rename(distribution = name) %>%
   ggplot(aes(x=bin,y=`cumulative probability`,group=distribution,colour=distribution)) +
+    geom_vline(xintercept = 0,linetype = 2) +
+  geom_vline(xintercept = 18,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 21,linetype = 1,color="grey",linewidth=.2) +
+  geom_vline(xintercept = 31,linetype = 1,color="grey",linewidth=.2) +
+  
+    geom_linerange(aes(ymin=`cumulative probability`-se, ymax=`cumulative probability`+se), 
+                   show.legend = F, linewidth = 0.2) +
   geom_line() + geom_point(size = .5) +
   theme_bw() +
    scale_color_manual(values = cbPalette) +
   scale_y_continuous(limits = c(0,1.001), 
                      breaks = c(0,.25,.5,.75,1),
                      expand = expansion(mult = c(0.02, 0.02)))+
-  scale_x_continuous(breaks = c(0,seq(3,60,3)), 
+  scale_x_continuous(breaks = c(0,seq(1,60,1)), 
                      limits = c(-0.4,60.1), 
-                     labels = c(0,seq(3,60,3)*20),
+                     labels = labels,#c(0,seq(3,60,3)*20),
                      expand = expansion(mult = c(0, 0))) +
   labs(x = "time bin (upper limit in ms)") +
   theme(axis.text.x = element_text(angle=90),
         panel.grid.minor.y = element_blank(),
         panel.grid.minor.x = element_blank(),
+             panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
         legend.title = element_text(size=14))
 p4
@@ -288,7 +373,7 @@ p2_theme <- p2 + theme(legend.position = "none")
 p3_theme <- p3 + theme(legend.position = "none")
 
 (p2_theme / p4_theme / p3_theme / p1) +
-    plot_annotation(title = "Four ways to describe a distribution of event times:") +
+    plot_annotation(title = "Four ways to describe the distribution of a sample of (20ms-)interval-censored event times:") +
     plot_layout(guides = "collect",
                 axes = "collect_x") & 
     theme(legend.position = "bottom")
@@ -297,7 +382,7 @@ p3_theme <- p3 + theme(legend.position = "none")
 Save the plot
 
 ```{r}
-ggsave("REVIEW2/Plot_distributions.png", width = 10, height = 10, dpi = 800)
+ggsave("REVIEW2/Plot_distributions_1000.png", width = 10, height = 10, dpi = 800)
 ```
 
 # Figure 4. Members of different families
@@ -545,10 +630,10 @@ bin_width = 20
 rt_data = tibble(
   rt1 = rexGAUS(ntrials, mu = 350, sigma = 60, nu = 100),
   rt2 = rexGAUS(ntrials, mu = 325, sigma = 60, nu = 50),
-  rt3 = rexGAUS(ntrials, mu = 300, sigma = 55, nu = 100),
+  rt3 = rexGAUS(ntrials, mu = 300, sigma = 55, nu = 100),#2
   rt4 = rexGAUS(ntrials, mu = 350, sigma = 55, nu = 50),
-  rt5 = rexGAUS(ntrials, mu = 325, sigma = 50, nu = 100),
-  rt6 = rexGAUS(ntrials, mu = 300, sigma = 50, nu = 50)
+  rt5 = rexGAUS(ntrials, mu = 325, sigma = 50, nu = 100),#3
+  rt6 = rexGAUS(ntrials, mu = 300, sigma = 50, nu = 350)  #1
 ) %>%
   mutate(N = 1:n())
 
@@ -707,12 +792,12 @@ tail(lt4,n=30)
 #tail(lt5,n=20)
   
 
-lt6 <- lt6 %>% 
-  mutate(haz = ifelse(bin == 1, 0, haz),
-         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
-         test = ifelse(bin < (lt6 %>% filter(test == 1) %>% pull(bin)), 1, test),
-         haz = ifelse(test == 0, NA, haz))
-tail(lt6,n=20)
+# lt6 <- lt6 %>% 
+#   mutate(haz = ifelse(bin == 1, 0, haz),
+#          test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#          test = ifelse(bin < (lt6 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#          haz = ifelse(test == 0, NA, haz))
+# tail(lt6,n=20)
 
 # Define color palette
 cbPalette <- c("#009E73", "#D55E00")
@@ -726,9 +811,9 @@ p2 <- tibble(
   `mu=300, sigma=55, nu=100` = lt3$haz,
   `mu=350, sigma=55, nu=50` = lt4$haz,
   `mu=325, sigma=50, nu=100` = lt5$haz,
-  `mu=300, sigma=50, nu=50` = lt6$haz
+  `mu=300, sigma=50, nu=350` = lt6$haz
 ) %>% 
-  pivot_longer(cols = `mu=350, sigma=60, nu=100`:`mu=300, sigma=50, nu=50`,
+  pivot_longer(cols = `mu=350, sigma=60, nu=100`:`mu=300, sigma=50, nu=350`,
                values_to  = "hazard"
                ) %>%
   rename(parameters = name) %>%
@@ -771,29 +856,33 @@ bin_width = 20
 # st0 : inter-trial var. of non-decisional component
 # s = 1
 
+a=1.0
+v=2.0
+t0=.2
+d=0
 
 # sample
-rt1 = rdiffusion(ntrials, a=1.0, v=2.0, t0=0.2, z, d = 0, sz = 0, sv = 0,
+rt1 = rdiffusion(ntrials, a=1, v=2.0, t0=0.2, z=0.5*a, d = 0, sz = 0, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
   
-rt2 = rdiffusion(ntrials, a=1.0, v=1.5, t0=0.2, z, d = 0, sz = 0, sv = 0,
+rt2 = rdiffusion(ntrials, a=1.0, v=1.5, t0=0.2, z=0.5*a, d = 0, sz = 0, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
   
-rt3 = rdiffusion(ntrials, a=1.0, v=1.0, t0=0.2, z, d = 0, sz = 0, sv = 0,
+rt3 = rdiffusion(ntrials, a=1.0, v=1.0, t0=0.2, z=0.5*a, d = 0, sz = 0, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
   
-rt4 = rdiffusion(ntrials, a=1.2, v=1.5, t0=0.3, z, d = 0, sz = 0, sv = 0,
+rt4 = rdiffusion(ntrials, a=1.2, v=1.5, t0=0.3, z=0.5*a, d = 0, sz = 0, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
   
-rt5 = rdiffusion(ntrials, a=1.0, v=1.5, t0=.3, z, d = 0, sz = .4, sv = 0,
+rt5 = rdiffusion(ntrials, a=1.0, v=1.5, t0=.3, z=0.5*a, d = 0, sz = .4, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
   
-rt6 = rdiffusion(ntrials, a=1.5, v=1.0, t0=.3, z, d = 0, sz = .4, sv = 0,
+rt6 = rdiffusion(ntrials, a=1.5, v=1.0, t0=.3, z=0.5*a, d = 0, sz = .4, sv = 0,
                st0 = 0, s = 1, precision = 3, 
                stop_on_error = TRUE, maxt = 20, method = "fastdm")
 
@@ -948,8 +1037,6 @@ p3 <- tibble(
 p3
 ```
    
-
-
 ## lognormal
 
 ```{r}
@@ -963,12 +1050,12 @@ bin_width = 20
 
 # sample
 rt_data = tibble(
-  rt1 = rlnorm(ntrials, 5.8, 0.5),
-  rt2 = rlnorm(ntrials, 5.6, 0.3),
-  rt3 = rlnorm(ntrials, 5.4, 0.2),
-  rt4 = rlnorm(ntrials, 5.4, 0.3),
-  rt5 = rlnorm(ntrials, 5.4, 0.4),
-  rt6 = rlnorm(ntrials, 5.4, 0.5)
+  rt1 = rlnorm(ntrials, 6.0, 0.7),
+  rt2 = rlnorm(ntrials, 5.7, 0.7),
+  rt3 = rlnorm(ntrials, 5.4, 0.2),#5.4 0.2
+  rt4 = rlnorm(ntrials, 5.4, 0.3),#5.4 0.3
+  rt5 = rlnorm(ntrials, 5.4, 0.4),#5.4 0.4
+  rt6 = rlnorm(ntrials, 5.4, 0.7) #5.4 0.6
 ) %>%
   mutate(N = 1:n())
 
@@ -1098,12 +1185,12 @@ tail(lt6)
 #         haz = ifelse(test == 0, NA, haz))
 #tail(lt1,n=20)
 
-lt2 <- lt2 %>% 
-  mutate(haz = ifelse(bin == 1, 0, haz),
-         test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
-         test = ifelse(bin < (lt2 %>% filter(test == 1) %>% pull(bin)), 1, test),
-         haz = ifelse(test == 0, NA, haz))
-tail(lt2,n=20)
+# lt2 <- lt2 %>% 
+#   mutate(haz = ifelse(bin == 1, 0, haz),
+#          test = ifelse(abs(haz - 1.0) < .Machine$double.eps^0.5, 1, 0),
+#          test = ifelse(bin < (lt2 %>% filter(test == 1) %>% pull(bin)), 1, test),
+#          haz = ifelse(test == 0, NA, haz))
+# tail(lt2,n=20)
 
 lt3 <- lt3 %>% 
   mutate(haz = ifelse(bin == 1, 0, haz),
@@ -1135,18 +1222,17 @@ tail(lt5,n=20)
 #tail(lt6,n=20)
 
 
-
 # plot
 p4 <- tibble(
   bin = lt1$bin,
-  `meanlog=5.8, sdlog=0.5` = lt1$haz,
-  `meanlog=5.6, sdlog=0.3` = lt2$haz,
+  `meanlog=6.0, sdlog=0.7` = lt1$haz,
+  `meanlog=5.7, sdlog=0.7` = lt2$haz,
   `meanlog=5.4, sdlog=0.2` = lt3$haz,
   `meanlog=5.4, sdlog=0.3` = lt4$haz,
   `meanlog=5.4, sdlog=0.4` = lt5$haz,
-  `meanlog=5.4, sdlog=0.5` = lt6$haz
+  `meanlog=5.4, sdlog=0.7` = lt6$haz
 ) %>% 
-  pivot_longer(cols = `meanlog=5.8, sdlog=0.5`:`meanlog=5.4, sdlog=0.5`,
+  pivot_longer(cols = `meanlog=6.0, sdlog=0.7`:`meanlog=5.4, sdlog=0.7`,
                values_to  = "hazard"
                ) %>%
   rename(parameters = name) %>%
@@ -1170,7 +1256,6 @@ p4 <- tibble(
 p4
 ```
 
-
 ## Combine plots.
 
 ```{r}
@@ -1185,7 +1270,7 @@ p3_theme <- p3 + theme(legend.position = "none")
 (p2_theme / p4_theme / p3_theme / p1) +
     plot_layout(guides = "collect",
                 axes = "collect_x") & 
-    theme(legend.position = "bottom")
+    theme(legend.position = "right")
 ```
 
 Save the plot.
@@ -1194,20 +1279,697 @@ Save the plot.
 ggsave("REVIEW2/Plot_distributions_theoretical.png", width = 10, height = 10, dpi = 800)
 ```
 
+
+
+
 # Figure 5: Empirical hazard + ca(t) functions
 
-Visual search: target present vs absent
+## Visual search: target present vs absent
 
 ```{r}
+pkg <- c("tidyverse", "patchwork")
 
+lapply(pkg, library, character.only = TRUE)
+```
+
+Theme settings for ggplot.
+
+```{r plot-settings, results='hide'}
+theme_set(
+  theme_bw() +
+    theme(text = element_text(size = 22, face = "bold"), 
+          title = element_text(size = 22, face = "bold"))
+)
+
+## Set the amount of dodge in figures
+pd <- position_dodge(0.7)
+pd2 <- position_dodge(1)
+```
+
+Read and wrangle data.
+
+```{r read-raw-data-vs}
+raw <- read_delim(file="REVIEW2/visualsearch/ConjunctionSearchDataSetOK.txt", 
+                  delim="\t",
+                  col_names=T)
+head(raw)
 ```
 
 
-Spatial cueing: valid and invalid
+```{r wrangle-data-vs}
+# recode accuracy
+data_wr <- raw %>%
+  rename(pid = Subject, rt = RT) %>%
+  mutate(acc = 1 - Error) %>%
+  select(pid, setsize, Targ, rt, acc) 
+  
+head(data_wr)
+summary(data_wr)
 
-stop-signal: no, 80, 120, 160, 200 ms
+# check number of trials
+data_wr %>% group_by(pid, Targ, setsize) %>%
+  summarise(N = n())
+
+# add trial nr and factors for target-presence and set-size
+data_wr <- data_wr %>%
+  group_by(pid) %>%
+  mutate(trial = 1:n(),
+         setsize = factor(setsize,
+                          levels = c(3,6,12,18),
+                          labels = c("3","6","12","18")),
+         targetpresence = factor(Targ, levels = c(1,0),
+                         labels = c("Target present","Target absent"))) %>%
+  mutate(condition1 = setsize,
+         condition2 = targetpresence) %>%
+  select(pid, trial, condition1, condition2, rt, acc)
+
+summary(data_wr)
+head(data_wr)
+```
+
+set up life tables 
+
+```{r load-functions-vs}
+source("REVIEW2/visualsearch/custom_functions_visualsearch.R")
+```
+
+Apply the custom functions
+
+```{r apply-functions-vs}
+results_vs <- data_wr %>% 
+  group_nest(pid) %>% 
+    mutate(censored = map(data, censor, 1300, 100)) %>%
+    mutate(ptb_data = map(censored, ptb)) %>%
+    mutate(lifetable = map(ptb_data, setup_lt_2IV)) %>%      
+    mutate(condacc = map(censored, calc_ca_2IV)) %>%     
+    mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca_2IV)) %>%  
+    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV, 1, 1))  
+```
+
+```{r}
+pluck(results_vs, 8,8)
+```
+
+Make plot for subject 5, setsize = 12
+
+Make plot for subject 8, setsize = 3
 
 
+```{r}
+data_search <- tibble(
+  bin = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target present") %>% pull(period),
+  haz_present = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target present") %>% pull(hazard),
+  haz_absent = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target absent") %>% pull(hazard),
+  haz_present_se = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target present") %>% pull(se_haz),
+  haz_absent_se = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target absent") %>% pull(se_haz),
+  ca_present = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target present") %>% pull(ca),
+  ca_absent = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target absent") %>% pull(ca),
+  ca_present_se = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target present") %>% pull(se_ca),
+  ca_absent_se = results_vs[[7]][[8]] %>%
+    filter(condition1 == 3 & condition2 == "Target absent") %>% pull(se_ca),
+)
+```
+
+Plot visual search data for subj 5 and setsize 12.
+
+```{r}
+p5 <- data_search %>%
+  rename(present = haz_present, absent = haz_absent) %>%
+  pivot_longer(cols = present:absent,
+               values_to  = "hazard"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "present" ~ haz_present_se,
+      name == "absent" ~ haz_absent_se)
+  ) %>%
+  rename(`Target presence` = name) %>%
+
+ggplot(aes(x=bin,y=hazard,group=`Target presence`,colour=`Target presence`)) +
+    geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(1,13,1)), 
+                     limits = c(-0.4,11.1), 
+                     labels = c(0,seq(1,13,1)*100),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "conjunction search - setsize 12") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p5
+
+# plot conditional accuracy
+p6 <- data_search %>%
+  rename(present = ca_present, absent = ca_absent) %>%
+  pivot_longer(cols = present:absent,
+               values_to  = "ca"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "present" ~ ca_present_se,
+      name == "absent" ~ ca_absent_se)
+  ) %>%
+  rename(`Target presence` = name) %>%
+
+ggplot(aes(x=bin,y=ca,group=`Target presence`,colour=`Target presence`)) +
+    geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(0,seq(1,13,1)), 
+                     limits = c(-0.4,11.1), 
+                     labels = c(0,seq(1,13,1)*100),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "conditional accuracy") +
+ #      title = "conjunction search - setsize 12") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p6
+```
+
+## Combine vs plots.
+
+
+```{r}
+#| label: combine-vs-plots
+
+p5_theme <- p5 + theme(legend.position = "none")
+
+visualsearch_plot <- (p5_theme / p6) +
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save the plot.
+
+```{r}
+ggsave("REVIEW2/visualsearch/searchdata_plot.png", width = 10, height = 10, dpi = 800)
+```
+
+
+## Spatial cueing: valid and invalid
+
+Read and wrangle data.
+
+```{r read-raw-data-sc}
+raw <- read.table("REVIEW2/spatialcueing/dataIORdiscr_central_frame.dat", header=TRUE) 
+head(raw)
+
+unique(raw$vp)
+       
+summary(raw)
+```
+
+
+```{r wrangle-data-sc}
+# recode accuracy
+data_sc <- raw %>%
+  # remove practice trials
+  filter(practice == 0) %>%
+  select(-c("practice","tr","gen","age","hand",
+            "bril","ss","rd","fixduration","cueduration","centralduration","void","ISI1duration","ISI2duration","targetduration","corresp","resperr","outlier")) %>%
+  filter(vp < 100) %>%
+  rename(pid = vp, acc = respac, soa = SOA) %>%
+  mutate(rt = rt*1000)
+  
+  
+summary(data_sc) # 6 subjects, 3 cuetypes, 2 central, 4 soa
+  
+head(data_sc)
+summary(data_sc)
+
+# check number of trials
+data_sc %>% group_by(pid, central, cue_type, soa) %>%
+  summarise(N = n())
+
+# remove no central, add trial nr and factors for cue_type and soa
+data_sc <- data_sc %>%
+  filter(central == 2) %>%
+  group_by(pid) %>%
+  mutate(trial = 1:n(),
+         cue = factor(cue_type,
+                          levels = c(1,2,3),
+                          labels = c("valid","invalid","no cue")),
+         soa = factor(soa, levels = c(1,2,3,4),
+                         labels = c("x-y","a-b","c-d","e-f"))) %>%
+  mutate(condition1 = soa,
+         condition2 = cue) %>%
+  select(pid, trial, condition1, condition2, rt, acc)
+
+summary(data_sc)
+head(data_sc)
+
+
+# add 400 ms and remove negative RTs, and select central = 2
+summary(data_sc$rt)
+
+data_sc <- data_sc %>% mutate(rt = rt + 400) %>%
+  filter(rt > 0)
+head(data_sc)
+summary(data_sc$rt)
+```
+
+set up life tables 
+
+```{r load-functions}
+source("REVIEW2/spatialcueing/custum_functions_spatialcueing.R")
+```
+
+Apply the custom functions
+
+```{r apply-functions}
+results_sc <- data_sc %>% 
+  group_nest(pid) %>% 
+    mutate(censored = map(data, censor, 800, 40)) %>%
+    mutate(ptb_data = map(censored, ptb)) %>%
+    mutate(lifetable = map(ptb_data, setup_lt_2IV)) %>%      
+    mutate(condacc = map(censored, calc_ca_2IV)) %>%     
+    mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca_2IV)) %>%  
+    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV, 1, 1))  
+```
+
+```{r}
+pluck(results_sc, 8, 2)
+```
+
+Make plot for subject 2, soa=e-f or. 187 - 187 :    0 = target, -187 = central cue, -374 = peripheral cue
+
+```{r}
+data_search <- tibble(
+  bin = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "valid") %>% pull(period), # 20 bins of 40 ms
+  haz_valid = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "valid") %>% pull(hazard),
+  haz_invalid = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "invalid") %>% pull(hazard),
+  haz_valid_se = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "valid") %>% pull(se_haz),
+  haz_invalid_se = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "invalid") %>% pull(se_haz),
+  ca_valid = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "valid") %>% pull(ca),
+  ca_invalid = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "invalid") %>% pull(ca),
+  ca_valid_se = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "valid") %>% pull(se_ca),
+  ca_invalid_se = results_sc[[7]][[2]] %>%
+    filter(condition1 == "e-f" & condition2 == "invalid") %>% pull(se_ca),
+)
+```
+
+Plot spatial cueing data for subj 2
+
+```{r}
+p7 <- data_search %>%
+    rename(valid = haz_valid, invalid = haz_invalid) %>%
+  pivot_longer(cols = valid:invalid,
+               values_to  = "hazard"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "valid" ~ haz_valid_se,
+      name == "invalid" ~ haz_invalid_se)
+  ) %>%
+  rename(`Cue validity` = name) %>%
+
+ggplot(aes(x=bin,y=hazard,group=`Cue validity`,colour=`Cue validity`)) +
+  
+  geom_vline(xintercept = 10, linetype = 3) +
+  geom_vline(xintercept = 5.5, linetype = 1) +
+  geom_vline(xintercept = 1, linetype = 2) +
+  
+  
+  geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(seq(1,20,1)), 
+                     limits = c(-0.4,20.1), 
+                     labels = c(seq(-360,400,40)),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "spatial cueing: 2-choice (left/right) localization task") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p8 <- p7  + annotate("text", x = 0.1, y = .5, label = "peripheral cue", angle = 90) +
+  annotate("text", x = 5, y = .5, label = "central cue", angle = 90) +
+  annotate("text", x = 9, y = .5, label = "peripheral target", angle = 90) 
+  
+
+
+# plot conditional accuracy
+p9 <- data_search %>%
+  rename(valid = ca_valid, invalid = ca_invalid) %>%
+  pivot_longer(cols = valid:invalid,
+               values_to  = "ca"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "valid" ~ ca_valid_se,
+      name == "invalid" ~ ca_invalid_se)
+  ) %>%
+  rename(`Cue validity` = name) %>%
+
+ggplot(aes(x=bin,y=ca,group=`Cue validity`,colour=`Cue validity`)) +
+  
+    geom_vline(xintercept = 10, linetype = 3) +
+  geom_vline(xintercept = 5.5, linetype = 1) +
+  geom_vline(xintercept = 1, linetype = 2) +
+    geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(seq(1,20,1)), 
+                     limits = c(-0.4,20.1), 
+                     labels = c(seq(-360,400,40)),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "conditional accuracy") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p10 <- p9  + annotate("text", x = 0.1, y = .5, label = "peripheral cue", angle = 90) +
+  annotate("text", x = 5, y = .5, label = "central cue", angle = 90) +
+  annotate("text", x = 9, y = .5, label = "peripheral target", angle = 90) 
+```
+
+## Combine ss plots.
+
+
+```{r}
+#| label: combine-vs-plots
+
+p8_theme <- p8 + theme(legend.position = "none")
+
+spatialcueing_plot <- (p8_theme / p9) +
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save the plot.
+
+```{r}
+ggsave("REVIEW2/spatialcueing/spatialcueing_plot.png", width = 10, height = 10, dpi = 800)
+```
+
+
+## stop-signal: no, 80, 120, 160, 200 ms
+
+Read and wrangle data.
+
+```{r read-raw-data-ss}
+raw <- read.table("REVIEW2/stopsignal/dataStopExp1.dat", header=T)
+head(raw)
+```
+
+
+```{r wrangle-data-ss}
+# recode accuracy
+data_ss <- raw %>%
+  
+    # remove practice trials
+  filter(practice == 0) %>%
+  select(-c("practice","tr","bl","gen","age","hand",
+            "bril","ss","rd","fixduration","goduration","SSDduration","void","stopduration","corresp","resperr","outlier")) %>%
+  filter(vp < 100) %>%
+  rename(pid = vp, acc = respac, ssd = SSD, ss = Stop_signal) %>%
+  mutate(rt = rt*1000,
+         condition = ifelse(ss == 2, 5,
+                            ifelse(ss==1 & ssd==1,1,
+                            ifelse(ss==1 & ssd==2,2,
+                            ifelse(ss==1 & ssd==3,3,4))))) %>%
+  filter(rt > 0)
+  
+
+head(data_ss)
+summary(data_ss) # 5 participants, 5 conditions
+
+# check number of trials
+data_ss %>% group_by(pid, condition) %>%
+  summarise(N = n()) %>% print(n=12)
+
+# add trial nr and factors for target-presence and set-size
+data_ss <- data_ss %>%
+  group_by(pid) %>%
+  mutate(trial = 1:n(),
+         condition = factor(condition,
+                          levels = c(1,2,3,4,5),
+                          labels = c("ssd = 80 ms","ssd = 120 ms","ssd = 160 ms","ssd = 200 ms","no stop signal"))) %>%
+  select(pid, trial, condition, rt, acc)
+
+summary(data_ss)
+head(data_ss)
+```
+
+set up life tables 
+
+```{r load-functions-vs}
+source("REVIEW2/stopsignal/custom_functions_stopsignal.R")
+```
+
+Apply the custom functions
+
+```{r apply-functions-vs}
+results_ss <- data_ss %>% 
+  group_nest(pid) %>% 
+    mutate(censored = map(data, censor, 500, 20)) %>%
+    mutate(ptb_data = map(censored, ptb)) %>%
+    mutate(lifetable = map(ptb_data, setup_lt)) %>%      
+    mutate(condacc = map(censored, calc_ca)) %>%     
+    mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%  
+    mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha, 1, 1))  
+```
+
+```{r}
+pluck(results_ss, 8,1)
+```
+
+Make plot for subject 1
+
+
+```{r}
+data_stop <- tibble(
+  bin = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 80 ms") %>% pull(period),
+  haz_no = results_vs[[7]][[1]] %>%
+    filter(condition == "no stop signal") %>% pull(hazard),
+  haz_80 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 80 ms") %>% pull(hazard),
+  haz_120 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 120 ms") %>% pull(hazard),
+  haz_160 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 160 ms") %>% pull(hazard),
+  haz_200 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 200 ms") %>% pull(hazard),
+  haz_80se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 80 ms") %>% pull(se_haz),
+  haz_120se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 120 ms") %>% pull(se_haz),
+  haz_160se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 160 ms") %>% pull(se_haz),
+  haz_200se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 200 ms") %>% pull(se_haz),
+  haz_nose = results_vs[[7]][[1]] %>%
+    filter(condition == "no stop signal") %>% pull(se_haz),
+  
+  ca_no = results_vs[[7]][[1]] %>%
+    filter(condition == "no stop signal") %>% pull(ca),
+  ca_80 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 80 ms") %>% pull(ca),
+  ca_120 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 120 ms") %>% pull(ca),
+  ca_160 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 160 ms") %>% pull(ca),
+  ca_200 = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 200 ms") %>% pull(ca),
+  ca_80se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 80 ms") %>% pull(se_ca),
+  ca_120se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 120 ms") %>% pull(se_ca),
+  ca_160se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 160 ms") %>% pull(se_ca),
+  ca_200se = results_vs[[7]][[1]] %>%
+    filter(condition == "ssd = 200 ms") %>% pull(se_ca),
+  ca_nose = results_vs[[7]][[1]] %>%
+    filter(condition == "no stop signal") %>% pull(se_ca)
+
+)
+
+tail(data_stop)
+```
+
+Plot stop signal data.
+
+```{r}
+p11 <- data_stop %>%
+  #rename(present = haz_present, absent = haz_absent) %>%
+  pivot_longer(cols = haz_no:haz_200,
+               values_to  = "hazard"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "haz_no" ~ haz_nose,
+      name == "haz_80" ~ haz_80se,
+      name == "haz_120" ~ haz_120se,
+      name == "haz_160" ~ haz_160se,
+      name == "haz_200" ~ haz_200se)
+  ) %>%
+  rename(`Trial type` = name) %>%
+  mutate(`Trial type` = factor(`Trial type`, 
+                               levels = c("haz_no","haz_80","haz_120","haz_160","haz_200"),
+                               labels = c("No stop signal", "ssd = 80 ms", "ssd = 120 ms", "ssd = 160 ms", "ssd = 200 ms"))) %>%
+  
+  filter(bin > 3) %>%
+
+ggplot(aes(x=bin,y=hazard,group=`Trial type`,colour=`Trial type`)) +
+  
+  geom_vline(xintercept = 4, linetype = 1, color = "green") +
+  geom_vline(xintercept = 6, linetype = 1, color = "blue") +
+  geom_vline(xintercept = 8, linetype = 1, color = "orange") +
+  geom_vline(xintercept = 10, linetype = 1, color = "purple") +
+  
+  
+    geom_linerange(aes(ymin=hazard-se, ymax=hazard+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,.501), 
+                     breaks = c(0,.25,.5),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(seq(4,25,1)), 
+                     limits = c(3.6,25.1), 
+                     labels = c(seq(4,25,1)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "hazard probability",
+       title = "stop-signal task") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p11
+
+# plot conditional accuracy
+p12 <- data_stop %>%
+  #rename(present = ca_present, absent = ca_absent) %>%
+  pivot_longer(cols = ca_no:ca_200,
+               values_to  = "ca"
+               ) %>%
+   mutate(
+    se = case_when(
+      name == "ca_no" ~ ca_nose,
+      name == "ca_80" ~ ca_80se,
+      name == "ca_120" ~ ca_120se,
+      name == "ca_160" ~ ca_160se,
+      name == "ca_200" ~ ca_200se)
+  ) %>%
+  rename(`Trial type` = name) %>%
+   mutate(`Trial type` = factor(`Trial type`, 
+                               levels = c("haz_no","haz_80","haz_120","haz_160","haz_200"),
+                               labels = c("No stop signal", "ssd = 80 ms", "ssd = 120 ms", "ssd = 160 ms", "ssd = 200 ms"))) %>%
+  
+    filter(bin > 3) %>%
+
+ggplot(aes(x=bin,y=ca,group=`Trial type`,colour=`Trial type`)) +
+    geom_linerange(aes(ymin=ca-se, ymax=ca+se), 
+                   show.legend = F, linewidth = 0.2) +
+  geom_line() + geom_point(size = .5) +
+  theme_bw() +
+  scale_y_continuous(limits = c(0,1.001), 
+                     breaks = c(0,.25,.5,.75,1),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  scale_x_continuous(breaks = c(seq(4,25,1)), 
+                     limits = c(3.6,25.1), 
+                     labels = c(seq(4,25,1)*20),
+                     expand = expansion(mult = c(0, 0))) +
+  labs(x = "time bin (upper limit in ms)",
+       y = "conditional accuracy") +
+ #      title = "conjunction search - setsize 12") +
+  theme(axis.text.x = element_text(angle=90),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+         panel.grid.major.x = element_blank(),
+        legend.position = "right")
+p12
+```
+
+## Combine stop signal plots.
+
+
+```{r}
+#| label: combine-vs-plots
+
+p11_theme <- p11 + theme(legend.position = "none")
+
+stopsignal_plot <- (p11_theme / p12) +
+    plot_layout(guides = "collect",
+                axes = "collect_x") & 
+    theme(legend.position = "bottom")
+```
+
+Save the plot.
+
+```{r}
+ggsave("REVIEW2/visualsearch/searchdata_plot.png", width = 10, height = 10, dpi = 800)
+```
+
+## Combine into fig 5
+
+```{r}
+
+(visualsearch_plot|spatialcueing_plot|stopsignal_plot) +
+    plot_layout(axes = "collect_y") & 
+    theme(legend.position = "bottom")
+
+```
+
+Save figure 5.
+
+```{r}
+ggsave("REVIEW2/Plot_distributions_empirical.png", width = 10, height = 10, dpi = 800)
+```
+
+
+# Figure ...
 
 
 
