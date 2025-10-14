@@ -92,28 +92,24 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 ## 1.1 Motivation and background context: Comparing means versus distributional shapes 
 
-In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology [@bolgerCausalProcessesPsychology2019]. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. Such absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020].
+In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology [@bolgerCausalProcessesPsychology2019]. However, differences in mean RT conceal important pieces of distributional information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020]. 
 
-
-
-
-
-
-
-
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin "500" in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhenDoesInhibition2022; @panisWhatShapingRT2016; @panisHowCanWe2020].
+<!--As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as event history analysis (EHA) extended with speed-accuracy tradeoff (SAT) analysis. For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (>500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin "500" in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature [@panisWhenDoesInhibition2022; @panisWhatShapingRT2016; @panisHowCanWe2020].
 
 (ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). 
 
 ```{r plot1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../sims/figures/Fig1_revision1.jpeg")
 ```
+-->
 
-Why does this matter for research in psychology? For many psychological questions, the estimation of such "temporal states" information can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it provides one possible response to the recent call for a temporal science of behavior [@ABNEY2025].
+Why does this matter for research in psychology? First, as illustrated below, for many psychological questions, differences and similarities between the shapes of the RT distribution in two experimental conditions can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Second, extracting absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection [@panisAnalyzingResponseTimes2020]. Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it thus constitutes one possible response to the recent call for a temporal science of behavior [@ABNEY2025].
 
 ## 1.2 Aims 
 
-Our ultimate aim in this paper is twofold. First, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (single event) discrete-time EHA on RT data, as well as a complementary discrete-time SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).
+Our ultimate aim in this paper is twofold. First, we want to convince readers of the many benefits of using EHA when dealing with psychological RT data, and other types of time-to-event data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (single event) discrete-time EHA.
+
+<!--on RT data, as well as a complementary discrete-time SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).-->
 
 Even though EHA is a widely used statistical tool and there already exist many excellent reviews [@singerAppliedLongitudinalData2003; @allisonDiscreteTimeMethodsAnalysis1982; @blossfeldTechniquesEventHistory2002; @hosmerAppliedSurvivalAnalysis2011; @teachmanAnalyzingSocialProcesses1983; @box-steffensmeierEventHistoryModeling2004; @millsIntroducingSurvivalEvent2011] and tutorials [@allisonSurvivalAnalysisUsing2010; @landesIntroductionEventHistory2020; @elmerModelingCategoricalTimetoevent2023; @lougheedMultilevelSurvivalAnalysis2019; @stoolmillerIntroductionUsingMultivariate2015; @stoolmillerModelingHeterogeneitySocial2006], we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps. 
 
@@ -121,116 +117,272 @@ Set within this context, our overall aim is to introduce a set of tutorials, whi
 
 ## 1.3 Structure
 
-In what follows, the paper is organised in three main sections. In Section 2, we provide a brief overview of EHA to orient the reader to the basic concepts that we will use throughout the paper and why such an approach might be relevant for research in experimental psychology. In Section 3, we outline a series of tutorials, which are written in the R programming language and publicly available on our Github page (https://github.com/sven-panis/Tutorial_Event_History_Analysis), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, such as data wrangling, plotting descriptive statistics, model fitting and planning future studies, so that others can apply EHA to their own time-to-event data measured in RT tasks. In Section 4, we discuss the strengths and weaknesses of the approach for researchers in experimental psychology.
+In what follows, the paper is organised in three main sections. 
+
+In Section 2, we provide a brief overview of EHA to orient the reader to the basic concepts (events, censoring, hazard, competing risks), the various modeling approaches available, and the new types of research questions that EHA allows to answer about behavioral dynamics in experimental cognitive paradigms.
+
+In Section 3, we outline a series of tutorials, which are written in the R programming language and publicly available on our Github page (https://github.com/sven-panis/Tutorial_Event_History_Analysis), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, such as data wrangling, plotting descriptive statistics, model fitting and planning future studies, so that others can apply EHA to their own time-to-event data measured in RT tasks. 
+
+In Section 4, we discuss the overall strengths and weaknesses of the approach for researchers in experimental psychology, compared to orthodox methods such as Analysis-of-variance, linear regression, and delta-plots (ref).
 
 # 2. What is event history analysis and why is it relevant to research in experimental psychology?
 
 ## 2.1 Basic concepts of EHA
 
-### Hazard and survival functions
+### Repeated versus recurrent events
 
-Figure 1: plot hazard, S(t), F(t) and P(t) functions for 2 simulated conditions
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations [@allisonSurvivalAnalysisUsing2010]. EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis [@singerAppliedLongitudinalData2003]. In this paper, we choose to use the term EHA throughout. An event is defined as a qualitative change - a transition from one discrete state to another - that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring reach movement trajectories, for example in mouse-tracking studies (refs: mouse + KL omar). While some events can only happen once (e.g., death), most events of interest for cognitive scientists can happen repeatedly to the same individual.
 
+To apply EHA one also must define time point zero (e.g., stimulus onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. In RT tasks, response times are typically measured with a temporal resolution of 1 millisecond, or higher. As 1 ms is typically short compared to the length of the observation period (e.g., 1 second), response times are generally treated as continuous time-to-event data.
+
+To collect observations on the continuous variable RT, experimental psychologists typically administer a set of discrete, planned observations, a.k.a. trials, to each participant, and manipulate some aspect of the environment between trials. In Figure 1, we present a hypothetical single-subject RT data set from a detection experiment with one response button (i.e., a simple RT task) and two experimental conditions: target present and target absent. For example, each trial in each condition might start with a fixation screen for 1 s, a target display screen for 100 ms in which the target stimulus is presented or not depending on the experimental condition the trials belongs to, and finally a blank screen until an overt response is detected or 500 ms have passed. Figure 1A shows that the participant presses the button sometime before 500 ms in most trials in the target-present condition (black dots), while (s)he does not press the button in most trials of the target-absent condition (black crosses). In EHA parlance, the single event of interest is a button press response that is repeatedly measured, *time zero* is defined as target display onset, the  *observation or follow-up period* is 500 ms long in each trial or repeated measurement, in each trial the participant is *at risk* for response occurrence as long as the response has not occurred yet, and the individual starts in an "idle" state in each trial and *transitions* to a "detected" state when a response occurs.
+
+(ref:descr-fig1-caption) Response time (RT) tasks and EHA concepts. The timer starts at time 0 (black vertical line) and stops at the censoring time (dotted vertical line). In each trial of each condition of each task, an overt response is indicated by a circle, and a right-censored observation by a cross. (A) Single-button detection data requires a single-event analysis. (B) Two-button discrimination data requires a competing risks analysis. Black (white) dots indicate correct (error) responses. (C) Competing risk data in combination with an stimulus-onset-asynchrony manipulation might require increasing the observation period in each trial. (D) Two-button bistable perception data requires a recurrent event / multistate analysis. Black bars indicate stimlus presentation.
+
+<!--Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The discrete-time hazard functions (top) and conditional accuracy functions (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). -->
+
+```{r plot1-revision2, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
+knitr::include_graphics("../REVIEW2/Plot_RTtasks.png")
+```
+
+Recurrent events are events that happen repeatedly within the same observation period. For example, Figure 1D shows hypothetical data from a bistable perception task in which the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. We do not analyse recurrent events in this tutorial. More information about recurrent events and multistate analysis can be found in @stoolmillerModelingHeterogeneitySocial2006, @millsIntroducingSurvivalEvent2011, and @lougheedMultilevelSurvivalAnalysis2019.
+
+<!--These minimal requirements are fulfilled by the RT data obtained in single-button detection tasks, where the time-to-response is repeatedly measured in different trials in the same individual. In section A of the Supplemental Material we visualize this and other types of time-to-event data which are typically obtained in discrimination and bistable perception tasks.-->
+
+### Types of censoring
+
+By convention, experimental psychologists either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too long RTs (and perhaps also erroneous responses and too short RTs), before calculating a mean RT [@bergerComparisonDifferentResponse2021]. 
+Discarding data can introduce biases, however.
+EHA treats such trials as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. 
+Right censoring is a type of missing data problem and a nearly universal feature of survival data including RT data [@allisonSurvivalAnalysisUsing2010]. For example, all trials in Figure 1A have a censoring time of 500 ms, and some trials result in observed event times (those with a RT below 500 ms), while other trials result in response times that are right-censored at 500 ms. The fact that EHA can deal with right censoring presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots).
+
+Left censoring occurs when all that is known about an observation on a variable T is that it is less than some value. Interval censoring combines right and left censoring so that all you know about RT is that a < RT < b, for some values of a and b. Random censoring occurs when observations are terminated for reasons that are not under the control of the experimenter. 
+
+### Describe the shape of a distribution of time-to-event data
+
+Because our Tutorials focus on discrete-time methods as explained in section 2.3, we assume now that the continuous-time RTs have been discretized by dividing the observation period into bins of 20 ms, indexed by t (= 1, 2, ...). In particular, suppose (a) we measure a sample of continous-time RTs in the target-present condition of Figure 1A using a censoring time of 1200 ms, (b) that the occurrence and timing of responses is governed either by a normal or ex-gaussian distribution, and (c) that we apply interval censoring using intervals of 20 ms. As shown in Figure 2, the resulting distribution of interval-censored event times can be described in various ways, the first two of which are highly familiar to cognitive scientists.
+
+* the probability mass function
+
+The probability mass function or P(t) = Prob(RT = t) is what you get when you plot a simple histogram of the relative frequencies. In other words, time is partitioned in a set of time periods or bins with a certain width (here: 20 ms), one counts the number of observed RTs in each time bin, and then divide this count by M, the total number of trials for the respective condition. P(t) displays for each bin the probability that the response occurs in bin t.
+
+* the cumulative distribution function
+
+The discrete-time cumulative distribution function or F(t) = Prob(RT <= t) displays for each bin the probability that the response occurs in bin t or in earlier bins. It always starts at 0 and increases towards 1.
+ 
+* the survivor function
+
+The discrete-time survivor function or S(t) = Prob(RT > t) is the complement of F(t), and displays for each bin the probability that the response occurs after bin t. It always starts at 1 and decreases towards 0.
+
+* the discrete-time hazard function
+
+The discrete-time hazard function or h(t) = Prob(RT = t | RT >= t) displays for each bin the conditional probability that the response occurs in bin t given that the response does not occur in earlier bins (t-1, t-2, ..., t=1). It is also known as the conditional probability mass function because h(t) = P(t)/S(t-1).
+
+EHA focuses on describing and modeling the hazard function of event occurrence because (a) dynamic info ..., (b) diagnostic..., especially in the right tail.
+
+(ref:descr-fig2-caption) In discrete time, the shape of a RT distribution can be described using the probability mass function (A), the cumulative distribution function (B), the survivor function (C), and the discrete-time hazard function (D).
+
+```{r plot2-revision2, fig.cap = "(ref:descr-fig2-caption)", out.width="90%"}
+knitr::include_graphics("../REVIEW2/Plot_distributions.png")
+```
+
+### Competing risks
+
+In many applications there are multiple events of interest, such as correct versus error responses, for example. Figure 1B displays a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. For example, each trial in each condition might start with a fixation screen for 1 s, followed by a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed since face onset. Participants are required to press the left button when identifying a male, and the right button when identifying a female. 
+
+In EHA parlance this is known as a *competing risks* situation, because from target display screen onset (time zero) onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a "correct response" state or an "incorrect response" state.
+
+There are two ways to deal with a competing-risks situation. One approach is to describe and model *cause-specific hazard functions*: the hazard function of correct response occurrence while treating incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c [@allisonSurvivalAnalysisUsing2010]. However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another [@BURLE2004153; @praamstra9513; @eriksenElectromyographicExaminationResponse1985]. Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here.
+
+## 2.2 Modeling approaches
+
+There are several different modeling approaches available between which one can select when analyzing a time-to-event data set, as shown in Figure 3.
+
+(ref:descr-fig3-caption) Decision Tree.
+
+```{r plot3-revision2, fig.cap = "(ref:descr-fig3-caption)", out.width="90%"}
+knitr::include_graphics("../REVIEW2/DecisionTreeMethods.png")
+```
+
+* Parametric survival model
+
+Parametric hazard models assume time is measured in continuous units and can be used when the shape of the hazard function is known. For example, Figure 4 displays six members for each of four example distribution families.
+
+(ref:descr-fig4-caption) Theoretical waiting time distributions.
+
+```{r plot4-revision2, fig.cap = "(ref:descr-fig4-caption)", out.width="90%"}
+knitr::include_graphics("../REVIEW2/Plot_distributions_theoretical.png")
+```
+
+
+* Cox regression model
+
+Cox regression models assume time is measure in continous units and can be used when the analyst has no interest in the shape of the hazard function and only wants to test how hazard is affected by predictor variables.
+
+* Piece-wise exponential model
+
+This continous-time modeling approach divides the obseration period into bins, and assumes that hazard is exponentially distributed in each bin. It is great when ...
+
+* Discrete-time hazard model
+
+Discrete-time hazard models can be used when data is collected at discrete intervals. For example, when participants are tested at noon on each of six subsequent days for their memory of a set of pictures, the time-to-forgetting data are measured in discrete time units (e.g., picture A is forgotten on day 3, picture B on day 5).
+However, they can also be used for data collected in continuous time units, when the hazard function is unknown and the analyst is interested in studying the shape of the hazard function and the effects of predictor variables.
+
+Figure 5 presents empirical hazard and conditional accuracy functions from three popular RT tasks: visual search, spatial cueing, and the stop-signal task. 
+
+(ref:descr-fig5-caption) Empirical distributions.
+
+```{r plot5-revision2, fig.cap = "(ref:descr-fig5-caption)", out.width="90%"}
+knitr::include_graphics("../REVIEW2/Plot_distributions_empirical.png")
+```
+
+...modeling a binary outcome (event occurred yes or no) within each discrete time period or bin or interval.
+This distinction is why discrete-time hazard models can be fit using logistic regression  you're modeling a binary outcome (event yes/no) within each discrete time period.
+
+logit/cloglog
+
+contrast with Delta
 
 So when we write h(tij), we mean the hazard for time interval t in trial j of individual i, which is the probability of experiencing the event during that interval, given survival to the beginning of that interval.
 
+Key Advantages of Discrete-Time Models
+Easy to incorporate time-varying covariates
+Flexible baseline hazard specification
+Can use standard logistic regression software
+
+Can handle ties easily
+The discrete-time approach is particularly well-suited for repeated measures data where observations occur at regular intervals (annual surveys, quarterly measurements, etc.).
+
+
+## 2.3 Research questions
+
+EHA allows to answer new research questions on behavioral dynamics in experimental paradigms to study cognition.
+
+What is the shape of the hazard function? Does it increase to a plateau, or does it increase to a peak and then decrease?
+
+Does an experimental manipulation affect the early or late part of the distribution?
+
+Do experimental effects increase or decrease over time, or are they restricted only to a short time period?
+
+Is the shape of the hazard function within a trial changing as time passes by on longer time scales?
+
+Do time scales interact? Do predictor variables interact? Do time scales interact with predictor variables?
+
+Are experimental effects time-locked to certain stimuli?
+
+Are there inter-individual differences in the shape of the hazard function?
+
+
+Do time-varying predictors (eye gaze position, eye dilation, heart rate, parietal-frontal synchronization, ...) affect the risk of event occurrence?
+
+Do computational models predict the shape of the hazard function as well as the mean RT?
+
+When does the effect of a spatio-temporally timed TMS pulse happen?
+
+
+
+
+
+
+
+<!--
 Response time (RT) tasks can be categorized in several ways depending on what aspect you want to emphasize:
 
 ## By Cognitive Complexity
 
 **Simple RT**
-- Single stimulus, single response
-- Press button when light appears
-- Minimal decision-making
+Single stimulus, single response
+Press button when light appears
+Minimal decision-making
 
 **Choice RT**
-- Multiple stimuli, multiple responses
-- Choose correct response based on stimulus (e.g., left button for "A", right for "B")
-- Involves stimulus discrimination and response selection
+Multiple stimuli, multiple responses
+Choose correct response based on stimulus (e.g., left button for "A", right for "B")
+Involves stimulus discrimination and response selection
 
 **Go/No-Go**
-- Respond to target, withhold response to non-target
-- Tests response inhibition
+Respond to target, withhold response to non-target
+Tests response inhibition
 
 **Stop-Signal**
-- Execute response unless stop signal appears
-- Measures ability to inhibit prepotent responses
+Execute response unless stop signal appears
+Measures ability to inhibit prepotent responses
 
 ## By Processing Demands
 
 **Perceptual Tasks**
-- Stimulus detection (simple)
-- Discrimination (judging differences)
-- Identification (naming/categorizing)
+Stimulus detection (simple)
+Discrimination (judging differences)
+Identification (naming/categorizing)
 
 **Memory Tasks**
-- Recognition (old/new judgments)
-- Recall with timed responses
-- Memory search (Sternberg task)
+Recognition (old/new judgments)
+Recall with timed responses
+Memory search (Sternberg task)
 
 **Attention Tasks**
-- Visual search
-- Stroop task (interference/conflict)
-- Flanker task (selective attention)
-- Attentional blink
+Visual search
+Stroop task (interference/conflict)
+Flanker task (selective attention)
+Attentional blink
 
 **Executive Function Tasks**
-- Task switching
-- N-back
-- Wisconsin Card Sorting
+Task switching
+N-back
+Wisconsin Card Sorting
 
 ## By Stimulus-Response Relationship
 
 **Compatible**
-- Natural/intuitive mappings (move right joystick for rightward stimulus)
+Natural/intuitive mappings (move right joystick for rightward stimulus)
 
 **Incompatible**
-- Arbitrary or conflicting mappings (Simon task, where location conflicts with response)
+Arbitrary or conflicting mappings (Simon task, where location conflicts with response)
 
 **Congruent vs. Incongruent**
-- Whether distractors match or mismatch the target
+Whether distractors match or mismatch the target
 
 ## By Number of Alternatives
 
-- **Binary choice** (2 options)
-- **Multiple choice** (3+ options)
-- Governed by Hick's Law: RT increases logarithmically with number of choices
+**Binary choice** (2 options)
+**Multiple choice** (3+ options)
+Governed by Hick's Law: RT increases logarithmically with number of choices
 
 ## By Paradigm/Design
 
 **Speeded vs. Accuracy-Emphasized**
-- Instructions emphasize speed vs. accuracy
+Instructions emphasize speed vs. accuracy
 
 **Blocked vs. Mixed**
-- Single condition blocks vs. mixed trial types
+Single condition blocks vs. mixed trial types
 
 **Primed vs. Unprimed**
-- Whether preceding stimulus influences current trial
+Whether preceding stimulus influences current trial
 
 **Sequential Effects**
-- Examining how previous trial(s) affect current RT
+Examining how previous trial(s) affect current RT
 
 ## By Modality
 
 **Input modality:**
-- Visual, auditory, tactile, multimodal
+Visual, auditory, tactile, multimodal
 
 **Output modality:**
-- Manual (button press, keyboard)
-- Vocal
-- Eye movements (saccadic RT)
+Manual (button press, keyboard)
+Vocal
+Eye movements (saccadic RT)
 
 ## Common Specific Tasks
 
-- **Posner cueing** (spatial attention)
-- **Lexical decision** (word/nonword)
-- **Stroop** (color-word interference)
-- **Flanker** (distractor interference)
-- **Simon** (spatial compatibility)
-- **Mental rotation**
-- **Sternberg memory scanning**
+**Posner cueing** (spatial attention)
+**Lexical decision** (word/nonword)
+**Stroop** (color-word interference)
+**Flanker** (distractor interference)
+**Simon** (spatial compatibility)
+**Mental rotation**
+**Sternberg memory scanning**
 
-The categorization you choose typically depends on your research question - whether you're interested in decision processes, attention, inhibition, memory retrieval, etc.
+The categorization you choose typically depends on your research question whether you're interested in decision processes, attention, inhibition, memory retrieval, etc.
 
 
 
@@ -243,76 +395,76 @@ Great question! Signal detection theory (SDT) paradigms occupy an interesting sp
 ## SDT Tasks as RT Paradigms
 
 **Yes-No Detection/Discrimination**
-- "Is a signal present?" or "Is this stimulus A or B?"
-- Binary choice RT task
-- Participants make a detection or discrimination judgment
-- RT reflects the decision process plus response execution
+"Is a signal present?" or "Is this stimulus A or B?"
+Binary choice RT task
+Participants make a detection or discrimination judgment
+RT reflects the decision process plus response execution
 
 **Rating Scale Tasks**
-- Multiple confidence levels (e.g., 1-6 scale)
-- Multiple-choice RT paradigm
-- RT increases with number of rating options (Hick's Law applies)
+Multiple confidence levels (e.g., 1-6 scale)
+Multiple-choice RT paradigm
+RT increases with number of rating options (Hick's Law applies)
 
 ## Key Distinction: Accuracy vs. Speed Focus
 
 Traditional SDT emphasizes:
-- **Accuracy** (hits, false alarms, d', criterion)
-- Often untimed or self-paced
-- Focus on sensitivity and bias
+**Accuracy** (hits, false alarms, d', criterion)
+Often untimed or self-paced
+Focus on sensitivity and bias
 
 RT paradigms emphasize:
-- **Speed** of correct responses
-- Speed-accuracy tradeoffs
-- Dynamics of the decision process
+**Speed** of correct responses
+Speed-accuracy tradeoffs
+Dynamics of the decision process
 
 ## Integration: RT + SDT
 
 Modern approaches combine both:
 
 **Drift Diffusion Models (DDM)**
-- Unify RT distributions and accuracy
-- Evidence accumulation until threshold
-- Parameters map onto SDT concepts:
-  - Drift rate ≈ sensitivity (d')
-  - Starting point ≈ bias (criterion)
-  - Boundary separation = speed-accuracy tradeoff
+Unify RT distributions and accuracy
+Evidence accumulation until threshold
+Parameters map onto SDT concepts:
+  Drift rate = sensitivity (d')
+  Starting point  bias (criterion)
+  Boundary separation = speed-accuracy tradeoff
 
 **Sequential Sampling Models**
-- Treats decisions as accumulating noisy evidence over time
-- RT emerges naturally from when threshold is reached
-- Explains both correct and error RTs
+Treats decisions as accumulating noisy evidence over time
+RT emerges naturally from when threshold is reached
+Explains both correct and error RTs
 
 ## How to Categorize SDT-RT Tasks
 
 **By stimulus characteristics:**
-- Detection (signal present/absent)
-- Discrimination (which of two signals)
-- Recognition (old/new memory)
+Detection (signal present/absent)
+Discrimination (which of two signals)
+Recognition (old/new memory)
 
 **By decision type:**
-- Binary choice RT (yes-no, old-new)
-- Multiple choice RT (rating scales, multiple alternatives)
+Binary choice RT (yes-no, old-new)
+Multiple choice RT (rating scales, multiple alternatives)
 
 **By theoretical framework:**
-- Traditional SDT (accuracy-focused)
-- Sequential sampling (RT + accuracy)
-- Speed-accuracy tradeoff paradigms
+Traditional SDT (accuracy-focused)
+Sequential sampling (RT + accuracy)
+Speed-accuracy tradeoff paradigms
 
 ## Practical Examples
 
 **Yes-No Recognition Memory:**
-- Show word: old or new?
-- Measures both: accuracy (d'), RT for hits vs. correct rejections
-- RT often faster for high-confidence judgments
+Show word: old or new?
+Measures both: accuracy (d'), RT for hits vs. correct rejections
+RT often faster for high-confidence judgments
 
 **Perceptual Discrimination:**
-- "Is tone A higher than tone B?"
-- Choice RT task with SDT analysis
-- Can measure both sensitivity and decision speed
+"Is tone A higher than tone B?"
+Choice RT task with SDT analysis
+Can measure both sensitivity and decision speed
 
 **2AFC (Two-Alternative Forced Choice):**
-- "Which interval contained the signal?"
-- Choice RT + eliminates response bias issues from traditional SDT
+"Which interval contained the signal?"
+Choice RT + eliminates response bias issues from traditional SDT
 
 ## Why Combine RT + SDT?
 
@@ -333,414 +485,349 @@ Here's a comprehensive, updated list of SDT tasks organized by category:
 ## 1. Detection Tasks
 
 **Visual Detection**
-- Detect dim light/spot on screen
-- Detect Gabor patch in noise
-- Detect motion in random dot kinematogram
-- Detect edge/contour in textured background
-- Detect target object in cluttered scene
-- Visual search (target present/absent)
+Detect dim light/spot on screen
+Detect Gabor patch in noise
+Detect motion in random dot kinematogram
+Detect edge/contour in textured background
+Detect target object in cluttered scene
+Visual search (target present/absent)
 
 **Auditory Detection**
-- Detect tone in white noise
-- Detect gap in continuous noise
-- Detect signal in background babble
-- Detect phoneme in speech stream
+Detect tone in white noise
+Detect gap in continuous noise
+Detect signal in background babble
+Detect phoneme in speech stream
 
 **Tactile Detection**
-- Detect vibration on skin
-- Detect pressure threshold
-- Detect temperature change
+Detect vibration on skin
+Detect pressure threshold
+Detect temperature change
 
 **Multimodal Detection**
-- Detect audiovisual synchrony
-- Cross-modal detection tasks
+Detect audiovisual synchrony
+Cross-modal detection tasks
 
 ## 2. Discrimination Tasks
 
 **Visual Discrimination**
-- Brightness discrimination (which is brighter?)
-- Orientation discrimination (tilted left vs. right?)
-- Spatial frequency discrimination
-- Size discrimination
-- Color discrimination
-- Face discrimination (same person or different?)
-- Emotion discrimination (happy vs. sad face?)
+Brightness discrimination (which is brighter?)
+Orientation discrimination (tilted left vs. right?)
+Spatial frequency discrimination
+Size discrimination
+Color discrimination
+Face discrimination (same person or different?)
+Emotion discrimination (happy vs. sad face?)
 
 **Auditory Discrimination**
-- Pitch discrimination (higher vs. lower?)
-- Loudness discrimination
-- Temporal order discrimination
-- Phoneme discrimination (/ba/ vs. /pa/)
-- Music interval discrimination
+Pitch discrimination (higher vs. lower?)
+Loudness discrimination
+Temporal order discrimination
+Phoneme discrimination (/ba/ vs. /pa/)
+Music interval discrimination
 
 **Other Modalities**
-- Texture discrimination (roughness)
-- Weight discrimination
-- Odor discrimination
-- Taste discrimination
+Texture discrimination (roughness)
+Weight discrimination
+Odor discrimination
+Taste discrimination
 
 ## 3. Comparison Tasks
 
 **Magnitude Comparison**
-- Numerical comparison (which number is larger?)
-  - Symbolic (digits: 3 vs. 7)
-  - Non-symbolic (dot arrays)
-- Physical size comparison (which line is longer?)
-- Spatial comparison (which distance is farther?)
-- Angular comparison (which angle is greater?)
+Numerical comparison (which number is larger?)
+  Symbolic (digits: 3 vs. 7)
+  Non-symbolic (dot arrays)
+Physical size comparison (which line is longer?)
+Spatial comparison (which distance is farther?)
+Angular comparison (which angle is greater?)
 
 **Intensity Comparison**
-- Which tone is louder?
-- Which light is brighter?
-- Which stimulus is heavier/rougher/warmer?
+Which tone is louder?
+Which light is brighter?
+Which stimulus is heavier/rougher/warmer?
 
 **Temporal Comparison**
-- Which duration was longer?
-- Which event occurred more recently?
-- Which rhythm is faster?
+Which duration was longer?
+Which event occurred more recently?
+Which rhythm is faster?
 
 **Cross-Modal Comparison**
-- Which is more intense: this light or this tone?
+Which is more intense: this light or this tone?
 
 **Same-Different Tasks**
-- Simultaneous: Are these two stimuli the same or different?
-- Sequential: Is the second stimulus the same as the first?
-- Face matching, pattern matching, color matching
-- Delayed match-to-sample
+Simultaneous: Are these two stimuli the same or different?
+Sequential: Is the second stimulus the same as the first?
+Face matching, pattern matching, color matching
+Delayed match-to-sample
 
 **Relative Judgment**
-- Which is more pleasant/attractive/valuable?
-- Preference judgments
-- Perceptual quality comparisons
+Which is more pleasant/attractive/valuable?
+Preference judgments
+Perceptual quality comparisons
 
 ## 4. Recognition Memory
 
 **Verbal Memory**
-- Word recognition (old/new)
-- Sentence recognition
-- Story recognition
-- Source memory (which list/context?)
+Word recognition (old/new)
+Sentence recognition
+Story recognition
+Source memory (which list/context?)
 
 **Visual Memory**
-- Picture recognition (old/new)
-- Face recognition
-- Scene recognition
-- Object recognition
-- Abstract pattern recognition
+Picture recognition (old/new)
+Face recognition
+Scene recognition
+Object recognition
+Abstract pattern recognition
 
 **Associative Recognition**
-- Paired associate recognition (were these paired at study?)
-- Face-name association
-- Item-context binding
-- Relational memory
+Paired associate recognition (were these paired at study?)
+Face-name association
+Item-context binding
+Relational memory
 
 **Temporal Memory**
-- Recency judgments (which was more recent?)
-- Temporal order memory
+Recency judgments (which was more recent?)
+Temporal order memory
 
 ## 5. Categorization Tasks
 
 **Natural Categories**
-- Animal vs. non-animal
-- Living vs. non-living
-- Face vs. non-face
-- Male vs. female face
-- Natural vs. artificial
+Animal vs. non-animal
+Living vs. non-living
+Face vs. non-face
+Male vs. female face
+Natural vs. artificial
 
 **Artificial Categories**
-- Category learning with novel stimuli
-- Prototype classification
-- Rule-based vs. similarity-based categories
+Category learning with novel stimuli
+Prototype classification
+Rule-based vs. similarity-based categories
 
 **Semantic Categories**
-- Lexical decision (word vs. nonword)
-- Semantic categorization (food vs. tool)
+Lexical decision (word vs. nonword)
+Semantic categorization (food vs. tool)
 
 **Perceptual Categories**
-- Classify along continuum (phonetic boundaries)
-- Categorical perception tasks
+Classify along continuum (phonetic boundaries)
+Categorical perception tasks
 
 ## 6. Temporal Tasks
 
 **Temporal Order Judgment**
-- Which came first, A or B?
-- Simultaneity judgment (same time or different?)
+Which came first, A or B?
+Simultaneity judgment (same time or different?)
 
 **Duration Tasks**
-- Duration discrimination (which was longer?)
-- Duration categorization (short vs. long)
+Duration discrimination (which was longer?)
+Duration categorization (short vs. long)
 
 **Rhythm Tasks**
-- Regular vs. irregular rhythm detection
-- Beat detection
+Regular vs. irregular rhythm detection
+Beat detection
 
 **Temporal Integration**
-- Detect signal integrated over time
-- Attentional blink (was target 2 present?)
+Detect signal integrated over time
+Attentional blink (was target 2 present?)
 
 ## 7. Clinical and Applied Tasks
 
 **Medical Diagnosis**
-- Disease present/absent from imaging
-- Radiological screening (tumor detection)
-- Mammography screening
-- EKG abnormality detection
-- Symptom detection
+Disease present/absent from imaging
+Radiological screening (tumor detection)
+Mammography screening
+EKG abnormality detection
+Symptom detection
 
 **Quality Control and Safety**
-- Defect detection in manufacturing
-- Security screening (threat detection at airports)
-- Food contamination detection
-- Equipment failure detection
+Defect detection in manufacturing
+Security screening (threat detection at airports)
+Food contamination detection
+Equipment failure detection
 
 **Forensics**
-- Fingerprint matching
-- Face matching for identification
-- Evidence evaluation
+Fingerprint matching
+Face matching for identification
+Evidence evaluation
 
 **Lie Detection**
-- Deception detection from behavior
-- Concealed information test
-- Credibility assessment
+Deception detection from behavior
+Concealed information test
+Credibility assessment
 
 ## 8. Social and Emotional Tasks
 
 **Emotion Recognition**
-- Detect emotional expression (present/absent)
-- Discriminate emotions (angry vs. fearful)
-- Emotion intensity judgment
+Detect emotional expression (present/absent)
+Discriminate emotions (angry vs. fearful)
+Emotion intensity judgment
 
 **Social Perception**
-- Detect deception/lying
-- Detect trustworthiness
-- Detect social threat
-- Detect sexual interest/attraction
-- Detect dominance/submission
+Detect deception/lying
+Detect trustworthiness
+Detect social threat
+Detect sexual interest/attraction
+Detect dominance/submission
 
 **Theory of Mind**
-- Detect intentional vs. accidental actions
-- Discriminate beliefs/desires in others
-- False belief detection
+Detect intentional vs. accidental actions
+Discriminate beliefs/desires in others
+False belief detection
 
 **Face Processing**
-- Own-race vs. other-race face recognition
-- Familiar vs. unfamiliar faces
-- Emotion in faces
-- Age/gender classification
+Own-race vs. other-race face recognition
+Familiar vs. unfamiliar faces
+Emotion in faces
+Age/gender classification
 
 ## 9. Metacognition Tasks
 
 **Confidence Judgments**
-- Any task with confidence ratings (e.g., 6-point scale)
-- Post-decision wagering
-- Feeling of knowing judgments
-- Judgments of learning
+Any task with confidence ratings (e.g., 6-point scale)
+Post-decision wagering
+Feeling of knowing judgments
+Judgments of learning
 
 **Type 2 SDT (Metacognitive Sensitivity)**
-- Discrimination of own correct vs. incorrect responses
-- Confidence in memory judgments
-- Perceptual awareness reports
+Discrimination of own correct vs. incorrect responses
+Confidence in memory judgments
+Perceptual awareness reports
 
 ## 10. Language Tasks
 
 **Speech Perception**
-- Phoneme detection/discrimination
-- Voice-onset time categorization
-- Speaker identification (same/different speaker)
+Phoneme detection/discrimination
+Voice-onset time categorization
+Speaker identification (same/different speaker)
 
 **Reading and Lexical Processing**
-- Lexical decision (word/nonword)
-- Letter detection in words
-- Semantic relatedness judgments
+Lexical decision (word/nonword)
+Letter detection in words
+Semantic relatedness judgments
 
 **Comprehension**
-- Detect grammatical errors
-- Detect semantic anomalies
-- Text coherence judgments
+Detect grammatical errors
+Detect semantic anomalies
+Text coherence judgments
 
 ## 11. Attention Tasks
 
 **Spatial Attention**
-- Detect target at cued vs. uncued location
-- Visual search with set size manipulation
+Detect target at cued vs. uncued location
+Visual search with set size manipulation
 
 **Feature-Based Attention**
-- Detect target with specific feature
-- Conjunction search (target present/absent)
+Detect target with specific feature
+Conjunction search (target present/absent)
 
 **Temporal Attention**
-- Attentional blink (T2 detection given T1)
-- Psychological refractory period tasks
+Attentional blink (T2 detection given T1)
+Psychological refractory period tasks
 
 **Divided Attention**
-- Dual-task detection/discrimination
-- Multiple target monitoring
+Dual-task detection/discrimination
+Multiple target monitoring
 
 ## 12. Learning and Statistical Tasks
 
 **Implicit Learning**
-- Detect learned patterns vs. random sequences
-- Statistical learning (detect regularities)
-- Artificial grammar learning (grammatical/ungrammatical)
+Detect learned patterns vs. random sequences
+Statistical learning (detect regularities)
+Artificial grammar learning (grammatical/ungrammatical)
 
 **Associative Learning**
-- Detect contingency between cues and outcomes
-- Causal judgment (cause present/absent)
+Detect contingency between cues and outcomes
+Causal judgment (cause present/absent)
 
 **Perceptual Learning**
-- Discrimination after training
-- Texture/expert object discrimination
+Discrimination after training
+Texture/expert object discrimination
 
 ## 13. Multi-Alternative Forced Choice
 
 **2AFC (Two-Alternative Forced Choice)**
-- Which interval contained the signal? (temporal 2AFC)
-- Which location contained the signal? (spatial 2AFC)
-- Better/worse comparison
+Which interval contained the signal? (temporal 2AFC)
+Which location contained the signal? (spatial 2AFC)
+Better/worse comparison
 
 **3+ AFC**
-- Which of N intervals/locations contained the signal?
-- Multiple object identification
-- Multiple category choices
+Which of N intervals/locations contained the signal?
+Multiple object identification
+Multiple category choices
 
 **Oddity Tasks**
-- Which of 3+ items is different/odd one out?
+Which of 3+ items is different/odd one out?
 
 ## 14. Change Detection
 
 **Visual Change**
-- Did anything change between displays?
-- Change blindness paradigms
-- Flicker paradigm (detect what changed)
+Did anything change between displays?
+Change blindness paradigms
+Flicker paradigm (detect what changed)
 
 **Auditory Change**
-- Detect pitch/timbre change
-- Mismatch detection
+Detect pitch/timbre change
+Mismatch detection
 
 **Cross-Modal Change**
-- Detect change across modalities
+Detect change across modalities
 
 ## 15. Complex/Multidimensional Tasks
 
 **Multidimensional Discrimination**
-- Discriminate on multiple features simultaneously
-- General recognition theory (GRT) paradigms
+Discriminate on multiple features simultaneously
+General recognition theory (GRT) paradigms
 
 **Hierarchical Detection**
-- Global vs. local level detection
-- Navon figures (large letter made of small letters)
+Global vs. local level detection
+Navon figures (large letter made of small letters)
 
 **Conjunction/Feature Integration**
-- Detect conjunction of features
-- Feature binding tasks
+Detect conjunction of features
+Feature binding tasks
 
 ## 16. Action and Motor Tasks
 
 **Motor Detection**
-- Detect own movement vs. external movement
-- Agency detection (did I cause this?)
+Detect own movement vs. external movement
+Agency detection (did I cause this?)
 
 **Temporal Motor Tasks**
-- Synchronization detection (was action synchronized with event?)
-- Motor timing discrimination
+Synchronization detection (was action synchronized with event?)
+Motor timing discrimination
 
 ## 17. Specialized Formats
 
 **Adaptive/Staircase Procedures**
-- Any of above with adaptive threshold estimation
-- Quest, PEST, or simple up-down methods
+Any of above with adaptive threshold estimation
+Quest, PEST, or simple up-down methods
 
 **Rating Scale Variants**
-- 4-point, 6-point, or continuous confidence ratings
-- Likelihood ratings (How likely is signal present?)
-- Unequal variance models
+4-point, 6-point, or continuous confidence ratings
+Likelihood ratings (How likely is signal present?)
+Unequal variance models
 
 **Sequential/Dynamic Tasks**
-- Multiple observations before decision
-- Evidence accumulation over time
-- Dynamic noise conditions
+Multiple observations before decision
+Evidence accumulation over time
+Dynamic noise conditions
 
 **Context-Dependent Tasks**
-- Detection/discrimination with varying context
-- Expectation manipulation
-- Prior probability manipulation
+Detection/discrimination with varying context
+Expectation manipulation
+Prior probability manipulation
 
 ## 18. Memory Strength Tasks
 
 **Remember/Know Judgments**
-- Recognition with recollection quality
-- Familiarity vs. recollection
+Recognition with recollection quality
+Familiarity vs. recollection
 
 **Plurality Discrimination**
-- Was item seen once or multiple times?
-- Frequency discrimination
+Was item seen once or multiple times?
+Frequency discrimination
 
 The key insight is that SDT can be applied to virtually any task where you're discriminating between two (or more) states, categories, or alternatives based on noisy internal representations. The common thread is the signal detection framework: comparing evidence against a criterion or comparing two distributions of evidence.
-
-### Censoring
-
-Figure 2: Detection data +
-
-### Repeated vs. recurrent events
-
-In the context of response time experiments with button presses across trials, these would typically be considered repeated events rather than recurrent events in the survival analysis sense.
-Here's why:
-Key Differences
-Recurrent events in survival analysis usually imply:
-
-The event can "re-occur" after happening (like a disease relapse)
-There's genuine risk of the same phenomenon happening again
-Often involves a temporal process where earlier events may influence later ones
-The focus is on when events happen over continuous time
-
-Repeated measures (which button presses across trials represent):
-
-Structured, often experimenter-determined observations
-Each trial is typically independent or pseudo-independent by design
-The focus is usually on the response time itself, not necessarily the temporal spacing between events
-Trials are discrete, planned observations
-
-For Response Time Data
-Button presses across trials are better conceptualized as:
-
-Repeated measures in a standard statistical sense
-Each trial gives you a response time measurement
-You're typically interested in modeling the distribution of response times and how they vary with conditions, not modeling the "survival" to a button press
-
-Figure 4 :  perceptual dominance durations
-
-### Competing risks: correct versus error responses
-
-Figure 3: Discrimination data 
-
-
-## 2.2 Modeling approaches
-
-
-This distinction is why discrete-time hazard models can be fit using logistic regression - you're modeling a binary outcome (event yes/no) within each discrete time period.
-
- Figure 5: soa manipulation + old Figure 1
- 
- Discrete vs. continuous time
-
- Parametric, semi-parametric, and nonparametric approaches
-
-
-Key Advantages of Discrete-Time Models
-Easy to incorporate time-varying covariates
-Flexible baseline hazard specification
-Can use standard logistic regression software
-Natural for data collected at discrete intervals
-Can handle ties easily
-The discrete-time approach is particularly well-suited for repeated measures data where observations occur at regular intervals (annual surveys, quarterly measurements, etc.).
-
-
-
-
-
-
-
-
 
 
 
@@ -753,21 +840,13 @@ The discrete-time approach is particularly well-suited for repeated measures dat
 
 ## 2.1 A brief introduction to event history analysis
 
-EHA is a class of statistical approaches to study the occurrence and timing of events, such as disease onset, marriages, arrests, and job terminations [@allisonSurvivalAnalysisUsing2010]. In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010; @gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019; @millsIntroducingSurvivalEvent2011]. We also supply relevant regression equations in section E of the Supplemental Material. 
+ In this section, we want to provide an intuition regarding how EHA works in general, as well as in the context of experimental psychology. For those who want more detailed treatment of EHA and/or regression equations, we refer the reader to several excellent textbooks on these topics [@singerAppliedLongitudinalData2003; @allisonSurvivalAnalysisUsing2010; @gelmanRegressionOtherStories2020; @winterStatisticsLinguistsIntroduction2019; @millsIntroducingSurvivalEvent2011]. We also supply relevant regression equations in section E of the Supplemental Material. 
 
 ### 2.1.1 Terminolgy and minimum requirements for EHA
 
-To avoid possible confusion in terminology used, it is worth noting that EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis [@singerAppliedLongitudinalData2003]. In this paper, we choose to use the term EHA throughout.
 
-In terms of minimum requirements to apply EHA, one must be able to:
 
-1. define an event of interest that represents a qualitative change - a transition from one discrete state to another - that can be situated in time (e.g., a button press, a saccade onset, a fixation offset, etc.);
 
-2. define time point zero in each trial (e.g., target stimulus onset, fixation onset, etc.);
-
-3. measure the passage of time between time point zero and event occurrence in discrete or continuous time units in each trial. 
-
-These minimal requirements are fulfilled by the RT data obtained in single-button detection tasks, where the time-to-response is repeatedly measured in different trials in the same individual. In section A of the Supplemental Material we visualize this and other types of time-to-event data which are typically obtained in discrimination and bistable perception tasks.
 
 ### 2.1.2 Types of EHA
 
@@ -779,6 +858,8 @@ However, continuous forms of EHA require much more data to reliably estimate the
 Thus, by trading a bit of temporal resolution for a lower number of trials, discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than ~200 trials per condition per participant [@panisAnalyzingResponseTimes2020].
 Moreover, as indicated by @singerAppliedLongitudinalData2003, learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good starting point.
 
+
+
 To apply discrete-time EHA, one divides the within-trial time in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10; Figure 1B).
 Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person’s response occurs in a particular trial across a repeated measures design. 
 For example, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
@@ -787,6 +868,8 @@ The discrete-time hazard function gives you, for each time bin, the conditional 
 bin t, given that the event does not occur in previous bins. 
 In other words, it reflects the instantaneous risk that the event occurs in the current bin t, given that it has not yet
 occurred in the past, i.e., in one of the prior bins (t-1, t-2, ..., 1).
+
+
 
 In the context of experimental psychology, it is often (but not always), the case that responses can be classified as correct or incorrect.
 In those cases, one can also calculate the conditional accuracy function (Figure 1B lower panel).
@@ -808,13 +891,8 @@ Are there new auxiliary assumptions that computational models need to adopt [@pa
 Will the temporal effect patterns align nicely with electroencephalography (EEG) findings [@panisWhenDoesInhibition2022]?
 And are there new experiments that need to be performed to test the novel predictions that follow from these analyses? 
 
-Second, compared to more conventional analytical approaches, EHA uses more of the data because it deals with missing data differently.
-It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT [@bergerComparisonDifferentResponse2021]. 
-Discarding data can introduce biases, however.
-Rather than treat non-responses as missing data, EHA treats such trials as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. 
-Right-censoring is a type of missing data problem and a nearly universal feature of survival data including RT data.
-For example, if the censoring time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
-The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots).
+
+
 
 Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable perception tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material). 
 The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the RT domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition [@barackTwoViewsCognitive2021].
@@ -831,6 +909,8 @@ For instance, in Figure 1B we chose 100 ms in an arbitrary manner.
 In reality, however, bin width will need to be set by considering a number of factors simultaneously.
 The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
 Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find the smallest bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. Overly small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Of note, however, is that time bins do not need to have the same width. For example, @panisHowCanWe2020 used larger bins towards the end of the observation period, as fewer events occurred there.
+
+-->
 
 # 3. Tutorials
 

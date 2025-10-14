@@ -790,7 +790,9 @@ p4 <- tibble(
         legend.text = element_text(size=12),
         legend.title = element_text(size=14))
 p4
-             
+```
+
+```{r}
 # Combine         
 p4_theme <- p4 + theme(legend.position = "none")
 p2_theme <- p2 + theme(legend.position = "none")
@@ -798,12 +800,16 @@ p3_theme <- p3 + theme(legend.position = "none")
 
 (p2_theme / p4_theme / p3_theme / p1) +
     plot_annotation(title = "Four ways to describe the distribution of\n a sample of (20ms-)interval-censored event times:",
-                    theme = theme(plot.title = element_text(size = 15))) +
+                    theme = theme(plot.title = element_text(size = 15)),
+                    tag_levels = "A") +
     plot_layout(guides = "collect",
                 axes = "collect_x"
                 ) & 
     theme(legend.position = "bottom")
 ```
+
+
+
 
 Save the plot
 
@@ -1694,6 +1700,7 @@ p2_theme <- p2 + theme(legend.position = "none")
 p3_theme <- p3 + theme(legend.position = "none")
 
 (p2_theme / p4_theme / p3_theme / p1) +
+    plot_annotation(tag_levels = "A") +
     plot_layout(guides = "collect",
                 axes = "collect_x") & 
     theme(legend.position = "right")
@@ -2428,7 +2435,12 @@ ggsave("REVIEW2/stopsignal/stopsignal_plot.png", width = 10, height = 10, dpi = 
 ```{r}
 
 (visualsearch_plot|spatialcueing_plot|stopsignal_plot) +
+    plot_annotation(tag_levels = "A") +
     plot_layout(axes = "collect_y") & 
+    theme(legend.position = "bottom")
+
+(visualsearch_plot|spatialcueing_plot|stopsignal_plot) +
+    plot_annotation(tag_levels = "A") & 
     theme(legend.position = "bottom")
 
 ```
