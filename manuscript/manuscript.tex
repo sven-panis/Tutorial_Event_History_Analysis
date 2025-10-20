@@ -305,7 +305,7 @@ In Section 4, we discuss the overall strengths and weaknesses of the approach fo
 
 \subsubsection{Repeated versus recurrent events}\label{repeated-versus-recurrent-events}
 
-EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations (Allison, 2010). EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer \& Willett, 2003). In this paper, we choose to use the term EHA throughout. An event is defined as a qualitative change - a transition from one discrete state to another - that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring reach movement trajectories, for example in mouse-tracking studies (refs: mouse + KL omar). While some events can only happen once (e.g., death), most events of interest for cognitive scientists can happen repeatedly to the same individual.
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations (Allison, 2010). EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer \& Willett, 2003). In this paper, we choose to use the term EHA throughout. An event is defined as a qualitative change -- a transition from one discrete state to another -- that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring reach movement trajectories, for example in mouse-tracking studies (refs: mouse + KL omar). While some events can only happen once (e.g., death), most events of interest for cognitive scientists can happen repeatedly to the same individual.
 
 To apply EHA one also must define time point zero (e.g., stimulus onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. In RT tasks, response times are typically measured with a temporal resolution of 1 millisecond, or higher. As 1 ms is typically short compared to the length of the observation period (e.g., 1 second), response times are generally treated as continuous time-to-event data.
 
@@ -335,7 +335,7 @@ Left censoring occurs when all that is known about an observation on a variable 
 
 \subsubsection{Describe the shape of a distribution of time-to-event data}\label{describe-the-shape-of-a-distribution-of-time-to-event-data}
 
-Because our Tutorials focus on discrete-time methods as explained in section 2.3, we assume now that the continuous-time RTs have been discretized by dividing the observation period into bins of 20 ms, indexed by t (= 1, 2, \ldots). In particular, suppose (a) we measure a sample of continous-time RTs in the target-present condition of Figure 1A using a censoring time of 1200 ms, (b) that the occurrence and timing of responses is governed either by a normal or ex-gaussian distribution, and (c) that we apply interval censoring using intervals of 20 ms. As shown in Figure 2, the resulting distribution of interval-censored event times can be described in various ways, the first two of which are highly familiar to cognitive scientists.
+Because our Tutorials focus on discrete-time methods as explained in section 2.3, we assume now that the continuous-time RTs have been discretized by partioning the observation period in each trial into bins of 20 ms, indexed by t (= 1, 2, \ldots). In particular, suppose (a) we measure a sample of continous-time RTs in the target-present condition of Figure 1A using a censoring time of 1200 ms, (b) that the occurrence and timing of responses is governed either by a normal or ex-gaussian distribution, and (c) that we apply interval censoring using intervals of 20 ms. As shown in Figure 2, the resulting distribution of interval-censored event times can be described in various ways, the first two of which are highly familiar to cognitive scientists.
 
 \begin{itemize}
 \tightlist
@@ -367,9 +367,9 @@ The discrete-time survivor function or S(t) = Prob(RT \textgreater{} t) is the c
   the discrete-time hazard function
 \end{itemize}
 
-The discrete-time hazard function or h(t) = Prob(RT = t \textbar{} RT \textgreater= t) displays for each bin the conditional probability that the response occurs in bin t given that the response does not occur in earlier bins (t-1, t-2, \ldots, t=1). It is also known as the conditional probability mass function because h(t) = P(t)/S(t-1).
+The discrete-time hazard function or h(t) = Prob(RT = t \textbar{} RT \textgreater= t) displays for each bin the \emph{conditional} probability that the response occurs in bin t given that the response does not occur in earlier bins (t-1, t-2, \ldots, t=1). It is also known as the conditional probability mass function because h(t) = P(t)/S(t-1). In other words, h(t) estimates the risk of event occurrence in bin t given one is still waiting for a response at the start of bin t. More generally, it represents the conditional probability that a behavioral response is about to occur given that the psychological decision-making process has not finished yet.
 
-EHA focuses on describing and modeling the hazard function of event occurrence because (a) dynamic info \ldots, (b) diagnostic\ldots, especially in the right tail.
+EHA focuses on describing and modeling the hazard function of event occurrence because (a) it is uniquely sensitive to the amount of waiting time that has passed for each time bin, (b) and highly diagnostic for describing the shape of waiting time distributions as it also describes differences in the right tail (see Figure 2).
 
 
 
@@ -379,8 +379,15 @@ EHA focuses on describing and modeling the hazard function of event occurrence b
 
 }
 
-\caption{In discrete time, the shape of a RT distribution can be described using the probability mass function (A), the cumulative distribution function (B), the survivor function (C), and the discrete-time hazard function (D).}\label{fig:plot2-revision2}
+\caption{In discrete time, the shape of a RT distribution can be described using the probability mass function (A), the cumulative distribution function (B), the survivor function (C), and the discrete-time hazard function (D). Samples are drawns from three example distributions (two normal and one exgaussian distribution). Note the small differences in P(t), F(t), and S(t) and the relatively large difference in both hazard estimates around 800 ms. Sample-based hazard will hit 1 in the bin with the largest observed response time when none of the observations are right-censored. Also, there is always increased uncertainty around hazard estimates in later time bins.}\label{fig:plot2-revision2}
 \end{figure}
+
+One important issue is the choice of the width of the discrete time bin.
+For instance, in Figure 2 we chose 20 ms in an arbitrary manner.
+In reality, however, bin width will need to be set by considering a number of factors simultaneously.
+The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
+Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find an informative bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less.
+As shown in Supplementary Figure S1, overly small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Of note, however, is that time bins do not need to have the same width. For example, Panis (2020) used larger bins towards the end of the observation period, as fewer events occurred there.
 
 \subsubsection{Competing risks}\label{competing-risks}
 
@@ -389,6 +396,10 @@ In many applications there are multiple events of interest, such as correct vers
 In EHA parlance this is known as a \emph{competing risks} situation, because from target display screen onset (time zero) onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a ``correct response'' state or an ``incorrect response'' state.
 
 There are two ways to deal with a competing-risks situation. One approach is to describe and model \emph{cause-specific hazard functions}: the hazard function of correct response occurrence while treating incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c (Allison, 2010). However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another (\textbf{BURLE2004153?}; \textbf{praamstra9513?}; \textbf{eriksenElectromyographicExaminationResponse1985?}). Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here.
+
+The conditional accuracy function or ca(t) = Prob(correct \textbar{} RT = t) gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977).
+The conditional accuracy function is also known as the micro-level speed-accuracy tradeoff (SAT) function (see examples in Figure 5).
+We refer to the extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT.
 
 \subsection{2.2 Modeling approaches}\label{modeling-approaches}
 
@@ -421,7 +432,7 @@ Parametric hazard models assume time is measured in continuous units and can be 
 
 }
 
-\caption{Theoretical waiting time distributions.}\label{fig:plot4-revision2}
+\caption{Describing samples from theoretical waiting time distributions. RTs are often modeled using gamma, ex-gaussian, and lognormal distributions, or by fitting cognitive models for decision making such as the Ratcliff diffusion model. Due to the increased uncertainty around hazard estimates in later time bins, some of the functions are wiggling in the right tail.}\label{fig:plot4-revision2}
 \end{figure}
 
 \begin{itemize}
@@ -438,7 +449,7 @@ Cox regression models assume time is measure in continous units and can be used 
   Piece-wise exponential model
 \end{itemize}
 
-This continous-time modeling approach divides the obseration period into bins, and assumes that hazard is exponentially distributed in each bin. It is great when \ldots{}
+This continous-time modeling approach divides the obseration period into discrete bins, and assumes that hazard is exponentially distributed in each bin.
 
 \begin{itemize}
 \tightlist
@@ -446,10 +457,11 @@ This continous-time modeling approach divides the obseration period into bins, a
   Discrete-time hazard model
 \end{itemize}
 
-Discrete-time hazard models can be used when data is collected at discrete intervals. For example, when participants are tested at noon on each of six subsequent days for their memory of a set of pictures, the time-to-forgetting data are measured in discrete time units (e.g., picture A is forgotten on day 3, picture B on day 5).
-However, they can also be used for data collected in continuous time units, when the hazard function is unknown and the analyst is interested in studying the shape of the hazard function and the effects of predictor variables.
+The discrete-time approach is particularly well-suited for repeated measures data where observations occur at regular intervals (annual surveys, quarterly measurements, etc.).
+For example, when participants are tested at noon on each of six subsequent days for their memory of a set of pictures, the time-to-forgetting data are measured in discrete time units (e.g., picture A is forgotten on day 3, picture B on day 5).
+However, discrete-time methods can also be applied to data collected in continuous time units, namely when the hazard function is unknown and the analyst is interested in studying the shape of the hazard function as well as the effects of predictor variables on hazard.
 
-Figure 5 presents empirical hazard and conditional accuracy functions from three popular RT tasks: visual search, spatial cueing, and the stop-signal task.
+To illustrate why the parametric distributions in Figure 4 often fail to capture empirical patterns, Figure 5 presents empirical hazard (and conditional accuracy) functions from three popular RT tasks: visual search, spatial cueing, and the stop-signal task. In the search task, the hazard functions increase, peak, and decrease to a non-zero plateau. In the cueing task, the hazard functions increase, first at a low rate and later at a high rate, towards 1. In the stop-signal task, the hazard functions either increase to a plateau, or they reach a peak and decrease to zero. The effect of target presence is confined to the left tail, the cueing effect is confined to a few mid-latency time bins, and the suppression effect in the stop-signal task is only present in the right tail. Also, the conditional accuracy functions in the cueing task are highly nonlinear.
 
 
 
@@ -459,49 +471,43 @@ Figure 5 presents empirical hazard and conditional accuracy functions from three
 
 }
 
-\caption{Empirical distributions.}\label{fig:plot5-revision2}
+\caption{Empirical distributions observed in cognitive RT tasks. Sample-based hazard (A, C, E) and conditional accuracy functions (B, D, F). (A,B). Data from Panis et al.~(2020). (C,D). Data from Panis and Schmidt (2022). (E.F.) Unpublished data.}\label{fig:plot5-revision2}
 \end{figure}
 
-\ldots modeling a binary outcome (event occurred yes or no) within each discrete time period or bin or interval.
-This distinction is why discrete-time hazard models can be fit using logistic regression you're modeling a binary outcome (event yes/no) within each discrete time period.
-
-logit/cloglog
-
-contrast with Delta
+These examples illustrate why we advocate the use of discrete-time methods in RT research as the entry method to EHA/SAT: they allow us to learn about the shape of the hazard function in a cognitive task when we do not know its shape. Other advantages of discrete-time hazard modeling include (a) easy to incorporate time-varying covariates, (b) flexible baseline hazard specification, (c) logistic regression as you're modeling a binary outcome (event yes/no) within each discrete time bin. Next to the logit link function, the complementary log-log link is available when RTs can in principle occur at any timepoint within a bin, which is the case here.
 
 So when we write h(tij), we mean the hazard for time interval t in trial j of individual i, which is the probability of experiencing the event during that interval, given survival to the beginning of that interval.
 
-Key Advantages of Discrete-Time Models
-Easy to incorporate time-varying covariates
-Flexible baseline hazard specification
-Can use standard logistic regression software
-
-Can handle ties easily
-The discrete-time approach is particularly well-suited for repeated measures data where observations occur at regular intervals (annual surveys, quarterly measurements, etc.).
+Write down general discrete-time hazard model equation\ldots{}
 
 \subsection{2.3 Research questions}\label{research-questions}
 
 EHA allows to answer new research questions on behavioral dynamics in experimental paradigms to study cognition.
 
-What is the shape of the hazard function? Does it increase to a plateau, or does it increase to a peak and then decrease?
-
-Does an experimental manipulation affect the early or late part of the distribution?
-
-Do experimental effects increase or decrease over time, or are they restricted only to a short time period?
-
-Is the shape of the hazard function within a trial changing as time passes by on longer time scales?
-
-Do time scales interact? Do predictor variables interact? Do time scales interact with predictor variables?
-
-Are experimental effects time-locked to certain stimuli?
-
-Are there inter-individual differences in the shape of the hazard function?
-
-Do time-varying predictors (eye gaze position, eye dilation, heart rate, parietal-frontal synchronization, \ldots) affect the risk of event occurrence?
-
-Do computational models predict the shape of the hazard function as well as the mean RT?
-
-When does the effect of a spatio-temporally timed TMS pulse happen?
+\begin{itemize}
+\item
+  What is the shape of the hazard function? In other words, what is the effect of the passage of time on the within-trial (or across-bin) time scale on the hazard estimate? Does the hazard function increase to a plateau, or does it increase to a peak and then decrease? Is it flat in the right tail?
+\item
+  Does an experimental manipulation affect the early or late part of the distribution? Do experimental effects increase or decrease in strength over time, or are they restricted only to a short time period within a trial?
+\item
+  Can we identify cognitive states in the h(t) + ca(t) patterns? For example, based on Figure 5C and 5D, this participant transitions through at least three motor states during a trial: a first state running from -160 to -40 ms, reflecting the automatic response to the peripheral cue; a second state running from 0 to 160 ms, where conditional accuracies reverse; and a third state where conditional accuracy increases to 1 and the hazard functions display the inhibition-of-return effect (i.e., higher hazard for invalid compared to valid cueing).
+\item
+  Is the shape of the hazard function within a trial changing as time passes by on longer time scales? For example, some effects might increase, or decrease in size and disappear, over the course of an experiment (across-trial time scale).
+\item
+  Do time scales interact? For example, people typically speed up during the course of an experiment, but is this reflected in hazard changes in the left tail only (as reflected in a interaction between time bin and trial number)?
+\item
+  Do predictor variables interact? Do time scales interact with predictor variables? Is the effect of a continuous predictor on hazard linear or nonlinear?
+\item
+  Are experimental effects time-locked to certain stimuli?
+\item
+  Are there inter-individual differences in the shape of the hazard function?
+\item
+  Do time-varying predictors (eye gaze position, eye dilation, heart rate, parietal-frontal synchronization, \ldots) affect the risk of event occurrence?
+\item
+  Do computational models predict the shape of the hazard function as well as the mean RT?
+\item
+  When does the effect of a spatio-temporally timed TMS pulse happen?
+\end{itemize}
 
 \section{3. Tutorials}\label{tutorials}
 
@@ -1191,6 +1197,9 @@ Heiss, A. (2021, November 10). A Guide to Correctly Calculating Posterior Predic
 \bibitem[\citeproctext]{ref-hosmerAppliedSurvivalAnalysis2011}
 Hosmer, D. W., Lemeshow, S., \& May, S. (2011). \emph{Applied {Survival Analysis}: {Regression Modeling} of {Time} to {Event Data}} (2nd ed). Hoboken: John Wiley \& Sons.
 
+\bibitem[\citeproctext]{ref-kantowitzInterpretationReactionTime2021}
+Kantowitz, B. H., \& Pachella, R. G. (2021). The {Interpretation} of {Reaction Time} in {Information-Processing Research} 1. \emph{Human Information Processing}, 41--82. \url{https://doi.org/10.4324/9781003176688-2}
+
 \bibitem[\citeproctext]{ref-R-tidybayes}
 Kay, M. (2024). \emph{{tidybayes}: Tidy data and geoms for {Bayesian} models}. \url{https://doi.org/10.5281/zenodo.1308151}
 
@@ -1283,6 +1292,9 @@ Teachman, J. D. (1983). Analyzing social processes: {Life} tables and proportion
 
 \bibitem[\citeproctext]{ref-tongStatisticalInferenceEnables2019}
 Tong, C. (2019). Statistical {Inference Enables Bad Science}; {Statistical Thinking Enables Good Science}. \emph{The American Statistician}, \emph{73}(sup1), 246--261. \url{https://doi.org/10.1080/00031305.2018.1518264}
+
+\bibitem[\citeproctext]{ref-wickelgrenSpeedaccuracyTradeoffInformation1977}
+Wickelgren, W. A. (1977). Speed-accuracy tradeoff and information processing dynamics. \emph{Acta Psychologica}, \emph{41}(1), 67--85. \url{https://doi.org/10.1016/0001-6918(77)90012-9}
 
 \bibitem[\citeproctext]{ref-R-ggplot2}
 Wickham, H. (2016). \emph{ggplot2: Elegant graphics for data analysis}. Springer-Verlag New York. Retrieved from \url{https://ggplot2.tidyverse.org}

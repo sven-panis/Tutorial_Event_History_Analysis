@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.8)  14 OCT 2025 21:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.10.8)  20 OCT 2025 01:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -711,148 +711,148 @@ Package pdftex.def Info: ../REVIEW2/Plot_distributions.png  used on input line 3
 [10]
 
 [11 <../REVIEW2/Plot_distributions.png>]
-<../REVIEW2/DecisionTreeMethods.png, id=75, 722.7pt x 722.7pt>
-File: ../REVIEW2/DecisionTreeMethods.png Graphic file (type png)
-<use ../REVIEW2/DecisionTreeMethods.png>
-Package pdftex.def Info: ../REVIEW2/DecisionTreeMethods.png  used on input line 401.
-(pdftex.def)             Requested size: 422.77228pt x 435.78473pt.
-
 
 [12]
-<../REVIEW2/Plot_distributions_theoretical.png, id=81, 722.7pt x 722.7pt>
-File: ../REVIEW2/Plot_distributions_theoretical.png Graphic file (type png)
-<use ../REVIEW2/Plot_distributions_theoretical.png>
-Package pdftex.def Info: ../REVIEW2/Plot_distributions_theoretical.png  used on input line 420.
+<../REVIEW2/DecisionTreeMethods.png, id=79, 722.7pt x 722.7pt>
+File: ../REVIEW2/DecisionTreeMethods.png Graphic file (type png)
+<use ../REVIEW2/DecisionTreeMethods.png>
+Package pdftex.def Info: ../REVIEW2/DecisionTreeMethods.png  used on input line 412.
 (pdftex.def)             Requested size: 422.77228pt x 435.78473pt.
 
 
-[13 <../REVIEW2/DecisionTreeMethods.png>]
+[13]
+<../REVIEW2/Plot_distributions_theoretical.png, id=86, 722.7pt x 722.7pt>
+File: ../REVIEW2/Plot_distributions_theoretical.png Graphic file (type png)
+<use ../REVIEW2/Plot_distributions_theoretical.png>
+Package pdftex.def Info: ../REVIEW2/Plot_distributions_theoretical.png  used on input line 431.
+(pdftex.def)             Requested size: 422.77228pt x 435.78473pt.
 
-[14 <../REVIEW2/Plot_distributions_theoretical.png>]
-<../REVIEW2/Plot_distributions_empirical.png, id=94, 1011.78pt x 722.7pt>
+
+[14 <../REVIEW2/DecisionTreeMethods.png>]
+
+[15 <../REVIEW2/Plot_distributions_theoretical.png>]
+<../REVIEW2/Plot_distributions_empirical.png, id=98, 1011.78pt x 722.7pt>
 File: ../REVIEW2/Plot_distributions_empirical.png Graphic file (type png)
 <use ../REVIEW2/Plot_distributions_empirical.png>
-Package pdftex.def Info: ../REVIEW2/Plot_distributions_empirical.png  used on input line 458.
+Package pdftex.def Info: ../REVIEW2/Plot_distributions_empirical.png  used on input line 470.
 (pdftex.def)             Requested size: 422.78331pt x 435.78473pt.
 
 
-[15]
+[16]
 
-[16 <../REVIEW2/Plot_distributions_empirical.png>]
-
-[17]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 512.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 512.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 512.
-
+[17 <../REVIEW2/Plot_distributions_empirical.png>]
 
 [18]
 
 [19]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 518.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 518.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 518.
+
 
 [20]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 629.
-(/Users/spanis/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
-File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 630.
-
 
 [21]
 
 [22]
-Overfull \hbox (32.61392pt too wide) in paragraph at lines 684--716
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 635.
+(/Users/spanis/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 636.
+
+
+[23]
+
+[24]
+Overfull \hbox (32.61392pt too wide) in paragraph at lines 690--722
  [] 
  []
 
 
 
-[23]
-<../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png, id=151, 578.16pt x 578.16pt>
+[25]
+<../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png, id=160, 578.16pt x 578.16pt>
 File: ../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png Graphic file (type png)
 <use ../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png>
-Package pdftex.def Info: ../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png  used on input line 726.
+Package pdftex.def Info: ../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png  used on input line 732.
 (pdftex.def)             Requested size: 422.77669pt x 435.78032pt.
 
 
-[24]
-
-[25 <../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png>]
-
 [26]
 
-[27]
+[27 <../Tutorial_1_descriptive_stats/figures/Plot_for_subject6_PanisSchmidt.png>]
 
 [28]
 
 [29]
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 805.
-
 
 [30]
 
 [31]
-<../Tutorial_2_Bayesian/figures/Revision_results_hazard.png, id=196, 1011.78pt x 1445.4pt>
-File: ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png Graphic file (type png)
-<use ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png>
-Package pdftex.def Info: ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png  used on input line 873.
-(pdftex.def)             Requested size: 422.78331pt x 617.91493pt.
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 811.
 
 
 [32]
-Overfull \vbox (64.48491pt too high) has occurred while \output is active []
 
-
-
-[33 <../Tutorial_2_Bayesian/figures/Revision_results_hazard.png>]
-
-[34]
-<../Tutorial_2_Bayesian/figures/Revision_results_ca.png, id=214, 1011.78pt x 1445.4pt>
-File: ../Tutorial_2_Bayesian/figures/Revision_results_ca.png Graphic file (type png)
-<use ../Tutorial_2_Bayesian/figures/Revision_results_ca.png>
-Package pdftex.def Info: ../Tutorial_2_Bayesian/figures/Revision_results_ca.png  used on input line 901.
+[33]
+<../Tutorial_2_Bayesian/figures/Revision_results_hazard.png, id=204, 1011.78pt x 1445.4pt>
+File: ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png Graphic file (type png)
+<use ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png>
+Package pdftex.def Info: ../Tutorial_2_Bayesian/figures/Revision_results_hazard.png  used on input line 879.
 (pdftex.def)             Requested size: 422.78331pt x 617.91493pt.
 
 
-[35]
+[34]
 Overfull \vbox (64.48491pt too high) has occurred while \output is active []
 
 
 
-[36 <../Tutorial_2_Bayesian/figures/Revision_results_ca.png>]
+[35 <../Tutorial_2_Bayesian/figures/Revision_results_hazard.png>]
+
+[36]
+<../Tutorial_2_Bayesian/figures/Revision_results_ca.png, id=222, 1011.78pt x 1445.4pt>
+File: ../Tutorial_2_Bayesian/figures/Revision_results_ca.png Graphic file (type png)
+<use ../Tutorial_2_Bayesian/figures/Revision_results_ca.png>
+Package pdftex.def Info: ../Tutorial_2_Bayesian/figures/Revision_results_ca.png  used on input line 907.
+(pdftex.def)             Requested size: 422.78331pt x 617.91493pt.
+
 
 [37]
-<../Tutorial_4_Planning/figures/raw_vs_d1.jpeg, id=235, 6424.0pt x 6424.0pt>
+Overfull \vbox (64.48491pt too high) has occurred while \output is active []
+
+
+
+[38 <../Tutorial_2_Bayesian/figures/Revision_results_ca.png>]
+
+[39]
+<../Tutorial_4_Planning/figures/raw_vs_d1.jpeg, id=243, 6424.0pt x 6424.0pt>
 File: ../Tutorial_4_Planning/figures/raw_vs_d1.jpeg Graphic file (type jpg)
 <use ../Tutorial_4_Planning/figures/raw_vs_d1.jpeg>
-Package pdftex.def Info: ../Tutorial_4_Planning/figures/raw_vs_d1.jpeg  used on input line 960.
+Package pdftex.def Info: ../Tutorial_4_Planning/figures/raw_vs_d1.jpeg  used on input line 966.
 (pdftex.def)             Requested size: 375.71918pt x 435.70877pt.
 
 
-[38]
-
-[39 <../Tutorial_4_Planning/figures/raw_vs_d1.jpeg>]
-
 [40]
-<../Tutorial_4_Planning/figures/bin6_power_col.jpeg, id=255, 9636.0pt x 5621.0pt>
+
+[41 <../Tutorial_4_Planning/figures/raw_vs_d1.jpeg>]
+
+[42]
+<../Tutorial_4_Planning/figures/bin6_power_col.jpeg, id=263, 9636.0pt x 5621.0pt>
 File: ../Tutorial_4_Planning/figures/bin6_power_col.jpeg Graphic file (type jpg)
 <use ../Tutorial_4_Planning/figures/bin6_power_col.jpeg>
-Package pdftex.def Info: ../Tutorial_4_Planning/figures/bin6_power_col.jpeg  used on input line 1005.
+Package pdftex.def Info: ../Tutorial_4_Planning/figures/bin6_power_col.jpeg  used on input line 1011.
 (pdftex.def)             Requested size: 469.62447pt x 435.70877pt.
 
 
-[41]
-
-[42 <../Tutorial_4_Planning/figures/bin6_power_col.jpeg>]
-
 [43]
 
-[44]
+[44 <../Tutorial_4_Planning/figures/bin6_power_col.jpeg>]
 
 [45]
 
@@ -874,27 +874,31 @@ Package pdftex.def Info: ../Tutorial_4_Planning/figures/bin6_power_col.jpeg  use
 
 [54]
 
-[55] AED endfloat: Processing end Figures and Tables
+[55]
 
-[56] (./manuscript.aux)
+[56]
+
+[57] AED endfloat: Processing end Figures and Tables
+
+[58] (./manuscript.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2020/03/25>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 17452 strings out of 469729
- 287423 string characters out of 5476492
- 726280 words of memory out of 5000000
- 45389 multiletter control sequences out of 15000+600000
+ 17458 strings out of 469729
+ 287637 string characters out of 5476492
+ 727396 words of memory out of 5000000
+ 45391 multiletter control sequences out of 15000+600000
  711092 words of font info for 112 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  83i,11n,93p,2249b,628s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmss8.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></Users/spanis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on manuscript.pdf (56 pages, 28287212 bytes).
+Output written on manuscript.pdf (58 pages, 28485397 bytes).
 PDF statistics:
- 718 PDF objects out of 1000 (max. 8388607)
- 614 compressed objects within 7 object streams
- 196 named destinations out of 1000 (max. 500000)
+ 731 PDF objects out of 1000 (max. 8388607)
+ 625 compressed objects within 7 object streams
+ 200 named destinations out of 1000 (max. 500000)
  403 words of extra memory for PDF output out of 10000 (max. 10000000)
 

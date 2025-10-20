@@ -508,7 +508,7 @@ ggplot() +
 Save the tree.
 
 ```{r}
-ggsave("REVIEW2/DecisionTreeMethods.png", width = 10, height = 10, dpi = 800, bg = "transparent")
+ggsave("REVIEW2/DecisionTreeMethods_pitch.png", width = 10, height = 10, dpi = 800, bg = "transparent")
 ```
 
 # Figure 2. Ways to describe a RT distribution
@@ -528,7 +528,9 @@ bin_width = 20
 # sample RT data
 rt_data = tibble(
   rt1 = rnorm(ntrials, mean, sd),
-  rt2 = rexGAUS(ntrials,mu = 300, sigma = sd, nu = 100)
+  rt2 = rexGAUS(ntrials,mu = 300, sigma = sd, nu = 100),
+ # rt3 = rexGAUS(ntrials,mu = 300, sigma = 65, nu = 120)
+ rt3 = rnorm(ntrials, 450, 120)
 ) %>%
   mutate(N = 1:n())
 
@@ -541,11 +543,15 @@ hist2 <- ggplot(rt_data, aes(x=rt2)) +
   geom_histogram(binwidth = bin_width, boundary = bin_width) +
   scale_x_continuous(limits = c(0,1200)) +
   theme_bw()
+hist3 <- ggplot(rt_data, aes(x=rt3)) +
+  geom_histogram(binwidth = bin_width, boundary = bin_width) +
+  scale_x_continuous(limits = c(0,1200)) +
+  theme_bw()
 
 # extract bin boundaries and counts
 dat1 <- layer_data(hist1)
 dat2 <- layer_data(hist2)
-
+dat3 <- layer_data(hist3)
 # create life tables
 lt1 <- tibble(
   bin = 1:dim(dat1)[1],
@@ -584,7 +590,24 @@ lt2 <- tibble(
   endp = bin*bin_width,
   endpo = dat2$xmax
 )
-
+lt3 <- tibble(
+  bin = 1:dim(dat3)[1],
+  ncount = dat3$count,
+  cumcount = cumsum(ncount),
+  riskset2 = ntrials - lag(cumcount),
+  riskset = ifelse(bin==1, ntrials, riskset2),
+  pmass = ncount/ntrials,
+  se_pmass = sqrt((pmass * (1 - pmass)) / max(riskset)),
+  cumul = cumsum(pmass),
+  surv = 1 - cumul,
+  haz2 = pmass/lag(surv, 1),
+  haz = ifelse(bin==1, 0, haz2),
+  se_haz = sqrt((haz * (1 - haz)) / riskset),
+  temp_surv = cumsum(haz / (riskset * (1 - haz))),
+  se_surv = surv * sqrt(temp_surv),
+  endp = bin*bin_width,
+  endpo = dat3$xmax
+)
 # check start of hazard
 head(lt1)
 head(lt2)
@@ -604,7 +627,7 @@ tail(lt1,n=30)
 tail(lt2)
 
 # Define color palette
-cbPalette <- c("#009E73", "#D55E00")
+cbPalette <- c("#009E73", "#D55E00", "black")
 
 # Define x-axis labels
 values <- seq(0, 1200, by = 60)
@@ -616,16 +639,19 @@ p1 <- tibble(
   bin = lt1$bin,
   `normal (mean = 350, sd = 60)` = lt1$haz,
   `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$haz,
+  `normal (mean = 450, sd = 120)` = lt3$haz,
+   se_norm2 = lt3$se_haz,
   se_exgaus = lt2$se_haz,
   se_norm = lt1$se_haz
 ) %>% 
-  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`normal (mean = 450, sd = 120)`,
                values_to  = "hazard probability"
                ) %>%
   mutate(
     se = case_when(
       name == "normal (mean = 350, sd = 60)" ~ se_norm,
-      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus,
+      name == "normal (mean = 450, sd = 120)" ~ se_norm2)
   ) %>%
   rename(distribution = name) %>%
   # plot
@@ -653,7 +679,7 @@ p1 <- tibble(
         panel.grid.minor.x = element_blank(),
         panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
-        legend.title = element_text(size=14))
+        legend.title = element_text(size=14))+ guides(colour=guide_legend(nrow=3, byrow=TRUE))
 p1
 
 
@@ -664,16 +690,20 @@ p2 <- tibble(
   bin = lt1$bin,
   `normal (mean = 350, sd = 60)` = lt1$pmass,
   `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$pmass,
+  `normal (mean = 450, sd = 120)` = lt3$pmass,
+  se_norm2 = lt3$se_pmass,
   se_exgaus = lt2$se_pmass,
   se_norm = lt1$se_pmass
 ) %>% 
-  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`normal (mean = 450, sd = 120)`,
                values_to  = "probability mass"
                ) %>%
    mutate(
     se = case_when(
       name == "normal (mean = 350, sd = 60)" ~ se_norm,
-      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus,
+      name == "normal (mean = 450, sd = 120)" ~ se_norm2
+      )
   ) %>%
   rename(distribution = name) %>%
   # plot
@@ -700,23 +730,27 @@ p2 <- tibble(
         panel.grid.minor.x = element_blank(),
              panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
-        legend.title = element_text(size=14))
+        legend.title = element_text(size=14))+ guides(colour=guide_legend(nrow=3, byrow=TRUE))
 p2
 # survivor functions
 p3 <- tibble(
   bin = lt1$bin,
   `normal (mean = 350, sd = 60)` = lt1$surv,
   `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$surv,
+  `normal (mean = 450, sd = 120)` = lt3$surv,
+  se_norm2 = lt3$se_surv,
   se_exgaus = lt2$se_surv,
   se_norm = lt1$se_surv
 ) %>%
-  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`normal (mean = 450, sd = 120)`,
                values_to  = "survival probability"
                ) %>%
    mutate(
     se = case_when(
       name == "normal (mean = 350, sd = 60)" ~ se_norm,
-      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus,
+      name == "normal (mean = 450, sd = 120)" ~ se_norm2
+      )
   ) %>%
   rename(distribution = name) %>%
   # plot
@@ -744,7 +778,7 @@ p3 <- tibble(
         panel.grid.minor.x = element_blank(),
              panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
-        legend.title = element_text(size=14))
+        legend.title = element_text(size=14))+ guides(colour=guide_legend(nrow=3, byrow=TRUE))
 p3
 
 # cum. prob. functions
@@ -752,16 +786,19 @@ p4 <- tibble(
   bin = lt1$bin,
   `normal (mean = 350, sd = 60)` = lt1$cumul,
   `exgaussian (mu = 300, sigma = 60, nu = 100)` = lt2$cumul,
+  `normal (mean = 450, sd = 120)` = lt3$cumul,
+  se_norm2 = lt3$se_surv,
   se_exgaus = lt2$se_surv,
   se_norm = lt1$se_surv
 ) %>% 
-  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`exgaussian (mu = 300, sigma = 60, nu = 100)`,
+  pivot_longer(cols = `normal (mean = 350, sd = 60)`:`normal (mean = 450, sd = 120)`,
                values_to  = "cumulative probability"
                ) %>%
    mutate(
     se = case_when(
       name == "normal (mean = 350, sd = 60)" ~ se_norm,
-      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus)
+      name == "exgaussian (mu = 300, sigma = 60, nu = 100)" ~ se_exgaus,
+      name == "normal (mean = 450, sd = 120)" ~ se_norm2)
   ) %>%
   rename(distribution = name) %>%
   ggplot(aes(x=bin,y=`cumulative probability`,group=distribution,colour=distribution)) +
@@ -788,7 +825,7 @@ p4 <- tibble(
         panel.grid.minor.x = element_blank(),
              panel.grid.major.x = element_blank(),
         legend.text = element_text(size=12),
-        legend.title = element_text(size=14))
+        legend.title = element_text(size=14))+ guides(colour=guide_legend(nrow=3, byrow=TRUE))
 p4
 ```
 
@@ -798,18 +835,20 @@ p4_theme <- p4 + theme(legend.position = "none")
 p2_theme <- p2 + theme(legend.position = "none")
 p3_theme <- p3 + theme(legend.position = "none")
 
+
+
 (p2_theme / p4_theme / p3_theme / p1) +
-    plot_annotation(title = "Four ways to describe the distribution of\n a sample of (20ms-)interval-censored event times:",
-                    theme = theme(plot.title = element_text(size = 15)),
-                    tag_levels = "A") +
+
+plot_annotation(title = "Four ways to describe the distribution of\n a sample of (20ms-)interval-censored event times:",
+                theme = theme(plot.title = element_text(size = 15),
+                              legend.position = "right"),
+                tag_levels = "A",
+                ) +
     plot_layout(guides = "collect",
                 axes = "collect_x"
                 ) & 
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") 
 ```
-
-
-
 
 Save the plot
 
