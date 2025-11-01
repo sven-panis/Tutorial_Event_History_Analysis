@@ -88,6 +88,10 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
                       fig.align = "center") 
 ```
 
+
+
+#### old
+
 # 1. Introduction
 
 ## 1.1 Motivation and background context: Comparing means versus distributional shapes 
