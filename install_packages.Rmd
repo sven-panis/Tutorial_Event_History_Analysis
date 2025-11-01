@@ -104,6 +104,11 @@ remotes::install_github("ThinkR-open/remedy")
 devtools::install_github("ropenscilabs/gramr")
 ```
 
+```{r}
+install.packages("glossary")
+tinytex::tlmgr_install('babel-french')
+tinytex::tlmgr_install('babel-english')
+```
 
 
 Finally, use renv() to take a snapshot of installed packages and update the lock.file 
