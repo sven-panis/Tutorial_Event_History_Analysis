@@ -279,7 +279,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020).
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions can conceal the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the time course of psychological states (Figure 1B). Here we apply a distributional method known as \textbf{discrete-time event history analysis (EHA)} extended with \textbf{speed-accuracy tradeoff analysis (SAT)}. All terms in bold can be found in the glossary (section 2.4).
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Indeed, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). Here we apply a distributional method known as \textbf{discrete-time event history analysis} (EHA) extended with \textbf{speed-accuracy tradeoff analysis} (SAT). All terms in bold can be found in the glossary (section 2.4).
 
 
 
@@ -289,16 +289,16 @@ As a simple illustration, Figure 1 summarises simulated data for one subject tha
 
 }
 
-\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The \textbf{discrete-time hazard functions} (top) and \textbf{conditional accuracy functions} (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The definitions of discrete-time hazard and conditional accuracy are further explained in section 2.1.2. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The \textbf{discrete-time hazard functions} (top) and \textbf{conditional accuracy functions} (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no events in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section X of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B).}\label{fig:plot1}
 \end{figure}
 
-For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the time interval running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis, 2020; Panis \& Schmidt, 2016, 2022).
+For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard functions of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1. Note that we will always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the time period running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis, 2020; Panis \& Schmidt, 2016, 2022).
 
-Why does this matter for research in psychology? First, as illustrated below, for many psychological questions, differences and similarities between the shapes of the RT distribution in two experimental conditions can be theoretically meaningful by leading to more fine-grained understanding of psychological processes. Second, extracting absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020). Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it thus constitutes one possible response to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
+Why does this matter for research in psychology? First, as illustrated below, for many psychological questions differences and similarities between the shapes of the RT distribution in two experimental conditions can be theoretically meaningful by leading to more fine-grained understanding of the time course of psychological processes. Second, extracting absolute timing information is useful not only for the interpretation of experimental effects under investigation, but also for cognitive psychophysiology and computational model selection (Panis, Schmidt, Wolkersdorfer, \& Schmidt, 2020). Because EHA adds a relatively under-used but ever-present dimension -- the passage of time -- to the theory building toolkit, it thus constitutes one possible response to the recent call for a temporal science of behavior (Abney, Fausey, Suarez-Rivera, \& Tamis-LeMonda, 2025).
 
 \subsection{1.2 Aims}\label{aims}
 
-Our ultimate aim in this paper is twofold. First, we want to inform readers of the many benefits of using EHA when dealing with psychological RT data, and other types of time-to-event data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (single event) discrete-time EHA on RT data, as well as a complementary discrete-time SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).
+Our ultimate aim in this paper is twofold. First, we want to inform readers of the many benefits of using EHA when dealing with psychological RT data, and other types of time-to-event data. Second, we want to provide a set of practical tutorials, which provide step-by-step instructions on how you actually perform a (repeated event) discrete-time EHA on RT data, as well as a complementary discrete-time SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).
 
 Even though EHA is a widely used statistical tool and there already exist many excellent textbooks (Allison, 1982; Blossfeld \& Rohwer, 2002; Box-Steffensmeier, 2004; Hosmer, Lemeshow, \& May, 2011; Mills, 2011; Singer \& Willett, 2003; Teachman, 1983) and tutorials (Allison, 2010; Elmer, Van Duijn, Ram, \& Bringmann, 2023; Landes, Engelhardt, \& Pelletier, 2020; Lougheed, Benson, Cole, \& Ram, 2019; Stoolmiller, 2015; Stoolmiller \& Snyder, 2006), we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps.
 
@@ -307,8 +307,8 @@ Set within this context, our overall aim is to introduce a set of tutorials, whi
 \subsection{1.3 Structure}\label{structure}
 
 In what follows, the paper is organised in three main sections. In Section 2, we provide a brief overview of EHA, including basic concepts, modeling approaches, and the new types of research questions that EHA allows to answer about behavioral dynamics.
-In Section 3, we outline a series of tutorials, which are written in the R programming language and publicly available on our Github page (\url{https://github.com/sven-panis/Tutorial_Event_History_Analysis}), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, such as data wrangling, plotting descriptive statistics, model fitting and planning future studies, so that others can apply EHA to their own time-to-event data measured in RT tasks.
-In Section 4, we discuss the overall strengths and weaknesses of the approach for researchers in experimental psychology, compared to orthodox methods such as Analysis-of-variance, linear regression, and delta-plots (ref).
+In Section 3, we outline a series of tutorials, which are written in the R programming language and publicly available on our Github page (\url{https://github.com/sven-panis/Tutorial_Event_History_Analysis}), along with all of the other code and material associated with the project. The tutorials provide hands-on, concrete examples of key parts of the analytical process, such as data wrangling, plotting descriptive statistics, model fitting and planning future studies, so that others can apply discrete-time EHA to their own time-to-event data measured in RT tasks.
+In Section 4, we discuss the overall strengths and weaknesses of the approach for researchers in experimental psychology.
 
 \section{2. What is event history analysis and why is it relevant to research in experimental psychology?}\label{what-is-event-history-analysis-and-why-is-it-relevant-to-research-in-experimental-psychology}
 
@@ -318,31 +318,41 @@ In this section, we want to provide an intuition regarding how EHA works in gene
 
 EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations (Allison, 2010). EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer \& Willett, 2003). In this paper, we choose to use the term EHA throughout. An \textbf{event} is defined as a qualitative change -- a transition from one discrete state to another -- that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring reach movement trajectories, for example in mouse-tracking studies (refs: mouse + KL omar). While some events can only happen once (e.g., death, onset chronic disease), most events of interest for cognitive scientists can happen repeatedly to the same individual.
 
-\subsubsection{2.1.1 EHA concepts applied to RT tasks / Terminology and minimum requirements for EHA}\label{eha-concepts-applied-to-rt-tasks-terminology-and-minimum-requirements-for-eha}
+\subsubsection{2.1.1 EHA concepts applied to RT tasks}\label{eha-concepts-applied-to-rt-tasks}
 
-To apply EHA one also must define time point zero (e.g., stimulus onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. In RT tasks, response times are typically measured with a temporal resolution of 1 millisecond, or higher. As 1 ms is typically short compared to the range of empirical RT distributions (e.g., a half second), response times are generally treated as \emph{continuous} time-to-event data.
+To apply EHA one also must define time point zero (e.g., imperative stimulus onset), and measure the passage of time between time point zero and event occurrence in discrete or continuous time units. In RT tasks, response times are typically measured with a temporal resolution of 1 millisecond, or higher. As 1 ms is typically short compared to the range of empirical RT distributions (e.g., a half second), response times are generally treated as \emph{continuous} time-to-event data.
 
-In standard applications, each individual can experience the event only once. In experimental psychology and cognitive neuroscience, however, most events are repeatable, and typically, events are repeatedly measured within experimental trials, where each individual completes multiple independent trials and each trial yields one time-to-event observation.
-For such \textbf{repeated measurements} or trial-based events, the \textbf{observation period} refers to the entire experimental session during which multiple independent trials (or \textbf{episodes}) are completed. In each trial, the individual is ``at risk'' for event occurrence as long as the participant is eligible to experience the outcome event at a given time point. In other words, a participant is considered ``at risk'' when (a) they have not yet experienced the event of interest in a trial, and (b) they are still under observation.
+\paragraph{Risk episodes and observation period}\label{risk-episodes-and-observation-period}
 
-In section A of the Supplemental Material we visualize various types of time-to-event data sets that are typically obtained in detection, discrimination, and bistable perception tasks.
+In standard applications, each individual can experience the event only once. In experimental psychology and cognitive neuroscience, however, events are typically repeatedly measured across experimental trials, where each individual completes multiple independent trials and each trial yields one time-to-event observation. For such \textbf{repeated measurements} or trial-based events, the \textbf{observation period} refers to the entire experimental session during which multiple independent trials are completed. Within each trial, as soon as the timer starts, the individual becomes ``at risk'' for event occurrence, and stays at risk for event occurrence as long as the participant is eligible to experience the event. Thus, the participant is no longer at risk when the event occurs or the response deadline is reached. The stretch of time within a trial during which the participant is at risk for event occurrence is called the \textbf{risk episode}. In section A of the Supplemental Material we visualize various types of time-to-event data sets obtained in detection, discrimination, and bi-stable perception tasks.
 
-\subsubsection{2.1.2 Modeling approaches / Types of EHA}\label{modeling-approaches-types-of-eha}
+\paragraph{Censoring}\label{censoring}
 
-There are several different modeling approaches available between which one can select when analyzing a time-to-event data set. The type of models employed, and the definition of hazard, depend on whether one is using continuous or discrete time units. Even though RT is typically treated as a continuous variable, here we focus on discrete-time methods that can be applied after grouping RTs into time periods (or intervals, bins). Discrete-time methods are particularly useful when (a) the shape of the hazard function is unknown and the analyst wants to estimate it flexibly without parametric assumptions, and (b) the analyst is interested in examining and interpreting the shape of the \textbf{baseline hazard function}. In section X of the Supplementary Material we provide some examples to justify our choice of discrete-time modeling.
+Censoring is a situation where the exact time to an event is unknown for some trials, resulting in incomplete information. It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT (Berger \& Kiefer, 2021). Discarding data can introduce biases, however.
+Rather than treat non-responses as missing data, EHA treats trials without a response as \emph{right-censored} observations on the variable RT, because all we know is that RT is greater than some value. \textbf{Right-censoring} is a type of missing data problem and a nearly universal feature of survival data including RT data.
+The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots). Other types of censoring include \textbf{left censoring} and \textbf{interval censoring} (see also section A of the Supplemental Material).
+
+\subsubsection{Competing risks}\label{competing-risks}
+
+In many applications there are multiple events of interest, such as correct versus error responses, for example. In EHA parlance this is known as a \textbf{competing risks} situation, because from time zero onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a ``correct response'' state or an ``incorrect response'' state.
+There are several approaches to deal with a competing risks situation (see section X of the Supplemental Material). Here, we estimate and model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting and modeling accuracy as a function of latency; see Figure 1B).
+
+\subsubsection{2.1.2 Modeling approaches}\label{modeling-approaches}
+
+There are several different modeling approaches available between which one can select when analyzing a time-to-event data set. The type of models employed, and the definition of hazard, depend on whether one is using continuous or discrete time units. Even though RT is typically treated as a continuous variable, here we focus on discrete-time methods that can be applied after grouping RTs into \textbf{time periods} (or intervals, bins). Discrete-time methods are particularly useful when (a) the shape of the hazard function is unknown and the analyst wants to estimate it flexibly without parametric assumptions, and (b) the analyst is interested in examining and interpreting the shape of the \textbf{baseline hazard function}. In section X of the Supplementary Material we provide some examples to justify our choice of discrete-time modeling.
 Also, because continuous forms of EHA require a lot of data to reliably estimate the shape of the continuous-time hazard (rate) function (Bloxom, 1984; Luce, 1991; Van Zandt, 2000), discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are less than \textasciitilde200 trials per condition per participant as they allow a tradeoff between temporal resolution (i.e., bin width) and the number of repeated measurements per condition per participant (Panis, Schmidt, et al., 2020).
 Moreover, as indicated by Singer and Willett (2003), learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good entry point into EHA. Note that the choice is \ldots{} see reviewer 3\ldots.
 
-To apply discrete-time EHA, one divides the within-trial time (or episode) in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10; Figure 1B).
-Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial across a repeated measures design.
-For example, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
+To apply discrete-time EHA, one divides the risk episode in each trial in discrete, contiguous time bins indexed by t (e.g., t = 1 to 10; Figure 1B).
+Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial.
+For example, with bin widths of 100 ms, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
 One then calculates the sample-based estimate of the discrete-time hazard function of event occurrence for each experimental condition (Figure 1B upper panel).
 The discrete-time hazard function gives you, for each time bin, the conditional probability that the event occurs (sometime) in
 bin t, given that the event does not occur in previous bins.
 In other words, it reflects the risk that the event occurs in the current bin t, given that it has not yet
 occurred in the past, i.e., in one of the prior bins (t-1, t-2, \ldots, 1).
 
-In the context of experimental psychology, it is often (but not always), the case that responses can be classified as correct or incorrect.
+In the context of experimental psychology, it is often (but not always) the case that responses can be classified as correct or incorrect.
 In those cases, one can also calculate the conditional accuracy function (Figure 1B lower panel).
 The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977).
 The conditional accuracy function is also known as the micro-level speed-accuracy tradeoff (SAT) function.
@@ -350,27 +360,27 @@ We refer to this extended (hazard + conditional accuracy) analysis for choice RT
 
 The mathematical definitions of both these and other discrete-time functions are given in section X of the Supplemental Material.
 
-\#\#\#2.1.3 Research Questions
+\subsubsection{2.1.3 Research Questions}\label{research-questions}
 
-EHA allows to answer new research questions on behavioral dynamics in experimental paradigms to study cognition:
+EHA/SAT allows to answer several new research questions on behavioral response dynamics in experimental paradigms to study cognition:
 
 \begin{itemize}
 \item
-  What is the shape of the hazard function of response occurrence? In other words, what is the effect of the passage of time on the within-trial (or across-bin) time scale on the hazard estimate? Does the hazard function increase to a plateau, or does it increase to a peak and then decrease? Is it flat in the right tail?
+  What is the shape of the hazard function of response occurrence? In other words, what is the effect of the passage of time on the within-trial (or across-bin) time scale on the hazard estimate? Does the hazard function increase to a plateau, or does it increase to a peak and then decrease? Is it flat in the right tail (Panis, Moran, et al., 2020)?
 \item
   Does an experimental manipulation affect the early or late part of the distribution? Do experimental effects increase or decrease in strength over time within a trial, or are they restricted only to a short time period within a trial?
 \item
-  Can we identify cognitive states in the h(t) + ca(t) patterns? For example, based on Figure 5C and 5D, this participant transitions through at least three motor states during a trial: a first state running from -160 to -40 ms, reflecting the automatic response to the peripheral cue; a second state running from 0 to 160 ms, where conditional accuracies reverse; and a third state where conditional accuracy increases to 1 and the hazard functions display the inhibition-of-return effect (i.e., higher hazard for invalid compared to valid cueing).
+  Can we identify several, successive cognitive states when considering the hazard and conditional accuracy functions (see Figure 1B)? For example, based on Figure 5C and 5D, this participant transitions through at least three motor states during a trial: a first state running from -160 to -40 ms, reflecting the automatic response to the peripheral cue; a second state running from 0 to 160 ms, where conditional accuracies reverse; and a third state where conditional accuracy increases to 1 and the hazard functions display the inhibition-of-return effect (i.e., higher hazard for invalid compared to valid cueing).
 \item
-  Do time scales interact? In other words, is the shape of the hazard function within a trial changing as time passes by on longer time scales? For example, some effects might increase, or decrease in size and disappear, over the course of an experiment (the across-trial time scale). Another example is that people typically speed up during the course of an experiment, but is this reflected in changes across the whole distribution or only in the left or right tail?
+  Do time scales interact? In other words, is the shape of the hazard (or conditional accuracy) function within a trial changing as time passes by on longer time scales? For example, some effects might increase, or decrease in size and disappear, over the course of an experiment (the across-trial time scale). Another example is that people typically speed up during the course of an experiment, but is this reflected in changes across the whole RT-hazard distribution or only in the left or right tail?
 \item
-  Do predictor variables interact? Do time scales interact with predictor variables? Is the effect of a continuous predictor on hazard linear or nonlinear?
+  Do predictor variables interact in their effect on hazard? Do time scales interact with predictor variables? Is the effect of a continuous predictor on hazard linear or nonlinear?
 \item
-  Are experimental effects time-locked to certain stimuli (ref)?
+  Are experimental effects time-locked to certain stimuli (Panis \& Schmidt, 2016)?
 \item
-  Are there inter-individual differences in the shape of the hazard function (ref)?
+  Are there inter-individual differences in the shape of the hazard function (Panis, Moran, et al., 2020)?
 \item
-  Do \textbf{time-varying predictors} (eye gaze position, eye dilation, heart rate, parietal-frontal synchronization, \ldots) affect the risk of event occurrence?
+  How and when do \textbf{time-varying predictors} (eye gaze position, eye dilation, heart rate, parietal-frontal synchronization, \ldots) affect the risk of event occurrence?
 \end{itemize}
 
 \subsection{2.2 Benefits of event history analysis for research in experimental psychology}\label{benefits-of-event-history-analysis-for-research-in-experimental-psychology}
@@ -378,20 +388,14 @@ EHA allows to answer new research questions on behavioral dynamics in experiment
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons (Holden, Van Orden, \& Turvey, 2009; Luce, 1991; Townsend, 1990), as explained in section G of the Supplemental Material.
 Here we highlight three benefits that we think are relevant to the domain of experimental psychology.
 
-First, as illustrated in Figure 1, compared to averaging data across trials, integrating results between hazard functions and their associated conditional accuracy functions for choice RT data can be informative for understanding psychological processes, in terms of inferences about the microgenesis and temporal organization of cognition and theoretical development.
+First, in contrast to orthodox approaches, EHA can deal with right-censored observations when estimating the hazard function of event occurrence. This is especially important in studies on visual masking, the attentional blink, the stop-signal task, etc.
+
+Second, as illustrated in Figure 1, compared to averaging data across trials, integrating results between hazard functions and their associated conditional accuracy functions for choice RT data can be informative for understanding psychological processes, in terms of inferences about the microgenesis and temporal organization of cognition and theoretical development.
 As such, the approach permits different kinds of questions to be asked, different inferences to be made, and it holds the potential to discriminate between theoretical accounts of psychological and/or brain-based processes.
 For example, what kind of theory or set of mechanisms could account for the shape of the functions and the temporally localized effects reported in Figure 1B (Panis \& Schmidt, 2016)?
 Are there new auxiliary assumptions that computational models need to adopt (Panis, Moran, et al., 2020)?
 Will the temporal effect patterns align nicely with electroencephalography (EEG) findings (Panis \& Schmidt, 2022)?
 And are there new experiments that need to be performed to test the novel predictions that follow from these analyses?
-
-Second, compared to more conventional analytical approaches, EHA uses more of the data because it deals with missing data differently.
-It is conventional with RT data to either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too short or too long RTs (and perhaps also erroneous responses) before calculating a mean RT (Berger \& Kiefer, 2021).
-Discarding data can introduce biases, however.
-Rather than treat non-responses as missing data, EHA treats such trials as \emph{right-censored} observations on the variable RT, because all we know is that RT is greater than some value.
-\textbf{Right-censoring} is a type of missing data problem and a nearly universal feature of survival data including RT data.
-For example, if the censoring time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
-The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots). Other types of censoring include \textbf{left censoring} and \textbf{interval censoring}.
 
 Third, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, discrimination and bistable perception tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material).
 The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the RT domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (Barack \& Krakauer, 2021).
@@ -419,13 +423,15 @@ Of note, however, is that time bins do not need to have the same width. For exam
 \footnotesize
 
 \begin{description}
-\item[Discrete-time event history analysis (EHA)] A statistical method for analyzing the occurrence and timing of events when time is measured using (or grouped into) discrete intervals (e.g., years, months, survey waves). Commonly used when events are naturally recorded at specific measurement occasions, but also applicable to continuously measured time after grouping into intervals. Discrete-time methods are particularly useful when: (a) the shape of the hazard function is unknown and the analyst wants to estimate it flexibly without parametric assumptions, and (b) the analyst is interested in examining and interpreting the shape of the baseline hazard function (in contrast to Cox regression, which leaves the baseline hazard unspecified).
+\item[Discrete-Time Event History Analysis] A statistical method for analyzing the occurrence and timing of events when time is measured using (or grouped into) discrete intervals (e.g., years, months, survey waves). Commonly used when events are naturally recorded at specific measurement occasions, but also applicable to continuous time-to-event data after grouping into intervals. Discrete-time methods are particularly useful when: (a) the shape of the hazard function is unknown and the analyst wants to estimate it flexibly without parametric assumptions, and (b) the analyst is interested in examining and interpreting the shape of the baseline hazard function (in contrast to Cox regression, which leaves the baseline hazard unspecified).
 
-\item[Speed-accuracy tradeoff analysis] A speed-accuracy tradeoff (SAT) analysis with conditional accuracy functions (CAFs) examines how an individual's accuracy changes at different speeds for specific response time intervals, often under different conditions like varying deadlines or payoffs. This approach moves beyond simple average error rates to show how accuracy is not uniform across all speeds.
+\item[Speed-Accuracy Tradeoff Analysis] A speed-accuracy tradeoff (SAT) analysis with conditional accuracy functions (CAFs) examines how an individual's accuracy changes at different speeds for specific response time intervals, often under different conditions like varying deadlines or payoffs. This approach moves beyond simple average error rates to show how accuracy is not uniform across all speeds.
 
-\item[Discrete-time hazard Function] The pattern of hazard probabilities over time, showing how the risk of event occurrence changes across time periods.
+\item[Discrete-Time Hazard Function] The pattern of hazard probabilities over time, showing how the risk of event occurrence changes across time periods.
 
-\item[Conditional accuracy function (CAF)] A plot that shows the probability of an accurate response as a function of the response time (RT) or a specific time period.
+\item[Conditional Accuracy Function] A plot that shows the probability of an accurate response as a function of the response time (RT) or a specific time period.
+
+
 
 \item[Event] The outcome of interest whose occurrence and timing are being studied (e.g., button press, job loss, marriage, death, graduation). Events can be repeatable or non-repeatable.
 
@@ -437,25 +443,13 @@ Of note, however, is that time bins do not need to have the same width. For exam
 
 \item[Observation Period] The span of time during which an individual is under observation or follow-up in the study. The observation period may encompass one or more episodes. For non-repeatable events, the observation period and episode are typically the same. For repeatable events in natural history (e.g., multiple job changes), the observation period can contain multiple sequential episodes. For trial-based events, the observation period refers to the entire experimental session during which multiple independent trials (episodes) are completed. The observation period ends when the event occurs (for non-repeatable events), the study ends, or the individual is lost to follow-up.
 
-\item[Episode (Spell, Risk Episode)] The duration from the start of observation or from a previous event until either the event occurs or observation ends. Also called a "spell" (particularly in labor economics) or "risk episode." An episode represents one complete at-risk period being studied. Within each episode, data may be collected at multiple discrete time points (e.g., monthly or yearly intervals) — these are the time periods or measurement occasions. In discrete-time analysis, each episode is typically divided into multiple person-period observations, where each person-period is the actual unit of analysis for model estimation. In repeatable event contexts, individuals may contribute multiple episodes. For example, one person's marriage might be a single episode observed over 10 yearly measurements (resulting in 10 person-period observations), while in a trial-based experiment, one person completes 100 episodes (trials), each potentially lasting several time periods.
+\item[Risk Episode (Spell)] The duration from the start of observation or from a previous event until either the event occurs or observation ends. Also called a "spell" (particularly in labor economics). An episode represents one complete at-risk period being studied. Within each episode, data may be collected at multiple discrete time points (e.g., monthly or yearly intervals) — these are the time periods or measurement occasions. In discrete-time analysis, each episode is typically divided into multiple person-period observations, where each person-period is the actual unit of analysis for model estimation. In repeatable event contexts, individuals may contribute multiple episodes. For example, one person's marriage might be a single episode observed over 10 yearly measurements (resulting in 10 person-period observations), while in a trial-based experiment, one person completes 100 episodes (trials), each potentially lasting several time periods.
 
 \item[Repeated Measurements (Trial-Based Events)] Events that are repeatedly measured within experimental trials, where each individual completes multiple independent trials and each trial yields one time-to-event observation (e.g., reaction time tasks). Unlike recurrent events in natural history, these trials are typically designed to be independent realizations of the same process, though individual-level random effects may be needed to account for within-subject correlation. In this context, each trial constitutes a separate episode, and discrete time periods within each trial represent measurement occasions.
 
-
-
-
-
-\item[Non-Repeatable (Terminal) Events] Events that can occur only once for an individual and end the observation period (e.g., death, first marriage, onset of a chronic disease). Once the event occurs, the individual exits the risk set.
-
-\item[Repeatable Events] Events that can potentially occur multiple times for the same individual (e.g., job changes, hospitalizations, pregnancies). The individual remains at risk for subsequent events after each occurrence. In analysis, these can be treated as independent events (analyzing only first occurrence or pooling all occurrences) or as recurrent events with interdependence.
-
-\item[Recurrent Events] A specific type of repeatable event where the analysis explicitly models and accounts for the ordering and interdependence of multiple occurrences (first event, second event, third event, etc.). This approach recognizes that experiencing the event may change the risk of future occurrences.
+\item[Baseline Hazard] The pattern of hazard over time when all covariates equal zero (or their reference categories). Often modeled with time dummy variables or polynomials.
 
 \item[Time-Varying Covariates (Time-Dependent Covariates)] Predictors whose values change over time periods within the same individual's episode (e.g., employment status, gaze position, age, income).
-
-
-
-
 
 \item[Risk Set] For non-repeatable events with continuous time units: the set of individuals who are eligible to experience the event at a given time point. In discrete-time analysis, the risk set at time period t consists of all individuals who have not yet experienced the (non-repeatable) event by the beginning of period t and are still under observation. An individual exits the risk set once they experience the (non-repeatable) event or are censored. In trial-based or repeated measurements designs with discrete time, the risk set at each discrete time period within a trial consists of all observations (trials) where the event has not yet occurred by that time period, even when multiple trials come from the same individual.
 
@@ -468,6 +462,24 @@ Of note, however, is that time bins do not need to have the same width. For exam
 
 \item[Interval Censoring] Occurs when we know the event happened within a specific time interval but we don't know the exact timing within that interval.
 
+\item[Life Table] A tabular method for describing the distribution of event times, showing the number at risk, number of events, hazard, and survival probability for each time period.
+
+
+
+\item[Non-Repeatable (Terminal) Events] Events that can occur only once for an individual and end the observation period (e.g., death, first marriage, onset of a chronic disease). Once the event occurs, the individual exits the risk set.
+
+\item[Repeatable Events] Events that can potentially occur multiple times for the same individual (e.g., job changes, hospitalizations, pregnancies). The individual remains at risk for subsequent events after each occurrence. In analysis, these can be treated as independent events (analyzing only first occurrence or pooling all occurrences) or as recurrent events with interdependence.
+
+\item[Recurrent Events] A specific type of repeatable event where the analysis explicitly models and accounts for the ordering and interdependence of multiple occurrences (first event, second event, third event, etc.). This approach recognizes that experiencing the event may change the risk of future occurrences.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -479,7 +491,6 @@ Of note, however, is that time bins do not need to have the same width. For exam
 
 
 
-\item[Baseline Hazard] The pattern of hazard over time when all covariates equal zero (or their reference categories). Often modeled with time dummy variables or polynomials.
 
 \item[Logit Model (Discrete-Time Hazard Model)] A common approach using logistic regression where the outcome is binary (event occurs vs. doesn't occur) in each person-period, and the log-odds of the event are modeled as a function of time and covariates.
 
@@ -494,7 +505,6 @@ An alternative to the logit model that has a direct correspondence to the propor
 
 \item[Unobserved Heterogeneity (Frailty)] Individual-level differences in event risk that are not captured by observed covariates. Can lead to spurious duration dependence if not addressed. Commonly modeled using hierarchical or multilevel models with random effects (also called frailty models), which account for unobserved individual-level variation in baseline risk.
 
-\item[Life Table] A tabular method for describing the distribution of event times, showing the number at risk, number of events, hazard, and survival probability for each time period.
 
 \end{description}
 

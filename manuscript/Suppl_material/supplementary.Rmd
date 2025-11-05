@@ -76,6 +76,9 @@ knitr::include_graphics("../../REVIEW2/Plot_RTtasks.png")
 Recurrent events are events that happen repeatedly within the same episode. For example, Figure 1D shows hypothetical data from a bistable perception task in which the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. We do not analyse recurrent events in this tutorial. More information about recurrent events and multistate analysis can be found in @stoolmillerModelingHeterogeneitySocial2006, @millsIntroducingSurvivalEvent2011, and @lougheedMultilevelSurvivalAnalysis2019.
 
 
+
+For example, if the censoring time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
+
 ### right-censoring versus random censoring
 
 
@@ -106,9 +109,9 @@ Left censoring occurs when all that is known about an observation on a variable 
 
 ### Competing risks
 
-In many applications there are multiple events of interest, such as correct versus error responses, for example. Figure 1B displays a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. For example, each trial in each condition might start with a fixation screen for 1 s, followed by a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed since face onset. Participants are required to press the left button when identifying a male, and the right button when identifying a female. 
+ Figure 1B displays a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. For example, each trial in each condition might start with a fixation screen for 1 s, followed by a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed since face onset. Participants are required to press the left button when identifying a male, and the right button when identifying a female. 
 
-In EHA parlance this is known as a *competing risks* situation, because from target display screen onset (time zero) onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a "correct response" state or an "incorrect response" state.
+
 
 There are two ways to deal with a competing-risks situation. One approach is to describe and model *cause-specific hazard functions*: the hazard function of correct response occurrence while treating incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c [@allisonSurvivalAnalysisUsing2010]. However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another [@BURLE2004153; @praamstra9513; @eriksenElectromyographicExaminationResponse1985]. Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here.
 
