@@ -144,7 +144,7 @@ Censoring is a situation where the exact time to an event is unknown for some tr
 Rather than treat non-responses as missing data, EHA treats trials without a response as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. **Right-censoring** is a type of missing data problem and a nearly universal feature of survival data including RT data.
 The fact that EHA can deal with right-censoring, therefore, presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots). Other types of censoring include **left censoring** and **interval censoring** (see also section A of the Supplemental Material).
 
-### Competing risks
+#### Competing risks
 
 In many applications there are multiple events of interest, such as correct versus error responses, for example. In EHA parlance this is known as a **competing risks** situation, because from time zero onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a "correct response" state or an "incorrect response" state.
 There are several approaches to deal with a competing risks situation (see section X of the Supplemental Material). Here, we estimate and model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting and modeling accuracy as a function of latency; see Figure 1B).

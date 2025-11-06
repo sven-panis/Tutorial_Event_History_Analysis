@@ -62,27 +62,33 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 
 
-## A. RT tasks in the context of EHA 
+## A. EHA concepts in the context of RT tasks
 
-To collect observations on the continuous variable RT, experimental psychologists typically administer a set of discrete, planned observations, a.k.a. trials, to each participant, and manipulate some aspect of the environment between trials. In Figure 1, we present a hypothetical single-subject RT data set from a detection experiment with one response button (i.e., a simple RT task) and two experimental conditions: target present and target absent. For example, each trial in each condition might start with a fixation screen for 1 s, a target display screen for 100 ms in which the target stimulus is presented or not depending on the experimental condition the trials belongs to, and finally a blank screen until an overt response is detected or 500 ms have passed. Figure 1A shows that the participant presses the button sometime before 500 ms in most trials in the target-present condition (black dots), while (s)he does not press the button in most trials of the target-absent condition (black crosses). In EHA parlance, the single event of interest is a button press response that is repeatedly measured, *time zero* is defined as target display onset, the  *follow-up period* is 500 ms long in each trial, in each trial the participant is *at risk* for response occurrence as long as the response has not occurred yet, and the individual starts in an "idle" state in each trial and *transitions* to a "detected" state when a response occurs.
+### Observation period, follow-up period, and risk episodes
 
-(ref:descr-fig1-caption) Response time (RT) tasks and EHA concepts. The timer starts at time 0 (black vertical line) and stops at the censoring time (dotted vertical line). In each trial of each condition of each task, an overt response is indicated by a circle, a right-censored observation by a cross, and an episode by a horizontal black line. (A) Single-button detection data requires a single-event analysis. (B) Two-button discrimination data requires a competing risks analysis. Black (white) dots indicate correct (error) responses. (C) Competing risk data in combination with an stimulus-onset-asynchrony manipulation might require increasing the follow-up period in each trial. (D) Two-button bistable perception data requires a recurrent event / multistate analysis. Black bars indicate stimulus presentation.
+To collect observations on the continuous variable RT, experimental psychologists typically administer a set of discrete, planned observations, a.k.a. trials, to each participant, and manipulate some aspect of the environment between trials. In Supplementary Figure 1, we present a hypothetical single-subject RT data set from a detection experiment with one response button (i.e., a simple RT task) and two experimental conditions: target present and target absent. For example, each trial in each condition might start with a fixation screen for 1 s, a target display screen for 100 ms in which the target stimulus is presented or not depending on the experimental condition the trials belongs to, and finally a blank screen until an overt response is detected or 500 ms have passed. Figure 1A shows that the participant presses the button sometime before 500 ms in most trials in the target-present condition (black dots), while (s)he does not press the button in most trials of the target-absent condition (black crosses). In EHA parlance, the single event of interest is a button press response that is repeatedly measured, *time zero* is defined as target display onset, the  *follow-up period* is 500 ms long in each trial, starting at time onset (i.e., time zero) in each trial the participant is *at risk* for response occurrence as long as the response has not occurred yet (or the response deadline is not reached yet), and the individual starts in an "idle" state in each trial and *transitions* to a "detected" state when a response occurs.
+
+(ref:descr-fig1-caption) Response time (RT) tasks and EHA concepts. The timer starts at time 0 (black vertical line) and stops at the censoring time (dotted vertical line). In each trial of each condition of each task, an overt response is indicated by a circle, a right-censored observation by a cross, and a risk episode by a horizontal black line. (A) Single-button detection data requires a single-event analysis. (B) Two-button discrimination data requires a competing risks analysis. Black (white) dots indicate correct (error) responses. (C) Competing risk data in combination with an stimulus-onset-asynchrony manipulation might require increasing the follow-up period in each trial. (D) Two-button bistable perception data requires a recurrent event / multistate analysis. Black bars indicate stimulus presentation.
 
 
 ```{r plot1-revision2-test, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../../REVIEW2/Plot_RTtasks.png")
 ```
 
-Recurrent events are events that happen repeatedly within the same episode. For example, Figure 1D shows hypothetical data from a bistable perception task in which the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, and asked to press a button each time when her/his perception switches from one possibe interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. We do not analyse recurrent events in this tutorial. More information about recurrent events and multistate analysis can be found in @stoolmillerModelingHeterogeneitySocial2006, @millsIntroducingSurvivalEvent2011, and @lougheedMultilevelSurvivalAnalysis2019.
+Recurrent events are events that happen repeatedly within the same follow-up period. For example, Figure 1D shows hypothetical data from a bistable perception task in which the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, and asked to press a button each time when her/his perception switches from one possible interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same observation period of two minutes, so that the individual transitions back and forth between two states. 
+
+Thus, each individual contributes multiple, sequential episodes within the follow-up period in each trial.
+
+We do not analyse recurrent events in this tutorial. More information about recurrent events and multistate analysis can be found in @stoolmillerModelingHeterogeneitySocial2006, @millsIntroducingSurvivalEvent2011, and @lougheedMultilevelSurvivalAnalysis2019.
 
 
 
 For example, if the censoring time was 1 second, then some trials result in observed event times (those with a RT below 1 second), while the other trials result in response times that are right-censored at 1 second.
 
-### right-censoring versus random censoring
+### Right-censoring versus random censoring
 
 
-Right-censoring occurs when we only know that the event time is larger than some value, i.e., the censoring time. The most common type of right-censoring is “singly Type I censoring” which applies when the experiment uses a fixed response deadline for all trials. “Type I” means that the censoring time is fixed and under the control of the experimenter; “Singly” refers to the fact that all observations have the same censoring time [@allisonSurvivalAnalysisUsing2010]. Clearly, discarding right-censored observations before calculating the median or mean RT will result in biased estimates, especially in the target-absent condition. 
+Right-censoring occurs when we only know that the event time is larger than some value, i.e., the censoring time. The most common type of right-censoring is “singly Type I censoring” which applies when the experiment uses a fixed response deadline for all trials. “Type I” means that the censoring time is fixed and under the control of the experimenter; “Singly” refers to the fact that all observations have the same censoring time [@allisonSurvivalAnalysisUsing2010]. 
 
 (ref:descr-plot-RT-tasks-caption) 
 
@@ -92,36 +98,33 @@ knitr::include_graphics("../../manuscript/Suppl_material/Plot_paradigms.png")
 
 Importantly, when estimating the shape of the RT distribution in each experimental condition, EHA takes into account right-censored observations. As a result, EHA has a wider scope than current methods, as it can also be applied to RT data from experimental paradigms in which RTs are typically not measured, such as masking experiments and studies on the attentional blink. Also, EHA allows to increase experimental design efficiency, because we can introduce a response deadline instead of waiting until a response is emitted in each trial, so that we do not have to wait for very slow responses which would be trimmed anyway.
 
+Right censoring is a type of missing data problem and a nearly universal feature of survival data including RT data [@allisonSurvivalAnalysisUsing2010]. For example, all trials in Supplementary Figure 1A have a censoring time of 500 ms, and some trials result in observed event times (those with a RT below 500 ms), while other trials result in response times that are right-censored at 500 ms. Clearly, discarding right-censored observations before calculating the median or mean RT will result in biased estimates, especially in the target-absent condition. The fact that EHA can deal with right censoring presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots).
 
-
-
-Studying the effect of stimulus-onset-asynchrony (SOA) on mean RT is still a popular approach to study the time course of cognitive processes. For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). However, mean RT conceals the possibe presence of responses triggered by the non-target stimulus [@panisHowCanWe2020; @panisWhatShapingRT2016]. For example, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial onset. Also, when RTs are originally recorded relative to target onset, we have to add a constant time to each (here: + 400 ms) in order to include these prime-triggered "negative" RTs in the analysis (lower x-axis labels). In general, all RTs must be positive for EHA to work.
-
-### Types of censoring
-
-By convention, experimental psychologists either (a) use a response deadline and discard all trials without a response, or (b) wait in each trial until a response occurs and then apply data trimming techniques, i.e., discarding too long RTs (and perhaps also erroneous responses and too short RTs), before calculating a mean RT [@bergerComparisonDifferentResponse2021]. 
-Discarding data can introduce biases, however.
-EHA treats such trials as *right-censored* observations on the variable RT, because all we know is that RT is greater than some value. 
-Right censoring is a type of missing data problem and a nearly universal feature of survival data including RT data [@allisonSurvivalAnalysisUsing2010]. For example, all trials in Figure 1A have a censoring time of 500 ms, and some trials result in observed event times (those with a RT below 500 ms), while other trials result in response times that are right-censored at 500 ms. The fact that EHA can deal with right censoring presents a analytical strength of the approach compared to many common approaches in experimental psychology (e.g., ANOVA, linear regression, delta plots).
-
-Left censoring occurs when all that is known about an observation on a variable T is that it is less than some value. Interval censoring combines right and left censoring so that all you know about RT is that a < RT < b, for some values of a and b. Random censoring occurs when observations are terminated for reasons that are not under the control of the experimenter. 
+Left censoring occurs when all that is known about an observation on a variable T is that it is less than some value. Interval censoring combines right and left censoring so that all you know about RT is that a < RT < b, for some values of a and b. *Random censoring* occurs when observations are terminated for reasons that are not under the control of the experimenter. 
 
 
 ### Competing risks
 
- Figure 1B displays a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. For example, each trial in each condition might start with a fixation screen for 1 s, followed by a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed since face onset. Participants are required to press the left button when identifying a male, and the right button when identifying a female. 
+When there are multiple events of interest, such as death from accident vs. natural causes, or correct versus error responses, there is a *competing risks* situation. For example, Figure 1B displays a hypothetical single-subject RT data set from a discrimination experiment with two response buttons and two experimental conditions: A and B. Each trial in each condition might start, for example, with a fixation screen for 1 s, followed by a target display screen for 100 ms in which a female or male face is presented, and finally a blank screen until an overt response is detected or 800 ms have passed since face onset. Participants are required to press the left button when identifying a male, and the right button when identifying a female. 
+
+There are two ways to deal with a competing-risks situation. One approach is to describe and model *cause-specific hazard functions*: the hazard function of correct response occurrence while treating incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c [@allisonSurvivalAnalysisUsing2010]. However, the random censoring due to error responses when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another [@BURLE2004153; @praamstra9513; @eriksenElectromyographicExaminationResponse1985]. Therefore, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here. See also section B.
+
+### When to start the timer?
+
+The timer is started at time zero, which typically is defined as imperative stimulus onset. However, sometimes we want to start the time at trial onset. For example, a target stimulus can be presented with a certain SOA in relation to another stimulus (e.g., prime, mask, distractor, cue). In such cases, the mean RT will always conceal the possibe presence of responses triggered by the non-target stimulus [@panisHowCanWe2020; @panisWhatShapingRT2016]. To illustrate this, in Supplementary Figure 1C a prime is presented before a target with a SOA of -400 ms (see upper x-axis labels). To capture responses triggered by the prime (and emitted before target onset) we have to start the timer at trial (or prime) onset. Thus, when RTs are recorded relative to target onset by the stimulus presentation software, we have to add a constant time to each RT datum (here: + 400 ms) in order to include these prime-triggered "negative" RTs in the analysis (see lower x-axis labels). In general, all RTs must be positive for EHA to work.
+
+## B. Describing the shape of a distribution of time-to-event data
 
 
-
-There are two ways to deal with a competing-risks situation. One approach is to describe and model *cause-specific hazard functions*: the hazard function of correct response occurrence while treating incorrect responses as right-censored observations, and vice versa. When estimating the hazard of correct response occurrence, then the unpredictable error responses will introduce random censoring (and vice versa). Importantly, all statistical methods for time-to-event data require that random censoring be noninformative: a trial that is censored at time c should be representative of all those trials with the same values of the explanatory variables that survive to c [@allisonSurvivalAnalysisUsing2010]. However, the random censoring by errors when estimating the hazard function of correct responses (and vice versa) is very likely informative, because response channels are known to compete with one another [@BURLE2004153; @praamstra9513; @eriksenElectromyographicExaminationResponse1985]. Thus, another approach is to model the hazard of (any) response occurrence and extend it with a speed-accuracy trade-off (SAT) analysis (plotting accuracy as a function of latency). This is the approach taken here.
 
 The conditional accuracy function or ca(t) = Prob(correct | RT = t) gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t [@kantowitzInterpretationReactionTime2021; @wickelgrenSpeedaccuracyTradeoffInformation1977; @allisonSurvivalAnalysisUsing2010]. 
 The conditional accuracy function is also known as the micro-level speed-accuracy tradeoff (SAT) function (see examples in Figure 5).
 We refer to the extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT. 
 
-## B. Describe the shape of a distribution of time-to-event data: h(t), S(t), P(t) and F(t)
 
-Because our Tutorials focus on discrete-time methods as explained in section 2.3, we assume now that the continuous-time RTs have been discretized by partioning the observation period in each trial into bins of 20 ms, indexed by t (= 1, 2, ...). In particular, suppose (a) we measure a sample of continous-time RTs in the target-present condition of Figure 1A using a censoring time of 1200 ms, (b) that the occurrence and timing of responses is governed either by a normal or ex-gaussian distribution, and (c) that we apply interval censoring using intervals of 20 ms. As shown in Figure 2, the resulting distribution of interval-censored event times can be described in various ways, the first two of which are highly familiar to cognitive scientists.
+Because our Tutorials focus on discrete-time methods as explained in section 2.3, we assume now that 
+
+Suppose that the continuous-time RTs have been discretized by partioning the risk episode in each trial into contiguous bins of 20 ms, indexed by t (= 1, 2, ...). In other words, suppose we apply interval censoring to the continous-time RT data using intervals of 20 ms. As shown in Supplementary Figure 2, the resulting distribution of interval-censored event times can be described in various ways, the first two of which are highly familiar to cognitive scientists.
 
 * the probability mass function
 
@@ -146,18 +149,6 @@ EHA focuses on describing and modeling the hazard function of event occurrence b
 ```{r plot2-revision2-test2, fig.cap = "(ref:descr-fig2-caption)", out.width="90%"}
 knitr::include_graphics("../../REVIEW2/Plot_distributions.png")
 ```
-
-One important issue is the choice of the width of the discrete time bin.
-For instance, in Figure 2 we chose 20 ms in an arbitrary manner.
-In reality, however, bin width will need to be set by considering a number of factors simultaneously.
-The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
-Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find an informative bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. 
-As shown in Supplementary Figure S1, overly small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Of note, however, is that time bins do not need to have the same width. For example, @panisHowCanWe2020 used larger bins towards the end of the observation period, as fewer events occurred there.
-
-
-
-
-## B. Definitions of discrete-time hazard, surivor, probability mass, and conditional accuracy functions
 
 The shape of a distribution of waiting times can be described in multiple ways [@luceResponseTimesTheir1991]. After dividing time in discrete, contiguous time bins indexed by t, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial. 
 Because waiting times can only increase, discrete-time EHA focuses on the discrete-time hazard function 
@@ -194,9 +185,21 @@ While psychological RT data is typically measured in small, continuous units (e.
 
 
 
+## C. Choosing a time bin width 
 
 
-## C Modeling approaches
+
+
+One important issue is the choice of the width of the discrete time bin.
+For instance, in Figure 2 we chose 20 ms in an arbitrary manner.
+In reality, however, bin width will need to be set by considering a number of factors simultaneously.
+The optimal bin width will depend on (a) the length of the observation period in each trial, (b) the rarity of event occurrence, (c) the number of repeated measures (or trials) per condition per participant, and (d) the shape of the hazard function.
+Finding an appropriate bin width in a given user case before fitting models will require testing a number of options, when calculating and plotting the descriptive statistics (see section 3.1). The goal is to find an informative bin width that is supported by the amount of data available. Based on our experience, a bin width of 50 ms is a good starting value when the number of repeated measures is 100 or less. 
+As shown in Supplementary Figure S1, overly small bin widths will result in erratic hazard functions as many bins will have no events, and thus hazard estimates of zero. Of note, however, is that time bins do not need to have the same width. For example, @panisHowCanWe2020 used larger bins towards the end of the observation period, as fewer events occurred there.
+
+
+
+## D. Modeling approaches
 
 There are several different modeling approaches available between which one can select when analyzing a time-to-event data set, as shown in Figure 3.
 
@@ -245,7 +248,7 @@ So when we write h(tij), we mean the hazard for time interval t in trial j of in
 
 Write down general discrete-time hazard model equation...
 
-## C. Custom functions for descriptive discrete-time hazard analysis
+## E. Custom functions for descriptive discrete-time hazard analysis
 
 We defined 12 custom functions that we list here. 
 
@@ -265,7 +268,7 @@ We defined 12 custom functions that we list here.
 When you want to analyse simple RT data from a detection experiment with one independent variable, the functions calc_ca() and join_lt_ca() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha().
 When you want to analyse simple RT data from a detection experiment with two independent variables, the functions calc_ca_2IV() and join_lt_ca_2IV() should not be used, and the code to plot the conditional accuracy functions should be removed from the function plot_eha_2IV().
 
-## D. Link functions
+## F. Link functions
 
 Popular link functions include the logit link and the complementary log-log link, as shown in Supplementary Figure 2.
 
@@ -275,7 +278,7 @@ Popular link functions include the logit link and the complementary log-log link
 knitr::include_graphics("../../Tutorial_2_Bayesian/figures/linkfunctions.png")
 ```
 
-## E. Regression equations
+## G. Regression equations
 
 An example (single-level) discrete-time hazard model for individual i in bin t of trial j with three predictors (TIME, X~1~, X~2~), the cloglog link function, and a second-order polynomial specification for TIME can be written as follows:
 
@@ -287,7 +290,7 @@ An example (single-level) discrete-time hazard model for individual i in bin t o
 
 \noindent cloglog[h~ij~(t)] =  [$\beta$~0~D1 + $\beta$~1~D2 + $\beta$~2~D3 + $\beta$~3~D4 + $\beta$~4~D5 + $\beta$~5~D6] + [$\beta$~6~X~1ij~]  \hfill  (7)
 
-## F. Prior distributions
+## H. Prior distributions
 
 To gain a sense of what prior *logit* values would approximate a uniform distribution on the probability scale, @kurzAppliedLongitudinalDataAnalysis2023 simulated a large number of draws from the Uniform(0,1) distribution, converted those draws to the log-odds metric, and fitted a Student's t distribution. Row C in Supplementary Figure 3 shows that using a t-distribution with 7.61 degrees of freedom and a scale parameter of 1.57 as a prior on the logit scale, approximates a uniform distribution on the probability scale. According to @kurzAppliedLongitudinalDataAnalysis2023, such a prior might be a good prior for the intercept(s) in a logit-hazard model, while the N(0,1) prior in row D might be a good prior for the non-intercept parameters in a logit-hazard model, as it gently regularizes p towards .5 (i.e., a zero effect on the logit scale).
 
@@ -300,7 +303,7 @@ knitr::include_graphics("../../Tutorial_2_Bayesian/figures/plot_of_priors.png")
 To gain a sense of what prior *cloglog* values would approximate a uniform distribution on the hazard probability scale, we followed Kurz's approach and simulated a large number of draws from the Uniform(0,1) distribution, converted them to the cloglog metric, and fitted a skew-normal model (due to the asymmetry of the cloglog link function). Row E shows that using a skew-normal distribution with a mean of -0.59, a standard deviation of 1.26, and a skewness of -4.22 as a prior on the cloglog scale, approximates a uniform distribution on the probability scale. 
 However, because hazard values below .5 are more likely in RT studies, using a skew-normal distribution with a mean of -1, a standard deviation of 1, and a skewness of -2 as a prior on the cloglog scale (row F), might be a good weakly informative prior for the intercept(s) in a cloglog-hazard model. 
 
-## G. Advantages of EHA
+## I. Advantages of EHA
 
 Statisticians and mathematical psychologists recommend focusing on the hazard function when analyzing time-to-event data for various reasons. First, as discussed by @holdenDispersionResponseTimes2009, “probability density [and mass] functions can appear nearly identical, both statistically and to the naked eye, and yet are clearly different on the basis of their hazard functions (but not vice versa). Hazard functions are thus more diagnostic than density functions” (p. 331) when one is interested in studying the detailed shape of a RT distribution [see also Figure 1 in @panisAnalyzingResponseTimes2020]. Therefore, when the goal is to study how psychological effects change over time, hazard and conditional accuracy functions are the preferred ways to describe the RT + accuracy data. 
 
