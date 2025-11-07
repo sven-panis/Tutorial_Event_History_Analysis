@@ -1835,14 +1835,218 @@ ggsave("sims/figures/Fig1_revision1.jpeg",
 ```
 
 
+# section 14: REVISION 2: Create Supplementary Figure to illustrate the effect of bin width
+
+Take a RT + accuracy data set ...
+
+```{r}
+data_wr<-read_csv("Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
+data_wr <- data_wr %>% 
+  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr) %>% 
+  mutate(condition = condition + 1, # original levels were 0, 1, 2.
+         condition = factor(condition, 
+                            levels=c(1,2,3), 
+                            labels=c("blank","congruent","incongruent")))
+head(data_wr)
+```
+
+... and plot hazard and caf for 3 different bin widths: small, medium, and large.
+
+```{r}
+source("custom_functions.R")
+```
+
+Change custom function plot_eha to only plot hazard and caf.
+
+```{r}
+plot_eha_temp <- function(df,subj,haz_yaxis=1,first_bin_shown=1,aggregated_data=F,Nsubj=6){ 
+  
+  # haz_yaxis: controls the upper limit of the y-axis of the hazard plot.
+  #            Recommended to set this to 1 when plotting the data of individual subjects.
+  # first_bin_shown: default = 1. In case the first few bins do not contain data for any person, 
+  #.           you can set first_bin_shown to another value, such as 5 (i.e., do not show the 
+  #            first 4 bins in the plots).
+  # aggregated_data: For a dataset with data aggregated across individuals, set to TRUE. 
+  #            This only controls the title of the plots.
+  # Nsubj: The number of individuals before aggregation. Only used to set the title of the plot.
+  
+  library(patchwork) # to combine figures
+  library(RColorBrewer) # color palette 
+  cutoff <- df %>% pull(cens_time) %>% max(na.rm=T)
+  binsize <- df %>% pull(bin_width) %>% max(na.rm=T)
+  median_period <- extract_median(df)
+  n_conditions <- nlevels(df$condition)
+  
+  # create a data file with medians
+  data_median <- c()
+  for(i in 1:n_conditions){
+    data_median <- append(data_median, c(median_period[i], median_period[i]))
+  }
+  # set up new data file to plot vertical lines indicating quantile S(t).50
+  data_medians <- tibble(period = data_median,
+                         survival = rep(c(.5, 0),n_conditions),
+                         condition = rep(1:n_conditions, each=2))
+  
+  # Remove the first "first_bin_shown - 1" bins from the plots.
+  df <- df %>% filter(period >= first_bin_shown)
+  
+  # plot the hazard functions
+  p1 <- df %>% ggplot(aes(x=period, color=condition, group=condition)) +
+    geom_line(aes(y=hazard), linewidth=1) +
+    geom_point(aes(y=hazard,shape=condition), 
+               size=2.5) + 
+    geom_linerange(aes(ymin=hazard-se_haz, ymax=hazard+se_haz), 
+                   show.legend = F, linewidth = 0.6) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+    scale_shape_discrete(name ="Condition", solid=T) + 
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
+    scale_y_continuous(limits = c(0,haz_yaxis)) +
+    labs(x = "time bin (upper bound in ms)", 
+         y = "h(t)") +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle=90))
+
+  
+  # plot the conditional accuracy functions
+  p3 <-df %>%
+    ggplot(aes(x=period, color=condition, group=condition)) +
+    geom_line(aes(y=ca), linewidth=1) +
+    geom_point(aes(y=ca, shape=condition), 
+               size=2.5) +
+    geom_linerange(aes(ymin=ca-se_ca, ymax=ca+se_ca), 
+                   show.legend = F, linewidth = 0.6) +
+    scale_color_brewer(palette = "Dark2", name="Condition") +
+    scale_shape_discrete(name ="Condition", solid=T) + 
+    scale_x_continuous(breaks = c(first_bin_shown:(cutoff/binsize)), 
+                       labels = c(first_bin_shown:(cutoff/binsize)*binsize),
+                       limits = c(first_bin_shown,cutoff/binsize)) +
+
+    scale_y_continuous(limits = c(0,1)) +
+    labs(x = "time bin (upper bound in ms)", 
+         y = "ca(t)") +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle=90))
+
+  
+  
+  # patchwork the plots
+  p1_theme <- p1 + theme(legend.position = "none")
+  p2_theme <- p2 + theme(legend.position = "none")
+  #p3_theme <- p3 + theme(legend.position = "none")
+  
+  (p1_theme  / p3) +
+    plot_layout(guides = "collect", 
+                axes = "collect_x") & 
+    theme(legend.position = "top")
+ 
+}
+
+```
 
 
 
 
 
+Medium:
+
+```{r}
+data_nested <- data_wr %>% group_nest(pid)
+data_medium <- data_nested %>% 
+  # ! user input: censoring time, and bin width in milliseconds
+  mutate(censored = map(data, censor, 600, 40)) %>%   
+  # create person-trial-bin data set
+  mutate(ptb_data = map(censored, ptb)) %>%          
+  # create life tables without conditional accuracies
+  mutate(lifetable = map(ptb_data, setup_lt)) %>%   
+  # calculate conditional accuracies
+  mutate(condacc = map(censored, calc_ca)) %>%      
+  # create life tables with conditional accuracies
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    
+  # create plots 
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_temp,1))  
+```
+
+```{r}
+p14.1 <- pluck(data_medium, 8, 6)
+
+p14.1
+```
 
 
 
+Small:
+
+```{r}
+data_nested <- data_wr %>% group_nest(pid)
+data_small <- data_nested %>% 
+  # ! user input: censoring time, and bin width in milliseconds
+  mutate(censored = map(data, censor, 600, 15)) %>%   
+  # create person-trial-bin data set
+  mutate(ptb_data = map(censored, ptb)) %>%          
+  # create life tables without conditional accuracies
+  mutate(lifetable = map(ptb_data, setup_lt)) %>%   
+  # calculate conditional accuracies
+  mutate(condacc = map(censored, calc_ca)) %>%      
+  # create life tables with conditional accuracies
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    
+  # create plots 
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_temp,.5))  
+```
+
+```{r}
+p14.2 <- pluck(data_small, 8, 6)
+
+p14.2
+```
+
+
+
+
+Large:
+
+```{r}
+data_nested <- data_wr %>% group_nest(pid)
+data_large <- data_nested %>% 
+  # ! user input: censoring time, and bin width in milliseconds
+  mutate(censored = map(data, censor, 600, 100)) %>%   
+  # create person-trial-bin data set
+  mutate(ptb_data = map(censored, ptb)) %>%          
+  # create life tables without conditional accuracies
+  mutate(lifetable = map(ptb_data, setup_lt)) %>%   
+  # calculate conditional accuracies
+  mutate(condacc = map(censored, calc_ca)) %>%      
+  # create life tables with conditional accuracies
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    
+  # create plots 
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_temp,1))  
+```
+
+```{r}
+p14.3 <- pluck(data_large, 8, 6)
+
+p14.3
+```
+
+Combine figures
+
+```{r}
+
+
+plot_grid(p14.2, p14.1,p14.3,
+  nrow = 1,
+  labels = c("A","B","C"),
+  label_size = 22
+)
+
+```
+
+```{r}
+ggsave("sims/figures/Fig_revision2_binwidth.jpeg",
+       width = 20, height = 12, dpi=800)
+
+```
 
 
 
