@@ -512,7 +512,7 @@ model_M0i <-
        file = "Tutorial_2_Bayesian/models/model_M0i")
 ```
 
-After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+After selecting the Bernoulli family and the cloglog link, the model formula is specified. The specification "0 + ..." removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ### 3.3.4 Model M1i: Adding the effects of prime-target congruency
 
@@ -526,7 +526,9 @@ Estimating model M1i took about 124 minutes using the same MacBook Pro.
 
 ### 3.3.5 Compare the models.
 
-There are two popular strategies to evaluate how well models will perform in predicting new data on average: Leave-One-Out (LOO) cross-validation and the Widely Applicable Information Criterion or WAIC [@mcelreathStatisticalRethinkingBayesian2020]. LOO-weights represent the optimal linear combination of models for predictive performance, with higher weights for models with better out-of-sample predictive performance. WAIC-weights represent the relative evidence for each model, with higher weights for models with a better fit while accounting for model complexity [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023].
+There are two popular strategies to evaluate how well models will perform in predicting new data on average: Leave-One-Out (LOO) cross-validation and the Widely Applicable Information Criterion or WAIC [@mcelreathStatisticalRethinkingBayesian2020]. LOO-weights represent the optimal linear combination of models for predictive performance, with higher weights for models with better out-of-sample predictive performance. WAIC-weights represent the relative evidence for each model, with higher weights for models with a better fit while accounting for model complexity (see section 4.6.4 in Kurz, 2023a; McElreath, 2020).
+
+<!-- [@mcelreathStatisticalRethinkingBayesian2020; @kurzAppliedLongitudinalDataAnalysis2023]. -->
 
 ```{r load-models, echo=F, eval=T, echo=F} 
 model_M0i <- readRDS("../Tutorial_2_Bayesian/models/model_M0i.rds") 
@@ -581,7 +583,7 @@ knitr::include_graphics("../Tutorial_2_Bayesian/figures/Revision_results_ca.png"
 Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 4B). As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 4C). Based on Figure 4C we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins 240, 280, 320, and 360, relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 4C). 
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first three time bins, relative to blank primes.
 
-Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework in Tutorial_3a.Rmd and Tutorial_3b.Rmd, using the R package lme4() [@R-lme4]. 
+Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework in Tutorial_3a.Rmd and Tutorial_3b.Rmd, using the R package lme4 [@R-lme4]. 
 
 ## 3.5 Tutorial 4: Planning
 
@@ -590,7 +592,7 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 ### 3.5.1 Background
 
 The general approach to planning that we adopt here involves simulating reasonably structured data to help guide what you might be able to expect from your data once you collect it [@gelmanBayesianWorkflow2020].
-The basic structure and code follows the examples outlined by Solomon Kurz in his 'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux{} (https://debruine.github.io/faux/), as well as these related papers [@debruineUnderstandingMixedEffectsModels2021; @pargentTutorialTailoredSimulationBased2024]. 
+The basic structure and code follows the examples outlined by Solomon Kurz in his 'power' blog posts (https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/) and Lisa Debruine's R package faux (https://debruine.github.io/faux/), as well as these related papers [@debruineUnderstandingMixedEffectsModels2021; @pargentTutorialTailoredSimulationBased2024]. 
 
 ### 3.5.2 Basic workflow
 

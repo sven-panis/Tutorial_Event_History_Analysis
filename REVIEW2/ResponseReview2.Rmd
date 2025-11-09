@@ -1,7 +1,7 @@
 ---
 title: "Review 2: Author responses"
 author: "Panis & Ramsey"
-date: "07.10.2025"
+date: "10.11.2025"
 output: 
   pdf_document:
       keep_tex: true
@@ -33,7 +33,7 @@ Thank you for re-submitting your Tutorial (AMPPS-24-0232.R1) entitled "Event His
 
 >That said, accessibility remains a shared concern. Reviewer 3 highlights that the tutorial is still challenging to follow, particularly for readers less familiar with event history analysis (EHA) or speed–accuracy tradeoff (SAT) approaches, and urges that key concepts and research design features be defined and explained in the main text rather than deferred to the supplement. 
 
-Response: We define and explain key concepts and research design features in the main text now. 
+Response: We define and explain key concepts (by adding a glossary) and research design features in the main text now. 
 
 >Reviewer 2 raises several clarity-related concerns--particularly about the bin width discussion and about the interpretability of modeling decisions such as time window selection. 
 
@@ -41,15 +41,17 @@ Response: We include a new supplementary figure to illustrate the choice of bin 
 
 >Both Reviewers 2 and 3 emphasize the need to better motivate methodological choices, especially the use of discrete-time EHA, which is currently justified by lab familiarity rather than a clear articulation of its analytic tradeoffs (R3, citing p. 8 of the ms). 
 
-Response: We now articulate the analytic tradeoffs when motivating our use of discrete-time EHA. 
+Response: We now extensively motivate the use of discrete-time EHA. 
 
 >Reviewer 3 also recommends that the paper more clearly identify the types of research questions EHA is particularly well-suited to address, ideally with earlier and more focused examples (R3, citing p. 10 of the ms). I agree with this point and feel it's critical to make the paper as accessible as possible-- perhaps with (and not limited to) easier examples up front, a glossary of sorts, visualizations; anything (and everything) that will make this complex paper more inviting. 
 
-Response: We include a glossary, visualizations (previous section A of the supplementary material), and example research questions in the main text of the revised ms.
+Response: We now include a glossary and example research questions in the main text of the revised ms.
+Also, we added extra sections to the Supplemental Material, to increase the accessiblity further.
+
 
 >While the paper is technically strong and substantively valuable, its didactic function would be enhanced by more clearly integrating definitions, rationales, and analytic guidance into the main text for the broader AMPPS readership. I'd encourage you to go through the paper start-to-end with an eye toward improving all possible points of entry and overall accessibility.
 
-Response: We tried to improve all possible points of entry, as well as overall accessibility.
+Response: We tried to improve all possible points of entry, as well as overall accessibility, by integrating definitions, examples, rationales, and analytic guidance into the main text.
 
 
 >If you choose to submit a revision, please include a letter detailing your point-by-point responses to each reviewer comment and indicating how you changed the manuscript to address them. The revised manuscript may undergo further peer review. We ask that you submit your revision within three months. Please let us know if you will not be able to meet this deadline.
@@ -95,8 +97,8 @@ alternative bin widths later during analysis. I suggest renaming this section
 time data still should be recorded in continuous time, if multiple bin widths are to
 be considered later during analysis.
 
-Response: We renamed the section, and make it clear that RT data should still be recorded 
-in continuous time, so that various bin widths can be considered later during analysis.
+Response: We renamed this section to "Implications for research in experimental psychology", and make it clear that RT data is typically treated as 
+continuous time-to-event data, so that it becomes implicitly clear that various bin widths can be considered later during analysis.
 
 
 >2. Related to the above comment on bin width, I also think some discussion of the
@@ -112,7 +114,7 @@ criterion? More specificity here could be useful, and I would recommend
 including a supplementary example that illustrates both choosing a bin width and
 any potential impact of that bin width on the conclusions.
 
-Response: We include a supplementary example that illustrates how results are sensitive to the choice of bin width.
+Response: We include a supplementary example that illustrates how results are sensitive to the choice of bin width. We also mention that "Overly small bin widths will result in erraticly shaped hazard functions, and some bins will have no events and thus hazard estimates of zero; overly large bin widths will result in a too great loss of temporal information (see Supplementary Figure 3)", on page 14 of the revised ms.
 
 >3. Figure 2: In the plot of ca(t), why is there a gap between the first and second
 orange triangles? That is, why is ca(t) missing at 160ms?
@@ -128,7 +130,7 @@ the first few bins often contain no responses—isn’t a lack of response at ea
 time points useful data? This sentence could benefit from being re-written for
 increased clarity.
 
-Response: We re-wrote this sentence.
+Response: We re-wrote this sentence.... TODO
 
 >5. P. 38 line 641-643: “We might pick a hazard ratio…[that] is much smaller than
 that previously observed”
@@ -154,7 +156,7 @@ Response: We added the section reference numbers in the main text.
 ‘nsmall = 2’, you may get a misleading value of 0 (i.e., 0.009 would appear as
 0.00, when in fact 0.01 is more correct). This should be corrected.
 
-Response: We corrected this.
+Response: We corrected this...... TODO
 
 >4. P. 32 line 558: “R package lme4()” should be “R package lme4”
 , otherwise the
@@ -174,282 +176,66 @@ Response: We want to thank this reviewer for his/her supportive comments.
 
 >At the same time, the tutorial remains challenging to follow, particularly for readers less familiar with EHA and SAT. To enhance accessibility, I encourage the authors to ensure that key information such as descriptions of research questions, RT data, and analytic approaches (including equations) is presented in the main text rather than moved to supplemental materials. This could likely be achieved without increasing the word count by reducing redundancies and tightening language in several places. Overall, the tutorial covers important concepts, but there is still room to strengthen its contributions, accessibility, and clarity.
 
-Response. We now present the descriptions of research questions, RT data, and analytic approaches (including equations) in the main text.
+Response. We now present the descriptions of RT data, research questions, and analytic approaches in the main text.
+Nevertheless, we still opted to keep the text equation-light, to increase accessibility for non-mathematical psychologists.
+We also added various new sections to the Supplemental Material.
 
 >Contribution of this tutorial:
 Thank you for clarifying the aims of the paper (line 89). To strengthen this section, it would be helpful to provide more rationale on the unique characteristics of RT data that necessitate a dedicated EHA tutorial. In particular, please address directly why a tutorial focused on RT data is needed. At present, key RT data characteristics (including the definition of “trial”) appear only in the supplement. Given the centrality of these features, I recommend moving them into the main text so the tutorial stands on its own.
 
-Response: We explain why a tutorial focused on RT data is needed, and define key concepts (such as trial) in the main text now.
+Response: We followed this suggestion.
 
 >The discussion at line 93 would benefit from greater emphasis on why a researcher might conduct EHA analyses. More clearly outlining the types of research questions that survival analysis of RT data can address would make the tutorial more useful and accessible. While some research questions are introduced later (pg. 10), I recommend stating them more clearly and incorporating them earlier (e.g., in Section 2.1).
 
-Response: We now state research questions more clearly and earlier.
+Response: We now state research questions more clearly in section 2.1.3.
 
-# response from Claude:
-## Research Questions Addressable with Event History Analysis in RT Research
-
-Event history analysis (survival analysis) for response times offers unique advantages over traditional RT analysis (mean/median comparisons). Here are key research questions it can address:
-
----
-
-## **1. Distributional Questions**
-
- **How does the entire RT distribution change, not just central tendency?**
-
-Traditional analysis focuses on means/medians, but event history analysis examines:
-- **Early vs. late portions of the distribution** - Do experimental manipulations affect fast vs. slow responses differently?
-- **Tail behavior** - Does a manipulation increase probability of very slow responses?
-- **Skewness changes** - Does a condition shift the entire distribution or just stretch the tail?
-
-**Example:** Does cognitive load slow all responses uniformly, or does it primarily increase the probability of very slow responses while leaving fast responses unaffected?
-
-```r
-# Examine time-varying hazard ratios
-# If HR > 1 at early times but HR < 1 at late times,
-# effect differs across the distribution
-```
-
----
-
-## **2. Time-Dependent Effects**
-
-### **When during processing does an experimental factor exert its influence?**
-
-Hazard models can reveal **timing** of effects:
-- **Early effects** (high hazard early) suggest perceptual or automatic processes
-- **Late effects** suggest deliberative, controlled processing
-- **Crossing hazards** indicate time-dependent or strategic effects
-
-**Example:** Does semantic priming affect early automatic retrieval (increased hazard at 300-500ms) or later strategic processing (decreased hazard at 700-1000ms)?
-
----
-
-
-## **3. Speed-Accuracy Tradeoffs**
-
-### **How do manipulations affect the relationship between response speed and accuracy?**
-
-By modeling correct and error responses separately (competing risks):
-- **Conditional accuracy functions** - Accuracy as a function of RT
-- **Divergence points** - When do accuracy differences emerge?
-- **Strategic shifts** - Do participants adjust response caution?
-
-**Example:** Does time pressure increase hazard equally for correct and error responses (pure speed effect), or does it disproportionately increase error hazard (speed-accuracy tradeoff)?
-
-```r
-# Competing risks model
-model_correct <- coxph(Surv(RT, correct) ~ condition + (1|subject))
-model_error <- coxph(Surv(RT, !correct) ~ condition + (1|subject))
-```
-
----
-
-
-
-## **4. Individual Differences in Processing Dynamics**
-
-
-
-
-### **Do individuals differ in how effects unfold over time?**
-
-Random effects on time-varying components:
-- **Individual hazard shapes** - Does baseline processing speed vary?
-- **Individual effect timing** - Does a manipulation affect people at different processing stages?
-- **Strategy differences** - Do some people show early effects while others show late effects?
-
-**Example:** In Stroop tasks, do high vs. low working memory individuals show interference at different time points?
-
----
-
-
-
-## **5. Sequential and Context Effects**
-
-### **How do previous trials influence current response timing?**
-
-Time-varying covariates capture dynamic adjustments:
-- **Post-error slowing** - How long does slowing persist after errors?
-- **Conflict adaptation** - Does previous trial congruency affect current hazard shape?
-- **Priming dynamics** - Time course of repetition priming across lags
-
-**Example:** After an incongruent trial, does the hazard for the next trial decrease uniformly, or is there increased probability of very cautious (slow) responses?
-
----
-
-
-## **6. Censoring and Truncation Issues**
-
-### **How to handle response deadlines, anticipations, or missing responses?**
-
-Event history analysis naturally handles:
-- **Response deadlines** - Trials with no response before cutoff (right-censored)
-- **Anticipatory responses** - Extremely fast responses (left-truncation)
-- **Task switching** - Trials where participant abandons task
-
-**Example:** In adaptive testing, how do difficulty adjustments affect the hazard of responding before the 2-second deadline?
-
----
-
-## **7. Cumulative Processing Effects**
-
-### **What is the probability of responding by time t under different conditions?**
-
-Survival functions answer:
-- **Threshold timing** - When have 50% of responses occurred?
-- **Cumulative advantage** - How much "head start" does one condition have?
-- **Processing deadlines** - Probability of completing processing by a fixed time
-
-**Example:** By 500ms, what proportion of participants have completed lexical access in high vs. low frequency words?
-
----
-
-## **8. Non-Proportional Effects**
-
-### **Do effects change in magnitude or direction over time?**
-
-Unlike ANOVA, can detect when:
-- **Effects emerge gradually** - Hazard ratio increases over time
-- **Effects reverse** - Early disadvantage becomes late advantage
-- **Effects saturate** - Strong early effect diminishes later
-
-**Example:** Does emotional content produce an early attention capture (high hazard at 200-400ms) followed by later avoidance (low hazard at 600-1000ms)?
-
-```r
-# Test time × condition interaction
-model <- coxph(Surv(RT, event) ~ condition * log(RT) + cluster(subject))
-```
-
----
-
-## **9. Mixture/Multiple Process Questions**
-
-### **Are there distinct processing routes or strategies?**
-
-Mixture models identify:
-- **Fast guesses vs. systematic responses** - Bimodal hazard functions
-- **Direct vs. mediated retrieval** - Multiple hazard peaks
-- **Parallel race models** - Which process "wins"?
-
-**Example:** In recognition memory, separate hazard functions for recollection-based (late) vs. familiarity-based (early) responses.
-
----
-
-## **10. Repeated Measures Dynamics**
-
-### **How do within-subject effects evolve across the experiment?**
-
-Multilevel event history analysis for:
-- **Learning/practice effects** - Changes in hazard shape across blocks
-- **Fatigue effects** - Time-on-task influences
-- **Within-subject stability** - Do individual hazard patterns persist?
-
-**Example:** Does the congruency effect (in hazard terms) decrease across experimental blocks as participants learn to ignore distractors?
-
----
-
-## **11. Boundary Conditions of Effects**
-
-### **Under what temporal constraints do effects appear or disappear?**
-
-Examine effect boundaries:
-- **Minimum processing time** - When can an effect first be detected?
-- **Maximum duration** - When do effects no longer manifest?
-- **Critical windows** - Temporal windows where effects are strongest
-
-**Example:** Masked priming effects may only appear in responses between 400-600ms, suggesting automatic but not strategic influence.
-
----
-
-## **Concrete Research Examples**
-
-### **Lexical Decision:**
-*Does word frequency affect early perceptual processing or later decision processes?*
-- High frequency may increase hazard uniformly (proportional hazard)
-- Or may specifically reduce probability of very slow responses (non-proportional)
-
-### **Flanker/Simon Tasks:**
-*When does interference from incompatible stimuli emerge?*
-- Compatible and incompatible trials may have similar early hazards (automatic capture)
-- Hazards diverge at 350ms (when conflict is detected)
-
-### **Go/No-Go:**
-*How does inhibition develop over time?*
-- Initially high hazard for both Go and No-Go
-- No-Go hazard drops sharply after 200ms (inhibition)
-
-### **Recognition Memory:**
-*Do "remember" vs. "know" judgments have different temporal signatures?*
-- "Know" responses: earlier hazard peak (familiarity-fast)
-- "Remember" responses: later, broader hazard (recollection-slow)
-
----
-
-## **Why Not Just Use Traditional RT Analysis?**
-
-Traditional methods (t-tests on means, ANOVA) answer: *"Is there a difference in average RT?"*
-
-Event history analysis additionally answers:
-- *"When does the difference emerge?"*
-- *"Does it affect all responses or just slow ones?"*
-- *"How does the full distribution change?"*
-- *"Are there multiple underlying processes?"*
-
-This makes it particularly powerful for **theory testing** about cognitive mechanisms and their time course, going beyond simple detection of effects to understanding the **dynamics** of information processing.
-
-## end of claude's response.
 
 
 >In addition, the response to my previous comment that research questions were not expanded because they are “highly dependent on the field of study” seems at odds with the stated goal of offering a tutorial specific to RT data. Providing a focused set of examples would help balance breadth with depth and strengthen the tutorial’s clarity and relevance.
 
-Response: We discuss research questions in the main text.
-
-- shape hazard function
-
-- differences between conditions
-
-- effects of longer time scales
+Response: We discuss research questions in section 2.1.3.
 
 >Use of discrete-time EHA:
 Pg. 8 – The rationale given (“as a lab, and mainly for practical reasons, we have much more experience using discrete-time EHA”) is not a compelling justification for the analytic choice and feels out of place in a manuscript. One option to consider is to revise this paragraph to instead (1) clarify the distinction between discrete- and continuous-time approaches, (2) note that there are no strict cutoffs for when data should be treated as discrete versus continuous, and (3) highlight the relative advantages, limitations, or tradeoffs of each. This framing would be more informative for readers and align better with the tutorial’s didactic purpose.
 
-Response: We revised this paragraph to (1) clarify the distinction between discrete- and continuous-time approaches, (2) note that there are no strict cutoffs for when data should be treated as discrete versus continuous, and (3) highlight the relative advantages, limitations, or tradeoff of each.
+Response: We revised this paragraph to clearly motivate our choice for discrete-time EHA and note that "there are no strict cutoffs for when data should be treated as discrete versus continuous".
 
 
 >Clarity and accuracy:
 Pg. 3 – The speed/accuracy tradeoff analysis is mentioned without explanation. Even if this concept is familiar to many experimental psychologists (as noted in your prior responses), it would strengthen the manuscript to include one or two sentences defining key terms or analysis types when first introduced. This would improve accessibility for a broader readership and support the tutorial’s clarity. I highlight a few examples below, but this should be considered throughout.
 
-Response: We explain SAT analysis early in the revised ms.
+Response: We explain SAT analysis in the new Glossary (section 2.4).
 
 >Pg. 8 – The phrase “discrete or continuous time units” is introduced without explanation. Please add a brief description of the distinction between these two approaches.
 
-Response: We discuss the distinction now on page x of the revised ms.
+Response: We discuss the distinction now on page x of the revised ms..... TODO
+
 
 >Pgs. 8-10 – Terms such as “hazard of response” (pg. 8) and “discrete-time hazard function” (pg. 9) are introduced without definition. 
 
-Response: We introducte definitions for these terms.
+Response: We introducte definitions for these terms in a new Glossary.
 
 
 >Likewise, Figure 1 presents hazard and conditional accuracy equations but does not walk readers through their meaning or interpretation. I encourage you to keep the equations in the main text and provide accessible explanations, as this will better equip readers who may be less comfortable with mathematical notation. 
 
-Response: We keep the equations for hazard and conditional accuracy in the main text and provide accessible explanations.
+Response: We decided to remove the equations for hazard and conditional accuracy from the figure (to keep the text equation-light and accessible) and now provide accessible explanations in the figure legend, main text, and in the new glossary.
 
 
 >Similarly it would be helpful to provide key definitions of “hazard” and “conditional accuracy estimates” should also be provided up front, rather than deferred to Section 2.1.2.
 
-Response: We profide the definitions on page x of the revised ms.
+Response: We provide definitions in the new Glossary.
 
 >Pg 9 – in discrete time, there is not instantaneous risk. Please revise.
 
-Response: We removed "instantaneous" when talking about risk now.
+Response: We removed "instantaneous" when talking about risk in discrete-time.
 
 >Pg 14 – The manuscript would be strengthened if key EHA elements were defined directly in the main text rather than directing readers to the supplemental material.
 
-Response: We define key EHA elements directly in the main text now.
+Response: We define key EHA elements in the new Glossary.
 
 >Pg 15 – In my original review I requested that right and left censoring be more clearly defined. Right censoring is still referred to several times in the manuscript without initial explanation of what this is. For the benefit of novice readers (since this is an AMPPS tutorial), I recommend including these definitions in the main text rather than the supplement.
 
-Response: We include definitions for right- and left-censoring in the main text.
+Response: We include definitions for right- and left-censoring in the new Glossary.
 
 
 

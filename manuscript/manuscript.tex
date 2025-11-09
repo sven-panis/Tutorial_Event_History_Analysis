@@ -227,7 +227,7 @@
   }
 {}{\PatchFailed}
 \makeatother
-\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 10167 (body) + 1742 (references) + 3458 (body supplemental material) + 539 (refs suppl. mat.)}
+\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11029 (body) + 1773 (references) + 5174 (body supplemental material) + 539 (refs suppl. mat.)}
 \usepackage{lineno}
 
 \linenumbers
@@ -774,7 +774,7 @@ Before we fit model M0i, we select the necessary columns from the data, and spec
 \end{Highlighting}
 \end{Shaded}
 
-After selecting the bernoulli family and the cloglog link, the model formula is specified. The specification ``0 + \ldots{}'' removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
+After selecting the Bernoulli family and the cloglog link, the model formula is specified. The specification ``0 + \ldots{}'' removes the default intercept in brm(). The fixed effects include an intercept for each level of timebin. Each of these intercepts is allowed to vary across individuals (variable pid). We request 2000 samples from the posterior distribution for each of four chains. Estimating model M0i took about 30 minutes on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 \subsubsection{3.3.4 Model M1i: Adding the effects of prime-target congruency}\label{model-m1i-adding-the-effects-of-prime-target-congruency}
 
@@ -790,7 +790,7 @@ Estimating model M1i took about 124 minutes using the same MacBook Pro.
 
 \subsubsection{3.3.5 Compare the models.}\label{compare-the-models.}
 
-There are two popular strategies to evaluate how well models will perform in predicting new data on average: Leave-One-Out (LOO) cross-validation and the Widely Applicable Information Criterion or WAIC (McElreath, 2020). LOO-weights represent the optimal linear combination of models for predictive performance, with higher weights for models with better out-of-sample predictive performance. WAIC-weights represent the relative evidence for each model, with higher weights for models with a better fit while accounting for model complexity (Kurz, 2023a; McElreath, 2020).
+There are two popular strategies to evaluate how well models will perform in predicting new data on average: Leave-One-Out (LOO) cross-validation and the Widely Applicable Information Criterion or WAIC (McElreath, 2020). LOO-weights represent the optimal linear combination of models for predictive performance, with higher weights for models with better out-of-sample predictive performance. WAIC-weights represent the relative evidence for each model, with higher weights for models with a better fit while accounting for model complexity (see section 4.6.4 in Kurz, 2023a; McElreath, 2020).
 
 \footnotesize
 
@@ -866,7 +866,7 @@ To make inferences from the parameter estimates in model M1i\_ca, we first plot 
 Because the parameter estimates are on the logit-ca scale, we can ease our interpretation by plotting the expected value of the posterior predictive distribution -- the predicted conditional accurcies -- at the population level (Figure 4B). As we are actually interested in the effects of congruent and incongruent primes, relative to the blank prime condition, we can construct two contrasts (congruent-blank, incongruent-blank), and plot the posterior distributions of these contrast effects at the population level (Figure 4C). Based on Figure 4C we see that on the population level congruent primes have a positive effect on the conditional accuracy of emitted responses in time bins 240, 280, 320, and 360, relative to the estimates in the baseline condition (blank prime; red dashed lines in Figure 4C).
 Incongruent primes have a negative effect on the conditional accuracy of emitted responses in the first three time bins, relative to blank primes.
 
-Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework in Tutorial\_3a.Rmd and Tutorial\_3b.Rmd, using the R package lme4() (Bates et al., 2015).
+Finally, because many researchers will be more familiar with frequentist statistics, we also provide code to fit hazard and conditional accuracy models in the frequentist framework in Tutorial\_3a.Rmd and Tutorial\_3b.Rmd, using the R package lme4 (Bates et al., 2015).
 
 \subsection{3.5 Tutorial 4: Planning}\label{tutorial-4-planning}
 
@@ -875,7 +875,7 @@ In the final tutorial, we look at planning a future experiment, which uses EHA.
 \subsubsection{3.5.1 Background}\label{background}
 
 The general approach to planning that we adopt here involves simulating reasonably structured data to help guide what you might be able to expect from your data once you collect it (Gelman, Vehtari, et al., 2020).
-The basic structure and code follows the examples outlined by Solomon Kurz in his `power' blog posts (\url{https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/}) and Lisa Debruine's R package faux\{\} (\url{https://debruine.github.io/faux/}), as well as these related papers (DeBruine \& Barr, 2021; Pargent, Koch, Kleine, Lermer, \& Gaube, 2024).
+The basic structure and code follows the examples outlined by Solomon Kurz in his `power' blog posts (\url{https://solomonkurz.netlify.app/blog/bayesian-power-analysis-part-i/}) and Lisa Debruine's R package faux (\url{https://debruine.github.io/faux/}), as well as these related papers (DeBruine \& Barr, 2021; Pargent, Koch, Kleine, Lermer, \& Gaube, 2024).
 
 \subsubsection{3.5.2 Basic workflow}\label{basic-workflow}
 
