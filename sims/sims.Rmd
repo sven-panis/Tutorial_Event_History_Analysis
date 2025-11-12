@@ -1820,19 +1820,28 @@ p13.6
 Plot mean and distributional results:
 
 ```{r}
-plot_grid(p13.6, p13.3,
-  nrow = 1,
-  labels = c("A","B"),
-  label_size = 22
-)
-```
+p13_left <- (p13.4 / p13.5) +
+  plot_layout(guides = 'collect', axes = 'collect')
 
+# Create right column (p13.1 and p13.2) with collected axes  
+p13_right <- (p13.1 / p13.2) +
+  plot_layout(guides = 'collect', axes = 'collect')
+
+# Combine the two columns side by side
+p13_final <- (p13_left | p13_right) +
+  plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 22))
+
+p13_final
+```
 
 ```{r}
 ggsave("sims/figures/Fig1_revision1.jpeg",
        width = 10, height = 10, dpi=800)
 
 ```
+
+
 
 
 # section 14: REVISION 2: Create Supplementary Figure to illustrate the effect of bin width
@@ -1849,6 +1858,10 @@ data_wr <- data_wr %>%
                             labels=c("blank","congruent","incongruent")))
 head(data_wr)
 ```
+
+
+
+
 
 ... and plot hazard and caf for 3 different bin widths: small, medium, and large.
 
