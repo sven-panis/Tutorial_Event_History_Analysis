@@ -270,6 +270,8 @@ ha <- tibble(
 
 (ref:ca-data-note-caption) The first 10 trials for participant 1 are shown. These data are simulated and for illustrative purposes only.
 
+\renewcommand{\arraystretch}{1.5}
+
 ```{r ca-data-table, warning=F}
 apa_table(
   ca,
@@ -279,11 +281,15 @@ apa_table(
 )
 ```
 
+\renewcommand{\arraystretch}{1}
+
 In contrast, the 'person-trial-bin' data (Table 2) has a different, more extended structure, which indicates in which bin a response occurred, if at all, in each trial. Therefore, the 'person-trial-bin' data generates a 0 in each bin until an event occurs and then it generates a 1 to signal an event has occurred in that bin. This data set is used when fitting discrete-time hazard models (Tutorials 2a and 3a). It is worth pointing out that there is no requirement for an event to occur at all (in any bin), as maybe there was no response on that trial or the event occurred after the time window of interest. Likewise, when the event occurs in bin 1 there would only be one row of data for that trial in the person-trial-bin data set.
 
 (ref:ha-data-table-caption) Data structure for 'person-trial-bin' data
 
 (ref:ha-data-note-caption) The first 2 trials for participant 1 from Table 1 are shown. The width of the time bins is 100 ms. These data are simulated and for illustrative purposes only.
+
+\renewcommand{\arraystretch}{1.5}
 
 ```{r ha-data-table, warning=F}
 apa_table(
@@ -293,6 +299,8 @@ apa_table(
   placement = "H"
 )
 ```
+
+\renewcommand{\arraystretch}{1}
 
 ### 3.1.2 A real data wrangling example 
 
@@ -357,6 +365,8 @@ Table 3 shows the life table for condition "blank" (no prime stimulus presented)
 
 (ref:life-note-caption) The column named "bin" indicates the upper bound of each time bin (in ms), and includes time point zero. At time point zero, no events can occur and therefore both the discrete-time hazard h(t=0) and the conditional accuracy ca(t=0) are undefined. RS = risk set; se = standard error; NA = undefined.
 
+\renewcommand{\arraystretch}{1.5}
+
 ```{r life-table, warning=F}
 life_tab <- read_csv("../Tutorial_1_descriptive_stats/tables/lifetable_blank_s6.csv")
 
@@ -370,6 +380,8 @@ apa_table(
     decimal.mark = ".", big.mark = "")
 )
 ```
+
+\renewcommand{\arraystretch}{1}
 
 Figure 2 displays the discrete-time hazard, survivor, conditional accuracy, and probability mass functions for each prime condition for participant 6. By using discrete-time hazard functions of event occurrence -- in combination with conditional accuracy functions for two-choice tasks -- one can provide an unbiased, time-varying, and probabilistic description of the latency and accuracy of responses based on all trials of any RT data set. 
 
@@ -654,7 +666,7 @@ This is of course where planning and data simulation efforts would be important 
 
 Compared to the orthodox method -- comparing means between conditions -- the most important limitation of multilevel hazard and conditional accuracy modeling is that it might take a long time to estimate the parameters using Bayesian methods or the model might have to be simplified significantly to use frequentist methods. Relatedly, as these models can be quite complex in terms of the number of possible parameters, more thought is required at the model specification and model building stages.
 
-Another issue is that you need a relatively large number of trials per condition to estimate the discrete-time hazard function with relatively high temporal resolution (e.g., 20 ms), which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the discete-time hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. There is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process [@bakerPowerContoursOptimising2021]. Finally, if you have a lot of repeated measurements per condition per participant, you can of course also try continuous-time methods [@allisonSurvivalAnalysisUsing2010; @elmerModelingCategoricalTimetoevent2023].
+Another issue is that you need a relatively large number of trials per condition to estimate the discrete-time hazard function with relatively high temporal resolution (e.g., 20 ms), which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the discrete-time hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. There is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process [@bakerPowerContoursOptimising2021]. Finally, if you have a lot of repeated measurements per condition per participant, you can of course also try continuous-time methods [@allisonSurvivalAnalysisUsing2010; @elmerModelingCategoricalTimetoevent2023].
 
 ## 4.4 Conclusions
 
@@ -674,8 +686,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 \item[Discrete-Time Hazard Function] The pattern of hazard probabilities over time, showing how the risk of event occurrence changes across time periods.
 
 \item[Conditional Accuracy Function] A plot that shows the probability of an accurate response as a function of the response time (RT) or a specific time period.
-
-
 
 \item[Event] The outcome of interest whose occurrence and timing are being studied (e.g., button press, job loss, marriage, death, graduation). Events can be repeatable or non-repeatable.
 
@@ -699,7 +709,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Discrete-time survival function] The probability that an individual survives (does not experience the event) beyond a particular time period t. Denoted as S(t) = P(T>t). Related to discrete-time hazard through S(t) = $\prod [1-h(j)]$ for all j$\leq$t.
 
-
 \item[Right Censoring] Occurs when an individual's observation period ends before the event occurs (e.g., study ends, lost to follow-up). We know the event didn't occur by time t, but don't know if/when it occurs afterward.
 
 \item[Left Censoring] Occurs when the event may have occurred before the observation period began, but we don't know exactly when.
@@ -708,15 +717,15 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Life Table] A tabular method for describing the distribution of discrete event times, showing at least the number at risk, number of events, hazard, and survival probability for each time period.
 
-
 \item[Competing Risks] Situations where multiple types of events can occur, and the occurrence of one event prevents the others from occurring (e.g., death prevents marriage; different types of job transitions).
 
 \item[Unobserved Heterogeneity (Frailty)] Individual-level differences in event risk that are not captured by observed covariates. Can lead to spurious duration dependence if not addressed. Commonly modeled using hierarchical or multilevel models with random effects (also called frailty models), which account for unobserved individual-level variation in baseline risk.
 
-
 \end{description}
 
 \normalsize
+
+\newpage
 
 # Author contributions
 

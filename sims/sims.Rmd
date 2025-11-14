@@ -1829,7 +1829,8 @@ p13_right <- (p13.1 / p13.2) +
 
 # Combine the two columns side by side
 p13_final <- (p13_left | p13_right) +
-  plot_annotation(tag_levels = 'A') & 
+  #plot_annotation(tag_levels = 'A') &
+  plot_annotation(tag_levels = list(c('A',' ','B',' '))) &
   theme(plot.tag = element_text(size = 22))
 
 p13_final
