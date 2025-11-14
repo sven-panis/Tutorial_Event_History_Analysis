@@ -279,7 +279,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020).
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis} (SAT)\footnote{All terms in bold can be found in the glossary (section 5).}.
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis}\footnote{All terms in bold can be found in the glossary (section 5).}.
 
 
 
@@ -298,7 +298,7 @@ Why does this matter for research in psychology? First, comparing the shapes of 
 
 \subsection{1.2 Aims}\label{aims}
 
-Our aim in this paper is twofold. First, we want to inform readers of the many benefits of using EHA when dealing with psychological RT data, and other types of time-to-event data. Second, we want to provide a set of practical tutorials, which include step-by-step instructions on how you actually perform a (repeated event) discrete-time EHA on RT data, as well as a complementary SAT analysis on timed accuracy data in case of choice RT data (Figure 1B).
+Our aim in this paper is twofold. First, we want to inform readers of the many benefits of using EHA when dealing with psychological RT data, and other types of time-to-event data. Second, we want to provide a set of practical tutorials, which include step-by-step instructions on how you actually perform a (repeated event) discrete-time EHA on RT data, as well as a complementary speed-accuracy tradeoff analysis on timed accuracy data in case of choice RT data (Figure 1B).
 
 Even though EHA is a widely used statistical tool and there already exist many excellent textbooks (Allison, 1982; Blossfeld \& Rohwer, 2002; Box-Steffensmeier, 2004; Hosmer, Lemeshow, \& May, 2011; Mills, 2011; Singer \& Willett, 2003; Teachman, 1983) and tutorials (Allison, 2010; Elmer, Van Duijn, Ram, \& Bringmann, 2023; Landes, Engelhardt, \& Pelletier, 2020; Lougheed, Benson, Cole, \& Ram, 2019; Stoolmiller, 2015; Stoolmiller \& Snyder, 2006), we are not aware of any tutorials that are aimed specifically at psychological RT (+ accuracy) data, and which provide worked examples of the key data processing and Bayesian multilevel regression modelling steps.
 
@@ -336,7 +336,7 @@ The fact that EHA can deal with right censoring, therefore, presents a analytica
 \paragraph{Competing risks}\label{competing-risks}
 
 In many applications there are multiple events of interest, such as correct versus error responses, for example. In EHA parlance this is known as a \textbf{competing risks} situation, because from time zero onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a ``correct response'' state or an ``incorrect response'' state.
-There are several approaches to deal with a competing risks situation (see section A of the Supplemental Material). Here, we estimate and model the \textbf{hazard} of (any) response occurrence and extend it with a SAT analysis (plotting and modeling accuracy as a function of latency; see Figure 1B).
+There are several approaches to deal with a competing risks situation (see section A of the Supplemental Material). Here, we estimate and model the \textbf{hazard} of (any) response occurrence and extend it with a speed-accuracy tradeoff analysis (Heitz, 2014), by plotting and modeling the conditional accuracy function; see Figure 1B).
 
 \subsubsection{2.1.2 Modeling approaches}\label{modeling-approaches}
 
@@ -356,7 +356,7 @@ occurred in the past, i.e., in one of the prior bins (t-1, t-2, \ldots, 1).
 
 In the context of experimental psychology, it is often (but not always) the case that responses can be classified as correct or incorrect.
 In those cases, one can also calculate the conditional accuracy function (Figure 1B lower panel).
-The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977). This type of conditional accuracy function is also known as the micro-level SAT function. We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT. The mathematical definitions of both these and other discrete-time functions are given in section B of the Supplemental Material.
+The conditional accuracy function gives you for each time bin the conditional probability that a response is correct given that it is emitted in time bin t (Allison, 2010; Kantowitz \& Pachella, 2021; Wickelgren, 1977). This type of conditional accuracy function is also known as the micro-level speed-accuracy tradeoff (SAT) function. We refer to this extended (hazard + conditional accuracy) analysis for choice RT data as EHA/SAT. The mathematical definitions of both these and other discrete-time functions are given in section B of the Supplemental Material.
 
 \subsubsection{2.1.3 Research Questions}\label{research-questions}
 
@@ -977,7 +977,7 @@ This is of course where planning and data simulation efforts would be important 
 
 Compared to the orthodox method -- comparing means between conditions -- the most important limitation of multilevel hazard and conditional accuracy modeling is that it might take a long time to estimate the parameters using Bayesian methods or the model might have to be simplified significantly to use frequentist methods. Relatedly, as these models can be quite complex in terms of the number of possible parameters, more thought is required at the model specification and model building stages.
 
-Another issue is that you need a relatively large number of trials per condition to estimate the discrete-time hazard function with relatively high temporal resolution (e.g., 20 ms), which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the discete-time hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. There is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process (Baker et al., 2021). Finally, if you have a lot of repeated measurements per condition per participant, you can of course also try continuous-time methods (Allison, 2010; Elmer et al., 2023).
+Another issue is that you need a relatively large number of trials per condition to estimate the discrete-time hazard function with relatively high temporal resolution (e.g., 20 ms), which is required when testing predictions of process models of cognition. Indeed, in general, there is a trade-off between the number of trials per condition and the temporal resolution (i.e., bin width) of the discrete-time hazard function. Therefore, we recommend researchers to collect as many trials as possible per experimental condition, given the available resources and considering the participant experience (e.g., fatigue and boredom). For instance, if the maximum session length deemed reasonable is between 1 and 2 hours, what is the maximum number of trials per condition that you could reasonably collect? After consideration, it might be worth conducting multiple testing sessions per participant and/or reducing the number of experimental conditions. There is a user-friendly online tool for calculating statistical power as a function of the number of trials as well as the number of participants, and this might be worth consulting to guide the research design process (Baker et al., 2021). Finally, if you have a lot of repeated measurements per condition per participant, you can of course also try continuous-time methods (Allison, 2010; Elmer et al., 2023).
 
 \subsection{4.4 Conclusions}\label{conclusions}
 
@@ -997,8 +997,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 \item[Discrete-Time Hazard Function] The pattern of hazard probabilities over time, showing how the risk of event occurrence changes across time periods.
 
 \item[Conditional Accuracy Function] A plot that shows the probability of an accurate response as a function of the response time (RT) or a specific time period.
-
-
 
 \item[Event] The outcome of interest whose occurrence and timing are being studied (e.g., button press, job loss, marriage, death, graduation). Events can be repeatable or non-repeatable.
 
@@ -1022,7 +1020,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Discrete-time survival function] The probability that an individual survives (does not experience the event) beyond a particular time period t. Denoted as S(t) = P(T>t). Related to discrete-time hazard through S(t) = $\prod [1-h(j)]$ for all j$\leq$t.
 
-
 \item[Right Censoring] Occurs when an individual's observation period ends before the event occurs (e.g., study ends, lost to follow-up). We know the event didn't occur by time t, but don't know if/when it occurs afterward.
 
 \item[Left Censoring] Occurs when the event may have occurred before the observation period began, but we don't know exactly when.
@@ -1031,15 +1028,15 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Life Table] A tabular method for describing the distribution of discrete event times, showing at least the number at risk, number of events, hazard, and survival probability for each time period.
 
-
 \item[Competing Risks] Situations where multiple types of events can occur, and the occurrence of one event prevents the others from occurring (e.g., death prevents marriage; different types of job transitions).
 
 \item[Unobserved Heterogeneity (Frailty)] Individual-level differences in event risk that are not captured by observed covariates. Can lead to spurious duration dependence if not addressed. Commonly modeled using hierarchical or multilevel models with random effects (also called frailty models), which account for unobserved individual-level variation in baseline risk.
 
-
 \end{description}
 
 \normalsize
+
+\newpage
 
 \section{Author contributions}\label{author-contributions}
 
@@ -1168,6 +1165,9 @@ Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with {lubridate}
 
 \bibitem[\citeproctext]{ref-heiss2021}
 Heiss, A. (2021, November 10). A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel {Bayesian} Models. \url{https://doi.org/10.59350/wbn93-edb02}
+
+\bibitem[\citeproctext]{ref-Heitz2014-bp}
+Heitz, R. P. (2014). The speed-accuracy tradeoff: History, physiology, methodology, and behavior. \emph{Front. Neurosci.}, \emph{8}, 150.
 
 \bibitem[\citeproctext]{ref-holdenDispersionResponseTimes2009}
 Holden, J. G., Van Orden, G. C., \& Turvey, M. T. (2009). Dispersion of response times reveals cognitive dynamics. \emph{Psychological Review}, \emph{116}(2), 318--342. \url{https://doi.org/10.1037/a0014849}
