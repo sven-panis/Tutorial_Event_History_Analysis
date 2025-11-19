@@ -13,7 +13,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval=T)
+knitr::opts_chunk$set(echo = TRUE, eval = T)
 ```
 
 Tutorial 4 shows one way to plan the design of a future experiment using EHA.
@@ -21,9 +21,11 @@ Tutorial 4 shows one way to plan the design of a future experiment using EHA.
 # 1. Load the libraries that we will be using #
 
 ```{r load-pkg, results='hide'}
-pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux",
-         "rstan", "osfr", "here")
+pkg <- c(
+  "cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork",
+  "brms", "tidybayes", "bayesplot", "future", "parallel", "VGAM", "faux",
+  "rstan", "osfr", "here"
+)
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -31,10 +33,12 @@ lapply(pkg, library, character.only = TRUE)
 Set options. 
 
 ```{r set-options, results='hide'}
-options(brms.backend = "cmdstanr",
-        mc.cores = parallel::detectCores(),
-        future.fork.enable = TRUE,
-        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+options(
+  brms.backend = "cmdstanr",
+  mc.cores = parallel::detectCores(),
+  future.fork.enable = TRUE,
+  future.rng.onMisuse = "ignore"
+) ## automatically set in RStudio
 
 rstan_options(auto_write = TRUE)
 
@@ -52,9 +56,11 @@ theme settings for ggplot
 ```{r plot-settings, results='hide'}
 theme_set(
   theme_bw() +
-    theme(text = element_text(size = 22, face = "bold"), 
-          title = element_text(size = 22, face = "bold"),
-          legend.position = "bottom")
+    theme(
+      text = element_text(size = 22, face = "bold"),
+      title = element_text(size = 22, face = "bold"),
+      legend.position = "bottom"
+    )
 )
 
 ## Set the amount of dodge in figures
@@ -106,18 +112,21 @@ Here, we again use data form Panis and Schmidt (2016), but to make things simple
 ## read in and wrangle the raw data ##
 
 ```{r load-data}
-data <- read_csv("Tutorial_4_planning/data/tidyppp_Exp1_n6.csv") %>%
+data <- read_csv("Tutorial_4_planning/data/tidyppp_Exp1_n6.csv") |>
   ## no mask condition only, neutral prime removed, time bins 4-9 only
-  filter(no_ma == 1, no_pr < 1, timebin %in% c(4:9)) %>% 
+  filter(no_ma == 1, no_pr < 1, timebin %in% c(4:9)) |>
   ## remove unnecessary columns
-  select(-c(bl, target_dir, corresp, resp, respac, rel_ma, irr_ma, ran_ma, no_ma)) %>%
+  select(-c(bl, target_dir, corresp, resp, respac, rel_ma, irr_ma, ran_ma, no_ma)) |>
   ## rename the error column
-  rename(error = resperr) %>% 
+  rename(error = resperr) |>
   ## create a new variable and some factors
-  mutate(prime = if_else(con_pr == 1, "con", "inc"),
-         prime = factor(prime,
-                        levels = c("con", "inc")),
-         timebin = factor(timebin)) %>% 
+  mutate(
+    prime = if_else(con_pr == 1, "con", "inc"),
+    prime = factor(prime,
+      levels = c("con", "inc")
+    ),
+    timebin = factor(timebin)
+  ) |>
   ## simplify the data by selecting a few variables only
   select(pid, timebin, prime, outcome)
 head(data)
@@ -127,7 +136,7 @@ str(data)
 data check
 
 ```{r check-conds}
-data %>% 
+data |>
   distinct(timebin, prime)
 ```
 
@@ -136,13 +145,13 @@ data %>%
 summary data
 
 ```{r calculate-summary-data}
-data_pid <- data %>% 
-  group_by(pid, timebin, prime) %>% 
+data_pid <- data |>
+  group_by(pid, timebin, prime) |>
   summarise(outcome = mean(outcome, na.rm = TRUE))
 head(data_pid)
 
-data_group <- data %>% 
-  group_by(timebin, prime) %>% 
+data_group <- data |>
+  group_by(timebin, prime) |>
   summarise(outcome = mean(outcome, na.rm = TRUE))
 head(data_group)
 ```
@@ -150,26 +159,31 @@ head(data_group)
 quick plot
 
 ```{r quick-summary-plot}
-p3.1 <- ggplot(data_group, aes(x=timebin, y = outcome, colour = prime)) +
-   geom_line(aes(group = prime, linetype = prime)) + geom_point() +
-   geom_jitter(data=data_pid, alpha = 0.5, width = 0.1, height = 0) +
-   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-   scale_x_discrete(labels = c(1:6)) +
-   scale_fill_brewer(palette = "Dark2") +
-   scale_colour_brewer(palette = "Dark2") +
-   labs(title = "Panis & Schmidt (2016) (N=6)",
-        x = "time bins")
+p3.1 <- ggplot(data_group, aes(x = timebin, y = outcome, colour = prime)) +
+  geom_line(aes(group = prime, linetype = prime)) +
+  geom_point() +
+  geom_jitter(data = data_pid, alpha = 0.5, width = 0.1, height = 0) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  scale_x_discrete(labels = c(1:6)) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(
+    title = "Panis & Schmidt (2016) (N=6)",
+    x = "time bins"
+  )
 p3.1
 ```
 
 check the number of trials
 
 ```{r check-trials}
-tally <- data %>% 
-  group_by(pid, prime, timebin) %>%
-  summarise(n=n(),
-            sum=sum(outcome),
-            .groups = "drop")
+tally <- data |>
+  group_by(pid, prime, timebin) |>
+  summarise(
+    n = n(),
+    sum = sum(outcome),
+    .groups = "drop"
+  )
 tally
 ```
 
@@ -194,15 +208,16 @@ Because we are building Bayesian regression models, which generate a posterior d
 with varying intercept and slope for prime by pid
 
 ```{r model-formula}
-formula = bf(outcome ~ 0 + timebin:prime +
-               (0 + timebin:prime | pid))
+formula <- bf(outcome ~ 0 + timebin:prime +
+  (0 + timebin:prime | pid))
 ```
 
 ## check the priors available ##
 
 ```{r priors}
 get_prior(formula,
-          data = data, family = bernoulli(link = "cloglog"))
+  data = data, family = bernoulli(link = "cloglog")
+)
 ```
 
 ## visualise priors ##
@@ -217,7 +232,7 @@ For a look at values across the cloglog scale and how it compares to the logit s
 Ok, so let's take a look at some cloglog values at the lower and upper end of the probability scale.
 
 ```{r cloglog-vals}
-cloglog_vals = clogloglink(c(0.01,0.99))
+cloglog_vals <- clogloglink(c(0.01, 0.99))
 cloglog_vals
 
 # -4.600149  1.527180
@@ -227,7 +242,8 @@ and now take a look at some distributions
 
 ```{r visualise-priors}
 visualize("normal(0, 2)", "normal(0, 1)", "normal(0, 0.5)",
-          xlim = c(-4, 4))
+  xlim = c(-4, 4)
+)
 ```
 
 (0,2) looks like it covers all of our likely values, even if it is too broad.
@@ -255,15 +271,17 @@ Change eval=TRUE in the code chunk to run this model.
 
 ```{r build-model, eval=FALSE}
 plan(multicore)
-bi <- brm(formula = formula,
-        data = data, family = bernoulli(link = "cloglog"),
-        prior = priors,
-        iter = 2000, warmup = 1000, cores = 8, chains = 4,
-        control = list(adapt_delta = 0.95),
-        save_pars = save_pars(all=TRUE),
-        seed = 123,
-        init = 0.01,
-        file = "Tutorial_4_planning/models/bi")
+bi <- brm(
+  formula = formula,
+  data = data, family = bernoulli(link = "cloglog"),
+  prior = priors,
+  iter = 2000, warmup = 1000, cores = 8, chains = 4,
+  control = list(adapt_delta = 0.95),
+  save_pars = save_pars(all = TRUE),
+  seed = 123,
+  init = 0.01,
+  file = "Tutorial_4_planning/models/bi"
+)
 summary(bi)
 ```
 
@@ -291,18 +309,18 @@ wrangle the posterior distribution
 
 ```{r wrangle-posterior}
 ## take the posterior draws
-post <- as_draws_df(bi) %>% 
-  select(-lp__) %>% 
+post <- as_draws_df(bi) |>
+  select(-lp__) |>
   as_tibble()
 
 ## create a summary, and use medians with robust = TRUE
 post_summary <- posterior_summary(bi, robust = TRUE)
 
 ## just look at the fixed effects
-post_qi_b <- post %>%
-  select(starts_with("b_")) %>%
-  pivot_longer(everything()) %>%
-  group_by(name) %>% 
+post_qi_b <- post |>
+  select(starts_with("b_")) |>
+  pivot_longer(everything()) |>
+  group_by(name) |>
   median_qi(value)
 head(post_qi_b)
 ```
@@ -310,41 +328,46 @@ head(post_qi_b)
 a quick plot using posterior samples and tidybayes
 
 ```{r plot-fixed}
-tidy_fixed <- post %>% 
-  select(starts_with("b_"), .chain, .iteration, .draw) %>% # select and rename in simpler labels.
-  rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
-  pivot_longer(-c(chain, draw, iter)) %>% # move from wide to long
-  mutate(key = factor(name, levels=unique(name)),
-         bin = rep(1:6, length.out = 48000),
-         prime = rep(c("con", "inc"), each = 6, length.out = 48000),
-         bin=factor(bin),
-         prime=factor(prime))
+tidy_fixed <- post |>
+  select(starts_with("b_"), .chain, .iteration, .draw) |> # select and rename in simpler labels.
+  rename(chain = .chain, iter = .iteration, draw = .draw) |>
+  pivot_longer(-c(chain, draw, iter)) |> # move from wide to long
+  mutate(
+    key = factor(name, levels = unique(name)),
+    bin = rep(1:6, length.out = 48000),
+    prime = rep(c("con", "inc"), each = 6, length.out = 48000),
+    bin = factor(bin),
+    prime = factor(prime)
+  )
 head(tidy_fixed)
 tail(tidy_fixed)
 
-check.labels <- tidy_fixed %>% 
-  distinct(key, bin, prime) 
+check.labels <- tidy_fixed |>
+  distinct(key, bin, prime)
 check.labels
 
 # plot
-p4.1 <- ggplot(tidy_fixed, aes(x = bin, y = value, fill=prime)) +  
-  stat_halfeye(alpha=0.7) +
-  labs(title = "Model bi cloglog",
-       x = "time bin", y = "cloglog") +
-  scale_fill_brewer(palette = "Dark2") 
+p4.1 <- ggplot(tidy_fixed, aes(x = bin, y = value, fill = prime)) +
+  stat_halfeye(alpha = 0.7) +
+  labs(
+    title = "Model bi cloglog",
+    x = "time bin", y = "cloglog"
+  ) +
+  scale_fill_brewer(palette = "Dark2")
 p4.1
 ```
 
 ```{r eval=F}
-ggsave ("Tutorial_4_planning/figures/index_cloglog.jpeg",
-        width = 6, height = 4, dpi = 800)
+ggsave("Tutorial_4_planning/figures/index_cloglog.jpeg",
+  width = 6, height = 4, dpi = 800
+)
 ```
 
 calculate hazards per condition per bin in the posterior dist
 
 ```{r calculate-bi-hazard}
-tidy_haz <- tidy_fixed %>%
-  select(chain, iter, draw, bin, prime, value) %>% 
+tidy_haz <- tidy_fixed |>
+  select(chain, iter, draw, bin, prime, value) |>
   mutate(hazard = exp(value))
 head(tidy_haz)
 ```
@@ -352,19 +375,24 @@ head(tidy_haz)
 plot hazards
 
 ```{r plot-bi-hazards}
-p4.2 <- ggplot(tidy_haz, aes(x = bin, y = hazard,
-                                    fill=prime)) +  
-  stat_halfeye(alpha=0.7) +
-  labs(title = "hazard estimates",
-       x = "time bin", y = "hazard") +
+p4.2 <- ggplot(tidy_haz, aes(
+  x = bin, y = hazard,
+  fill = prime
+)) +
+  stat_halfeye(alpha = 0.7) +
+  labs(
+    title = "hazard estimates",
+    x = "time bin", y = "hazard"
+  ) +
   scale_fill_brewer(palette = "Dark2") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) 
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25))
 p4.2
 ```
 
 ```{r eval=F}
-ggsave ("Tutorial_4_planning/figures/index_hazard.jpeg",
-        width = 6, height = 4, dpi = 800)
+ggsave("Tutorial_4_planning/figures/index_hazard.jpeg",
+  width = 6, height = 4, dpi = 800
+)
 ```
 
 warning about removing rows. 
@@ -385,33 +413,33 @@ Define some parameters
 ```{r define-sim-parameters}
 # define parameters
 # specify some features of the design
-subj_n = 10  # number of subjects
-rep_n = 200 # number of trial repeats 
-cond_n = 2 # number of conditions
-bin_n = 6 # number of time bins
+subj_n <- 10 # number of subjects
+rep_n <- 200 # number of trial repeats
+cond_n <- 2 # number of conditions
+bin_n <- 6 # number of time bins
 
 ## set fixed effects
 ## as a reminder
-fixef <- as_tibble(fixef(bi), rownames = "term") %>%
+fixef <- as_tibble(fixef(bi), rownames = "term") |>
   mutate(across(where(is.double), \(x) round(x, 2)))
 fixef
 
 ## b1 to b6 = time bin 1 to 6.
 ## c = con
-b1c = -4.66
-b2c = -3.24
-b3c = -2.32
-b4c = -1.49
-b5c = -1.21
-b6c = -0.60
+b1c <- -4.66
+b2c <- -3.24
+b3c <- -2.32
+b4c <- -1.49
+b5c <- -1.21
+b6c <- -0.60
 
 ## i = inc
-b1i = -4.37
-b2i = -3.21
-b3i = -2.37
-b4i = -2.27
-b5i = -3.04
-b6i = -2.45
+b1i <- -4.37
+b2i <- -3.21
+b3i <- -2.37
+b4i <- -2.27
+b5i <- -3.04
+b6i <- -2.45
 
 ## set varying effects by pid
 ## as a reminder
@@ -420,23 +448,23 @@ glimpse(varcor)
 str(varcor)
 
 ## extract sd
-sd <- as_tibble(varcor$pid$sd, rownames = "term") %>%
+sd <- as_tibble(varcor$pid$sd, rownames = "term") |>
   mutate(across(where(is.double), \(x) round(x, 2)))
 sd
 
-u1c_sd = 1.06   # 
-u2c_sd = 1.34   # 
-u3c_sd = 0.60   # 
-u4c_sd = 0.47   # 
-u5c_sd = 0.58   #
-u6c_sd = 0.72   # 
+u1c_sd <- 1.06 #
+u2c_sd <- 1.34 #
+u3c_sd <- 0.60 #
+u4c_sd <- 0.47 #
+u5c_sd <- 0.58 #
+u6c_sd <- 0.72 #
 
-u1i_sd = 1.17   # 
-u2i_sd = 1.05   # 
-u3i_sd = 0.91   # 
-u4i_sd = 1.47   # 
-u5i_sd = 1.34   #
-u6i_sd = 0.62   # 
+u1i_sd <- 1.17 #
+u2i_sd <- 1.05 #
+u3i_sd <- 0.91 #
+u4i_sd <- 1.47 #
+u5i_sd <- 1.34 #
+u6i_sd <- 0.62 #
 ```
 
 make a correlation matrix 
@@ -452,17 +480,20 @@ cor <- varcor$pid$cor
 cov <- varcor$pid$cov
 
 ## make it tidy
-cor_mat_tidy <- as_tibble(cor, rownames = "term") %>% ## 
-  rename_with(~str_replace_all(.x, '\\.', '_')) %>% 
+cor_mat_tidy <- as_tibble(cor, rownames = "term") |> ##
+  rename_with(~ str_replace_all(.x, "\\.", "_")) |>
   pivot_longer(-term,
-               values_to = "value",
-               names_to = c("parameter", "term2"),
-               names_pattern = "([a-zA-Z_\\d?]+)_([a-zA-Z:\\d?]+)") %>% ## pivot longer and use names_pattern to select the parts of the column names to separate on. the above is regex for each bit between the separator ("-"). e.g., ([a-zA-Z]+\\d+). this looks for letters and digits before the first "_". This (\\d?) looks for the possibility of digits.
+    values_to = "value",
+    names_to = c("parameter", "term2"),
+    names_pattern = "([a-zA-Z_\\d?]+)_([a-zA-Z:\\d?]+)"
+  ) |> ## pivot longer and use names_pattern to select the parts of the column names to separate on. the above is regex for each bit between the separator ("-"). e.g., ([a-zA-Z]+\\d+). this looks for letters and digits before the first "_". This (\\d?) looks for the possibility of digits.
   ## the rest of this code just turns the variables into what we want
-  filter(parameter == "Estimate") %>%
-  select(-parameter) %>% 
-  pivot_wider(names_from = "term2",
-              values_from = "value") %>% 
+  filter(parameter == "Estimate") |>
+  select(-parameter) |>
+  pivot_wider(
+    names_from = "term2",
+    values_from = "value"
+  ) |>
   select(-term)
 head(cor_mat_tidy)
 str(cor_mat_tidy)
@@ -482,37 +513,45 @@ setup the data structure
 # make it reproducible
 set.seed(1)
 
-d1 <- add_random(subj = subj_n, rep = rep_n) %>%
-  add_within("subj", condition = c("cond1", "cond2")) %>%
-  add_contrast("condition", "treatment", add_cols = TRUE, 
-               colnames = c("cond")) %>%
-  add_within("rep", bin = 1:bin_n) %>%
+d1 <- add_random(subj = subj_n, rep = rep_n) |>
+  add_within("subj", condition = c("cond1", "cond2")) |>
+  add_contrast("condition", "treatment",
+    add_cols = TRUE,
+    colnames = c("cond")
+  ) |>
+  add_within("rep", bin = 1:bin_n) |>
   ### create new conditions here that respect the twelve levels b1c, b1i etc.
-  mutate(con = if_else(condition == "cond1", 1, 0),
-         inc = if_else(condition == "cond2", 1, 0)) %>% 
-  mutate(bin1 = if_else(bin == 1, 1, 0),
-         bin2 = if_else(bin == 2, 1, 0),
-         bin3 = if_else(bin == 3, 1, 0),
-         bin4 = if_else(bin == 4, 1, 0),
-         bin5 = if_else(bin == 5, 1, 0),
-         bin6 = if_else(bin == 6, 1, 0)) %>% 
-  # add random effects 
-  add_ranef("subj", u1c = u1c_sd, u2c = u2c_sd, u3c = u3c_sd, u4c = u4c_sd,
-            u5c = u5c_sd, u6c = u6c_sd,
-            u1i = u1i_sd, u2i = u2i_sd, u3i = u3i_sd, u4i = u4i_sd,
-            u5i = u5i_sd, u6i = u6i_sd, 
-            .cors = cor_mat) %>% 
+  mutate(
+    con = if_else(condition == "cond1", 1, 0),
+    inc = if_else(condition == "cond2", 1, 0)
+  ) |>
+  mutate(
+    bin1 = if_else(bin == 1, 1, 0),
+    bin2 = if_else(bin == 2, 1, 0),
+    bin3 = if_else(bin == 3, 1, 0),
+    bin4 = if_else(bin == 4, 1, 0),
+    bin5 = if_else(bin == 5, 1, 0),
+    bin6 = if_else(bin == 6, 1, 0)
+  ) |>
+  # add random effects
+  add_ranef("subj",
+    u1c = u1c_sd, u2c = u2c_sd, u3c = u3c_sd, u4c = u4c_sd,
+    u5c = u5c_sd, u6c = u6c_sd,
+    u1i = u1i_sd, u2i = u2i_sd, u3i = u3i_sd, u4i = u4i_sd,
+    u5i = u5i_sd, u6i = u6i_sd,
+    .cors = cor_mat
+  ) |>
   # calculate logit
-  mutate(cloglog = (b1c + u1c) * con * bin1 + (b2c + u2c) * con * bin2 + 
-           (b3c + u3c) * con * bin3 + (b4c + u4c) * con * bin4  + 
-           (b5c + u5c) * con * bin5 + (b6c + u6c) * con * bin6 +
-           (b1i + u1i) * inc * bin1 + (b2i + u2i) * inc * bin2 + 
-           (b3i + u3i) * inc * bin3 + (b4i + u4i) * inc * bin4  + 
-           (b5i + u5i) * inc * bin5 + (b6i + u6i) * inc * bin6) %>% 
+  mutate(cloglog = (b1c + u1c) * con * bin1 + (b2c + u2c) * con * bin2 +
+    (b3c + u3c) * con * bin3 + (b4c + u4c) * con * bin4 +
+    (b5c + u5c) * con * bin5 + (b6c + u6c) * con * bin6 +
+    (b1i + u1i) * inc * bin1 + (b2i + u2i) * inc * bin2 +
+    (b3i + u3i) * inc * bin3 + (b4i + u4i) * inc * bin4 +
+    (b5i + u5i) * inc * bin5 + (b6i + u6i) * inc * bin6) |>
   # calculate inverse cloglog
-  mutate(prob = clogloglink(cloglog, inverse = TRUE)) %>%  
+  mutate(prob = clogloglink(cloglog, inverse = TRUE)) |>
   # calculate event
-  mutate(event = rbinom(n(), 1, prob)) 
+  mutate(event = rbinom(n(), 1, prob))
 head(d1)
 str(d1)
 summary(d1)
@@ -525,20 +564,20 @@ glimpse(d1)
 summarise the data produced so far
 
 ```{r summarise-sim-d1}
-d1_pid <- d1 %>%
-  group_by(subj, condition, bin) %>%
+d1_pid <- d1 |>
+  group_by(subj, condition, bin) |>
   summarise(
     across(cloglog:event, \(x) mean(x, na.rm = TRUE)),
     .groups = "drop"
-    )
-d1_pid  
+  )
+d1_pid
 
-d1_group <- d1 %>%
-  group_by(condition, bin) %>%
+d1_group <- d1 |>
+  group_by(condition, bin) |>
   summarise(
     across(cloglog:event, \(x) mean(x, na.rm = TRUE)),
     .groups = "drop"
-    )
+  )
 d1_group
 ```
 
@@ -547,45 +586,52 @@ a quick plot
 cloglog
 
 ```{r plot-d1-clog}
-p5.1 <- ggplot(d1_group, aes(x=bin, y = cloglog, colour = condition)) +
-   geom_line(aes(group = condition)) + 
-   geom_point() +
-   geom_jitter(data=d1_pid, alpha = 0.5, width = 0.1, height = 0) +
-   # scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-   scale_x_continuous(breaks = 1:bin_n, labels = 1:bin_n) +
-   scale_fill_brewer(palette = "Dark2") +
-   scale_colour_brewer(palette = "Dark2") +
-   labs(title = "cloglog - simulation d1 (N=10)",
-        x = "time bins")
+p5.1 <- ggplot(d1_group, aes(x = bin, y = cloglog, colour = condition)) +
+  geom_line(aes(group = condition)) +
+  geom_point() +
+  geom_jitter(data = d1_pid, alpha = 0.5, width = 0.1, height = 0) +
+  # scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
+  scale_x_continuous(breaks = 1:bin_n, labels = 1:bin_n) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(
+    title = "cloglog - simulation d1 (N=10)",
+    x = "time bins"
+  )
 p5.1
 ```
 
 event prob
 
 ```{r plot-d1-prob}
-p5.2 <- ggplot(d1_group, aes(x=bin, y = event, colour = condition)) +
-   geom_line(aes(group = condition, linetype=condition)) + 
-   geom_point() +
-   geom_jitter(data=d1_pid, alpha = 0.5, width = 0.1, height = 0) +
-   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-   scale_x_continuous(breaks = 1:bin_n, labels = 1:bin_n) +
-   scale_fill_brewer(palette = "Dark2") +
-   scale_colour_brewer(palette = "Dark2") +
-   labs(title = "event prob - simulation d1 (N=10)",
-        x = "time bins")
+p5.2 <- ggplot(d1_group, aes(x = bin, y = event, colour = condition)) +
+  geom_line(aes(group = condition, linetype = condition)) +
+  geom_point() +
+  geom_jitter(data = d1_pid, alpha = 0.5, width = 0.1, height = 0) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  scale_x_continuous(breaks = 1:bin_n, labels = 1:bin_n) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_colour_brewer(palette = "Dark2") +
+  labs(
+    title = "event prob - simulation d1 (N=10)",
+    x = "time bins"
+  )
 p5.2
 ```
 
 convert the data into outcome data (this next chunk can be incorporated into the data structure chunk above, I'm just doing separately here, so that you can see what is initially generated)
 
 ```{r calculate-outcome-d1}
-d1_out <- d1 %>% 
-  group_by(subj, rep, condition) %>%
-  mutate(cumsum = cumsum(event),
-         outcomel = event==1 & cumsum(event) < 2,
-         outcomen = if_else(event==1 & cumsum(event) == 1, 1,
-                     if_else(cumsum(event) >= 1, NA, 0))) %>% 
-  drop_na(outcomen) %>% 
+d1_out <- d1 |>
+  group_by(subj, rep, condition) |>
+  mutate(
+    cumsum = cumsum(event),
+    outcomel = event == 1 & cumsum(event) < 2,
+    outcomen = if_else(event == 1 & cumsum(event) == 1, 1,
+      if_else(cumsum(event) >= 1, NA, 0)
+    )
+  ) |>
+  drop_na(outcomen) |>
   ungroup()
 head(d1_out)
 
@@ -596,18 +642,22 @@ head(d1_out)
 summarise the outcome data, which is produced based on the prob value, right?
 
 ```{r summary-d1-out}
-d1_out_pid <- d1_out %>% 
-  group_by(subj, condition, bin) %>% 
-  summarise(outcome = mean(outcomen, na.rm = TRUE)) %>% 
-  mutate(prime = if_else(condition == "cond1", "con", "inc"),
-         prime = factor(prime))
+d1_out_pid <- d1_out |>
+  group_by(subj, condition, bin) |>
+  summarise(outcome = mean(outcomen, na.rm = TRUE)) |>
+  mutate(
+    prime = if_else(condition == "cond1", "con", "inc"),
+    prime = factor(prime)
+  )
 d1_out_pid
 
-d1_out_group <- d1_out %>% 
-  group_by(condition, bin) %>% 
-  summarise(outcome = mean(outcomen, na.rm = TRUE)) %>% 
-  mutate(prime = if_else(condition == "cond1", "con", "inc"),
-         prime = factor(prime))
+d1_out_group <- d1_out |>
+  group_by(condition, bin) |>
+  summarise(outcome = mean(outcomen, na.rm = TRUE)) |>
+  mutate(
+    prime = if_else(condition == "cond1", "con", "inc"),
+    prime = factor(prime)
+  )
 d1_out_group
 ```
 
@@ -615,15 +665,17 @@ plot outcome using the prime variable to make it comparable to the raw data
 
 ```{r plot-d1-outcome}
 p5.3 <- ggplot(d1_out_group, aes(x = bin, y = outcome, colour = prime)) +
-  geom_line(aes(group = prime, linetype = prime)) + 
+  geom_line(aes(group = prime, linetype = prime)) +
   geom_point() +
-  geom_jitter(data=d1_out_pid, alpha=0.5, width = 0.1, height = 0) +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
+  geom_jitter(data = d1_out_pid, alpha = 0.5, width = 0.1, height = 0) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
   scale_x_continuous(breaks = 1:bin_n, labels = 1:bin_n) +
   scale_colour_brewer(palette = "Dark2") +
-  labs(title = "simulation d1 (N=10)",
-       x = "time bins",
-       y = "outcome")
+  labs(
+    title = "simulation d1 (N=10)",
+    x = "time bins",
+    y = "outcome"
+  )
 p5.3
 ```
 
@@ -631,14 +683,17 @@ compare the raw data to the simulated data for a single simulated dataset
 
 ```{r plot-raw-plus-d1}
 p5.4 <- (p3.1 / p5.3) +
-   plot_layout(guides = 'collect',
-               axes = 'collect')
+  plot_layout(
+    guides = "collect",
+    axes = "collect"
+  )
 p5.4
 ```
 
 ```{r eval=F}
-ggsave ("Tutorial_4_planning/figures/raw_vs_d1.jpeg",
-        width = 8, height = 8, dpi=800)
+ggsave("Tutorial_4_planning/figures/raw_vs_d1.jpeg",
+  width = 8, height = 8, dpi = 800
+)
 ```
 
 ok, this looks reasonably sensible.
@@ -662,18 +717,22 @@ data_group
 calculate the hazard ratio
 
 ```{r calculate-hazard}
-hazard <- data_group %>% 
-  pivot_wider(names_from = "prime",
-              values_from = "outcome") %>% 
-  mutate(diff = con-inc,
-         ratio = inc/con)
+hazard <- data_group |>
+  pivot_wider(
+    names_from = "prime",
+    values_from = "outcome"
+  ) |>
+  mutate(
+    diff = con - inc,
+    ratio = inc / con
+  )
 hazard
 
 # timebin     con    inc     diff ratio
 #   <fct>     <dbl>  <dbl>    <dbl> <dbl>
-# 1 4       0.00975 0.0139 -0.00416 1.43 
+# 1 4       0.00975 0.0139 -0.00416 1.43
 # 2 5       0.0478  0.0423  0.00551 0.885
-# 3 6       0.0901  0.0913 -0.00121 1.01 
+# 3 6       0.0901  0.0913 -0.00121 1.01
 # 4 7       0.188   0.115   0.0732  0.611
 # 5 8       0.252   0.0495  0.203   0.196
 # 6 9       0.401   0.0848  0.316   0.211
@@ -708,9 +767,9 @@ These would translate to a 75% reduction, 50% reduction and 25% reduction from c
 ```{r sim1-bin6-effect-sizes}
 bin6 <- tibble(
   effect_id = 1:3,
-  inc = rep(0.1, times=3),
+  inc = rep(0.1, times = 3),
   ratio = c(0.25, 0.5, 0.75),
-  con = inc/ratio,
+  con = inc / ratio,
   inc_clog = clogloglink(inc),
   con_clog = clogloglink(con)
 )
@@ -719,8 +778,8 @@ bin6
 #  effect_id   inc ratio   con inc_clog con_clog
 #       <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
 # 1         1   0.1  0.25 0.4      -2.25   -0.672
-# 2         2   0.1  0.5  0.2      -2.25   -1.50 
-# 3         3   0.1  0.75 0.133    -2.25   -1.94 
+# 2         2   0.1  0.5  0.2      -2.25   -1.50
+# 3         3   0.1  0.75 0.133    -2.25   -1.94
 ```
 
 # 7. Create a function to iterate through and simulate many datatsets
@@ -729,53 +788,64 @@ create a function to simulate data
 These values are from the initial model and data from Sven's paper, which we created above in section 4, but they can be modified when running the function, which we do below.
 
 ```{r index-sim-function}
-index_sim <- function(subj_n = 10, rep_n = 200, bin_n = 6,  # these can be changed when calling the function
-                b1c = -4.66, b2c = -3.24, b3c = -2.32, b4c = -1.49, b5c = -1.21, b6c = -0.6, 
-                b1i = -4.37, b2i = -3.21, b3i = -2.37, b4i = -2.27, b5i = -3.04, b6i = -2.45, # fixed effects
-                u1c_sd = 1.06, u2c_sd = 1.34, u3c_sd = 0.60, u4c_sd = 0.47, u5c_sd = 0.58, u6c_sd = 0.72, 
-                u1i_sd = 1.17, u2i_sd = 1.05, u3i_sd = 0.91, u4i_sd = 1.47, u5i_sd = 1.34, u6i_sd = 0.62, # varying effects
-                cors = cor_mat,   # correlations between effects
-                ... # helps the function work with pmap() below
-                ) {
+index_sim <- function(subj_n = 10, rep_n = 200, bin_n = 6, # these can be changed when calling the function
+                      b1c = -4.66, b2c = -3.24, b3c = -2.32, b4c = -1.49, b5c = -1.21, b6c = -0.6,
+                      b1i = -4.37, b2i = -3.21, b3i = -2.37, b4i = -2.27, b5i = -3.04, b6i = -2.45, # fixed effects
+                      u1c_sd = 1.06, u2c_sd = 1.34, u3c_sd = 0.60, u4c_sd = 0.47, u5c_sd = 0.58, u6c_sd = 0.72,
+                      u1i_sd = 1.17, u2i_sd = 1.05, u3i_sd = 0.91, u4i_sd = 1.47, u5i_sd = 1.34, u6i_sd = 0.62, # varying effects
+                      cors = cor_mat, # correlations between effects
+                      ... # helps the function work with pmap() below
+) {
   # set up data structure
-  data <- add_random(subj = subj_n, rep = rep_n) %>%
-  add_within("subj", condition = c("cond1", "cond2")) %>%
-  add_contrast("condition", "treatment", add_cols = TRUE, 
-               colnames = c("cond")) %>%
-  add_within("rep", bin = 1:bin_n) %>%
-  ### create new conditions here that respect the twelve levels b1c, b1i etc.
-  mutate(con = if_else(condition == "cond1", 1, 0),
-         inc = if_else(condition == "cond2", 1, 0)) %>% 
-  mutate(bin1 = if_else(bin == 1, 1, 0),
-         bin2 = if_else(bin == 2, 1, 0),
-         bin3 = if_else(bin == 3, 1, 0),
-         bin4 = if_else(bin == 4, 1, 0),
-         bin5 = if_else(bin == 5, 1, 0),
-         bin6 = if_else(bin == 6, 1, 0)) %>% 
-  # add random effects 
-  add_ranef("subj", u1c = u1c_sd, u2c = u2c_sd, u3c = u3c_sd, u4c = u4c_sd,
-            u5c = u5c_sd, u6c = u6c_sd,
-            u1i = u1i_sd, u2i = u2i_sd, u3i = u3i_sd, u4i = u4i_sd,
-            u5i = u5i_sd, u6i = u6i_sd, 
-            .cors = cor_mat) %>% 
-  # calculate logit
-  mutate(cloglog = (b1c + u1c) * con * bin1 + (b2c + u2c) * con * bin2 + 
-           (b3c + u3c) * con * bin3 + (b4c + u4c) * con * bin4  + 
-           (b5c + u5c) * con * bin5 + (b6c + u6c) * con * bin6 +
-           (b1i + u1i) * inc * bin1 + (b2i + u2i) * inc * bin2 + 
-           (b3i + u3i) * inc * bin3 + (b4i + u4i) * inc * bin4  + 
-           (b5i + u5i) * inc * bin5 + (b6i + u6i) * inc * bin6) %>% 
-  # calculate inverse cloglog
-  mutate(prob = clogloglink(cloglog, inverse = TRUE)) %>%  
-  # calculate event
-  mutate(event = rbinom(n(), 1, prob)) %>% 
-  group_by(subj, rep, condition) %>%
-  mutate(cumsum = cumsum(event),
-         outcomel = event==1 & cumsum(event) < 2,
-         outcomen = if_else(event==1 & cumsum(event) == 1, 1,
-                     if_else(cumsum(event) >= 1, NA, 0))) %>% 
-  drop_na(outcomen) %>%
-  ungroup()
+  data <- add_random(subj = subj_n, rep = rep_n) |>
+    add_within("subj", condition = c("cond1", "cond2")) |>
+    add_contrast("condition", "treatment",
+      add_cols = TRUE,
+      colnames = c("cond")
+    ) |>
+    add_within("rep", bin = 1:bin_n) |>
+    ### create new conditions here that respect the twelve levels b1c, b1i etc.
+    mutate(
+      con = if_else(condition == "cond1", 1, 0),
+      inc = if_else(condition == "cond2", 1, 0)
+    ) |>
+    mutate(
+      bin1 = if_else(bin == 1, 1, 0),
+      bin2 = if_else(bin == 2, 1, 0),
+      bin3 = if_else(bin == 3, 1, 0),
+      bin4 = if_else(bin == 4, 1, 0),
+      bin5 = if_else(bin == 5, 1, 0),
+      bin6 = if_else(bin == 6, 1, 0)
+    ) |>
+    # add random effects
+    add_ranef("subj",
+      u1c = u1c_sd, u2c = u2c_sd, u3c = u3c_sd, u4c = u4c_sd,
+      u5c = u5c_sd, u6c = u6c_sd,
+      u1i = u1i_sd, u2i = u2i_sd, u3i = u3i_sd, u4i = u4i_sd,
+      u5i = u5i_sd, u6i = u6i_sd,
+      .cors = cor_mat
+    ) |>
+    # calculate logit
+    mutate(cloglog = (b1c + u1c) * con * bin1 + (b2c + u2c) * con * bin2 +
+      (b3c + u3c) * con * bin3 + (b4c + u4c) * con * bin4 +
+      (b5c + u5c) * con * bin5 + (b6c + u6c) * con * bin6 +
+      (b1i + u1i) * inc * bin1 + (b2i + u2i) * inc * bin2 +
+      (b3i + u3i) * inc * bin3 + (b4i + u4i) * inc * bin4 +
+      (b5i + u5i) * inc * bin5 + (b6i + u6i) * inc * bin6) |>
+    # calculate inverse cloglog
+    mutate(prob = clogloglink(cloglog, inverse = TRUE)) |>
+    # calculate event
+    mutate(event = rbinom(n(), 1, prob)) |>
+    group_by(subj, rep, condition) |>
+    mutate(
+      cumsum = cumsum(event),
+      outcomel = event == 1 & cumsum(event) < 2,
+      outcomen = if_else(event == 1 & cumsum(event) == 1, 1,
+        if_else(cumsum(event) >= 1, NA, 0)
+      )
+    ) |>
+    drop_na(outcomen) |>
+    ungroup()
 
   # glimpse(data) # only use this when testing the code
 }
@@ -793,14 +863,16 @@ create a function to summarise the simulated data
 
 ```{r index-summary-function}
 index_summary <- function(df) {
-  df %>% 
-  group_by(subj, condition, bin) %>% 
-  summarise(n = n(), 
-            sum = sum(outcomen),
-            mean_outcome = mean(outcomen, na.rm = TRUE),
-            sd_outcome = sd(outcomen, na.rm = TRUE),
-            sem = (sd_outcome/sqrt(length(unique(rep)))),
-            .groups="drop") 
+  df |>
+    group_by(subj, condition, bin) |>
+    summarise(
+      n = n(),
+      sum = sum(outcomen),
+      mean_outcome = mean(outcomen, na.rm = TRUE),
+      sd_outcome = sd(outcomen, na.rm = TRUE),
+      sem = (sd_outcome / sqrt(length(unique(rep)))),
+      .groups = "drop"
+    )
 }
 ```
 
@@ -825,25 +897,28 @@ x1 <- crossing(
   rep_n = c(100, 200, 400),
   b6i = -2.25,
   b6c = c(-1.94, -1.50, -0.67)
-) %>%
-  mutate(d = pmap(., index_sim)) %>% 
-  mutate(s = map(d, index_summary)) %>% 
+) |>
+  mutate(d = pmap(., index_sim)) |>
+  mutate(s = map(d, index_summary)) |>
   select(-d)
 ```
 
 # 9. Summarise the simulated data
 
 ```{r summarise-sim1, eval=FALSE}
-sx1 <- x1 %>%
-  unnest(s) %>%
-  mutate(exp=factor(exp),
-         subj_n=factor(subj_n),
-         rep_n=factor(rep_n),
-         b6c = factor(b6c,
-                      levels = c("-1.94", "-1.5", "-0.67"),
-                      labels = c("25%", "50%", "75%")),
-         subj=factor(subj),
-         bin=factor(bin))
+sx1 <- x1 |>
+  unnest(s) |>
+  mutate(
+    exp = factor(exp),
+    subj_n = factor(subj_n),
+    rep_n = factor(rep_n),
+    b6c = factor(b6c,
+      levels = c("-1.94", "-1.5", "-0.67"),
+      labels = c("25%", "50%", "75%")
+    ),
+    subj = factor(subj),
+    bin = factor(bin)
+  )
 sx1
 ```
 
@@ -853,7 +928,7 @@ take a look
 head(sx1)
 tail(sx1)
 
-sx1 %>% 
+sx1 |>
   distinct(b6c)
 ```
 
@@ -884,81 +959,98 @@ if (!dir.exists(here(sim1_output_dir))) {
 sim1_file_name <- here("Tutorial_4_planning/data/sim1/sim1_data.csv")
 
 if (!file.exists(here(sim1_file_name))) {
-  osf_retrieve_node("3dbcs") %>% 
-  osf_ls_files(pattern = "Tutorial_4_planning") %>%
-  osf_ls_files(pattern = "data") %>%
-  osf_ls_files(pattern = "sim1") %>%
-  osf_ls_files(pattern = "sim1_data") %>%
-  osf_download(path = sim1_output_dir)
+  osf_retrieve_node("3dbcs") |>
+    osf_ls_files(pattern = "Tutorial_4_planning") |>
+    osf_ls_files(pattern = "data") |>
+    osf_ls_files(pattern = "sim1") |>
+    osf_ls_files(pattern = "sim1_data") |>
+    osf_download(path = sim1_output_dir)
 }
 ```
 
 read the file from a local folder
 
 ```{r load-sim1, eval=T}
-sx1 <- read_csv("Tutorial_4_planning/data/sim1/sim1_data.csv") %>%
-  mutate(exp=factor(exp),
-         subj_n=factor(subj_n),
-         rep_n=factor(rep_n),
-         b6c = factor(b6c,
-                      levels = c("-1.94", "-1.5", "-0.67"),
-                      labels = c("25%", "50%", "75%")),
-         subj=factor(subj),
-         bin=factor(bin))
+sx1 <- read_csv("Tutorial_4_planning/data/sim1/sim1_data.csv") |>
+  mutate(
+    exp = factor(exp),
+    subj_n = factor(subj_n),
+    rep_n = factor(rep_n),
+    b6c = factor(b6c,
+      levels = c("-1.94", "-1.5", "-0.67"),
+      labels = c("25%", "50%", "75%")
+    ),
+    subj = factor(subj),
+    bin = factor(bin)
+  )
 sx1
 ```
 
 at the exp level
 
 ```{r exp-summary-sim1, eval=T}
-sx1_exp <- sx1 %>% 
-  group_by(exp, subj_n, rep_n, b6c, condition, bin) %>% 
-  summarise(exp_mean_outcome = mean(mean_outcome, na.rm = TRUE),
-            exp_mean_sum=mean(sum, na.rm = TRUE),
-            exp_sum=sum(sum),
-            n = length(unique(subj)), 
-            sd=sd(mean_outcome, na.rm = TRUE),
-            sem = (sd/sqrt(length(unique(subj)))),
-            .groups = "drop")
+sx1_exp <- sx1 |>
+  group_by(exp, subj_n, rep_n, b6c, condition, bin) |>
+  summarise(
+    exp_mean_outcome = mean(mean_outcome, na.rm = TRUE),
+    exp_mean_sum = mean(sum, na.rm = TRUE),
+    exp_sum = sum(sum),
+    n = length(unique(subj)),
+    sd = sd(mean_outcome, na.rm = TRUE),
+    sem = (sd / sqrt(length(unique(subj)))),
+    .groups = "drop"
+  )
 sx1_exp
 ```
 
 at the sim level
 
 ```{r sim-summary-sim1, eval=T}
-sx1_sim <- sx1_exp %>% 
-  group_by(subj_n, rep_n, b6c, condition, bin) %>% 
-  summarise(sim_mean_outcome = mean(exp_mean_outcome, na.rm = TRUE),
-            sim_mean_sum = mean(exp_mean_sum, na.rm = TRUE),
-            sim_sum = mean(exp_sum, na.rm = TRUE),
-            n = length(unique(exp)), 
-            sd=sd(exp_mean_outcome, na.rm = TRUE),
-            sem = (sd/sqrt(length(unique(exp)))),
-            .groups = "drop")
+sx1_sim <- sx1_exp |>
+  group_by(subj_n, rep_n, b6c, condition, bin) |>
+  summarise(
+    sim_mean_outcome = mean(exp_mean_outcome, na.rm = TRUE),
+    sim_mean_sum = mean(exp_mean_sum, na.rm = TRUE),
+    sim_sum = mean(exp_sum, na.rm = TRUE),
+    n = length(unique(exp)),
+    sd = sd(exp_mean_outcome, na.rm = TRUE),
+    sem = (sd / sqrt(length(unique(exp)))),
+    .groups = "drop"
+  )
 sx1_sim
 ```
 
 a quick plot of the data
 
 ```{r sim1-violin, eval=T}
-p9.1 <- ggplot(sx1_sim, 
-                aes(x = bin, y = sim_mean_outcome, 
-                    colour = condition)) +
-  geom_jitter(data=sx1_exp, aes(y = exp_mean_outcome),
-              alpha=0.5, width = 0.1, height = 0) +
-  geom_line(aes(group = condition)) + 
-  geom_point(size=2, colour = "black") +
-  geom_errorbar(aes(ymin = sim_mean_outcome-sem*1.96, ymax = sim_mean_outcome+sem*1.96),
-                width=.2, colour = "black") +
+p9.1 <- ggplot(
+  sx1_sim,
+  aes(
+    x = bin, y = sim_mean_outcome,
+    colour = condition
+  )
+) +
+  geom_jitter(
+    data = sx1_exp, aes(y = exp_mean_outcome),
+    alpha = 0.5, width = 0.1, height = 0
+  ) +
+  geom_line(aes(group = condition)) +
+  geom_point(size = 2, colour = "black") +
+  geom_errorbar(aes(ymin = sim_mean_outcome - sem * 1.96, ymax = sim_mean_outcome + sem * 1.96),
+    width = .2, colour = "black"
+  ) +
   scale_colour_brewer(palette = "Dark2") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="time bin",
-       y="outcome") + 
-  facet_grid(fct_rev(rep_n)~b6c)
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  labs(
+    x = "time bin",
+    y = "outcome"
+  ) +
+  facet_grid(fct_rev(rep_n) ~ b6c)
 p9.1
 
-ggsave ("Tutorial_4_planning/figures/sim1/sim_violin.jpeg",
-        width = 10, height = 8, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim1/sim_violin.jpeg",
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 ok, look at some values in bin 6
@@ -966,40 +1058,48 @@ ok, look at some values in bin 6
 at the exp level
 
 ```{r sim1-bin6-exp-values}
-sx1_exp_check <- sx1_exp %>%
-  filter(bin %in% c(6)) %>% 
-  select(exp, rep_n, b6c, condition, bin, exp_mean_outcome) %>%
-  pivot_wider(names_from = "condition",
-              values_from = "exp_mean_outcome") %>% 
-  group_by(exp, rep_n, b6c, bin) %>% 
-  mutate(ratio = cond2/cond1) 
+sx1_exp_check <- sx1_exp |>
+  filter(bin %in% c(6)) |>
+  select(exp, rep_n, b6c, condition, bin, exp_mean_outcome) |>
+  pivot_wider(
+    names_from = "condition",
+    values_from = "exp_mean_outcome"
+  ) |>
+  group_by(exp, rep_n, b6c, bin) |>
+  mutate(ratio = cond2 / cond1)
 head(sx1_exp_check)
 ```
 
 and at the sim level
 
 ```{r sim1-bin6-sim-values}
-sx1_sim_check <- sx1_exp_check %>%
-  group_by(rep_n, b6c, bin) %>% 
-  summarise(sim_ratio = mean(ratio),
-            sim_sd=sd(ratio),
-            sim_sem=sim_sd/sqrt(1000),
-            .groups = "drop")
+sx1_sim_check <- sx1_exp_check |>
+  group_by(rep_n, b6c, bin) |>
+  summarise(
+    sim_ratio = mean(ratio),
+    sim_sd = sd(ratio),
+    sim_sem = sim_sd / sqrt(1000),
+    .groups = "drop"
+  )
 head(sx1_sim_check)
 ```
 
 plot ratio values
 
 ```{r plot-ratio-values}
-p9.2 <- ggplot(sx1_sim_check, 
-                aes(x = b6c, y = sim_ratio)) +
-  geom_point(size=1.5) +
-  geom_errorbar(aes(ymin = sim_ratio-sim_sem*1.96, ymax = sim_ratio+sim_sem*1.96)) + 
+p9.2 <- ggplot(
+  sx1_sim_check,
+  aes(x = b6c, y = sim_ratio)
+) +
+  geom_point(size = 1.5) +
+  geom_errorbar(aes(ymin = sim_ratio - sim_sem * 1.96, ymax = sim_ratio + sim_sem * 1.96)) +
   geom_hline(yintercept = c(0.25, 0.5, 0.75), colour = "red") +
   scale_colour_brewer(palette = "Dark2") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="time bin",
-       y="outcome") + 
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  labs(
+    x = "time bin",
+    y = "outcome"
+  ) +
   facet_wrap(~rep_n)
 p9.2
 ```
@@ -1013,19 +1113,23 @@ basic idea - calculate the difference score in hazard between con and inc per bi
 at the exp level
 
 ```{r sim1-calculate-diff-scores}
-sx1_diff_exp <- sx1 %>%
-  pivot_wider(id_cols = c(exp, subj_n, rep_n, b6c, subj, bin),
-              names_from = "condition",
-              values_from = "mean_outcome") %>% 
-  mutate(diff = cond1 - cond2) %>%
-  group_by(exp, subj_n, rep_n, b6c, bin) %>% 
-  summarise(exp_mean_diff = mean(diff, na.rm = TRUE),
-            exp_sd = sd(diff, na.rm = TRUE),
-            n = n(), # n here is the total trials per condition per pid
-            exp_sem = (exp_sd/sqrt(n)),
-            exp_ci = 1.96*exp_sem,
-            exp_dz = exp_mean_diff/exp_sd,
-            .groups = "drop") 
+sx1_diff_exp <- sx1 |>
+  pivot_wider(
+    id_cols = c(exp, subj_n, rep_n, b6c, subj, bin),
+    names_from = "condition",
+    values_from = "mean_outcome"
+  ) |>
+  mutate(diff = cond1 - cond2) |>
+  group_by(exp, subj_n, rep_n, b6c, bin) |>
+  summarise(
+    exp_mean_diff = mean(diff, na.rm = TRUE),
+    exp_sd = sd(diff, na.rm = TRUE),
+    n = n(), # n here is the total trials per condition per pid
+    exp_sem = (exp_sd / sqrt(n)),
+    exp_ci = 1.96 * exp_sem,
+    exp_dz = exp_mean_diff / exp_sd,
+    .groups = "drop"
+  )
 head(sx1_diff_exp)
 tail(sx1_diff_exp)
 ```
@@ -1033,13 +1137,15 @@ tail(sx1_diff_exp)
 at the group/sim level
 
 ```{r sim1-summary-diff-scores}
-sx1_diff_sim <- sx1_diff_exp %>% 
-  group_by(subj_n, rep_n, b6c, bin) %>% 
-  summarise(mean_diff = mean(exp_mean_diff, na.rm = TRUE),
-            sd = sd(exp_mean_diff, na.rm = TRUE),
-            n=n(),
-            sem = (sd/sqrt((n))),
-            ci = 1.96*sem) 
+sx1_diff_sim <- sx1_diff_exp |>
+  group_by(subj_n, rep_n, b6c, bin) |>
+  summarise(
+    mean_diff = mean(exp_mean_diff, na.rm = TRUE),
+    sd = sd(exp_mean_diff, na.rm = TRUE),
+    n = n(),
+    sem = (sd / sqrt((n))),
+    ci = 1.96 * sem
+  )
 sx1_diff_sim
 ```
 
@@ -1050,26 +1156,33 @@ violin
 diff in original units
 
 ```{r sim1-plot-sim-diffs}
-p10.1 <- ggplot(sx1_diff_exp, aes(x=bin, y = exp_mean_diff,
-                                colour = bin, fill = bin)) +
-   geom_jitter(alpha = 0.5, width = 0.1) +
-   geom_violin(alpha = 0.7) +
-   geom_point(data = sx1_diff_sim, 
-             aes(y = mean_diff), size = 3, position=pd2, colour="black") +
-   geom_errorbar(data = sx1_diff_sim,
-                aes(y = mean_diff, ymin = mean_diff-ci, ymax = mean_diff+ci),
-                width=.2, position=pd2, colour = "black") +
-   geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
-   scale_fill_brewer(palette = "Dark2") +
-   scale_colour_brewer(palette = "Dark2") +
-   theme(legend.position = "none") +
-   ylab("mean outcome") +
-   ggtitle("difference score (cond1-cond2)") +
-   facet_grid(fct_rev(rep_n)~b6c)
+p10.1 <- ggplot(sx1_diff_exp, aes(
+  x = bin, y = exp_mean_diff,
+  colour = bin, fill = bin
+)) +
+  geom_jitter(alpha = 0.5, width = 0.1) +
+  geom_violin(alpha = 0.7) +
+  geom_point(
+    data = sx1_diff_sim,
+    aes(y = mean_diff), size = 3, position = pd2, colour = "black"
+  ) +
+  geom_errorbar(
+    data = sx1_diff_sim,
+    aes(y = mean_diff, ymin = mean_diff - ci, ymax = mean_diff + ci),
+    width = .2, position = pd2, colour = "black"
+  ) +
+  geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_colour_brewer(palette = "Dark2") +
+  theme(legend.position = "none") +
+  ylab("mean outcome") +
+  ggtitle("difference score (cond1-cond2)") +
+  facet_grid(fct_rev(rep_n) ~ b6c)
 p10.1
 
 ggsave("Tutorial_4_planning/figures/sim1/sim_diffs.jpeg",
-       width = 10, height = 8, dpi=800)
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 plot each exp's difference score and associated 95% interval
@@ -1077,22 +1190,24 @@ plot each exp's difference score and associated 95% interval
 create some factors and new variables
 
 ```{r sim1-wrangle-diffs}
-sx1_diff_exp_2 <- sx1_diff_exp %>%
-  group_by(exp, subj_n, rep_n, b6c, bin) %>% 
-  mutate(lower = exp_mean_diff-exp_ci,
-         upper = exp_mean_diff+exp_ci,
-         above_zero = if_else(lower > 0, "yes", "no"), 
-         above_zero = factor(above_zero, levels = c("no", "yes")))
+sx1_diff_exp_2 <- sx1_diff_exp |>
+  group_by(exp, subj_n, rep_n, b6c, bin) |>
+  mutate(
+    lower = exp_mean_diff - exp_ci,
+    upper = exp_mean_diff + exp_ci,
+    above_zero = if_else(lower > 0, "yes", "no"),
+    above_zero = factor(above_zero, levels = c("no", "yes"))
+  )
 sx1_diff_exp_2
 ```
 
 calculate "power" in a quick and dirty way based on 95% CI
 
 ```{r sim1-calculate-power}
-power_x1 <- sx1_diff_exp_2 %>%
-  group_by(subj_n, rep_n, b6c, bin) %>%
-  mutate(check = ifelse(lower > 0, 1, 0)) %>%
-  summarise(power = mean(check, na.rm = TRUE)) %>% 
+power_x1 <- sx1_diff_exp_2 |>
+  group_by(subj_n, rep_n, b6c, bin) |>
+  mutate(check = ifelse(lower > 0, 1, 0)) |>
+  summarise(power = mean(check, na.rm = TRUE)) |>
   filter(bin %in% c(6))
 power_x1
 ```
@@ -1100,54 +1215,62 @@ power_x1
 plot power
 
 ```{r sim1-power-tile}
-p10.2 <- ggplot(power_x1, aes(x = b6c, y=rep_n, fill = power)) +
+p10.2 <- ggplot(power_x1, aes(x = b6c, y = rep_n, fill = power)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.3f", power)), color = "white", size = 10) +
   scale_fill_viridis_c(limits = c(0, 1)) +
   facet_wrap(~bin) +
-  labs(y="rep_n", x="b6c")
+  labs(y = "rep_n", x = "b6c")
 p10.2
 #
-ggsave ("Tutorial_4_planning/figures/sim1/power.jpeg",
-        width = 10, height = 6, dpi=800)
+
+ggsave("Tutorial_4_planning/figures/sim1/power.jpeg",
+  width = 10, height = 6, dpi = 800
+)
 ```
 
 join power to the df
 
 ```{r sim1-join-dfs}
-sx1_diff_power <- sx1_diff_exp_2 %>%
-  filter(bin %in% c(6)) %>% 
-  inner_join(power_x1, by = c("subj_n", "rep_n", "b6c", "bin")) %>% 
-  mutate(power = round(power * 100, 2)) 
+sx1_diff_power <- sx1_diff_exp_2 |>
+  filter(bin %in% c(6)) |>
+  inner_join(power_x1, by = c("subj_n", "rep_n", "b6c", "bin")) |>
+  mutate(power = round(power * 100, 2))
 head(sx1_diff_power)
 ```
 
 plot
 
 ```{r sim1-plot-pointrange}
-p10.3 <- sx1_diff_power %>%
+p10.3 <- sx1_diff_power |>
   ggplot(aes(x = exp, y = exp_mean_diff, ymin = lower, ymax = upper)) +
-  geom_pointrange(fatten = 1/2, aes(colour=above_zero)) +
+  geom_pointrange(fatten = 1 / 2, aes(colour = above_zero)) +
   geom_hline(yintercept = 0, colour = "red") +
-  scale_colour_manual(values=c("darkgrey","black")) +
-  geom_text(aes(x=700, y=-0.35, label = sprintf("%.1f%s", power, "% power")), 
-            color = "darkgrey", size = 5) +
+  scale_colour_manual(values = c("darkgrey", "black")) +
+  geom_text(aes(x = 700, y = -0.35, label = sprintf("%.1f%s", power, "% power")),
+    color = "darkgrey", size = 5
+  ) +
   theme(legend.position = "none") +
-  labs(x = "sim # (i.e., simulation index)",
-       y = "hazard difference") +
-  scale_x_discrete(breaks = c(250,500,750,1000)) +
-  facet_grid(fct_rev(rep_n)~b6c)
+  labs(
+    x = "sim # (i.e., simulation index)",
+    y = "hazard difference"
+  ) +
+  scale_x_discrete(breaks = c(250, 500, 750, 1000)) +
+  facet_grid(fct_rev(rep_n) ~ b6c)
 p10.3
 
-ggsave ("Tutorial_4_planning/figures/sim1/bin6_diffs.jpeg",
-        width = 10, height = 8, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim1/bin6_diffs.jpeg",
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 plot power as a bar plot
 
 ```{r sim1-power-col}
-p10.4 <- ggplot(power_x1, aes(x=rep_n, y=power,
-                           colour = b6c, fill = b6c)) +
+p10.4 <- ggplot(power_x1, aes(
+  x = rep_n, y = power,
+  colour = b6c, fill = b6c
+)) +
   geom_col(alpha = 0.5) +
   geom_hline(yintercept = 0.8, colour = "red", linetype = "dashed") +
   geom_hline(yintercept = 0.9, colour = "black", linetype = "dashed") +
@@ -1156,11 +1279,12 @@ p10.4 <- ggplot(power_x1, aes(x=rep_n, y=power,
   scale_fill_brewer(palette = "Dark2") +
   labs(title = "Simulation 1") +
   theme(legend.position = "none") +
-  facet_wrap(~b6c, nrow=1)
+  facet_wrap(~b6c, nrow = 1)
 p10.4
 
-ggsave ("Tutorial_4_planning/figures/sim1/bin6_power_col.jpeg",
-        width = 8, height = 6, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim1/bin6_power_col.jpeg",
+  width = 8, height = 6, dpi = 800
+)
 ```
 
 ok, on the basis of this analysis, we might make the following conclusions:
@@ -1182,9 +1306,9 @@ let's check effect sizes quickly.
 ```{r sim2-bin6-effect-sizes}
 bin6_v2 <- tibble(
   effect_id = 1:3,
-  inc = rep(0.1, times=3),
+  inc = rep(0.1, times = 3),
   ratio = c(0.3, 0.4, 0.5),
-  con = inc/ratio,
+  con = inc / ratio,
   inc_clog = clogloglink(inc),
   con_clog = clogloglink(con)
 )
@@ -1193,8 +1317,8 @@ bin6_v2
 # effect_id   inc ratio   con inc_clog con_clog
 #       <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
 # 1         1   0.1   0.3 0.333    -2.25   -0.903
-# 2         2   0.1   0.4 0.25     -2.25   -1.25 
-# 3         3   0.1   0.5 0.2      -2.25   -1.50 
+# 2         2   0.1   0.4 0.25     -2.25   -1.25
+# 3         3   0.1   0.5 0.2      -2.25   -1.50
 ```
 
 ## run the sim ##
@@ -1207,29 +1331,32 @@ And again, eval is set to FALSE, to save time for the tutorial.
 plan(multicore)
 x2 <- crossing(
   exp = 1:1000, # number of experiment replicates
-  subj_n = c(10,15,20), # range of subject N
+  subj_n = c(10, 15, 20), # range of subject N
   rep_n = 200,
   b6i = -2.25,
   b6c = c(-0.90, -1.25, -1.50)
-) %>%
-  mutate(d = pmap(., index_sim)) %>% 
-  mutate(s = map(d, index_summary)) %>% 
+) |>
+  mutate(d = pmap(., index_sim)) |>
+  mutate(s = map(d, index_summary)) |>
   select(-d)
 ```
 
 ## summarise the simulated data ##
 
 ```{r summary-sim2, eval=FALSE}
-sx2 <- x2 %>%
-  unnest(s) %>%
-  mutate(exp=factor(exp),
-         subj_n=factor(subj_n),
-         rep_n=factor(rep_n),
-         b6c = factor(b6c,
-                      levels = c("-1.5", "-1.25", "-0.9"),
-                      labels = c("50%", "60%", "70%")),
-         subj=factor(subj),
-         bin=factor(bin))
+sx2 <- x2 |>
+  unnest(s) |>
+  mutate(
+    exp = factor(exp),
+    subj_n = factor(subj_n),
+    rep_n = factor(rep_n),
+    b6c = factor(b6c,
+      levels = c("-1.5", "-1.25", "-0.9"),
+      labels = c("50%", "60%", "70%")
+    ),
+    subj = factor(subj),
+    bin = factor(bin)
+  )
 sx2
 ```
 
@@ -1239,7 +1366,7 @@ take a look
 head(sx2)
 tail(sx2)
 
-sx2 %>% 
+sx2 |>
   distinct(b6c)
 ```
 
@@ -1271,81 +1398,98 @@ if (!dir.exists(here(sim2_output_dir))) {
 sim2_file_name <- here("Tutorial_4_planning/data/sim2/sim2_data.csv")
 
 if (!file.exists(here(sim2_file_name))) {
-  osf_retrieve_node("3dbcs") %>% 
-  osf_ls_files(pattern = "Tutorial_4_planning") %>%
-  osf_ls_files(pattern = "data") %>%
-  osf_ls_files(pattern = "sim2") %>%
-  osf_ls_files(pattern = "sim2_data") %>%
-  osf_download(path = sim2_output_dir)
+  osf_retrieve_node("3dbcs") |>
+    osf_ls_files(pattern = "Tutorial_4_planning") |>
+    osf_ls_files(pattern = "data") |>
+    osf_ls_files(pattern = "sim2") |>
+    osf_ls_files(pattern = "sim2_data") |>
+    osf_download(path = sim2_output_dir)
 }
 ```
 
 read the file from a local folder
 
 ```{r load-sim2, eval=T}
-sx2 <- read_csv("Tutorial_4_planning/data/sim2/sim2_data.csv") %>%
-  mutate(exp=factor(exp),
-         subj_n=factor(subj_n),
-         rep_n=factor(rep_n),
-         b6c = factor(b6c,
-                      levels = c("-1.5", "-1.25", "-0.9"),
-                      labels = c("50%", "60%", "70%")),
-         subj=factor(subj),
-         bin=factor(bin))
+sx2 <- read_csv("Tutorial_4_planning/data/sim2/sim2_data.csv") |>
+  mutate(
+    exp = factor(exp),
+    subj_n = factor(subj_n),
+    rep_n = factor(rep_n),
+    b6c = factor(b6c,
+      levels = c("-1.5", "-1.25", "-0.9"),
+      labels = c("50%", "60%", "70%")
+    ),
+    subj = factor(subj),
+    bin = factor(bin)
+  )
 sx2
 ```
 
 at the exp level
 
 ```{r sim2-exp-summary}
-sx2_exp <- sx2 %>% 
-  group_by(exp, subj_n, rep_n, b6c, condition, bin) %>% 
-  summarise(exp_mean_outcome = mean(mean_outcome, na.rm = TRUE),
-            exp_mean_sum=mean(sum, na.rm = TRUE),
-            exp_sum=sum(sum),
-            n = length(unique(subj)), 
-            sd=sd(mean_outcome, na.rm = TRUE),
-            sem = (sd/sqrt(length(unique(subj)))),
-            .groups = "drop")
+sx2_exp <- sx2 |>
+  group_by(exp, subj_n, rep_n, b6c, condition, bin) |>
+  summarise(
+    exp_mean_outcome = mean(mean_outcome, na.rm = TRUE),
+    exp_mean_sum = mean(sum, na.rm = TRUE),
+    exp_sum = sum(sum),
+    n = length(unique(subj)),
+    sd = sd(mean_outcome, na.rm = TRUE),
+    sem = (sd / sqrt(length(unique(subj)))),
+    .groups = "drop"
+  )
 sx2_exp
 ```
 
 at the sim level
 
 ```{r sim2-sim-summary}
-sx2_sim <- sx2_exp %>% 
-  group_by(subj_n, rep_n, b6c, condition, bin) %>% 
-  summarise(sim_mean_outcome = mean(exp_mean_outcome, na.rm = TRUE),
-            sim_mean_sum = mean(exp_mean_sum, na.rm = TRUE),
-            sim_sum = mean(exp_sum, na.rm = TRUE),
-            n = length(unique(exp)), 
-            sd=sd(exp_mean_outcome, na.rm = TRUE),
-            sem = (sd/sqrt(length(unique(exp)))),
-            .groups = "drop")
+sx2_sim <- sx2_exp |>
+  group_by(subj_n, rep_n, b6c, condition, bin) |>
+  summarise(
+    sim_mean_outcome = mean(exp_mean_outcome, na.rm = TRUE),
+    sim_mean_sum = mean(exp_mean_sum, na.rm = TRUE),
+    sim_sum = mean(exp_sum, na.rm = TRUE),
+    n = length(unique(exp)),
+    sd = sd(exp_mean_outcome, na.rm = TRUE),
+    sem = (sd / sqrt(length(unique(exp)))),
+    .groups = "drop"
+  )
 sx2_sim
 ```
 
 a quick plot of the data
 
 ```{r sim2-violin}
-p11.1 <- ggplot(sx2_sim, 
-                aes(x = bin, y = sim_mean_outcome, 
-                    colour = condition)) +
-  geom_jitter(data=sx2_exp, aes(y = exp_mean_outcome),
-              alpha=0.5, width = 0.1, height = 0) +
-  geom_line(aes(group = condition)) + 
-  geom_point(size=2, colour = "black") +
-  geom_errorbar(aes(ymin = sim_mean_outcome-sem*1.96, ymax = sim_mean_outcome+sem*1.96),
-                width=.2, colour = "black") +
+p11.1 <- ggplot(
+  sx2_sim,
+  aes(
+    x = bin, y = sim_mean_outcome,
+    colour = condition
+  )
+) +
+  geom_jitter(
+    data = sx2_exp, aes(y = exp_mean_outcome),
+    alpha = 0.5, width = 0.1, height = 0
+  ) +
+  geom_line(aes(group = condition)) +
+  geom_point(size = 2, colour = "black") +
+  geom_errorbar(aes(ymin = sim_mean_outcome - sem * 1.96, ymax = sim_mean_outcome + sem * 1.96),
+    width = .2, colour = "black"
+  ) +
   scale_colour_brewer(palette = "Dark2") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="time bin",
-       y="outcome") + 
-  facet_grid(fct_rev(subj_n)~b6c)
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  labs(
+    x = "time bin",
+    y = "outcome"
+  ) +
+  facet_grid(fct_rev(subj_n) ~ b6c)
 p11.1
 
-ggsave ("Tutorial_4_planning/figures/sim2/sim_violin.jpeg",
-        width = 10, height = 8, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim2/sim_violin.jpeg",
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 ok, look at some values in bin 6
@@ -1353,40 +1497,48 @@ ok, look at some values in bin 6
 at the exp level
 
 ```{r sim2-bin6-exp-values}
-sx2_exp_check <- sx2_exp %>%
-  filter(bin %in% c(6)) %>% 
-  select(exp, subj_n, b6c, condition, bin, exp_mean_outcome) %>%
-  pivot_wider(names_from = "condition",
-              values_from = "exp_mean_outcome") %>% 
-  group_by(exp, subj_n, b6c, bin) %>% 
-  mutate(ratio = cond2/cond1) 
+sx2_exp_check <- sx2_exp |>
+  filter(bin %in% c(6)) |>
+  select(exp, subj_n, b6c, condition, bin, exp_mean_outcome) |>
+  pivot_wider(
+    names_from = "condition",
+    values_from = "exp_mean_outcome"
+  ) |>
+  group_by(exp, subj_n, b6c, bin) |>
+  mutate(ratio = cond2 / cond1)
 head(sx2_exp_check)
 ```
 
 and at the sim level
 
 ```{r sim2-bin6-sim-values}
-sx2_sim_check <- sx2_exp_check %>%
-  group_by(subj_n, b6c, bin) %>% 
-  summarise(sim_ratio = mean(ratio),
-            sim_sd=sd(ratio),
-            sim_sem=sim_sd/sqrt(1000),
-            .groups = "drop")
+sx2_sim_check <- sx2_exp_check |>
+  group_by(subj_n, b6c, bin) |>
+  summarise(
+    sim_ratio = mean(ratio),
+    sim_sd = sd(ratio),
+    sim_sem = sim_sd / sqrt(1000),
+    .groups = "drop"
+  )
 head(sx2_sim_check)
 ```
 
 plot ratio values
 
 ```{r sim2-ratio-values}
-p11.2 <- ggplot(sx2_sim_check, 
-                aes(x = b6c, y = sim_ratio)) +
-  geom_point(size=1.5) +
-  geom_errorbar(aes(ymin = sim_ratio-sim_sem*1.96, ymax = sim_ratio+sim_sem*1.96)) + 
+p11.2 <- ggplot(
+  sx2_sim_check,
+  aes(x = b6c, y = sim_ratio)
+) +
+  geom_point(size = 1.5) +
+  geom_errorbar(aes(ymin = sim_ratio - sim_sem * 1.96, ymax = sim_ratio + sim_sem * 1.96)) +
   geom_hline(yintercept = c(0.3, 0.4, 0.5), colour = "red") +
   scale_colour_brewer(palette = "Dark2") +
-  scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.25)) +
-  labs(x="time bin",
-       y="outcome") + 
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  labs(
+    x = "time bin",
+    y = "outcome"
+  ) +
   facet_wrap(~subj_n)
 p11.2
 ```
@@ -1400,19 +1552,23 @@ Same basic idea as in Simulation 1.
 at the exp level
 
 ```{r sim2-calculate-diff-scores}
-sx2_diff_exp <- sx2 %>%
-  pivot_wider(id_cols = c(exp, subj_n, rep_n, b6c, subj, bin),
-              names_from = "condition",
-              values_from = "mean_outcome") %>% 
-  mutate(diff = cond1 - cond2) %>%
-  group_by(exp, subj_n, rep_n, b6c, bin) %>% 
-  summarise(exp_mean_diff = mean(diff, na.rm = TRUE),
-            exp_sd = sd(diff, na.rm = TRUE),
-            n = n(), # n here is the total trials per condition per pid
-            exp_sem = (exp_sd/sqrt(n)),
-            exp_ci = 1.96*exp_sem,
-            exp_dz = exp_mean_diff/exp_sd,
-            .groups = "drop") 
+sx2_diff_exp <- sx2 |>
+  pivot_wider(
+    id_cols = c(exp, subj_n, rep_n, b6c, subj, bin),
+    names_from = "condition",
+    values_from = "mean_outcome"
+  ) |>
+  mutate(diff = cond1 - cond2) |>
+  group_by(exp, subj_n, rep_n, b6c, bin) |>
+  summarise(
+    exp_mean_diff = mean(diff, na.rm = TRUE),
+    exp_sd = sd(diff, na.rm = TRUE),
+    n = n(), # n here is the total trials per condition per pid
+    exp_sem = (exp_sd / sqrt(n)),
+    exp_ci = 1.96 * exp_sem,
+    exp_dz = exp_mean_diff / exp_sd,
+    .groups = "drop"
+  )
 head(sx2_diff_exp)
 tail(sx2_diff_exp)
 ```
@@ -1420,13 +1576,15 @@ tail(sx2_diff_exp)
 at the group/sim level
 
 ```{r sim2-summary-diff-scores}
-sx2_diff_sim <- sx2_diff_exp %>% 
-  group_by(subj_n, rep_n, b6c, bin) %>% 
-  summarise(mean_diff = mean(exp_mean_diff, na.rm = TRUE),
-            sd = sd(exp_mean_diff, na.rm = TRUE),
-            n=n(),
-            sem = (sd/sqrt((n))),
-            ci = 1.96*sem) 
+sx2_diff_sim <- sx2_diff_exp |>
+  group_by(subj_n, rep_n, b6c, bin) |>
+  summarise(
+    mean_diff = mean(exp_mean_diff, na.rm = TRUE),
+    sd = sd(exp_mean_diff, na.rm = TRUE),
+    n = n(),
+    sem = (sd / sqrt((n))),
+    ci = 1.96 * sem
+  )
 sx2_diff_sim
 ```
 
@@ -1437,26 +1595,33 @@ violin
 diff in original units
 
 ```{r sim2-plot-sim-diffs}
-p11.3 <- ggplot(sx2_diff_exp, aes(x=bin, y = exp_mean_diff,
-                                colour = bin, fill = bin)) +
-   geom_jitter(alpha = 0.5, width = 0.1) +
-   geom_violin(alpha = 0.7) +
-   geom_point(data = sx2_diff_sim, 
-             aes(y = mean_diff), size = 3, position=pd2, colour="black") +
-   geom_errorbar(data = sx2_diff_sim,
-                aes(y = mean_diff, ymin = mean_diff-ci, ymax = mean_diff+ci),
-                width=.2, position=pd2, colour = "black") +
-   geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
-   scale_fill_brewer(palette = "Dark2") +
-   scale_colour_brewer(palette = "Dark2") +
-   theme(legend.position = "none") +
-   ylab("mean outcome") +
-   ggtitle("difference score (cond1-cond2)") +
-   facet_grid(fct_rev(subj_n)~b6c)
+p11.3 <- ggplot(sx2_diff_exp, aes(
+  x = bin, y = exp_mean_diff,
+  colour = bin, fill = bin
+)) +
+  geom_jitter(alpha = 0.5, width = 0.1) +
+  geom_violin(alpha = 0.7) +
+  geom_point(
+    data = sx2_diff_sim,
+    aes(y = mean_diff), size = 3, position = pd2, colour = "black"
+  ) +
+  geom_errorbar(
+    data = sx2_diff_sim,
+    aes(y = mean_diff, ymin = mean_diff - ci, ymax = mean_diff + ci),
+    width = .2, position = pd2, colour = "black"
+  ) +
+  geom_hline(yintercept = 0, colour = "black", linetype = "dashed") +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_colour_brewer(palette = "Dark2") +
+  theme(legend.position = "none") +
+  ylab("mean outcome") +
+  ggtitle("difference score (cond1-cond2)") +
+  facet_grid(fct_rev(subj_n) ~ b6c)
 p11.3
 
 ggsave("Tutorial_4_planning/figures/sim2/sim_diffs.jpeg",
-       width = 10, height = 8, dpi=800)
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 plot each exp's difference score and associated 95% interval
@@ -1464,22 +1629,24 @@ plot each exp's difference score and associated 95% interval
 create some factors and new variables
 
 ```{r sim2-wrangle-diffs}
-sx2_diff_exp_2 <- sx2_diff_exp %>%
-  group_by(exp, subj_n, rep_n, b6c, bin) %>% 
-  mutate(lower = exp_mean_diff-exp_ci,
-         upper = exp_mean_diff+exp_ci,
-         above_zero = if_else(lower > 0, "yes", "no"), 
-         above_zero = factor(above_zero, levels = c("no", "yes")))
+sx2_diff_exp_2 <- sx2_diff_exp |>
+  group_by(exp, subj_n, rep_n, b6c, bin) |>
+  mutate(
+    lower = exp_mean_diff - exp_ci,
+    upper = exp_mean_diff + exp_ci,
+    above_zero = if_else(lower > 0, "yes", "no"),
+    above_zero = factor(above_zero, levels = c("no", "yes"))
+  )
 sx2_diff_exp_2
 ```
 
 calculate "power" in a quick and dirty way based on 95% CI
 
 ```{r sim2-calculate-power}
-power_x2 <- sx2_diff_exp_2 %>%
-  group_by(subj_n, rep_n, b6c, bin) %>%
-  mutate(check = ifelse(lower > 0, 1, 0)) %>%
-  summarise(power = mean(check, na.rm = TRUE)) %>% 
+power_x2 <- sx2_diff_exp_2 |>
+  group_by(subj_n, rep_n, b6c, bin) |>
+  mutate(check = ifelse(lower > 0, 1, 0)) |>
+  summarise(power = mean(check, na.rm = TRUE)) |>
   filter(bin %in% c(6))
 power_x2
 ```
@@ -1487,54 +1654,61 @@ power_x2
 plot power
 
 ```{r sim2-power-tile}
-p11.4 <- ggplot(power_x2, aes(x = b6c, y=subj_n, fill = power)) +
+p11.4 <- ggplot(power_x2, aes(x = b6c, y = subj_n, fill = power)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.3f", power)), color = "white", size = 10) +
   scale_fill_viridis_c(limits = c(0, 1)) +
   facet_wrap(~bin) +
-  labs(y="subj_n", x="b6c")
+  labs(y = "subj_n", x = "b6c")
 p11.4
 #
-ggsave ("Tutorial_4_planning/figures/sim2/power.jpeg",
-        width = 10, height = 6, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim2/power.jpeg",
+  width = 10, height = 6, dpi = 800
+)
 ```
 
 join power to the df
 
 ```{r sim2-join-dfs}
-sx2_diff_power <- sx2_diff_exp_2 %>%
-  filter(bin %in% c(6)) %>% 
-  inner_join(power_x2, by = c("subj_n", "rep_n", "b6c", "bin")) %>% 
-  mutate(power = round(power * 100, 2)) 
+sx2_diff_power <- sx2_diff_exp_2 |>
+  filter(bin %in% c(6)) |>
+  inner_join(power_x2, by = c("subj_n", "rep_n", "b6c", "bin")) |>
+  mutate(power = round(power * 100, 2))
 head(sx2_diff_power)
 ```
 
 plot
 
 ```{r sim2-plot-pointrange}
-p11.5 <- sx2_diff_power %>%
+p11.5 <- sx2_diff_power |>
   ggplot(aes(x = exp, y = exp_mean_diff, ymin = lower, ymax = upper)) +
-  geom_pointrange(fatten = 1/2, aes(colour=above_zero)) +
+  geom_pointrange(fatten = 1 / 2, aes(colour = above_zero)) +
   geom_hline(yintercept = 0, colour = "red") +
-  scale_colour_manual(values=c("darkgrey","black")) +
-  geom_text(aes(x=700, y=-0.35, label = sprintf("%.1f%s", power, "% power")), 
-            color = "darkgrey", size = 5) +
+  scale_colour_manual(values = c("darkgrey", "black")) +
+  geom_text(aes(x = 700, y = -0.35, label = sprintf("%.1f%s", power, "% power")),
+    color = "darkgrey", size = 5
+  ) +
   theme(legend.position = "none") +
-  labs(x = "sim # (i.e., simulation index)",
-       y = "hazard difference") +
-  scale_x_discrete(breaks = c(250,500,750,1000)) +
-  facet_grid(fct_rev(subj_n)~b6c)
+  labs(
+    x = "sim # (i.e., simulation index)",
+    y = "hazard difference"
+  ) +
+  scale_x_discrete(breaks = c(250, 500, 750, 1000)) +
+  facet_grid(fct_rev(subj_n) ~ b6c)
 p11.5
 
-ggsave ("Tutorial_4_planning/figures/sim2/bin6_diffs.jpeg",
-        width = 10, height = 8, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim2/bin6_diffs.jpeg",
+  width = 10, height = 8, dpi = 800
+)
 ```
 
 plot power as a bar plot
 
 ```{r sim2-power-col}
-p11.6 <- ggplot(power_x2, aes(x=subj_n, y=power,
-                           colour = b6c, fill = b6c)) +
+p11.6 <- ggplot(power_x2, aes(
+  x = subj_n, y = power,
+  colour = b6c, fill = b6c
+)) +
   geom_col(alpha = 0.5) +
   geom_hline(yintercept = 0.8, colour = "red", linetype = "dashed") +
   geom_hline(yintercept = 0.9, colour = "black", linetype = "dashed") +
@@ -1543,11 +1717,12 @@ p11.6 <- ggplot(power_x2, aes(x=subj_n, y=power,
   scale_fill_brewer(palette = "Dark2") +
   labs(title = "Simulation 2") +
   theme(legend.position = "none") +
-  facet_wrap(~b6c, nrow=1)
+  facet_wrap(~b6c, nrow = 1)
 p11.6
 
-ggsave ("Tutorial_4_planning/figures/sim2/bin6_power_col.jpeg",
-        width = 8, height = 6, dpi=800)
+ggsave("Tutorial_4_planning/figures/sim2/bin6_power_col.jpeg",
+  width = 8, height = 6, dpi = 800
+)
 ```
 
 
@@ -1578,11 +1753,11 @@ Join the power column plots together from sim1 and sim2.
 
 ```{r sim1-sim2-power-plot}
 p12.1 <- (p10.4 | p11.6) +
-  plot_annotation(tag_levels = 'A') +
-  plot_layout(axes = 'collect')
+  plot_annotation(tag_levels = "A") +
+  plot_layout(axes = "collect")
 p12.1
 
-ggsave ("Tutorial_4_planning/figures/bin6_power_col.jpeg",
-        width = 12, height = 7, dpi=800)
+ggsave("Tutorial_4_planning/figures/bin6_power_col.jpeg",
+  width = 12, height = 7, dpi = 800
+)
 ```
-
