@@ -108,6 +108,9 @@ devtools::install_github("ropenscilabs/gramr")
 install.packages("glossary")
 tinytex::tlmgr_install('babel-french')
 tinytex::tlmgr_install('babel-english')
+
+
+install.packages("styler")
 ```
 
 
