@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sven Panis" />
 
-<meta name="date" content="2025-07-14" />
+<meta name="date" content="2025-11-19" />
 
 <title>Tutorial 1b</title>
 
@@ -1510,7 +1510,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Tutorial 1b</h1>
 <h4 class="author">Sven Panis</h4>
-<h4 class="date">2025-07-14</h4>
+<h4 class="date">2025-11-19</h4>
 
 </div>
 
@@ -1537,8 +1537,10 @@ lapply(pkg, library, character.only = TRUE)</code></pre>
 <p>Theme settings for ggplot.</p>
 <pre class="r"><code>theme_set(
   theme_bw() +
-    theme(text = element_text(size = 14, face = &quot;bold&quot;), 
-          title = element_text(size = 14, face = &quot;bold&quot;))
+    theme(
+      text = element_text(size = 14, face = &quot;bold&quot;),
+      title = element_text(size = 14, face = &quot;bold&quot;)
+    )
 )
 
 ## Set the amount of dodge in figures
@@ -1549,9 +1551,11 @@ pd2 &lt;- position_dodge(1)</code></pre>
 <h1>2. Read and wrangle data.</h1>
 <p>Read in the raw data from <span class="citation">Panis and Schmidt
 (2016)</span>. This file can be found on ResearchGate.</p>
-<pre class="r"><code>raw &lt;- read_delim(file=&quot;Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt&quot;, 
-                  delim=&quot;\t&quot;,
-                  col_names=T) </code></pre>
+<pre class="r"><code>raw &lt;- read_delim(
+  file = &quot;Tutorial_1_descriptive_stats/data/DataExp1_6subjects.txt&quot;,
+  delim = &quot;\t&quot;,
+  col_names = T
+)</code></pre>
 <pre><code>## Rows: 9372 Columns: 22
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
@@ -1575,19 +1579,21 @@ pd2 &lt;- position_dodge(1)</code></pre>
 ## #   resp &lt;dbl&gt;, respac &lt;dbl&gt;, resperr &lt;dbl&gt;, rt &lt;dbl&gt;, TrialNr &lt;dbl&gt;</code></pre>
 <p>Do some wrangling.</p>
 <pre class="r"><code># remove practice trials
-data_wr &lt;- raw %&gt;% 
-  filter(practice==0) 
+data_wr &lt;- raw |&gt;
+  filter(practice == 0)
 
 # remove unnecessary columns
-data_wr &lt;- data_wr %&gt;% 
-  select(-c(ss,practice,rd,form,task,primeduration,
-            blankduration,maskduration,targetduration,
-            void,target_dir,corresp,resperr))
+data_wr &lt;- data_wr |&gt;
+  select(-c(
+    ss, practice, rd, form, task, primeduration,
+    blankduration, maskduration, targetduration,
+    void, target_dir, corresp, resperr
+  ))
 
 # look at trials where resp==0
-data_wr %&gt;% 
-  filter(resp==0) %&gt;% 
-  print(n=51)</code></pre>
+data_wr |&gt;
+  filter(resp == 0) |&gt;
+  print(n = 51)</code></pre>
 <pre><code>## # A tibble: 51 × 9
 ##       vp    bl    tr mask_type prime_type  resp respac    rt TrialNr
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -1645,7 +1651,7 @@ data_wr %&gt;%
 <pre class="r"><code># remove trials with no response info if rt &lt; 800 (800 was the response deadline in each trial):
 # the 46 trials where rt &gt;= 800 and resp==0 are trials in which the subject did not respond; these should not be deleted because they will be treated as right-censored observations in EHA!
 # the remaining 5 trials of subject 1 should be removed (for some technical reason the resp (1 or 2) was not recorded; perhaps (s)he pressed both buttons at the same time...)
-data_wr &lt;- data_wr %&gt;% 
+data_wr &lt;- data_wr |&gt;
   filter(!(resp == 0 &amp; rt &lt; 800))
 
 summary(data_wr)</code></pre>
@@ -1675,15 +1681,17 @@ summary(data_wr)</code></pre>
 # tr = trial number within block
 # mask_type: no mask (0), relevant mask (1), irrelevant mask (2), lines mask (3)
 # prime_type: no prime or blank (0), consistent prime (1), inconsistent prime (2)
-# resp = no button (0), button left (1), button right (2) 
+# resp = no button (0), button left (1), button right (2)
 # respac = accuracy
 # rt = response time
 # TrialNr = trial number within experiment</code></pre>
 <p>Change variable names, and create factors.</p>
 <pre class="r"><code># change some variable names to required names (pid, trial, condition1, condition2, rt, and acc)
-data_wr &lt;- data_wr %&gt;% 
-  rename(pid = vp, condition1 = mask_type, condition2 = prime_type, 
-         acc = respac, trial = TrialNr)
+data_wr &lt;- data_wr |&gt;
+  rename(
+    pid = vp, condition1 = mask_type, condition2 = prime_type,
+    acc = respac, trial = TrialNr
+  )
 
 # pid to indicate column with unique person IDs
 # trial must be a unique trial number per subject
@@ -1692,18 +1700,22 @@ data_wr &lt;- data_wr %&gt;%
 # rt to indicate column with response times (in ms)
 # acc to indicate column with accuracies (1/0)
 
-# create factors for conditions (mask type and prime type): 
-# the levels of condition1 are displayed across columns; 
+# create factors for conditions (mask type and prime type):
+# the levels of condition1 are displayed across columns;
 # the levels of condition2 are displayed within each plot.
-data_wr &lt;- data_wr %&gt;% 
-  mutate(condition1 = condition1 + 1, 
-         condition1 = factor(condition1, 
-                             levels = c(1,2,3,4), 
-                             labels = c(&quot;nomask&quot;,&quot;relevant&quot;,&quot;irrelevant&quot;,&quot;lines&quot;)),
-         condition2 = condition2 + 1, 
-         condition2 = factor(condition2, 
-                             levels = c(1,2,3), 
-                             labels = c(&quot;blank&quot;,&quot;congruent&quot;,&quot;incongruent&quot;)))
+data_wr &lt;- data_wr |&gt;
+  mutate(
+    condition1 = condition1 + 1,
+    condition1 = factor(condition1,
+      levels = c(1, 2, 3, 4),
+      labels = c(&quot;nomask&quot;, &quot;relevant&quot;, &quot;irrelevant&quot;, &quot;lines&quot;)
+    ),
+    condition2 = condition2 + 1,
+    condition2 = factor(condition2,
+      levels = c(1, 2, 3),
+      labels = c(&quot;blank&quot;, &quot;congruent&quot;, &quot;incongruent&quot;)
+    )
+  )
 summary(data_wr)</code></pre>
 <pre><code>##       pid              bl              tr            condition1  
 ##  Min.   :1.000   Min.   : 2.00   Min.   : 1.0   nomask    :2757  
@@ -1736,28 +1748,28 @@ plot_eha_2IV as above.</p>
 <pre class="r"><code>source(&quot;custom_functions.R&quot;)</code></pre>
 <p>Apply the functions</p>
 <pre class="r"><code># create a data frame with two columns (pid and data); the latter contains a list of nested data frames
-data_nested &lt;- data_wr %&gt;% 
+data_nested &lt;- data_wr |&gt;
   group_nest(pid)
 
 # apply the functions using map() and map2()
-data_final &lt;- data_nested %&gt;% 
+data_final &lt;- data_nested |&gt;
   # ! user input: censoring time, and bin width
-  mutate(censored  = map(data, censor, 600, 40)) %&gt;%   
-  mutate(ptb_data  = map(censored, ptb)) %&gt;%           
+  mutate(censored = map(data, censor, 600, 40)) |&gt;
+  mutate(ptb_data = map(censored, ptb)) |&gt;
   # create life tables without ca for 2 independent variables
-  mutate(lifetable = map(ptb_data, setup_lt_2IV)) %&gt;%    
+  mutate(lifetable = map(ptb_data, setup_lt_2IV)) |&gt;
   # calculate conditional accuracy for 2 independent variables
-  mutate(condacc   = map(censored, calc_ca_2IV)) %&gt;%       
+  mutate(condacc = map(censored, calc_ca_2IV)) |&gt;
   # add ca to lifetables for 2 independent variables
-  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca_2IV)) %&gt;%  
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca_2IV)) |&gt;
   # create plots for 2 independent variables: set haz_yaxis to 1, and first_bin_shown to 2
-  mutate(plot      = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV,1,2))  </code></pre>
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha_2IV, 1, 2))</code></pre>
 </div>
 <div id="extract-info-life-table-plots" class="section level1">
 <h1>4. Extract info (life table, plots, …)</h1>
 <pre class="r"><code># view original data (column 2 in data_final) for subject 1:
-pluck(data_final, 2, 1) %&gt;% 
-  print(n=20)</code></pre>
+pluck(data_final, 2, 1) |&gt;
+  print(n = 20)</code></pre>
 <pre><code>## # A tibble: 1,535 × 8
 ##       bl    tr condition1 condition2   resp   acc    rt trial
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;      &lt;fct&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -1783,8 +1795,8 @@ pluck(data_final, 2, 1) %&gt;%
 ## 20     2    20 irrelevant congruent       1     1   398    20
 ## # ℹ 1,515 more rows</code></pre>
 <pre class="r"><code># view person-trial-bin data set (column 4) for subject 1:
-pluck(data_final,4,1) %&gt;% 
-  print(n=30)</code></pre>
+pluck(data_final, 4, 1) |&gt;
+  print(n = 30)</code></pre>
 <pre><code>## # A tibble: 15,129 × 14
 ##       bl    tr condition1 condition2   resp   acc    rt trial right_censored
 ##    &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;      &lt;fct&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;          &lt;dbl&gt;
@@ -1822,8 +1834,8 @@ pluck(data_final,4,1) %&gt;%
 ## # ℹ 5 more variables: rtc &lt;dbl&gt;, cens_time &lt;dbl&gt;, bin_width &lt;dbl&gt;,
 ## #   period &lt;int&gt;, event &lt;dbl&gt;</code></pre>
 <pre class="r"><code># view lifetable (column 7) for a specific combination of condition levels for subject 1:
-pluck(data_final, 7, 1) %&gt;% 
-  filter(condition1==&quot;nomask&quot; &amp; condition2 == &quot;blank&quot;)</code></pre>
+pluck(data_final, 7, 1) |&gt;
+  filter(condition1 == &quot;nomask&quot; &amp; condition2 == &quot;blank&quot;)</code></pre>
 <pre><code>## # A tibble: 15 × 18
 ##    condition1 condition2 period event0 event1 risk_set hazard se_haz   pmass
 ##    &lt;fct&gt;      &lt;fct&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
@@ -1851,17 +1863,17 @@ pluck(data_final, 8, 1)</code></pre>
 <pre class="r"><code># view the median RTs in a tibble:
 median_bin &lt;- map(data_final$lifetable_ca, extract_median_2IV)
 
-binsize    &lt;- data_final$censored[[1]] %&gt;% 
-  pull(bin_width) %&gt;% 
-  max(na.rm=T)
+binsize &lt;- data_final$censored[[1]] |&gt;
+  pull(bin_width) |&gt;
+  max(na.rm = T)
 
-median_rt  &lt;- modify_depth(median_bin,1,~.x*binsize)
+median_rt &lt;- modify_depth(median_bin, 1, ~ .x * binsize)
 
-median_tb  &lt;- map(median_rt, ~as_tibble(., rownames = &quot;condition&quot;)) %&gt;% 
+median_tb &lt;- map(median_rt, ~ as_tibble(., rownames = &quot;condition&quot;)) |&gt;
   list_rbind(names_to = &quot;pid&quot;)
 
-median_tb %&gt;% 
-  print(n=6*12)</code></pre>
+median_tb |&gt;
+  print(n = 6 * 12)</code></pre>
 <pre><code>## # A tibble: 72 × 3
 ##      pid condition value
 ##    &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt;
@@ -1939,8 +1951,10 @@ median_tb %&gt;%
 ## 72     6 12         435.</code></pre>
 <p>Save the plots.</p>
 <pre class="r"><code># save the plot for each subject
-map2(paste0(&quot;Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject&quot;, data_final$pid, &quot;_PanisSchmidt.png&quot;), 
-     data_final$plot, ggsave, width = 12, height = 10, dpi = 800)</code></pre>
+map2(paste0(&quot;Tutorial_1_descriptive_stats/figures/Plot_2IV_for_subject&quot;, data_final$pid, &quot;_PanisSchmidt.png&quot;),
+  data_final$plot, ggsave,
+  width = 12, height = 10, dpi = 800
+)</code></pre>
 </div>
 <div id="references." class="section level1 unnumbered">
 <h1 class="unnumbered">5. References.</h1>
