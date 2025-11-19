@@ -22,9 +22,11 @@ In this Tutorial 2b we fit a Bayesian multilevel model to the conditional accura
 # 1. Load the libraries that we will be using.
 
 ```{r load-pkg, results='hide'}
-pkg <- c("cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork", 
-         "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr",
-         "rstan")
+pkg <- c(
+  "cmdstanr", "standist", "tidyverse", "RColorBrewer", "patchwork",
+  "brms", "tidybayes", "bayesplot", "future", "parallel", "modelr",
+  "rstan"
+)
 
 lapply(pkg, library, character.only = TRUE)
 ```
@@ -32,10 +34,12 @@ lapply(pkg, library, character.only = TRUE)
 Set options. 
 
 ```{r set-options, results='hide'}
-options(brms.backend = "cmdstanr",
-        mc.cores = parallel::detectCores(),
-        future.fork.enable = TRUE,
-        future.rng.onMisuse = "ignore") ## automatically set in RStudio
+options(
+  brms.backend = "cmdstanr",
+  mc.cores = parallel::detectCores(),
+  future.fork.enable = TRUE,
+  future.rng.onMisuse = "ignore"
+) ## automatically set in RStudio
 
 supportsMulticore()
 detectCores()
@@ -51,9 +55,11 @@ theme settings for ggplot
 ```{r plot-settings, results='hide'}
 theme_set(
   theme_bw() +
-    theme(text = element_text(size = 22, face = "bold"), 
-          title = element_text(size = 22, face = "bold"),
-          legend.position = "bottom")
+    theme(
+      text = element_text(size = 22, face = "bold"),
+      title = element_text(size = 22, face = "bold"),
+      legend.position = "bottom"
+    )
 )
 
 ## Set the amount of dodge in figures
@@ -72,17 +78,21 @@ Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range: (200,600]
-ca_data <- ca_data %>% 
-  filter(drt > 5) %>%
+ca_data <- ca_data |>
+  filter(drt > 5) |>
   # create factor condition, with "blank" as the reference level
-  mutate(condition = factor(condition, 
-                            labels = c("blank", "congruent","incongruent")),
-         prime = ifelse(condition=="blank",1, 
-                 ifelse(condition=="congruent",2,3)),
-         prime = factor(prime,levels=c(1,2,3)),
-         timebin = factor(drt, levels=c(6:15)),
-         period_9 = drt - 9,
-         trial_c = (trial - 1000)/1000) 
+  mutate(
+    condition = factor(condition,
+      labels = c("blank", "congruent", "incongruent")
+    ),
+    prime = ifelse(condition == "blank", 1,
+      ifelse(condition == "congruent", 2, 3)
+    ),
+    prime = factor(prime, levels = c(1, 2, 3)),
+    timebin = factor(drt, levels = c(6:15)),
+    period_9 = drt - 9,
+    trial_c = (trial - 1000) / 1000
+  )
 head(ca_data)
 ```
 
@@ -94,8 +104,8 @@ We fit a single model "M1i_ca", using index coding for both TIME and condition (
 
 ```{r data-M1i-ca}
 # remove unnecessary columns before fitting a model
-data_M1i_ca <- ca_data %>% 
-  select(pid,acc,timebin,prime)
+data_M1i_ca <- ca_data |>
+  select(pid, acc, timebin, prime)
 head(data_M1i_ca)
 ```
 
@@ -105,9 +115,9 @@ As we expect conditional accuracies ranging between (and including) 0 and 1, we 
 
 ```{r priors-cloglog-M1i-ca}
 priors_M1i_ca <- c(
-  set_prior("student_t(7.61, 0, 1.57)", class = "b"), # use flat prior on logit scale for the proportion ca 
-  set_prior("normal(0, 1)", class = "sd"),                    
-  set_prior("lkj(2)", class = "cor")                        
+  set_prior("student_t(7.61, 0, 1.57)", class = "b"), # use flat prior on logit scale for the proportion ca
+  set_prior("normal(0, 1)", class = "sd"),
+  set_prior("lkj(2)", class = "cor")
 )
 ```
 
@@ -116,16 +126,18 @@ priors_M1i_ca <- c(
 ```{r fit-model-M1i-ca, eval=F}
 plan(multicore)
 
-model_M1i_ca <- 
-   brm(data = data_M1i_ca,
-       family = bernoulli(link="logit"),  # use logit link for conditional accuracy
-       formula = acc ~ 0 + timebin:prime  +
-                        (0 + timebin:prime | pid),
-       prior = priors_M1i_ca,
-       chains = 4, cores = 4, iter = 3000, warmup = 1000, 
-       control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 14),
-       seed = 12, init = "0",
-       file = "Tutorial_2_Bayesian/models/model_M1i_ca")
+model_M1i_ca <-
+  brm(
+    data = data_M1i_ca,
+    family = bernoulli(link = "logit"), # use logit link for conditional accuracy
+    formula = acc ~ 0 + timebin:prime +
+      (0 + timebin:prime | pid),
+    prior = priors_M1i_ca,
+    chains = 4, cores = 4, iter = 3000, warmup = 1000,
+    control = list(adapt_delta = 0.999, step_size = 0.04, max_treedepth = 14),
+    seed = 12, init = "0",
+    file = "Tutorial_2_Bayesian/models/model_M1i_ca"
+  )
 ```
 
 Model_M1i_ca took about 11 minutes to run on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
@@ -140,16 +152,18 @@ fixef(model_M1i_ca)
 ## Pareto k estimates
 
 ```{r pareto}
-loo(model_M1i_ca)$diagnostics %>% 
-  data.frame() %>% 
+loo(model_M1i_ca)$diagnostics |>
+  data.frame() |>
   # attach the `id` values
-  bind_cols(data_M1i_ca) %>% 
-  mutate(id = 1:n()) %>%
+  bind_cols(data_M1i_ca) |>
+  mutate(id = 1:n()) |>
   ggplot(aes(x = id, y = pareto_k)) +
-  geom_point(alpha = 3/4) + 
-  geom_text(data = . %>% filter(pareto_k > .2),
-            aes(x = id + 2, label = id),
-            size = 3, hjust = 0) +
+  geom_point(alpha = 3 / 4) +
+  geom_text(
+    data = . %>% filter(pareto_k > .2),
+    aes(x = id + 2, label = id),
+    size = 3, hjust = 0
+  ) +
   theme(panel.grid = element_blank())
 ```
 
@@ -158,50 +172,57 @@ loo(model_M1i_ca)$diagnostics %>%
 Wrangle the posterior draws.
 
 ```{r post-M0i}
-post_ca <- as_draws_df(model_M1i_ca) %>% 
-  select(-lp__) %>% 
+post_ca <- as_draws_df(model_M1i_ca) |>
+  select(-lp__) |>
   as_tibble()
 
 post_summary <- posterior_summary(model_M1i_ca, robust = TRUE)
-post_summary[1:30,]
+post_summary[1:30, ]
 
-post_qi_b <- post_ca %>%
-  select(starts_with("b_")) %>%
-  pivot_longer(everything()) %>%
-  group_by(name) %>% 
-  median_qi(value) %>% 
+post_qi_b <- post_ca |>
+  select(starts_with("b_")) |>
+  pivot_longer(everything()) |>
+  group_by(name) |>
+  median_qi(value) |>
   arrange(name)
-head(post_qi_b) # 30 "fixed" effects 
+head(post_qi_b) # 30 "fixed" effects
 ```
 
 Visualise fixed effects.
 
 ```{r plot-post-M0i-ca}
-tidy_fixed_ca <- post_ca %>% 
-  select(starts_with("b_"), .chain, .iteration, .draw) %>% 
-  rename(chain=.chain, iter=.iteration, draw=.draw) %>% 
-  pivot_longer(-c(chain, draw, iter)) %>% 
-  mutate(timebin = str_sub(name,10,11),
-         timebin = factor(str_remove(timebin,":"),levels=c(6:15)),
-         condition = str_sub(name,17,18),
-         condition = factor(str_remove(condition,"e"),
-                            levels=c(1,2,3),
-                            labels=c("blank","congruent","incongruent")))
+tidy_fixed_ca <- post_ca |>
+  select(starts_with("b_"), .chain, .iteration, .draw) |>
+  rename(chain = .chain, iter = .iteration, draw = .draw) |>
+  pivot_longer(-c(chain, draw, iter)) |>
+  mutate(
+    timebin = str_sub(name, 10, 11),
+    timebin = factor(str_remove(timebin, ":"), levels = c(6:15)),
+    condition = str_sub(name, 17, 18),
+    condition = factor(str_remove(condition, "e"),
+      levels = c(1, 2, 3),
+      labels = c("blank", "congruent", "incongruent")
+    )
+  )
 head(tidy_fixed_ca)
 tail(tidy_fixed_ca)
 
 # plot
-p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill=condition)) +  
-  stat_halfeye(point_interval = "median_qi",
-               .width = c(.80,.95),
-               alpha=0.7) +
-  labs(title = 'Posterior distributions for population-level\neffects in Model M1i_ca',
-       x = "time bin (upper bound in ms)", 
-       y = "logit-ca") +
+p_tidy_fixed_ca <- ggplot(tidy_fixed_ca, aes(x = timebin, y = value, fill = condition)) +
+  stat_halfeye(
+    point_interval = "median_qi",
+    .width = c(.80, .95),
+    alpha = 0.7
+  ) +
+  labs(
+    title = "Posterior distributions for population-level\neffects in Model M1i_ca",
+    x = "time bin (upper bound in ms)",
+    y = "logit-ca"
+  ) +
   scale_fill_brewer(palette = "Dark2") +
-  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
-  scale_y_continuous(limits=c(-10,10)) +
-  theme(axis.text.x = element_text(angle=90)) +
+  scale_x_discrete(labels = c(6:15) * 40, breaks = 6:15) +
+  scale_y_continuous(limits = c(-10, 10)) +
+  theme(axis.text.x = element_text(angle = 90)) +
   facet_wrap(~condition)
 p_tidy_fixed_ca
 ```
@@ -217,78 +238,92 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ca_postdistr.png", width = 10, height = 
 ```{r epred-grand}
 dat_M1i_ca <- as_tibble(model_M1i_ca$data)
 
-epreds_grand <- dat_M1i_ca %>% 
-  data_grid(timebin, prime) %>% 
-  add_epred_draws(model_M1i_ca, 
-                  re_formula = NA) %>% 
-  mutate(prime = factor(prime, 
-                        levels=c(1,2,3),
-                        labels=c("blank","congruent","incongruent"))) %>%
+epreds_grand <- dat_M1i_ca |>
+  data_grid(timebin, prime) |>
+  add_epred_draws(model_M1i_ca,
+    re_formula = NA
+  ) |>
+  mutate(prime = factor(prime,
+    levels = c(1, 2, 3),
+    labels = c("blank", "congruent", "incongruent")
+  )) |>
   ungroup()
 ```
 
 Summarize and plot predicted hazard values.
 
 ```{r epred-grand-summary}
-epreds_grand %>% 
-  group_by(timebin,prime) %>% 
+epreds_grand |>
+  group_by(timebin, prime) |>
   median_qi()
 ```
 
 ```{r epred-grand-plot}
- p1 <- ggplot(epreds_grand, aes(x=timebin, y=.epred, 
-                          fill=prime, color=prime)) +
-    stat_lineribbon(aes(linetype=prime),
-                    point_interval="median_qi",
-                    alpha = 0.5, 
-                    .width = c(.8,.95)) +
-    scale_fill_brewer(palette = "Dark2") +
-    scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
-    theme(axis.text.x = element_text(angle=90)) +
-    scale_y_continuous(limits=c(0,1)) +
-    labs(x = "time bin (upper bound in ms)", 
-         y = "predicted conditional accuracy")
-  
+p1 <- ggplot(epreds_grand, aes(
+  x = timebin, y = .epred,
+  fill = prime, color = prime
+)) +
+  stat_lineribbon(aes(linetype = prime),
+    point_interval = "median_qi",
+    alpha = 0.5,
+    .width = c(.8, .95)
+  ) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  scale_x_discrete(labels = c(6:15) * 40, breaks = 6:15) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x = "time bin (upper bound in ms)",
+    y = "predicted conditional accuracy"
+  )
+
 p1
 ```
 
 ### Subject-specific
 
 ```{r epred-pid}
-epreds_pid <- dat_M1i_ca %>% 
-  data_grid(pid,timebin, prime) %>% 
-  add_epred_draws(model_M1i_ca, 
-                  re_formula = NULL) %>% 
-  mutate(prime = factor(prime, 
-                        levels=c(1,2,3),
-                        labels=c("blank","congruent","incongruent"))) %>%
+epreds_pid <- dat_M1i_ca |>
+  data_grid(pid, timebin, prime) |>
+  add_epred_draws(model_M1i_ca,
+    re_formula = NULL
+  ) |>
+  mutate(prime = factor(prime,
+    levels = c(1, 2, 3),
+    labels = c("blank", "congruent", "incongruent")
+  )) |>
   ungroup()
 ```
 
 Summarize and plot predicted hazard values.
 
 ```{r epred-pid-summary}
-epreds_pid %>% 
-  group_by(pid,timebin,prime) %>% 
+epreds_pid |>
+  group_by(pid, timebin, prime) |>
   median_qi()
 ```
 
 ```{r plot-epred-pid}
-p2 <- ggplot(epreds_pid, aes(x=timebin, y=.epred, 
-                       fill=prime, color=prime)) +
-    stat_lineribbon(aes(linetype=prime),
-                    point_interval="median_qi",
-                    alpha = 0.5, 
-                    .width = c(.8,.95)) +
-    scale_fill_brewer(palette = "Dark2") +
-    scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
-    theme(axis.text.x = element_text(angle=90)) +
-    scale_y_continuous(limits=c(0,1)) +
-    labs(x = "time bin (upper bound in ms)", 
-         y = "predicted conditional accuracy") +
-    facet_wrap(~pid, ncol=3)
+p2 <- ggplot(epreds_pid, aes(
+  x = timebin, y = .epred,
+  fill = prime, color = prime
+)) +
+  stat_lineribbon(aes(linetype = prime),
+    point_interval = "median_qi",
+    alpha = 0.5,
+    .width = c(.8, .95)
+  ) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  scale_x_discrete(labels = c(6:15) * 40, breaks = 6:15) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x = "time bin (upper bound in ms)",
+    y = "predicted conditional accuracy"
+  ) +
+  facet_wrap(~pid, ncol = 3)
 p2
 ```
 
@@ -299,10 +334,12 @@ Combine the plots.
 p1_theme <- p1 + theme(legend.position = "none")
 
 (p1_theme / p2) +
-    plot_annotation(tag_levels = 'A') +
-    plot_layout(guides = "collect",
-                axes = "collect_x") & 
-    theme(legend.position = "bottom")
+  plot_annotation(tag_levels = "A") +
+  plot_layout(
+    guides = "collect",
+    axes = "collect_x"
+  ) &
+  theme(legend.position = "bottom")
 ```
 
 Save combined plot.
@@ -319,49 +356,63 @@ See Heiss (2021).
 ### Grand mean AMEs
 
 ```{r grand-ame}
-epreds_grand_diffs <- epreds_grand %>%
-  pivot_wider(id_cols = c(timebin, .draw),
-              names_from = "prime",
-              values_from = ".epred") %>% #80000 x 5
-  mutate(`congruent minus blank` = congruent - blank,
-         `incongruent minus blank` = incongruent -  blank) %>% 
-  select(-c(blank,congruent,incongruent)) %>% 
-  pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
-               names_to = "contrast",
-               values_to = "diff_ca") 
+epreds_grand_diffs <- epreds_grand |>
+  pivot_wider(
+    id_cols = c(timebin, .draw),
+    names_from = "prime",
+    values_from = ".epred"
+  ) |> # 80000 x 5
+  mutate(
+    `congruent minus blank` = congruent - blank,
+    `incongruent minus blank` = incongruent - blank
+  ) |>
+  select(-c(blank, congruent, incongruent)) |>
+  pivot_longer(
+    cols = c(`congruent minus blank`, `incongruent minus blank`),
+    names_to = "contrast",
+    values_to = "diff_ca"
+  )
 
-epreds_grand_diffs # 160 000 rows 
+epreds_grand_diffs # 160 000 rows
 ```
 
 Summarize and plot.
 
 ```{r grand-ame-summary}
-table <- epreds_grand_diffs %>%
-  group_by(contrast,timebin) %>%
-  mean_qi(.width = c(.95)) %>%
-  arrange(contrast,timebin,.width) %>%
-  select(-c(.width,.point,.interval))
+table <- epreds_grand_diffs |>
+  group_by(contrast, timebin) |>
+  mean_qi(.width = c(.95)) |>
+  arrange(contrast, timebin, .width) |>
+  select(-c(.width, .point, .interval))
 ```
 
 ```{r save-table-grand-AMEs, eval=F}
-write_csv(table, file="Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
+write_csv(table, file = "Tutorial_2_Bayesian/tables/ca_grand_AMEs.csv")
 ```
 
 ```{r grand-ame-plot}
-p11 <- ggplot(epreds_grand_diffs, aes(x=timebin, y=diff_ca, 
-                       fill=contrast)) +
-  stat_lineribbon(alpha = 0.5, 
-                  point_interval = "mean_qi",
-                  .width=c(.8,.95)) +
-  geom_hline(yintercept = 0, 
-             color = "red", 
-             lty = 3) +
-  scale_y_continuous(limits=c(-1,1)) +
-  scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
-  scale_fill_manual(values=c("#D95F02FF", "#7570B3FF")) +
-  theme(axis.text.x = element_text(angle=90)) +
-  labs(x = "time bin (upper bounds in ms)", 
-       y = "difference in predicted ca") +
+p11 <- ggplot(epreds_grand_diffs, aes(
+  x = timebin, y = diff_ca,
+  fill = contrast
+)) +
+  stat_lineribbon(
+    alpha = 0.5,
+    point_interval = "mean_qi",
+    .width = c(.8, .95)
+  ) +
+  geom_hline(
+    yintercept = 0,
+    color = "red",
+    lty = 3
+  ) +
+  scale_y_continuous(limits = c(-1, 1)) +
+  scale_x_discrete(labels = c(6:15) * 40, breaks = 6:15) +
+  scale_fill_manual(values = c("#D95F02FF", "#7570B3FF")) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(
+    x = "time bin (upper bounds in ms)",
+    y = "difference in predicted ca"
+  ) +
   facet_wrap(~contrast)
 
 p11
@@ -372,44 +423,55 @@ p11
 To calculate the subject-specific AMEs for each time bin, we create contrasts between the conditional means.
 
 ```{r epred-pid-ame}
-epreds_pid_diffs <- epreds_pid %>%
-  pivot_wider(id_cols = c(pid,timebin, .draw),
-              names_from = "prime",
-              values_from = ".epred") %>% #80000 x 5
-  mutate(`congruent minus blank` = congruent - blank,
-         `incongruent minus blank` = incongruent -  blank) %>% 
-  select(-c(blank,congruent,incongruent)) %>% 
-  pivot_longer(cols = c(`congruent minus blank`,`incongruent minus blank`),
-               names_to = "contrast",
-               values_to = "diff_ca") 
+epreds_pid_diffs <- epreds_pid |>
+  pivot_wider(
+    id_cols = c(pid, timebin, .draw),
+    names_from = "prime",
+    values_from = ".epred"
+  ) |> # 80000 x 5
+  mutate(
+    `congruent minus blank` = congruent - blank,
+    `incongruent minus blank` = incongruent - blank
+  ) |>
+  select(-c(blank, congruent, incongruent)) |>
+  pivot_longer(
+    cols = c(`congruent minus blank`, `incongruent minus blank`),
+    names_to = "contrast",
+    values_to = "diff_ca"
+  )
 
-epreds_pid_diffs  
+epreds_pid_diffs
 ```
 
 Summarize and plot the contrasts in predicted hazard values.
 
 ```{r epred-pid-ame-summary}
-epreds_pid_diffs %>% 
-  group_by(pid,timebin,contrast) %>% 
+epreds_pid_diffs |>
+  group_by(pid, timebin, contrast) |>
   mean_qi()
 ```
 
 ```{r epred-pid-ame-plot}
-p22 <- ggplot(epreds_pid_diffs, aes(x=timebin, y=diff_ca, 
-                       fill=contrast, color=contrast)) +
-    stat_lineribbon(aes(linetype=contrast),
-                    alpha = 0.5, 
-                    point_interval = "mean_qi",
-                    .width=c(.8,.95)) +
-    geom_hline(yintercept = 0, color = "red", lty = 3) +
-    scale_fill_brewer(palette = "Dark2") +
-    scale_color_brewer(palette = "Dark2") +
-    scale_x_discrete(labels = c(6:15)*40, breaks = 6:15) +
-    theme(axis.text.x = element_text(angle=90)) +
-    scale_y_continuous(limits=c(-1,1)) +
-    labs(x = "time bin (upper bound in ms)", 
-         y = "difference in predicted ca") +
-    facet_wrap(~pid, ncol=3)
+p22 <- ggplot(epreds_pid_diffs, aes(
+  x = timebin, y = diff_ca,
+  fill = contrast, color = contrast
+)) +
+  stat_lineribbon(aes(linetype = contrast),
+    alpha = 0.5,
+    point_interval = "mean_qi",
+    .width = c(.8, .95)
+  ) +
+  geom_hline(yintercept = 0, color = "red", lty = 3) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  scale_x_discrete(labels = c(6:15) * 40, breaks = 6:15) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_y_continuous(limits = c(-1, 1)) +
+  labs(
+    x = "time bin (upper bound in ms)",
+    y = "difference in predicted ca"
+  ) +
+  facet_wrap(~pid, ncol = 3)
 p22
 ```
 
@@ -420,8 +482,8 @@ Combine the plots.
 p11_theme <- p11 + theme(legend.position = "none")
 
 (p11_theme / p22) +
-    plot_annotation(tag_levels = 'A') +
-    theme(legend.position = "bottom")
+  plot_annotation(tag_levels = "A") +
+  theme(legend.position = "bottom")
 ```
 
 Save combined plot.
@@ -438,8 +500,8 @@ ggsave("Tutorial_2_Bayesian/figures/M1i_ca_ame_combined.png", width = 14, height
 p11_theme <- p11 + theme(legend.position = "none")
 
 (p_tidy_fixed_ca / p1 / p11) +
-    plot_annotation(tag_levels = 'A') +
-    theme(legend.position = "bottom")
+  plot_annotation(tag_levels = "A") +
+  theme(legend.position = "bottom")
 ```
 
 ```{r save-fig-revision, eval=F}
@@ -449,4 +511,3 @@ ggsave("Tutorial_2_Bayesian/figures/Revision_results_ca.png", width = 14, height
 # 5. References.
 
 Heiss, Andrew (2021). “A Guide to Correctly Calculating Posterior Predictions and Average Marginal Effects with Multilievel Bayesian Models.” November 10, 2021. https://doi.org/10.59350/wbn93-edb02.
-
