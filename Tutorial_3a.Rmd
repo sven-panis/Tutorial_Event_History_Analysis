@@ -32,8 +32,10 @@ Theme settings for ggplot.
 ```{r plot-settings, results='hide'}
 theme_set(
   theme_bw() +
-    theme(text = element_text(size = 22, face = "bold"), 
-          title = element_text(size = 22, face = "bold"))
+    theme(
+      text = element_text(size = 22, face = "bold"),
+      title = element_text(size = 22, face = "bold")
+    )
 )
 
 ## Set the amount of dodge in figures
@@ -51,44 +53,48 @@ Prepare the data set.
 
 ```{r prepare-data}
 # select analysis time range
-ptb_data <- ptb_data %>% filter(period > 5) %>%
+ptb_data <- ptb_data |> filter(period > 5) |>
+  # create factor condition, with "blank" as the reference level
+  mutate(condition = factor(condition, labels = c("blank", "congruent", "incongruent"))) |>
+  # center TIME (period) on bin 9, center trial on trial 1000 and rescale,
+  # create variables with index coding (timebin, prime).
+  mutate(
+    period_9 = period - 9,
+    trial_c = (trial - 1000) / 1000,
+    timebin = factor(period, levels = c(6:15)),
+    prime = ifelse(condition == "blank", 1, ifelse(condition == "congruent", 2, 3)),
+    prime = factor(prime, levels = c(1, 2, 3))
+  )
 
-# create factor condition, with "blank" as the reference level
-mutate(condition = factor(condition, labels = c("blank", "congruent","incongruent"))) %>%
-
-# center TIME (period) on bin 9, center trial on trial 1000 and rescale, 
-# create variables with index coding (timebin, prime).
-mutate(period_9 = period - 9,
-       trial_c = (trial - 1000)/1000,
-       timebin = factor(period, levels=c(6:15)),
-       prime = ifelse(condition=="blank",1, ifelse(condition=="congruent",2,3)),
-       prime = factor(prime, levels=c(1,2,3)))
-
-head(ptb_data,n=17)
+head(ptb_data, n = 17)
 ```
 
-# 3. 3. Fit hazard model in the frequentist framework (model_M1i_f)
+# 3. Fit hazard model in the frequentist framework (model_M1i_f)
 
 ```{r get-data}
-data_M1i_f <- ptb_data %>% select(pid, event, timebin, prime)
+data_M1i_f <- ptb_data |> select(pid, event, timebin, prime)
 ```
 
 Model_M1i_f contains the same effects as Model_M1i in Tutorial 2a.
 
 ```{r fit-model, eval=F}
-model_M1i_f <- glmer(event ~ 0 + timebin:prime  +
-                            (0 + timebin:prime | pid),
-          # control parameters, data set, and complementary log-log link function
-          control = glmerControl(optimizer = c("nlminbwrap"),
-                                 optCtrl = list(maxfun=10000000)), 
-          data = data_M1i_f, 
-          family = binomial(link="cloglog"))
+model_M1i_f <- glmer(
+  event ~ 0 + timebin:prime +
+    (0 + timebin:prime | pid),
+  # control parameters, data set, and complementary log-log link function
+  control = glmerControl(
+    optimizer = c("nlminbwrap"),
+    optCtrl = list(maxfun = 10000000)
+  ),
+  data = data_M1i_f,
+  family = binomial(link = "cloglog")
+)
 ```
 
 Model_M1i_f took about 3 hours on a MacBook Pro (Sonoma 14.6.1 OS, 18GB Memory, M3 Pro Chip).
 
 ```{r save-M1i-f, eval=F}
-save(model_M1i_f, file="Tutorial_3_Frequentist/model_M1i_f.RData")
+save(model_M1i_f, file = "Tutorial_3_Frequentist/model_M1i_f.RData")
 ```
 
 ```{r inspect-M1i-f}
@@ -104,67 +110,93 @@ load("Tutorial_3_Frequentist/model_M1i_f.RData")
 ```
 
 ```{r extract-estimates}
-est <- tibble(brm = fixef(model_M1i)[,c(1,3,4)],
-              glmer = tidy(model_M1i_f, 
-                           effects = c("fixed"), 
-                           conf.int=T, 
-                           conf.level = 0.95)[,c(3,7,8)],
-              effectname = names(fixef(model_M1i_f)),
-              position = rep(6:15,3),
-              prime = factor(rep(1:3, each=10),
-                             labels=c("blank","congruent","incongruent")) )
-est %>% print(n=30)
+est <- tibble(
+  brm = fixef(model_M1i)[, c(1, 3, 4)],
+  glmer = tidy(model_M1i_f,
+    effects = c("fixed"),
+    conf.int = T,
+    conf.level = 0.95
+  )[, c(3, 7, 8)],
+  effectname = names(fixef(model_M1i_f)),
+  position = rep(6:15, 3),
+  prime = factor(rep(1:3, each = 10),
+    labels = c("blank", "congruent", "incongruent")
+  )
+)
+est |> print(n = 30)
 ```
 
 Plot.
 
 ```{r plot-estimates}
 # check hex codes for color paletter
-mypal <- brewer.pal(8,"Dark2")
+mypal <- brewer.pal(8, "Dark2")
 
 # specify colors and shapes
-cols    <- c( "c1" = mypal[1], "c2" = mypal[2])
-shapes  <- c("s1" = 16, "s2" = 17)
+cols <- c("c1" = mypal[1], "c2" = mypal[2])
+shapes <- c("s1" = 16, "s2" = 17)
 
 # plot
 p1 <- ggplot(data = est, aes(x = position)) +
- geom_point(aes( y = brm[,"Estimate"],  
-                 color = "c1", 
-                 shape = "s1"),
-                 size = 2.4) +
- geom_point(aes( y = glmer$estimate, 
-                 color = "c2", 
-                 shape = "s2"),
-                 size = 2.4, 
-                 position = position_nudge(x = .4))  +
- geom_linerange(aes(ymin=brm[,"Q2.5"], ymax=brm[,"Q97.5"], 
-                    color = "c1"), 
-                show.legend = F,
-                linewidth = 1.2) +
- geom_linerange(aes(ymin=glmer$conf.low, ymax=glmer$conf.high, 
-                    color = "c2"), 
-                show.legend = F, 
-                linewidth = 1.2,
-                position = position_nudge(x = .4)) +
- scale_x_continuous(breaks = 6:15, labels = 6:15*40) +
- scale_y_continuous(limits=c(-9,3), breaks = c(-9,-6,-3,0,3)) +
- labs(x = "time bin (upper bound in ms)", y = "cloglog-hazard") +
- scale_color_manual(name = "Model", 
-                    breaks = c("c1", "c2"), 
-                    values = cols,
-                    labels = c("brm", "glmer")) +
- scale_shape_manual(name = "Model", 
-                    breaks = c("s1", "s2"),
-                    values = shapes,
-                    labels = c("brm", "glmer")) +
-  theme(panel.grid.minor = element_blank(),
-        axis.text.x = element_text(angle=90)) +
+  geom_point(
+    aes(
+      y = brm[, "Estimate"],
+      color = "c1",
+      shape = "s1"
+    ),
+    size = 2.4
+  ) +
+  geom_point(
+    aes(
+      y = glmer$estimate,
+      color = "c2",
+      shape = "s2"
+    ),
+    size = 2.4,
+    position = position_nudge(x = .4)
+  ) +
+  geom_linerange(
+    aes(
+      ymin = brm[, "Q2.5"], ymax = brm[, "Q97.5"],
+      color = "c1"
+    ),
+    show.legend = F,
+    linewidth = 1.2
+  ) +
+  geom_linerange(
+    aes(
+      ymin = glmer$conf.low, ymax = glmer$conf.high,
+      color = "c2"
+    ),
+    show.legend = F,
+    linewidth = 1.2,
+    position = position_nudge(x = .4)
+  ) +
+  scale_x_continuous(breaks = 6:15, labels = 6:15 * 40) +
+  scale_y_continuous(limits = c(-9, 3), breaks = c(-9, -6, -3, 0, 3)) +
+  labs(x = "time bin (upper bound in ms)", y = "cloglog-hazard") +
+  scale_color_manual(
+    name = "Model",
+    breaks = c("c1", "c2"),
+    values = cols,
+    labels = c("brm", "glmer")
+  ) +
+  scale_shape_manual(
+    name = "Model",
+    breaks = c("s1", "s2"),
+    values = shapes,
+    labels = c("brm", "glmer")
+  ) +
+  theme(
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(angle = 90)
+  ) +
   facet_wrap(~prime)
 p1
 ```
 
 ```{r save-plot-comparison, eval=F}
-ggsave("Tutorial_3_Frequentist/Comparison.png", height=4, width=10,dpi=800)
+ggsave("Tutorial_3_Frequentist/Comparison.png", height = 4, width = 10, dpi = 800)
 ```
 
 # 5. References
