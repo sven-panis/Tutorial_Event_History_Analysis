@@ -72,7 +72,7 @@ To collect observations on the continuous variable RT, experimental psychologist
 
 
 ```{r suppl-fig1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
-knitr::include_graphics("../../REVIEW2/Plot_RTtasks.png")
+knitr::include_graphics("../../manuscript/Suppl_Material/figures/Plot_RTtasks.png")
 ```
 
 *Recurrent events* are events that happen repeatedly within the same follow-up period. For example, Supplementary Figure 1D shows hypothetical data from a bistable perception task in which the participant is looking at an ambiguous stimulus (e.g., the duck-rabbit illusion, the Necker cube) for two minutes in each trial, and asked to press a button each time when her/his perception switches from one possible interpretation to the other possible interpretation. In this task, there are two events (percept A switches to percept B, percept B switches to percept A) that can recur within the same follow-up period of two minutes, so that the individual transitions back and forth between two states. Thus, each individual contributes multiple, sequential risk episodes within the follow-up period in each trial. We do not analyse recurrent events in this tutorial. More information about recurrent events and multistate analysis can be found in @stoolmillerModelingHeterogeneitySocial2006, @millsIntroducingSurvivalEvent2011, and @lougheedMultilevelSurvivalAnalysis2019.
@@ -104,7 +104,7 @@ The shape of a distribution of waiting times can be described in multiple ways [
 (ref:descr-fig2-caption) In discrete time, the shape of a empirical RT distribution can be described using the probability mass function (A), the cumulative distribution function (B), the survivor function (C), and the discrete-time hazard function (D). Samples are drawn from three example distributions (two normal and one exgaussian distribution) and interval censoring using bins of 20 ms is applied. Note the small differences in P(t), F(t), and S(t) and the relatively large difference in both hazard estimates around 800 ms. The non-parametric discrete-time hazard estimate will equal 1 in the bin containing the largest observed event time, as all trials remaining at risk in that interval experience the event (assuming no right-censored observations extend beyond this time). Also, there is always increased uncertainty around hazard estimates in the right tail compared to the left tail of the distribution.
 
 ```{r suppl-fig2, fig.cap = "(ref:descr-fig2-caption)", out.width="90%"}
-knitr::include_graphics("../../REVIEW2/Plot_distributions.png")
+knitr::include_graphics("../../manuscript/Suppl_material/figures/Plot_distributions.png")
 ```
 
 Now, let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial. The resulting distribution of interval-censored event times can be described in (at least) four ways, the first two of which are highly familiar to cognitive scientists.
@@ -152,7 +152,7 @@ Note that the time bins do not need to have the same width. For example, @panisH
 (ref:descr-fig3-caption) Effect of bin width on the shapes of hazard and conditional accuracy functions. Bin widths equal 15 ms (A), 40 ms (B), and 100 ms (C).
 
 ```{r suppl-fig3, fig.cap = "(ref:descr-fig3-caption)", out.width="100%", out.height="50%"}
-knitr::include_graphics("../../sims/figures/Fig_revision2_binwidth.jpeg")
+knitr::include_graphics("../../manuscript/Suppl_material/figures/Fig_revision2_binwidth.jpeg")
 ```
 
 ## D. Modeling approaches
@@ -162,7 +162,7 @@ There are several different modeling approaches available between which one can 
 (ref:descr-fig4-caption) A decision tree to help select among EHA modeling approaches.
 
 ```{r suppl-fig4, fig.cap = "(ref:descr-fig4-caption)", out.width="90%"}
-knitr::include_graphics("../../REVIEW2/DecisionTreeMethods.png")
+knitr::include_graphics("../../manuscript/Suppl_material/figures/DecisionTreeMethods.png")
 ```
 
 * Parametric survival model
@@ -172,7 +172,7 @@ Parametric hazard models assume time is measured in continuous units and can be 
 (ref:descr-fig5-caption) Describing samples (n=100000) from theoretical waiting time distributions. RTs are often modeled using gamma, ex-gaussian, and lognormal distributions, or by fitting cognitive models for decision making such as the Ratcliff diffusion model. Due to the increased uncertainty around hazard estimates in the right tail, all sample-based hazard functions are wiggling in the right tail, but for some distributions the right tail is located beyond the censoring time of 1200 ms.
 
 ```{r suppl-fig5, fig.cap = "(ref:descr-fig5-caption)", out.width="90%", out.height="80%"}
-knitr::include_graphics("../../REVIEW2/Plot_distributions_theoretical.png")
+knitr::include_graphics("../../manuscript/Suppl_material/figures/Plot_distributions_theoretical.png")
 ```
 
 * Cox regression model
@@ -196,7 +196,7 @@ Furthermore, based on Supplementary Figures 6C and 6D, we infer that this partic
 (ref:descr-fig6-caption) Empirical single-subject distributions observed in cognitive choice RT tasks. Sample-based hazard (A, C, E) and conditional accuracy functions (B, D, F). (A, B). Data from Panis et al. (2020). The participant searches for a target defined by a conjunction of "red" and "vertical". (C, D). Data from Panis and Schmidt (2022). The participant indicates whether a peripheral target stimulus is presented to the left or right of fixation. The target is preceded by a central cue, and the central cue by a peripheral cue at the same or opposite side as the target. (E, F) Unpublished data. The participant discriminates the direction of a horizontal arrow (imperative stimulus, presented at time zero), and when a stop-signal is presented with a certain stop-signal delay (ssd; see vertical lines), the participant is trying to suppress the overt response.
 
 ```{r suppl-fig6, fig.cap = "(ref:descr-fig6-caption)", out.width="90%", out.height="50%"}
-knitr::include_graphics("../../REVIEW2/Plot_distributions_empirical.png")
+knitr::include_graphics("../../manuscript/Suppl_material/figures/Plot_distributions_empirical.png")
 ```
 
 These empirical examples illustrate why we advocate the use of discrete-time methods in RT research as the entry method to EHA/SAT: The shape of empirical hazard functions often do not resemble those of popular parametric distributions (see Supplementary Figure 5). In other words, for many cognitive paradigms the shape of the hazard function is unknown, and discrete-time methods allow the analyst to learn about the shape of the hazard function, which can constrain interpretation. 
