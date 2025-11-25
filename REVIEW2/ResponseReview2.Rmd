@@ -18,10 +18,6 @@ header-includes:
 knitr::opts_chunk$set(echo = F)
 ```
 
-```{r packages and data, include=F }
-
-```
-
 We appreciate the time taken by the editor and reviewers to provide further feedback, as your comments have enabled us to improve the manuscript. We document our responses to your comments below.
 
 # Editor
@@ -38,25 +34,27 @@ Thank you for re-submitting your Tutorial (AMPPS-24-0232.R1) entitled "Event His
 Response: We appreciate that making this paper as accessible as possible is a key priority, given that one barrier to more use of event history analysis is the relative complexity of the approach compared to more conventional analyses.
 As such, we have taken a lot of time and effort to first consider what kind of accessibility we are aiming to achieve, as well as how we might achieve it.
 Our revised approach to making the paper accessible has several strands. 
-First, consistent with our initial aims and instincts, we avoid presenting equations in the main text and instead provide them in supplementary materials.
+First, consistent with our initial aims and instincts, we avoid presenting equations in the main text and instead provide them in supplementary materials. 
 Although more mathematically-minded individuals may not appreciate this choice, they are not our primary target audience, in terms of widening access to these techniques. 
 Moreover, the availability of supplementary materials means that we can make the main text accessible to a wider audience whilst not compromising on relevant details.
 Second, in addition to relevant equations, we also make use of supplementary materials to expand on further background context whenever relevant.
 Third, we have added a new glossary section, which defines and explains key terms and concepts.
+Fourth, we have added a section (2.1.3) with relevant research questions.
+Fifth, we refer to the CRAN Task View on survival analysis in section D of the Supplemental Material.
 Overall, we feel these choices strike a nice balance in terms of accessibility. We do not want the paper to become overly long and technical, but we also want to provide a clear description of key terms, concepts and relevant equations.  
 
 >Reviewer 2 raises several clarity-related concerns--particularly about the bin width discussion and about the interpretability of modeling decisions such as time window selection. 
 
-Response: We include a new supplementary figure to illustrate the choice of bin width.
+Response: We include a new Supplementary Figure to illustrate the choice of bin width (Supplementary Figure 3), and better explain the selection of a time window for analysis (page 25; lines 470-473).
 
 >Both Reviewers 2 and 3 emphasize the need to better motivate methodological choices, especially the use of discrete-time EHA, which is currently justified by lab familiarity rather than a clear articulation of its analytic tradeoffs (R3, citing p. 8 of the ms). 
 
-Response: We now motivate the use of discrete-time EHA. 
+Response: We now motivate the use of discrete-time EHA extensively. First, in section 2.1.2 (pages 9-11). Second, in section D of the Supplemental Material, where we provide a decision tree, and compare the shape of empirical and parametric distributions.
 
 >Reviewer 3 also recommends that the paper more clearly identify the types of research questions EHA is particularly well-suited to address, ideally with earlier and more focused examples (R3, citing p. 10 of the ms). I agree with this point and feel it's critical to make the paper as accessible as possible-- perhaps with (and not limited to) easier examples up front, a glossary of sorts, visualizations; anything (and everything) that will make this complex paper more inviting. 
 
-Response: We now include a glossary and example research questions in the main text of the revised ms.
-Also, we added extra sections to the Supplemental Material, to increase the accessiblity further.
+Response: We now include a glossary (section 5) and example research questions (section 2.1.3) in the main text of the revised ms.
+Also, we added extra sections to the Supplemental Material, to increase the accessiblity further, such as a visual comparison between probability mass, survival, cumulative distribution, and hazard functions in discrete time.
 
 
 >While the paper is technically strong and substantively valuable, its didactic function would be enhanced by more clearly integrating definitions, rationales, and analytic guidance into the main text for the broader AMPPS readership. I'd encourage you to go through the paper start-to-end with an eye toward improving all possible points of entry and overall accessibility.
@@ -108,7 +106,8 @@ time data still should be recorded in continuous time, if multiple bin widths ar
 be considered later during analysis.
 
 Response: We renamed this section to "Implications for research in experimental psychology", and make it clear that RT data is typically treated as 
-continuous time-to-event data, so that it becomes implicitly clear that various bin widths can be considered later during analysis.
+continuous time-to-event data, and so that it becomes implicitly clear that various bin widths can be considered later during analysis.
+Furthermore, in the Supplemental Material we mention explicitly in section B that the continous-time RT data are interval censored.
 
 
 >2. Related to the above comment on bin width, I also think some discussion of the
@@ -124,7 +123,7 @@ criterion? More specificity here could be useful, and I would recommend
 including a supplementary example that illustrates both choosing a bin width and
 any potential impact of that bin width on the conclusions.
 
-Response: We include a supplementary example that illustrates how results are sensitive to the choice of bin width. We also mention that "Overly small bin widths will result in erraticly shaped hazard functions, and some bins will have no events and thus hazard estimates of zero; overly large bin widths will result in a too great loss of temporal information (see Supplementary Figure 3)", on page 14 of the revised ms.
+Response: We include Supplementary Figure 3 to illustrate how results are sensitive to the choice of bin width. We also mention that "Overly small bin widths will result in erraticly shaped hazard functions, and some bins will have no events and thus hazard estimates of zero; overly large bin widths will result in a too great loss of temporal information (see Supplementary Figure 3)", on page 14 of the revised ms (lines 302-304).
 
 >3. Figure 2: In the plot of ca(t), why is there a gap between the first and second
 orange triangles? That is, why is ca(t) missing at 160ms?
