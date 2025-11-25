@@ -188,7 +188,7 @@ pluck(data_final, 7, 1) |>
 pluck(data_final, 7, 1) |> 
   filter(condition=="incongruent")
 
-# view plot (column 8) for subject 1. 
+# view plot (column 8) for subject 6. 
 pluck(data_final, 8, 6)
 
 # view the median RTs in a tibble (median_tb)
