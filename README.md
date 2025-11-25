@@ -75,7 +75,7 @@ At the top level, there are several files.
 
 ## folders ##
 
-There are also seven folders: 
+There are also six folders: 
 
 **/manuscript/**
 
@@ -87,15 +87,12 @@ For more information on using papaja() for manuscripts, see the [papaja manual](
   * manuscript.tex
   * r-references.bib (BibTex entries for R and packages)
   * refs_manuscript.bib (BibTeX entries used in the manuscript)
+  * CreateFigure1.qmd
 
-The /Suppl_material/ subfolder contains the .Rmd and .pdf files for the Supplemental Material, a .bib file (refs_suppl_material.bib) and Supplementary Figure 1 (Plot_paradigms.png).
+The /figures/ subfolder contains Figure 1 of the ms.
 
-**/sims/**
-
-This folder contains the file sims.Rmd used to create Figure 1.
-
-The /figures/ subfolder contains Fig1_revision1.jpeg (and other figures from sims.Rmd).
-
+The /Suppl_material/ subfolder contains the .Rmd and .pdf files for the Supplemental Material, 
+a .bib file (refs_suppl_material.bib), the file CreateSupplementaryFigures.qmd, and two folders (data, figures).
 
 **/renv/**
 

@@ -157,7 +157,7 @@ knitr::include_graphics("../../manuscript/Suppl_material/figures/Fig_revision2_b
 
 ## D. Modeling approaches
 
-There are several different modeling approaches available between which one can select when analyzing a time-to-event data set, as shown in Supplementary Figure 4.
+There are several different modeling approaches available between which one can select when analyzing a time-to-event data set, as shown in Supplementary Figure 4. The reader can also consult the CRAN Task View on [Survival Analysis](https://cran.r-project.org/web/views/Survival.html). 
 
 (ref:descr-fig4-caption) A decision tree to help select among EHA modeling approaches.
 
