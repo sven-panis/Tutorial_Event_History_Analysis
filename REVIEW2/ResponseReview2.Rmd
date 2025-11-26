@@ -139,7 +139,7 @@ the first few bins often contain no responses—isn’t a lack of response at ea
 time points useful data? This sentence could benefit from being re-written for
 increased clarity.
 
-Response: We re-wrote this sentence.... TODO
+Response: We re-wrote this sentence (page 25; lines 468-471): "First, because the first few bins often contain no responses in RT tasks, one may want to select a smaller time window for analysis compared to the follow-up period in each trial (see section A of the Supplemental Material)"
 
 >5. P. 38 line 641-643: “We might pick a hazard ratio…[that] is much smaller than
 that previously observed”
@@ -163,7 +163,7 @@ Response: We added the section reference numbers in the main text.
 ‘nsmall = 2’, you may get a misleading value of 0 (i.e., 0.009 would appear as
 0.00, when in fact 0.01 is more correct). This should be corrected.
 
-Response: We corrected this...... TODO
+Response: We corrected this.
 
 >4. P. 32 line 558: “R package lme4()” should be “R package lme4”
 , otherwise the
@@ -183,7 +183,7 @@ Response: We thank Reviewer 3 for their supportive comments.
 
 >At the same time, the tutorial remains challenging to follow, particularly for readers less familiar with EHA and SAT. To enhance accessibility, I encourage the authors to ensure that key information such as descriptions of research questions, RT data, and analytic approaches (including equations) is presented in the main text rather than moved to supplemental materials. This could likely be achieved without increasing the word count by reducing redundancies and tightening language in several places. Overall, the tutorial covers important concepts, but there is still room to strengthen its contributions, accessibility, and clarity.
 
-Response. As we make clear in our response to the editor, we spent a long time considering how to make the paper as accessible as possible, whilst not compromising on clear descriptions of relevant detail. Please see the response to the editor for a summary of our revised approach. 
+Response: As we make clear in our response to the editor, we spent a long time considering how to make the paper as accessible as possible, whilst not compromising on clear descriptions of relevant detail. Please see the response to the editor for a summary of our revised approach. 
 We now present the descriptions of RT data, research questions, and analytic approaches in the main text.
 Nevertheless, we still opted to keep the text equation-light, to increase accessibility for non-mathematical psychologists.
 We also added various new sections to the Supplemental Material and we added a glossary of key terms.
@@ -192,37 +192,46 @@ Together, we believe that these steps improve accessibility whilst also providin
 >Contribution of this tutorial:
 Thank you for clarifying the aims of the paper (line 89). To strengthen this section, it would be helpful to provide more rationale on the unique characteristics of RT data that necessitate a dedicated EHA tutorial. In particular, please address directly why a tutorial focused on RT data is needed. At present, key RT data characteristics (including the definition of “trial”) appear only in the supplement. Given the centrality of these features, I recommend moving them into the main text so the tutorial stands on its own.
 
-Response: We followed this suggestion.
+Response: We followed this suggestion, and explain key RT characteristics in the main text now.
 
 >The discussion at line 93 would benefit from greater emphasis on why a researcher might conduct EHA analyses. More clearly outlining the types of research questions that survival analysis of RT data can address would make the tutorial more useful and accessible. While some research questions are introduced later (pg. 10), I recommend stating them more clearly and incorporating them earlier (e.g., in Section 2.1).
 
 Response: We now state research questions more clearly in section 2.1.3.
 
 
-
 >In addition, the response to my previous comment that research questions were not expanded because they are “highly dependent on the field of study” seems at odds with the stated goal of offering a tutorial specific to RT data. Providing a focused set of examples would help balance breadth with depth and strengthen the tutorial’s clarity and relevance.
 
-Response: We discuss research questions in section 2.1.3.
+Response: We provide research questions in section 2.1.3.
 
 >Use of discrete-time EHA:
 Pg. 8 – The rationale given (“as a lab, and mainly for practical reasons, we have much more experience using discrete-time EHA”) is not a compelling justification for the analytic choice and feels out of place in a manuscript. One option to consider is to revise this paragraph to instead (1) clarify the distinction between discrete- and continuous-time approaches, (2) note that there are no strict cutoffs for when data should be treated as discrete versus continuous, and (3) highlight the relative advantages, limitations, or tradeoffs of each. This framing would be more informative for readers and align better with the tutorial’s didactic purpose.
 
-Response: We revised this paragraph to clearly motivate our choice for discrete-time EHA and note that "there are no strict cutoffs for when data should be treated as discrete versus continuous".
+Response: We revised this paragraph to clearly motivate our choice for discrete-time EHA (section 2.1.2; pages 9-11) and note that "there are no strict cutoffs for when data should be treated as discrete versus continuous". Also, in section D of the Supplemental Material, we provide a decision tree and compare the shape of empirical and parametric distributions.
 
 
 >Clarity and accuracy:
 Pg. 3 – The speed/accuracy tradeoff analysis is mentioned without explanation. Even if this concept is familiar to many experimental psychologists (as noted in your prior responses), it would strengthen the manuscript to include one or two sentences defining key terms or analysis types when first introduced. This would improve accessibility for a broader readership and support the tutorial’s clarity. I highlight a few examples below, but this should be considered throughout.
 
-Response: We explain SAT analysis in the new Glossary (section 2.4).
+Response: We explain SAT analysis in the new Glossary (section 5).
 
 >Pg. 8 – The phrase “discrete or continuous time units” is introduced without explanation. Please add a brief description of the distinction between these two approaches.
 
-Response: We discuss the distinction now on page x of the revised ms..... TODO
+Response: We now mention on page 8:
+"In RT tasks,response times are typically measured with a temporal resolution of 1 millisecond, or
+higher. As 1 ms is typically short compared to the range of empirical RT distributions
+(e.g., a half second), response times are generally treated as continuous time-to-event data."
+
+And on page 9: "The type of models employed, and the definition of
+hazard, depend on whether one is using continuous or discrete time units. Even though RT
+is typically treated as a continuous variable, here we focus on discrete-time methods that
+can be applied after grouping RTs into time periods (i.e., time intervals or time bins)."
+
+Together with the information in sections B and D of the Supplemental Material, the distinction between these two approaches should be clear now.
 
 
 >Pgs. 8-10 – Terms such as “hazard of response” (pg. 8) and “discrete-time hazard function” (pg. 9) are introduced without definition. 
 
-Response: We introducte definitions for these terms in a new Glossary.
+Response: We introduce definitions for these terms in a new Glossary.
 
 
 >Likewise, Figure 1 presents hazard and conditional accuracy equations but does not walk readers through their meaning or interpretation. I encourage you to keep the equations in the main text and provide accessible explanations, as this will better equip readers who may be less comfortable with mathematical notation. 
@@ -240,7 +249,7 @@ Response: We removed "instantaneous" when talking about risk in discrete-time.
 
 >Pg 14 – The manuscript would be strengthened if key EHA elements were defined directly in the main text rather than directing readers to the supplemental material.
 
-Response: We define key EHA elements in the new Glossary.
+Response: We define key EHA elements in the main text, and in the new Glossary.
 
 >Pg 15 – In my original review I requested that right and left censoring be more clearly defined. Right censoring is still referred to several times in the manuscript without initial explanation of what this is. For the benefit of novice readers (since this is an AMPPS tutorial), I recommend including these definitions in the main text rather than the supplement.
 

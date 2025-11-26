@@ -129,10 +129,11 @@ relevant equations, we also make use of supplementary materials to
 expand on further background context whenever relevant. Third, we have
 added a new glossary section, which defines and explains key terms and
 concepts. Fourth, we have added a section (2.1.3) with relevant research
-questions. Overall, we feel these choices strike a nice balance in terms
-of accessibility. We do not want the paper to become overly long and
-technical, but we also want to provide a clear description of key terms,
-concepts and relevant equations.
+questions. Fifth, we refer to the CRAN Task View on survival analysis in
+section D of the Supplemental Material. Overall, we feel these choices
+strike a nice balance in terms of accessibility. We do not want the
+paper to become overly long and technical, but we also want to provide a
+clear description of key terms, concepts and relevant equations.
 
 \begin{quote}
 Reviewer 2 raises several clarity-related concerns--particularly about
@@ -334,7 +335,11 @@ equals 0 and ca(t) is undefined.
 \end{enumerate}
 \end{quote}
 
-Response: We re-wrote this sentence\ldots. TODO
+Response: We re-wrote this sentence (page 25; lines 468-471): ``First,
+because the first few bins often contain no responses in RT tasks, one
+may want to select a smaller time window for analysis compared to the
+follow-up period in each trial (see section A of the Supplemental
+Material)''
 
 \begin{quote}
 \begin{enumerate}
@@ -384,7 +389,7 @@ Response: We added the section reference numbers in the main text.
 \end{enumerate}
 \end{quote}
 
-Response: We corrected this\ldots\ldots{} TODO
+Response: We corrected this.
 
 \begin{quote}
 \begin{enumerate}
@@ -427,7 +432,7 @@ important concepts, but there is still room to strengthen its
 contributions, accessibility, and clarity.
 \end{quote}
 
-Response. As we make clear in our response to the editor, we spent a
+Response: As we make clear in our response to the editor, we spent a
 long time considering how to make the paper as accessible as possible,
 whilst not compromising on clear descriptions of relevant detail. Please
 see the response to the editor for a summary of our revised approach. We
@@ -450,7 +455,8 @@ in the supplement. Given the centrality of these features, I recommend
 moving them into the main text so the tutorial stands on its own.
 \end{quote}
 
-Response: We followed this suggestion.
+Response: We followed this suggestion, and explain key RT
+characteristics in the main text now.
 
 \begin{quote}
 The discussion at line 93 would benefit from greater emphasis on why a
@@ -472,7 +478,7 @@ balance breadth with depth and strengthen the tutorial's clarity and
 relevance.
 \end{quote}
 
-Response: We discuss research questions in section 2.1.3.
+Response: We provide research questions in section 2.1.3.
 
 \begin{quote}
 Use of discrete-time EHA: Pg. 8 -- The rationale given (``as a lab, and
@@ -488,8 +494,11 @@ and align better with the tutorial's didactic purpose.
 \end{quote}
 
 Response: We revised this paragraph to clearly motivate our choice for
-discrete-time EHA and note that ``there are no strict cutoffs for when
-data should be treated as discrete versus continuous''.
+discrete-time EHA (section 2.1.2; pages 9-11) and note that ``there are
+no strict cutoffs for when data should be treated as discrete versus
+continuous''. Also, in section D of the Supplemental Material, we
+provide a decision tree and compare the shape of empirical and
+parametric distributions.
 
 \begin{quote}
 Clarity and accuracy: Pg. 3 -- The speed/accuracy tradeoff analysis is
@@ -502,7 +511,7 @@ clarity. I highlight a few examples below, but this should be considered
 throughout.
 \end{quote}
 
-Response: We explain SAT analysis in the new Glossary (section 2.4).
+Response: We explain SAT analysis in the new Glossary (section 5).
 
 \begin{quote}
 Pg. 8 -- The phrase ``discrete or continuous time units'' is introduced
@@ -510,8 +519,21 @@ without explanation. Please add a brief description of the distinction
 between these two approaches.
 \end{quote}
 
-Response: We discuss the distinction now on page x of the revised
-ms\ldots.. TODO
+Response: We now mention on page 8: ``In RT tasks,response times are
+typically measured with a temporal resolution of 1 millisecond, or
+higher. As 1 ms is typically short compared to the range of empirical RT
+distributions (e.g., a half second), response times are generally
+treated as continuous time-to-event data.''
+
+And on page 9: ``The type of models employed, and the definition of
+hazard, depend on whether one is using continuous or discrete time
+units. Even though RT is typically treated as a continuous variable,
+here we focus on discrete-time methods that can be applied after
+grouping RTs into time periods (i.e., time intervals or time bins).''
+
+Together with the information in sections B and D of the Supplemental
+Material, the distinction between these two approaches should be clear
+now.
 
 \begin{quote}
 Pgs. 8-10 -- Terms such as ``hazard of response'' (pg. 8) and
@@ -519,7 +541,7 @@ Pgs. 8-10 -- Terms such as ``hazard of response'' (pg. 8) and
 definition.
 \end{quote}
 
-Response: We introducte definitions for these terms in a new Glossary.
+Response: We introduce definitions for these terms in a new Glossary.
 
 \begin{quote}
 Likewise, Figure 1 presents hazard and conditional accuracy equations
@@ -556,7 +578,8 @@ defined directly in the main text rather than directing readers to the
 supplemental material.
 \end{quote}
 
-Response: We define key EHA elements in the new Glossary.
+Response: We define key EHA elements in the main text, and in the new
+Glossary.
 
 \begin{quote}
 Pg 15 -- In my original review I requested that right and left censoring

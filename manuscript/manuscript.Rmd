@@ -27,7 +27,7 @@ authornote: |
 abstract: |
   Time-to-event data such as response times and saccade latencies form a cornerstone of experimental psychology, and have had a widespread impact on our understanding of human cognition. However, the orthodox method for analyzing such data -- comparing means between conditions -- is known to conceal valuable information about the timeline of psychological effects, such as their onset time and how they evolve over time. The ability to reveal finer-grained, "temporal states" of cognitive processes can have important consequences for theory development by qualitatively changing the key inferences that are drawn from psychological data. Luckily, well-established analytical approaches, such as event history analysis (EHA), are able to evaluate the detailed shape of time-to-event distributions, and thus characterize the time course of psychological states. One barrier to wider use of EHA, however, is that the analytical workflow is typically more time-consuming and complex than orthodox approaches. To help achieve broader uptake of EHA, in this paper we outline a set of tutorials that detail one distributional method known as discrete-time EHA. We touch upon several key aspects of the workflow, such as how to process raw data and specify regression models, and we also consider the implications for experimental design. We finish the article by considering the benefits of the approach for understanding psychological states, as well as its limitations. Finally, the project is written in R and freely available, which means the approach can easily be adapted to other data sets.  
 keywords          : "response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology"
-wordcount         : "11101 (body) + 1807 (references) + 5325 (body supplemental material) + 589 (refs suppl. mat.)"
+wordcount         : "11101 (body) + 1807 (references) + 5328 (body supplemental material) + 589 (refs suppl. mat.)"
 bibliography      : ["refs_manuscript.bib", "r-references.bib"]
 floatsintext      : yes
 linenumbers       : yes
@@ -502,7 +502,7 @@ model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
 \footnotesize
 ```{r show-weights, echo=T, eval=T}
 model_weights(model_M0i, model_M1i, weights = "loo") %>% round(digits = 2) %>% format(nsmall=2)
-model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 1) %>% format(nsmall=2)
+model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 2) %>% format(nsmall=2)
 ```
 \normalsize
 
@@ -704,8 +704,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 \item[Time-Varying Covariates (Time-Dependent Covariates)] Predictors whose values change over time periods within the same individual's episode (e.g., employment status, gaze position, age, income).
 
 \item[Risk Set] For non-repeatable events with continuous time units: the set of individuals who are eligible to experience the event at a given time point. In discrete-time analysis, the risk set at time period t consists of all individuals who have not yet experienced the (non-repeatable) event by the beginning of period t and are still under observation. An individual exits the risk set once they experience the (non-repeatable) event or are censored. In trial-based or repeated measurements designs with discrete time, the risk set at each discrete time period within a trial consists of all observations (trials) where the event has not yet occurred by that time period, even when multiple trials come from the same individual.
-
-\item[Discrete-time survival function] The probability that an individual survives (does not experience the event) beyond a particular time period t. Denoted as S(t) = P(T>t). Related to discrete-time hazard through S(t) = $\prod [1-h(j)]$ for all j$\leq$t.
 
 \item[Right Censoring] Occurs when an individual's observation period ends before the event occurs (e.g., study ends, lost to follow-up). We know the event didn't occur by time t, but don't know if/when it occurs afterward.
 
