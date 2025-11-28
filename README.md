@@ -87,7 +87,7 @@ For more information on using papaja() for manuscripts, see the [papaja manual](
   * manuscript.tex
   * r-references.bib (BibTex entries for R and packages)
   * refs_manuscript.bib (BibTeX entries used in the manuscript)
-  * CreateFigure1.qmd
+  * CreateFigure1.qmd: code to create Figure 1
 
 The /figures/ subfolder contains Figure 1 of the ms.
 

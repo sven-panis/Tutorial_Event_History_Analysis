@@ -227,7 +227,7 @@
   }
 {}{\PatchFailed}
 \makeatother
-\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11101 (body) + 1807 (references) + 5325 (body supplemental material) + 589 (refs suppl. mat.)}
+\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11101 (body) + 1807 (references) + 5328 (body supplemental material) + 589 (refs suppl. mat.)}
 \usepackage{lineno}
 
 \linenumbers
@@ -279,7 +279,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020).
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis}\footnote{All terms in bold can be found in the glossary (section 5).}.
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is generally known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis}\footnote{All terms in bold can be found in the glossary (section 5).}.
 
 
 
@@ -289,7 +289,7 @@ As a simple illustration, Figure 1 summarises simulated data for one subject tha
 
 }
 
-\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The \textbf{discrete-time hazard functions} (top) and \textbf{conditional accuracy functions} (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no events in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) For the same data, we perform a discrete-time EHA by plotting the \textbf{discrete-time hazard functions} (top) and a speed-accuray tradeoff analysis by plotting the \textbf{conditional accuracy functions} (bottom). The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no response in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).}\label{fig:plot1}
 \end{figure}
 
 For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard functions of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1\footnote{We always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the \textbf{time period} running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included.}. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis, 2020; Panis \& Schmidt, 2016, 2022), as illustrated in Supplementary Figure 6.
@@ -537,13 +537,16 @@ In the code of Tutorial 1a, this is accomplished as follows.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_wr}\OtherTok{\textless{}{-}}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/DataExp1\_6subjects\_wrangled.csv"}\NormalTok{)}
-\NormalTok{data\_wr }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{rename}\NormalTok{(}\AttributeTok{pid =}\NormalTok{ vp, }\AttributeTok{condition =}\NormalTok{ prime\_type, }\AttributeTok{acc =}\NormalTok{ respac, }\AttributeTok{trial =}\NormalTok{ TrialNr) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =}\NormalTok{ condition }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, }\CommentTok{\# original levels were 0, 1, 2.}
-         \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition, }
-                            \AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }
-                            \AttributeTok{labels=}\FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{,}\StringTok{"congruent"}\NormalTok{,}\StringTok{"incongruent"}\NormalTok{)))}
+\NormalTok{data\_wr }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/DataExp1\_6subjects\_wrangled.csv"}\NormalTok{)}
+\NormalTok{data\_wr }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{pid =}\NormalTok{ vp, }\AttributeTok{condition =}\NormalTok{ prime\_type, }\AttributeTok{acc =}\NormalTok{ respac, }\AttributeTok{trial =}\NormalTok{ TrialNr) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{condition =}\NormalTok{ condition }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, }\CommentTok{\# original levels were 0, 1, 2.}
+    \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition,}
+      \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{),}
+      \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"blank"}\NormalTok{, }\StringTok{"congruent"}\NormalTok{, }\StringTok{"incongruent"}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  )}
 \end{Highlighting}
 \end{Shaded}
 
@@ -556,19 +559,19 @@ Next, we can set up the life tables and plot for each participant and condition 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data\_nested }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_nest}\NormalTok{(pid)}
-\NormalTok{data\_final }\OtherTok{\textless{}{-}}\NormalTok{ data\_nested }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{data\_final }\OtherTok{\textless{}{-}}\NormalTok{ data\_nested }\SpecialCharTok{\%\textgreater{}\%}
   \CommentTok{\# ! user input: censoring time, and bin width in milliseconds}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}   
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
   \CommentTok{\# create person{-}trial{-}bin data set}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{\%\textgreater{}\%}          
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{\%\textgreater{}\%}
   \CommentTok{\# create life tables without conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{\%\textgreater{}\%}   
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{\%\textgreater{}\%}
   \CommentTok{\# calculate conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{\%\textgreater{}\%}      
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{\%\textgreater{}\%}
   \CommentTok{\# create life tables with conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{\%\textgreater{}\%}    
-  \CommentTok{\# create plots }
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{plot =} \FunctionTok{map2}\NormalTok{(}\AttributeTok{.x =}\NormalTok{ lifetable\_ca, }\AttributeTok{.y =}\NormalTok{ pid, plot\_eha,}\DecValTok{1}\NormalTok{))  }
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\# create plots}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{plot =} \FunctionTok{map2}\NormalTok{(}\AttributeTok{.x =}\NormalTok{ lifetable\_ca, }\AttributeTok{.y =}\NormalTok{ pid, plot\_eha, }\DecValTok{1}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -665,7 +668,7 @@ To this end, Tutorial 1b illustrates how to calculate and plot the descriptive s
 In this third tutorial, we illustrate how to fit Bayesian multilevel regression models to the RT data of the masked response priming data used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors (Singer \& Willett, 2003).
 
 In general, when fitting regression models, our lab adopts an estimation approach to multilevel regression (Kruschke \& Liddell, 2018; Winter, 2019), which is heavily influenced by the Bayesian framework as suggested by Richard McElreath (Kurz, 2023b; McElreath, 2020). We also use a ``keep it maximal'' approach by specifying a full varying (or random) effects structure (Barr, Levy, Scheepers, \& Tily, 2013). This means that wherever possible we include varying intercepts and slopes per participant.
-To make inferences, we use two main approaches. We compare models of different complexity using information criteria and cross-validation, to evaluate out-of-sample predictive accuracy (McElreath, 2020). We also take the most complex model and evaluate key parameters of interest using point and interval estimates.
+To make inferences, we typically use two main approaches (McElreath, 2020). We compare models of different complexity using information criteria and cross-validation, to evaluate out-of-sample predictive accuracy. We also take the most complex model and evaluate key parameters of interest using point and interval estimates.
 
 \subsubsection{3.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
@@ -752,7 +755,9 @@ There are two popular strategies to evaluate how well models will perform in pre
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -763,7 +768,9 @@ There are two popular strategies to evaluate how well models will perform in pre
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1016,8 +1023,6 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Risk Set] For non-repeatable events with continuous time units: the set of individuals who are eligible to experience the event at a given time point. In discrete-time analysis, the risk set at time period t consists of all individuals who have not yet experienced the (non-repeatable) event by the beginning of period t and are still under observation. An individual exits the risk set once they experience the (non-repeatable) event or are censored. In trial-based or repeated measurements designs with discrete time, the risk set at each discrete time period within a trial consists of all observations (trials) where the event has not yet occurred by that time period, even when multiple trials come from the same individual.
 
-\item[Discrete-time survival function] The probability that an individual survives (does not experience the event) beyond a particular time period t. Denoted as S(t) = P(T>t). Related to discrete-time hazard through S(t) = $\prod [1-h(j)]$ for all j$\leq$t.
-
 \item[Right Censoring] Occurs when an individual's observation period ends before the event occurs (e.g., study ends, lost to follow-up). We know the event didn't occur by time t, but don't know if/when it occurs afterward.
 
 \item[Left Censoring] Occurs when the event may have occurred before the observation period began, but we don't know exactly when.
@@ -1044,19 +1049,19 @@ Conceptualization: S. Panis and R. Ramsey; Software: S. Panis and R. Ramsey; Wri
 
 The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
 
+\section{Supplemental Material}\label{supplemental-material}
+
+Panis\_Ramsey\_suppl\_material\_R1.pdf
+
 \section{Prior versions}\label{prior-versions}
 
 All of the submitted manuscript and Supplemental Material was previously posted to a preprint archive: \url{https://doi.org/10.31234/osf.io/57bh6_v2}
-
-\section{Supplemental Material}\label{supplemental-material}
 
 \section{Disclosures}\label{disclosures}
 
 \subsection{Data, materials, and online resources}\label{data-materials-and-online-resources}
 
 Link to public archive: \url{https://github.com/sven-panis/Tutorial_Event_History_Analysis}
-
-Supplemental Material: Panis\_Ramsey\_suppl\_material\_R1.pdf
 
 \subsection{Ethical approval}\label{ethical-approval}
 

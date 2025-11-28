@@ -94,9 +94,9 @@ knitr::opts_chunk$set(fig.pos='H', out.extra = '', out.height = "67%",
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology [@bolgerCausalProcessesPsychology2019]. However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events [@panisHowCanWe2020; @panisNeuropsychologicalEvidenceTemporal2017; @panisStudyingDynamicsVisual2020; @panisTimecourseContingenciesPerceptual2009; @panisWhatShapingRT2016; @panisWhenDoesInhibition2022; @wolkersdorferTemporalDynamicsSequential2020].
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is known as **discrete-time event history analysis** (EHA), which is extended with a **speed-accuracy tradeoff analysis**[^note1]. 
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is generally known as **discrete-time event history analysis** (EHA), which is extended with a **speed-accuracy tradeoff analysis**[^note1]. 
 
-(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) The **discrete-time hazard functions** (top) and **conditional accuracy functions** (bottom) are plotted for the same data. The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no events in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).  
+(ref:descr-fig1-caption) Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) For the same data, we perform a discrete-time EHA by plotting the **discrete-time hazard functions** (top) and a speed-accuray tradeoff analysis by plotting the **conditional accuracy functions** (bottom). The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no response in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).  
 
 ```{r plot1, fig.cap = "(ref:descr-fig1-caption)", out.width="90%"}
 knitr::include_graphics("../manuscript/figures/Fig1_revision2.jpeg")
@@ -246,21 +246,21 @@ set.seed(123)
 
 ## create the ca data
 ca <- tibble(
-  pid = as.integer(rep(1, times=10)),
+  pid = as.integer(rep(1, times = 10)),
   trial = 1:10,
   condition = sample(rep(c("congruent", "incongruent"), each = 5)),
   rt = rnorm(10, 500, 100),
-  accuracy = rbinom(10,1,0.7)
+  accuracy = rbinom(10, 1, 0.7)
 )
 
 ## create the ha data
 ha <- tibble(
-  pid = c(rep(1, times=9)),
-  trial = c(rep(1, times=4), rep(2,times=5)),
-  condition = c(rep("congruent", times=4), rep("incongruent", times=5)),
-  timebin = c(seq(1,4), seq(1,5)),
+  pid = c(rep(1, times = 9)),
+  trial = c(rep(1, times = 4), rep(2, times = 5)),
+  condition = c(rep("congruent", times = 4), rep("incongruent", times = 5)),
+  timebin = c(seq(1, 4), seq(1, 5)),
   event = c(0, 0, 0, 1, 0, 0, 0, 0, 1)
-) %>% 
+) %>%
   mutate_if(is.numeric, as.integer)
 ```
 
@@ -319,13 +319,16 @@ In the code of Tutorial 1a, this is accomplished as follows.
 
 \footnotesize
 ```{r setup-data-tut1, echo=TRUE}
-data_wr<-read_csv("../Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
-data_wr <- data_wr %>% 
-  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr) %>% 
-  mutate(condition = condition + 1, # original levels were 0, 1, 2.
-         condition = factor(condition, 
-                            levels=c(1,2,3), 
-                            labels=c("blank","congruent","incongruent")))
+data_wr <- read_csv("../Tutorial_1_descriptive_stats/data/DataExp1_6subjects_wrangled.csv")
+data_wr <- data_wr %>%
+  rename(pid = vp, condition = prime_type, acc = respac, trial = TrialNr) %>%
+  mutate(
+    condition = condition + 1, # original levels were 0, 1, 2.
+    condition = factor(condition,
+      levels = c(1, 2, 3),
+      labels = c("blank", "congruent", "incongruent")
+    )
+  )
 ```
 \normalsize
 
@@ -334,19 +337,19 @@ Next, we can set up the life tables and plot for each participant and condition 
 \footnotesize
 ```{r nest-apply-functions-tut1, echo = TRUE, eval=F}
 data_nested <- data_wr %>% group_nest(pid)
-data_final <- data_nested %>% 
+data_final <- data_nested %>%
   # ! user input: censoring time, and bin width in milliseconds
-  mutate(censored = map(data, censor, 600, 40)) %>%   
+  mutate(censored = map(data, censor, 600, 40)) %>%
   # create person-trial-bin data set
-  mutate(ptb_data = map(censored, ptb)) %>%          
+  mutate(ptb_data = map(censored, ptb)) %>%
   # create life tables without conditional accuracies
-  mutate(lifetable = map(ptb_data, setup_lt)) %>%   
+  mutate(lifetable = map(ptb_data, setup_lt)) %>%
   # calculate conditional accuracies
-  mutate(condacc = map(censored, calc_ca)) %>%      
+  mutate(condacc = map(censored, calc_ca)) %>%
   # create life tables with conditional accuracies
-  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%    
-  # create plots 
-  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha,1))  
+  mutate(lifetable_ca = map2(lifetable, condacc, join_lt_ca)) %>%
+  # create plots
+  mutate(plot = map2(.x = lifetable_ca, .y = pid, plot_eha, 1))
 ```
 \normalsize
 
@@ -374,8 +377,9 @@ apa_table(
   note = "(ref:life-note-caption)",
   placement = "H",
   format.args = list(
-    digits = c(0,0,0,0,2,2,2,2,2,2,2,2),
-    decimal.mark = ".", big.mark = "")
+    digits = c(0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2),
+    decimal.mark = ".", big.mark = ""
+  )
 )
 ```
 
@@ -414,7 +418,7 @@ To this end, Tutorial 1b illustrates how to calculate and plot the descriptive s
 In this third tutorial, we illustrate how to fit Bayesian multilevel regression models to the RT data of the masked response priming data used in Tutorial 1a. Fitting (Bayesian or non-Bayesian) regression models to time-to-event data is important when you want to study how the shape of the hazard function depends on various predictors [@singerAppliedLongitudinalData2003]. 
 
 In general, when fitting regression models, our lab adopts an estimation approach to multilevel regression [@kruschkeBayesianNewStatistics2018; @winterStatisticsLinguistsIntroduction2019], which is heavily influenced by the Bayesian framework as suggested by Richard McElreath [@mcelreathStatisticalRethinkingBayesian2020; @kurzStatisticalRethinkingSecondEd2023]. We also use a "keep it maximal" approach by specifying a full varying (or random) effects structure [@barrRandomEffectsStructure2013]. This means that wherever possible we include varying intercepts and slopes per participant.
-To make inferences, we use two main approaches. We compare models of different complexity using information criteria and cross-validation, to evaluate out-of-sample predictive accuracy [@mcelreathStatisticalRethinkingBayesian2020]. We also take the most complex model and evaluate key parameters of interest using point and interval estimates. 
+To make inferences, we typically use two main approaches [@mcelreathStatisticalRethinkingBayesian2020]. We compare models of different complexity using information criteria and cross-validation, to evaluate out-of-sample predictive accuracy. We also take the most complex model and evaluate key parameters of interest using point and interval estimates. 
 
 ### 3.3.1 Hazard model considerations 
 
@@ -501,8 +505,12 @@ model_M1i <- add_criterion(model_M1i, c("loo", "waic"))
 
 \footnotesize
 ```{r show-weights, echo=T, eval=T}
-model_weights(model_M0i, model_M1i, weights = "loo") %>% round(digits = 2) %>% format(nsmall=2)
-model_weights(model_M0i, model_M1i, weights = "waic") %>% round(digits = 2) %>% format(nsmall=2)
+model_weights(model_M0i, model_M1i, weights = "loo") %>%
+  round(digits = 2) %>%
+  format(nsmall = 2)
+model_weights(model_M0i, model_M1i, weights = "waic") %>%
+  round(digits = 2) %>%
+  format(nsmall = 2)
 ```
 \normalsize
 
@@ -731,11 +739,13 @@ Conceptualization: S. Panis and R. Ramsey; Software: S. Panis and R. Ramsey; Wri
 
 The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
 
+# Supplemental Material
+
+Panis_Ramsey_suppl_material_R1.pdf
+
 # Prior versions
 
 All of the submitted manuscript and Supplemental Material was previously posted to a preprint archive: https://doi.org/10.31234/osf.io/57bh6_v2
-
-# Supplemental Material
 
 
 # Disclosures
@@ -743,9 +753,6 @@ All of the submitted manuscript and Supplemental Material was previously posted 
 ## Data, materials, and online resources
 
 Link to public archive: https://github.com/sven-panis/Tutorial_Event_History_Analysis
-
-Supplemental Material: Panis_Ramsey_suppl_material_R1.pdf
-
 
 ## Ethical approval
 
