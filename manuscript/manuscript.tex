@@ -227,7 +227,7 @@
   }
 {}{\PatchFailed}
 \makeatother
-\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11101 (body) + 1807 (references) + 5328 (body supplemental material) + 589 (refs suppl. mat.)}
+\keywords{response times, event history analysis, Bayesian multilevel regression models, experimental psychology, cognitive psychology\newline\indent Word count: 11098 (body) + 1807 (references) + 5276 (body supplemental material) + 589 (refs suppl. mat.)}
 \usepackage{lineno}
 
 \linenumbers
@@ -279,7 +279,7 @@ Time-to-event data such as response times and saccade latencies form a cornersto
 
 In experimental psychology, it is standard practice to analyse response times (RTs), saccade latencies, and fixation durations by calculating average performance across a series of trials. Such comparisons between means have been the workhorse of experimental psychology over the last century, and have had a substantial impact on theory development as well as our understanding of the structure of cognition and brain function. Indeed, the view that mean values represent truth and variations around the mean are error is deeply ingrained in experimental psychology (Bolger, Zee, Rossignac-Milon, \& Hassin, 2019). However, differences in mean RT conceal important pieces of information, such as when an experimental effect starts, how it evolves with increasing waiting time, and whether its onset is time-locked to other events (Panis, 2020; Panis, Moran, Wolkersdorfer, \& Schmidt, 2020; Panis \& Schmidt, 2016, 2022; Panis, Torfs, Gillebert, Wagemans, \& Humphreys, 2017; Panis \& Wagemans, 2009; Wolkersdorfer, Panis, \& Schmidt, 2020).
 
-As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is generally known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis}\footnote{All terms in bold can be found in the glossary (section 5).}.
+As a simple illustration, Figure 1 summarises simulated data for one subject that shows how comparing means between two conditions conceals the shapes of the underlying RT and accuracy distributions. Furthermore, compared to the aggregation of data across trials (Figure 1A), a distributional approach offers the possibility to reveal the temporal organization of psychological states (Figure 1B). The distributional method we apply is known as \textbf{discrete-time event history analysis} (EHA), which is extended with a \textbf{speed-accuracy tradeoff analysis}\footnote{All terms in bold can be found in the glossary (section 5).}.
 
 
 
@@ -289,7 +289,7 @@ As a simple illustration, Figure 1 summarises simulated data for one subject tha
 
 }
 
-\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) For the same data, we perform a discrete-time EHA by plotting the \textbf{discrete-time hazard functions} (top) and a speed-accuray tradeoff analysis by plotting the \textbf{conditional accuracy functions} (bottom). The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no response in earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).}\label{fig:plot1}
+\caption{Simulated single-subject data showing mean performance versus a distributional analysis. (A) The mean RT (top) and overall accuracy (bottom) for two conditions are plotted. Two hundred trials are simulated in each condition. (B) For the same data, we perform a descriptive discrete-time EHA by plotting the \textbf{discrete-time hazard functions} (top) and a speed-accuray tradeoff analysis by plotting the \textbf{conditional accuracy functions} (bottom). The first second after target stimulus onset (time zero) is divided in ten time bins of 100 ms (indexed by t = 1 to 10). Hazard for bin t is the conditional probability of response occurrence in bin t given no response in any of the earlier bins. Conditional accuracy for bin t is the conditional probability of a correct response given response occurrence in bin t. The hazard and conditional accuracy estimates are plotted at the upper bound of each time bin. The mathematical definitions of discrete-time hazard and conditional accuracy are provided in section B of the Supplemental Material. Error bars represent +/- 1 standard error of the mean (A) or proportion (B). All terms in bold can be found in the glossary (section 5).}\label{fig:plot1}
 \end{figure}
 
 For example, Figure 1B shows a first state (up to 400 ms after target onset) for which the early upswing in the hazard functions of response occurrence is equal for both conditions, and the emitted responses are always correct in condition 1 and always incorrect in condition 2. In a second state (400 to 500 ms), the hazard of response occurrence is higher in condition 1, and conditional accuracies are close to .5 in both conditions. In a third state (\textgreater500 ms), the effect disappears in hazard, and all conditional accuracies are equal to 1\footnote{We always refer to a time bin by its upper bound. For example, time bin ``500'' in Figure 1B refers to the \textbf{time period} running from 400 ms to 500 ms, with the lower bound of 400 ms excluded, and the upper bound of 500 ms included.}. Importantly from a face-validity perspective, this pattern of simulated data can be seen in the experimental psychology literature (Panis, 2020; Panis \& Schmidt, 2016, 2022), as illustrated in Supplementary Figure 6.
@@ -317,7 +317,7 @@ In this section, we want to provide an intuition regarding how EHA works in gene
 
 \subsection{2.1 A brief introduction to event history analysis}\label{a-brief-introduction-to-event-history-analysis}
 
-EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations (Allison, 2010). EHA is known by various labels, such as survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer \& Willett, 2003). In this paper, we choose to use the term EHA throughout. An \textbf{event} is defined as a qualitative change -- a transition from one discrete state to another -- that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring reach movement trajectories, for example in mouse-tracking studies (Schoemann, O'Hora, Dale, \& Scherbaum, 2021; Spivey \& Dale, 2006). While some events can only happen once (e.g., death, onset chronic disease), most events of interest for cognitive scientists can happen repeatedly to the same individual.
+EHA is a class of statistical approaches to study the occurrence and timing of events, such as death, disease onset, marriages, arrests, and job terminations (Allison, 2010). EHA is known by various labels, including survival analysis, hazard analysis, duration analysis, failure-time analysis, and transition analysis (Singer \& Willett, 2003). In this paper, we choose to use the term EHA throughout. An \textbf{event} is defined as a qualitative change -- a transition from one discrete state to another -- that can be situated in time. Typical events of interest in cognitive science include manual button presses, vocal response onsets, saccadic eye-movement onsets, fixation offsets, and spatial boundary crossings when measuring movement trajectories, for example in mouse-tracking studies (Schoemann, O'Hora, Dale, \& Scherbaum, 2021; Spivey \& Dale, 2006). While some events can only happen once (e.g., death, chronic disease onset), most events of interest for cognitive scientists can happen repeatedly to the same individual.
 
 \subsubsection{2.1.1 EHA concepts applied to RT tasks}\label{eha-concepts-applied-to-rt-tasks}
 
@@ -336,12 +336,12 @@ The fact that EHA can deal with right censoring, therefore, presents a analytica
 \paragraph{Competing risks}\label{competing-risks}
 
 In many applications there are multiple events of interest, such as correct versus error responses, for example. In EHA parlance this is known as a \textbf{competing risks} situation, because from time zero onwards, both correct and incorrect responses are competing with another in each trial until one occurs which determines the event type and latency that are recorded. In other words, in each trial the participant can transition from an idle state to either a ``correct response'' state or an ``incorrect response'' state.
-There are several approaches to deal with a competing risks situation (see section A of the Supplemental Material). Here, we estimate and model the \textbf{hazard} of (any) response occurrence and extend it with a speed-accuracy tradeoff analysis (Heitz, 2014), by plotting and modeling the conditional accuracy function (see Figure 1B).
+There are several approaches to deal with a competing risks situation (see section A of the Supplemental Material). Here, we estimate and model the \textbf{hazard} of (any) response occurrence and extend it with a speed-accuracy tradeoff analysis (Heitz, 2014), by plotting and modeling the conditional accuracy function (see Figure 1B and section 2.1.2).
 
 \subsubsection{2.1.2 Modeling approaches}\label{modeling-approaches}
 
 There are several different modeling approaches available to analyze time-to-event data. The type of models employed, and the definition of hazard, depend on whether one is using continuous or discrete time units. Even though RT is typically treated as a continuous variable, here we focus on discrete-time methods that can be applied after grouping RTs into time periods (i.e., time intervals or time bins). Discrete-time methods are particularly useful when (a) the shape of the hazard function is unknown and the analyst wants to estimate it flexibly without parametric assumptions, and (b) the analyst is interested in examining and interpreting the shape of the \textbf{baseline hazard function}. In section D of the Supplemental Material we provide some examples to justify our choice of discrete-time modeling.
-Also, because continuous forms of EHA require a lot of data to reliably estimate the shape of the \textbf{continuous-time hazard} (rate) function (Bloxom, 1984; Luce, 1991; Van Zandt, 2000), discrete-time methods seem ideal for dealing with typical psychological RT data sets for which there are typically less than \textasciitilde200 trials per condition per participant.
+Also, because continuous forms of EHA require a lot of data to reliably estimate the shape of the \textbf{continuous-time hazard} (rate) function (Bloxom, 1984; Luce, 1991; Van Zandt, 2000), discrete-time methods seem ideal for dealing with psychological RT data sets for which there are typically less than \textasciitilde200 trials per condition per participant.
 As such, discrete-time methods allow a suitable tradeoff between temporal resolution (i.e., bin width) and the number of repeated measurements per condition per participant (Panis, Schmidt, et al., 2020).
 Moreover, as indicated by Singer and Willett (2003), learning discrete-time EHA methods first will help in learning continuous-time methods, so it seems like a good entry point into EHA. Note that there are no strict cutoffs for when time-to-event data should be treated as discrete versus continuous.
 
@@ -349,9 +349,9 @@ To apply discrete-time EHA, one divides the risk episode in each trial in discre
 Then let RT be a discrete random variable denoting the rank of the time bin in which a particular person's response occurs in a particular trial.
 For example, with bin widths of 100 ms, a response in one trial might occur at 546 ms and it would be in time bin 6 (any RTs from 501 ms to 600 ms).
 One then calculates the sample-based estimate of the discrete-time hazard function of event occurrence for each experimental condition (Figure 1B upper panel).
-The discrete-time hazard function gives you, for each time bin, the conditional probability that the event occurs (sometime) in
-bin t, given that the event \emph{does not occur in previous bins}.
-In other words, as the waiting time in a trial is increasing incrementally in small steps, hazard reflects the risk that the event occurs in the current bin t, given that it has not yet
+The discrete-time hazard function gives you, for each time bin, the conditional probability that the response occurs (sometime) in
+bin t, given that the response \emph{does not occur in previous bins}.
+In other words, as the waiting time in a trial is increasing incrementally in small steps, hazard reflects the risk that the response occurs in the current bin t, given that it has not yet
 occurred in the past, i.e., in one of the prior bins (t-1, t-2, \ldots, 1).
 
 In the context of experimental psychology, it is often (but not always) the case that responses can be classified as correct or incorrect.
@@ -395,7 +395,7 @@ And are there new experiments that need to be performed to test the novel predic
 Second, the approach is generalisable and applicable to many tasks that are commonly used in experimental psychology, such as detection, comparison, discrimination, recognition, and bistable perception tasks, and to a range of common experimental manipulations, such as stimulus-onset-asynchrony (see section A of the Supplemental Material).
 The upshot is that one general analytical approach, which holds several potential advantages, is widely applicable to many substantive use-cases in the RT domain of experimental psychology, irrespective of the analyst's current view on the nature of cognition (Barack \& Krakauer, 2021).
 
-Third, in contrast to orthodox approaches, EHA can deal with right-censored observations when estimating the hazard function of event occurrence. While a few right-censored observations can be expected in typical RT tasks, a lot of right-censored observations are expected in studies on visual masking, the attentional blink, etc., that is, in studies in which RT is typically not analysed. EHA thus has a wider scope than orthodox methods.
+Third, in contrast to orthodox approaches, EHA can deal with right-censored observations when estimating the hazard function of event occurrence. While a few right-censored observations can be expected in any RT task, a lot of right-censored observations are expected in studies on visual masking, the attentional blink, etc., that is, in studies in which RT is typically not analysed. EHA thus has a wider scope than orthodox methods.
 
 \subsection{2.3 Implications for research in experimental psychology}\label{implications-for-research-in-experimental-psychology}
 
@@ -538,8 +538,8 @@ In the code of Tutorial 1a, this is accomplished as follows.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{data\_wr }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"../Tutorial\_1\_descriptive\_stats/data/DataExp1\_6subjects\_wrangled.csv"}\NormalTok{)}
-\NormalTok{data\_wr }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{rename}\NormalTok{(}\AttributeTok{pid =}\NormalTok{ vp, }\AttributeTok{condition =}\NormalTok{ prime\_type, }\AttributeTok{acc =}\NormalTok{ respac, }\AttributeTok{trial =}\NormalTok{ TrialNr) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{data\_wr }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{pid =}\NormalTok{ vp, }\AttributeTok{condition =}\NormalTok{ prime\_type, }\AttributeTok{acc =}\NormalTok{ respac, }\AttributeTok{trial =}\NormalTok{ TrialNr) }\SpecialCharTok{|\textgreater{}}
   \FunctionTok{mutate}\NormalTok{(}
     \AttributeTok{condition =}\NormalTok{ condition }\SpecialCharTok{+} \DecValTok{1}\NormalTok{, }\CommentTok{\# original levels were 0, 1, 2.}
     \AttributeTok{condition =} \FunctionTok{factor}\NormalTok{(condition,}
@@ -558,18 +558,18 @@ Next, we can set up the life tables and plot for each participant and condition 
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{data\_nested }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_nest}\NormalTok{(pid)}
-\NormalTok{data\_final }\OtherTok{\textless{}{-}}\NormalTok{ data\_nested }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{data\_nested }\OtherTok{\textless{}{-}}\NormalTok{ data\_wr }\SpecialCharTok{|\textgreater{}} \FunctionTok{group\_nest}\NormalTok{(pid)}
+\NormalTok{data\_final }\OtherTok{\textless{}{-}}\NormalTok{ data\_nested }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# ! user input: censoring time, and bin width in milliseconds}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{censored =} \FunctionTok{map}\NormalTok{(data, censor, }\DecValTok{600}\NormalTok{, }\DecValTok{40}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# create person{-}trial{-}bin data set}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ptb\_data =} \FunctionTok{map}\NormalTok{(censored, ptb)) }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# create life tables without conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable =} \FunctionTok{map}\NormalTok{(ptb\_data, setup\_lt)) }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# calculate conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condacc =} \FunctionTok{map}\NormalTok{(censored, calc\_ca)) }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# create life tables with conditional accuracies}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{lifetable\_ca =} \FunctionTok{map2}\NormalTok{(lifetable, condacc, join\_lt\_ca)) }\SpecialCharTok{|\textgreater{}}
   \CommentTok{\# create plots}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{plot =} \FunctionTok{map2}\NormalTok{(}\AttributeTok{.x =}\NormalTok{ lifetable\_ca, }\AttributeTok{.y =}\NormalTok{ pid, plot\_eha, }\DecValTok{1}\NormalTok{))}
 \end{Highlighting}
@@ -624,7 +624,7 @@ bin & \multicolumn{1}{c}{index t} & \multicolumn{1}{c}{RS} & \multicolumn{1}{c}{
 \end{tabular}
 
 \begin{tablenotes}[para]
-\normalsize{\textit{Note.} The column named ``bin'' indicates the upper bound of each time bin (in ms), and includes time point zero. At time point zero, no events can occur and therefore both the discrete-time hazard h(t=0) and the conditional accuracy ca(t=0) are undefined. RS = risk set; se = standard error; NA = undefined.}
+\normalsize{\textit{Note.} The column named ``bin'' indicates the upper bound of each time bin (in ms), and includes time point zero. At time point zero, no events can occur and therefore both the discrete-time hazard h(t=0) and the conditional accuracy ca(t=0) are undefined. Conditional accuracy is also undefined for bins without events. RS = risk set; se = standard error; NA = undefined.}
 \end{tablenotes}
 
 \end{threeparttable}
@@ -644,7 +644,7 @@ Figure 2 displays the discrete-time hazard, survivor, conditional accuracy, and 
 
 }
 
-\caption{Estimated sample-based discrete-time hazard (h), survivor (S), conditional accuracy (ca) and probability mass (P) functions for participant 6. Vertical dotted lines indicate the estimated median RTs. Error bars represent +/- 1 standard error of the respective proportion.}\label{fig:eha-plot}
+\caption{Descriptive statistics. Estimated sample-based discrete-time hazard (h), survivor (S), conditional accuracy (ca) and probability mass (P) functions for participant 6. Vertical dotted lines indicate the estimated median RTs. Error bars represent +/- 1 standard error of the respective proportion.}\label{fig:eha-plot}
 \end{figure}
 
 For example, for participant 6, the estimated hazard values in bin 280 are 0.03, 0.17, and 0.20 for the blank, congruent, and incongruent prime conditions, respectively. In other words, when the waiting time has increased until \emph{240 ms} after target onset, then the conditional probability of response occurrence in the next 40 ms is more than five times larger for both prime-present conditions, compared to the blank prime condition.
@@ -655,7 +655,7 @@ However, when the waiting time has increased until \emph{400 ms} after target on
 
 These distributional results suggest that participant 6 is initially responding to the prime even though (s)he was instructed to only respond to the target, that response competition emerges in the incongruent prime condition around 300 ms, and that only slower responses are fully controlled by the target stimulus. Qualitatively similar results were obtained for the other five participants. When participants show qualitatively similar distributional patterns, one might consider aggregating their data and plotting the group-average distribution per condition (see Tutorial\_1a.Rmd). More generally, these results go against the (often implicit) assumption in research on priming that all observed responses are primed responses to the target stimulus. Instead, the distributional data show that fast responses are triggered exclusively by the prime stimulus, while only the slower responses reflect primed responses to the target stimulus.
 
-At this point, we have calculated and plotted the descriptive statistics for each type of prime stimulus. As we will show in later Tutorials, statistical models for hazard and conditional accuracy functions can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) and conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for within-subject designs with two independent variables.
+At this point, we have calculated and plotted the descriptive statistics for each type of prime stimulus. As we will show in later Tutorials, statistical models for hazard and conditional accuracy functions can be implemented as generalized linear mixed regression models predicting event occurrence (1/0) or conditional accuracy (1/0) in each bin of a selected time window for analysis. But first we consider calculating the descriptive statistics for within-subject designs with two independent variables.
 
 \subsection{3.2 Tutorial 1b: Generalising to a more complex design}\label{tutorial-1b-generalising-to-a-more-complex-design}
 
@@ -672,8 +672,7 @@ To make inferences, we typically use two main approaches (McElreath, 2020). We c
 
 \subsubsection{3.3.1 Hazard model considerations}\label{hazard-model-considerations}
 
-There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, because the first few bins often contain no responses in RT tasks, one may want to select a smaller time window for analysis compared to the follow-up period in each trial (see section A of the Supplemental Material). Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section F of the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor. For example, when you want to know if cloglog-hazard is changing linearly or quadraticly over time, you should treat TIME as a continuous predictor and center it on one of the bins (see section G in the Supplemental Material).
-When you are only interested in the effect of covariates on hazard, you can treat TIME as a categorical predictor (i.e., fit an intercept for each bin), in which case you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
+There are several analytic decisions one has to make when fitting a discrete-time hazard model. First, because the first few bins often contain no responses in RT tasks, one may want to select a smaller time window for analysis compared to the follow-up period in each trial (see section A of the Supplemental Material). Second, given that the dependent variable (event occurrence) is binary, one has to select a link function (see section F of the Supplemental Material). The cloglog link is preferred over the logit link when events can occur in principle at any time point within a bin, which is the case for RT data (Singer \& Willett, 2003). Third, one has to choose whether to treat TIME (i.e., the time bin index t) as a categorical or continuous predictor (see section G of the Supplemental Material). For example, when the shape of the empirical hazard function is smooth, and/or you want to test if cloglog-hazard is changing linearly or quadraticly over time, you should treat TIME as a continuous predictor and center it on one of the bins; When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can treat TIME as a categorical predictor and use a general specification of TIME, i.e., fit one grand intercept per time bin, in which case you can choose between reference coding and index coding. With reference coding, one defines the variable as a factor and selects one of the k categories as the reference level. Brm() will then construct k-1 indicator variables (see model M1d in Tutorial\_2a.Rmd for an example). With index coding, one constructs an index variable that contains integers that correspond to different categories (see models M0i and M1i below). As explained by McElreath (2020), the advantage of index coding is that the same prior can be assigned to each level of the index variable, so that each category has the same prior uncertainty.
 
 In the case of a large-\emph{N} design without repeated measurements, the parameters of a discrete-time hazard model can be estimated using standard logistic regression software after expanding the typical person-trial data set into a person-trial-bin data set (Allison, 2010). When there is clustering in the data, as in the case of a small-\emph{N} design with repeated measurements, the parameters of a discrete-time hazard model can be estimated using population-averaged methods (e.g., Generalized Estimating Equations), and Bayesian or frequentist generalized linear mixed models (Allison, 2010).
 
@@ -688,9 +687,9 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 \CommentTok{\# read in the file we saved in tutorial 1a}
 \NormalTok{ptb\_data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"Tutorial\_1\_descriptive\_stats/data/inputfile\_hazard\_modeling.csv"}\NormalTok{)}
 
-\NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{ptb\_data }\OtherTok{\textless{}{-}}\NormalTok{ ptb\_data }\SpecialCharTok{|\textgreater{}} 
 \CommentTok{\# select analysis time range: 200{-}600 ms, with 10 bins (time bin ranks 6 to 15)}
-\FunctionTok{filter}\NormalTok{(period }\SpecialCharTok{\textgreater{}} \DecValTok{5}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\FunctionTok{filter}\NormalTok{(period }\SpecialCharTok{\textgreater{}} \DecValTok{5}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
        \CommentTok{\# define categorical predictor TIME as index variable named timebin}
 \FunctionTok{mutate}\NormalTok{(}\AttributeTok{timebin =} \FunctionTok{factor}\NormalTok{(period, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\DecValTok{6}\SpecialCharTok{:}\DecValTok{15}\NormalTok{)),}
        \CommentTok{\# factor "condition" using reference coding, with "blank" as the reference level}
@@ -708,11 +707,11 @@ In tutorial\_2a.Rmd we fit several Bayesian multilevel models (i.e., generalized
 To get the posterior distribution of each model parameter given the data, we need to specify prior distributions for the model parameters which reflect our prior beliefs.
 In Tutorial\_2a.Rmd we perform a few prior predictive checks to make sure our selected prior distributions reflect our prior beliefs (Gelman, Vehtari, et al., 2020).
 
-The middle column of Supplementary Figure 8 (section H of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 8 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. As such, we modify the prior formulation in order to make sure that it remains consistent with a weakly informative approach (see section H of the Supplemental Material).
+The middle column of Supplementary Figure 8 (section H of the Supplemental Material) shows six examples of prior distributions for an intercept on the logit and/or cloglog scales. While a normal distribution with relatively large variance is often used as a weakly informative prior for continuous dependent variables, rows A and B of Supplementary Figure 8 show that specifying such distributions on the logit and cloglog scales actually leads to rather informative distributions on the original probability scale, as most mass is pushed to probabilities of 0 and 1. As such, we modify the prior formulation in order to make sure that it remains consistent with a weakly informative approach.
 
 \subsubsection{3.3.3 Model M0i: A null model with index coding}\label{model-m0i-a-null-model-with-index-coding}
 
-When you do not want to make assumptions about the shape of the hazard function, or its shape is not smooth but irregular, then you can use a general specification of TIME, i.e., fit one grand intercept per time bin. In this first baseline or reference model, we use a general specification of TIME using index coding, and do not include experimental predictors. We call this model ``M0i''. The other model (see section 3.3.4) extends model M0i by including our experimental predictor prime type.
+In this first baseline or reference model, we use a general specification of TIME using index coding, and do not include experimental predictors. We call this model ``M0i''. The other model (see section 3.3.4) extends model M0i by including our experimental predictor prime type.
 
 Before we fit model M0i, we select the necessary columns from the data, and specify our priors. In the code of Tutorial 2a, model M0i is specified as follows.
 
@@ -755,8 +754,8 @@ There are two popular strategies to evaluate how well models will perform in pre
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"loo"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
   \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -768,8 +767,8 @@ There are two popular strategies to evaluate how well models will perform in pre
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\FunctionTok{model\_weights}\NormalTok{(model\_M0i, model\_M1i, }\AttributeTok{weights =} \StringTok{"waic"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{round}\NormalTok{(}\AttributeTok{digits =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
   \FunctionTok{format}\NormalTok{(}\AttributeTok{nsmall =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -807,7 +806,7 @@ What can we conclude from model M1i about our research question, i.e., the tempo
 If we want to estimate the population-level effect of prime type on hazard, we can base our conclusion on the credible Intervals (CrIs) in Figure 3C. The contrast ``congruent minus blank'' was estimated to be 0.09 hazard units in bin 240 (95\% CrI = {[}0.02, 0.17{]}), and 0.14 hazard units in bin 280 (95\% CrI = {[}0.04, 0.25{]}). For the other bins, the 95\% credible interval contained zero.
 The contrast ``incongruent minus blank'' was estimated to be 0.09 hazard units in bin 240 (95\% CrI = {[}0.01, 0.21{]}), -0.19 hazard units in bin 360 (95\% CrI = {[}-0.31, -0.06{]}), -0.27 hazard units in bin 400 (95\% CrI = {[}-0.45, -0.04{]}), and -0.23 hazard units in bin 440 (95\% CrI = {[}-0.40, -0.03{]}). For the other bins, the 95\% credible interval contained zero.
 
-There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in time bin 240. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period 320-440 ms. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset. Future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the long experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formulae that should get you going.
+There are thus two phases of performance for the average person between 200 and 600 ms after target onset. In the first phase, the addition of a congruent or incongruent prime stimulus increases the hazard of response occurrence compared to blank prime trials in time bin 240. In the second phase, only the incongruent prime decreases the hazard of response occurrence compared to blank primes, in the time period 320-440 ms. The sign of the effect of incongruent primes on the hazard of response occurrrence thus depends on how much waiting time has passed since target onset. Future modeling efforts could incorporate the trial number into the model formula, in order to also study how the effects of prime type on hazard change on the longer experiment-wide time scale, next to the short trial-wide time scale. In Tutorial\_2a.Rmd we provide a number of model formulae that should get you going.
 
 \subsection{3.4 Tutorial 2b: Fitting Bayesian conditional accuracy models}\label{tutorial-2b-fitting-bayesian-conditional-accuracy-models}
 
@@ -1011,13 +1010,13 @@ Estimating the temporal distributions of RT and accuracy provide a rich source o
 
 \item[Continuous-Time Hazard (Hazard Rate, Instantaneous Hazard)] The instantaneous rate at which events occur at time point t, given survival to time t. Formally defined as lim($\Delta t \to 0$) P(t $\leq$ T < t+$\Delta t$ | T$\geq$t)/$\Delta t$. Unlike discrete-time hazard (a conditional probability), continuous-time hazard is a rate that can exceed 1. Denoted as $\lambda(t)$.
 
-\item[Observation Period] The span of time during which an individual is under observation or follow-up in the study. The observation period may encompass one or more episodes. For non-repeatable events, the observation period and episode are typically the same. For repeatable events in natural history (e.g., multiple job changes), the observation period can contain multiple sequential episodes. For trial-based events, the observation period refers to the entire experimental session during which multiple independent trials (episodes) are completed. The observation period ends when the event occurs (for non-repeatable events), the study ends, or the individual is lost to follow-up.
+\item[Observation Period] The span of time during which an individual is under observation or follow-up in the study. The observation period may encompass one or more risk episodes. For non-repeatable events, the observation period and risk episode are typically the same. For repeatable events in natural history (e.g., multiple job changes), the observation period can contain multiple sequential risk episodes. For trial-based events, the observation period refers to the entire experimental session during which multiple independent trials (risk episodes) are completed. The observation period ends when the event occurs (for non-repeatable events), the study ends, or the individual is lost to follow-up.
 
-\item[Risk Episode (Spell)] The duration from the start of observation or from a previous event until either the event occurs or observation ends. Also called a "spell" (particularly in labor economics). An episode represents one complete at-risk period being studied. Within each episode, data may be collected at multiple discrete time points (e.g., monthly or yearly intervals) — these are the time periods or measurement occasions. In discrete-time analysis, each episode is typically divided into multiple person-period observations, where each person-period is the actual unit of analysis for model estimation. In repeatable event contexts, individuals may contribute multiple episodes.
+\item[Risk Episode (Spell)] The duration from the start of observation or from a previous event until either the event occurs or observation ends. Also called a "spell" (particularly in labor economics). A risk episode represents one complete at-risk period being studied. Within each risk episode, data may be collected at multiple discrete time points (e.g., monthly or yearly intervals) — these are the time periods or measurement occasions. In discrete-time analysis, each risk episode is typically divided into multiple person-period observations, where each person-period is the actual unit of analysis for model estimation. In repeatable event contexts, individuals may contribute multiple risk episodes.
 
-\item[Repeated Measurements (Trial-Based Events)] Events that are repeatedly measured within experimental trials, where each individual completes multiple independent trials and each trial yields one time-to-event observation (e.g., reaction time tasks). Unlike recurrent events in natural history, these trials are typically designed to be independent realizations of the same process, though individual-level random effects may be needed to account for within-subject correlation. In this context, each trial constitutes a separate episode, and discrete time periods within each trial represent measurement occasions.
+\item[Repeated Measurements (Trial-Based Events)] Events that are repeatedly measured within experimental trials, where each individual completes multiple independent trials and each trial yields one time-to-event observation (e.g., reaction time tasks). Unlike recurrent events in natural history, these trials are typically designed to be independent realizations of the same process, though individual-level random effects may be needed to account for within-subject correlation. In this context, each trial constitutes a separate risk episode, and discrete time periods within each trial represent measurement occasions.
 
-\item[Baseline Hazard] The pattern of hazard over time when all covariates equal zero (or their reference categories). Often modeled with time dummy variables or polynomials.
+\item[Baseline Hazard] The pattern of hazard over time when all covariates equal zero (or their reference categories). Often modeled with time dummy variables or polynomials (see section G of the Supplemental Material).
 
 \item[Time-Varying Covariates (Time-Dependent Covariates)] Predictors whose values change over time periods within the same individual's episode (e.g., employment status, gaze position, age, income).
 
