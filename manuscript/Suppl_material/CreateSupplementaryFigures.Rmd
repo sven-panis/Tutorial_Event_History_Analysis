@@ -1,7 +1,8 @@
 ---
 title: "CreateSupplementaryFigures"
-format: html
+output: html_document
 ---
+
 
 In this file we create Supplementary Figures for REVISION 2.
 
