@@ -702,8 +702,6 @@ p1 <- tibble(
 p1
 
 
-
-
 # prob. mass functions
 p2 <- tibble(
   bin = lt1$bin,
@@ -1219,7 +1217,7 @@ ggplot() +
     panel.background = element_rect(fill = "white", color = "white"),
     plot.background = element_rect(fill = "white", color = "white")
   ) #+
-  #labs(title = "A decision tree to help select among\nEvent History Analysis modeling #approaches")
+# labs(title = "A decision tree to help select among\nEvent History Analysis modeling #approaches")
 ```
 
 Save the tree.

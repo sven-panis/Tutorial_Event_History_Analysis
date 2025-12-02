@@ -162,8 +162,9 @@ p13.1 <- ggplot(lifetable_fig1, aes(
     linewidth = 1
   ) +
   geom_point(size = 3) +
-  geom_linerange(aes(ymin = hazard - se_haz, ymax = hazard + se_haz),
-    show.legend = F
+  geom_linerange(aes(ymin = hazard - se_haz, 
+                     ymax = hazard + se_haz),
+                 show.legend = F
   ) +
   scale_colour_brewer(palette = "Dark2") +
   scale_x_continuous(
