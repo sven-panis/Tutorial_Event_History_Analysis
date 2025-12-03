@@ -71,14 +71,20 @@
 
 \title{Review 2: Author responses}
 \author{Panis \& Ramsey}
-\date{10.11.2025}
+\date{4.12.2025}
 
 \begin{document}
 \maketitle
 
-We appreciate the time taken by the editor and reviewers to provide
-further feedback, as your comments have enabled us to improve the
-manuscript. We document our responses to your comments below.
+Dear Editor, Dear Reviewer,
+
+We appreciate the time taken by you to provide further feedback, as your
+comments have enabled us to improve the manuscript. We document our
+responses to your comments below.
+
+Best regards,
+
+Sven Panis Richard Ramsey
 
 \section{Editor}\label{editor}
 
@@ -119,21 +125,24 @@ to first consider what kind of accessibility we are aiming to achieve,
 as well as how we might achieve it. Our revised approach to making the
 paper accessible has several strands. First, consistent with our initial
 aims and instincts, we avoid presenting equations in the main text and
-instead provide them in supplementary materials. Although more
+instead provide them in the Supplemental Material. Although more
 mathematically-minded individuals may not appreciate this choice, they
 are not our primary target audience, in terms of widening access to
-these techniques. Moreover, the availability of supplementary materials
-means that we can make the main text accessible to a wider audience
-whilst not compromising on relevant details. Second, in addition to
-relevant equations, we also make use of supplementary materials to
-expand on further background context whenever relevant. Third, we have
-added a new glossary section, which defines and explains key terms and
-concepts. Fourth, we have added a section (2.1.3) with relevant research
-questions. Fifth, we refer to the CRAN Task View on survival analysis in
-section D of the Supplemental Material. Overall, we feel these choices
-strike a nice balance in terms of accessibility. We do not want the
-paper to become overly long and technical, but we also want to provide a
-clear description of key terms, concepts and relevant equations.
+these techniques. Moreover, the availability of the Supplemental
+Material means that we can make the main text accessible to a wider
+audience whilst not compromising on relevant details. Second, in
+addition to relevant equations, we also make use of the Supplemental
+Material to expand on further background context whenever relevant.
+Third, we have added a new glossary section, which defines and explains
+key terms and concepts. Fourth, we have added a section (2.1.3) with
+relevant research questions. Fifth, we refer to the CRAN Task View on
+survival analysis in section D of the Supplemental Material, where the
+reader can find an overview of useful R packages for analysing
+time-to-event data. Finally, we formatted all our code according to the
+tidyverse style guide. Overall, we feel these choices strike a nice
+balance in terms of accessibility. We do not want the paper to become
+overly long and technical, but we also want to provide a clear
+description of key terms, concepts and relevant equations.
 
 \begin{quote}
 Reviewer 2 raises several clarity-related concerns--particularly about
@@ -141,9 +150,9 @@ the bin width discussion and about the interpretability of modeling
 decisions such as time window selection.
 \end{quote}
 
-Response: We include a new Supplementary Figure to illustrate the choice
-of bin width (Supplementary Figure 3), and better explain the selection
-of a time window for analysis (page 25; lines 470-473).
+Response: We include a new Supplementary Figure 3 to illustrate the
+choice of bin width, and better explain the selection of a time window
+for analysis (page 25; lines 469-472).
 
 \begin{quote}
 Both Reviewers 2 and 3 emphasize the need to better motivate
@@ -154,8 +163,9 @@ articulation of its analytic tradeoffs (R3, citing p.~8 of the ms).
 
 Response: We now motivate the use of discrete-time EHA extensively.
 First, in section 2.1.2 (pages 9-11). Second, in section D of the
-Supplemental Material, where we provide a decision tree, and compare the
-shape of empirical and parametric distributions.
+Supplemental Material, where we (a) provide a decision tree to help
+select among modeling approaches, and (b) compare the shapes of a few
+empirical and parametric distributions.
 
 \begin{quote}
 Reviewer 3 also recommends that the paper more clearly identify the
@@ -167,12 +177,12 @@ examples up front, a glossary of sorts, visualizations; anything (and
 everything) that will make this complex paper more inviting.
 \end{quote}
 
-Response: We now include a glossary (section 5) and example research
-questions (section 2.1.3) in the main text of the revised ms. Also, we
-added extra sections to the Supplemental Material, to increase the
-accessiblity further, such as a visual comparison between probability
-mass, survival, cumulative distribution, and hazard functions in
-discrete time.
+Response: We now include a glossary (section 5; pages 45-47) and example
+research questions (section 2.1.3; pages 11-12) in the main text of the
+revised ms. Also, we added extra sections to the Supplemental Material,
+to increase accessibility further, such as a visual comparison between
+the probability mass, survival, cumulative distribution, and hazard
+functions in discrete time.
 
 \begin{quote}
 While the paper is technically strong and substantively valuable, its
@@ -267,12 +277,14 @@ Major comments:
 \end{quote}
 
 Response: We renamed this section to ``Implications for research in
-experimental psychology'', and make it clear that RT data is typically
-treated as continuous time-to-event data, and so that it becomes
-implicitly clear that various bin widths can be considered later during
-analysis. Furthermore, in the Supplemental Material we mention
-explicitly in section B that the continous-time RT data are interval
-censored.
+experimental psychology'' (pages 13-14), and make it clear that RT data
+is typically treated as continuous time-to-event data (page 8; lines
+135-138). On page 9 (lines 178-180) we mention: ``Even though RT is
+typically treated as a continuous variable, here we focus on
+discrete-time methods that can be applied after grouping RTs into time
+periods (i.e., time intervals or time bins).'' Furthermore, in the
+Supplemental Material (sections B) we also mention that the
+continous-time RT data are interval censored.
 
 \begin{quote}
 \begin{enumerate}
@@ -297,12 +309,12 @@ censored.
 \end{quote}
 
 Response: We include Supplementary Figure 3 to illustrate how results
-are sensitive to the choice of bin width. We also mention that ``Overly
-small bin widths will result in erraticly shaped hazard functions, and
-some bins will have no events and thus hazard estimates of zero; overly
-large bin widths will result in a too great loss of temporal information
-(see Supplementary Figure 3)'', on page 14 of the revised ms (lines
-302-304).
+are sensitive to the choice of bin width. We also mention that ``Careful
+consideration of bin width is important bacause overly small bin widths
+will result in erraticly shaped hazard functions, and some bins will
+have no events. In contrast, overly large bin widths will result in a
+loss of temporal precision (see Supplementary Figure 3)'', on page 14 of
+the revised ms (lines 302-305).
 
 \begin{quote}
 \begin{enumerate}
@@ -316,7 +328,8 @@ large bin widths will result in a too great loss of temporal information
 \end{quote}
 
 Response: Because no responses were emitted in that time bin, so hazard
-equals 0 and ca(t) is undefined.
+equals 0 and ca(t) is undefined. In the Note of Table 3, we now mention:
+``Conditional accuracy is also undefined for bins without events.''
 
 \begin{quote}
 \begin{enumerate}
@@ -335,7 +348,7 @@ equals 0 and ca(t) is undefined.
 \end{enumerate}
 \end{quote}
 
-Response: We re-wrote this sentence (page 25; lines 468-471): ``First,
+Response: We re-wrote this sentence (page 25; lines 469-472): ``First,
 because the first few bins often contain no responses in RT tasks, one
 may want to select a smaller time window for analysis compared to the
 follow-up period in each trial (see section A of the Supplemental
@@ -360,7 +373,7 @@ weaker than previously observed.
 Minor comments: 1. P. 26 line 446: ``bernoulli'' should be ``Bernoulli''
 \end{quote}
 
-Response: We changed this.
+Response: We changed this (page 28, line 527).
 
 \begin{quote}
 \begin{enumerate}
@@ -374,7 +387,8 @@ Response: We changed this.
 \end{enumerate}
 \end{quote}
 
-Response: We added the section reference numbers in the main text.
+Response: We added the section reference numbers in the main text (page
+29, lines 547-548).
 
 \begin{quote}
 \begin{enumerate}
@@ -389,7 +403,7 @@ Response: We added the section reference numbers in the main text.
 \end{enumerate}
 \end{quote}
 
-Response: We corrected this.
+Response: We corrected this (page 29).
 
 \begin{quote}
 \begin{enumerate}
@@ -440,9 +454,10 @@ now present the descriptions of RT data, research questions, and
 analytic approaches in the main text. Nevertheless, we still opted to
 keep the text equation-light, to increase accessibility for
 non-mathematical psychologists. We also added various new sections to
-the Supplemental Material and we added a glossary of key terms.
-Together, we believe that these steps improve accessibility whilst also
-providing relevant depth where necessary.
+the Supplemental Material (sections B, C, and D) and we added a glossary
+of key terms in the main text (section 5, pages 45-47). Together, we
+believe that these steps improve accessibility whilst also providing
+relevant depth where necessary.
 
 \begin{quote}
 Contribution of this tutorial: Thank you for clarifying the aims of the
@@ -456,7 +471,7 @@ moving them into the main text so the tutorial stands on its own.
 \end{quote}
 
 Response: We followed this suggestion, and explain key RT
-characteristics in the main text now.
+characteristics in the main text now (page 8).
 
 \begin{quote}
 The discussion at line 93 would benefit from greater emphasis on why a
@@ -467,7 +482,8 @@ questions are introduced later (pg. 10), I recommend stating them more
 clearly and incorporating them earlier (e.g., in Section 2.1).
 \end{quote}
 
-Response: We now state research questions more clearly in section 2.1.3.
+Response: We now state research questions more clearly in section 2.1.3
+(pages 11-12).
 
 \begin{quote}
 In addition, the response to my previous comment that research questions
@@ -478,7 +494,7 @@ balance breadth with depth and strengthen the tutorial's clarity and
 relevance.
 \end{quote}
 
-Response: We provide research questions in section 2.1.3.
+Response: We provide research questions in section 2.1.3 (pages 11-12).
 
 \begin{quote}
 Use of discrete-time EHA: Pg. 8 -- The rationale given (``as a lab, and
@@ -496,8 +512,9 @@ and align better with the tutorial's didactic purpose.
 Response: We revised this paragraph to clearly motivate our choice for
 discrete-time EHA (section 2.1.2; pages 9-11) and note that ``there are
 no strict cutoffs for when data should be treated as discrete versus
-continuous''. Also, in section D of the Supplemental Material, we
-provide a decision tree and compare the shape of empirical and
+continuous'' (page 10, lines 193-195). Also, in section D of the
+Supplemental Material, we provide a decision tree to help select among
+modeling approaches and we compare the shapes of a few empirical and
 parametric distributions.
 
 \begin{quote}
@@ -511,7 +528,8 @@ clarity. I highlight a few examples below, but this should be considered
 throughout.
 \end{quote}
 
-Response: We explain SAT analysis in the new Glossary (section 5).
+Response: We explain SAT analysis in the new Glossary (section 5, pages
+45-47).
 
 \begin{quote}
 Pg. 8 -- The phrase ``discrete or continuous time units'' is introduced
@@ -519,17 +537,18 @@ without explanation. Please add a brief description of the distinction
 between these two approaches.
 \end{quote}
 
-Response: We now mention on page 8: ``In RT tasks,response times are
-typically measured with a temporal resolution of 1 millisecond, or
-higher. As 1 ms is typically short compared to the range of empirical RT
-distributions (e.g., a half second), response times are generally
-treated as continuous time-to-event data.''
+Response: We now mention on page 8 (lines 135-138): ``In RT
+tasks,response times are typically measured with a temporal resolution
+of 1 millisecond, or higher. As 1 ms is typically short compared to the
+range of empirical RT distributions (e.g., a half second), response
+times are generally treated as continuous time-to-event data.''
 
-And on page 9: ``The type of models employed, and the definition of
-hazard, depend on whether one is using continuous or discrete time
-units. Even though RT is typically treated as a continuous variable,
-here we focus on discrete-time methods that can be applied after
-grouping RTs into time periods (i.e., time intervals or time bins).''
+And on page 9 (lines 177-180): ``The type of models employed, and the
+definition of hazard, depend on whether one is using continuous or
+discrete time units. Even though RT is typically treated as a continuous
+variable, here we focus on discrete-time methods that can be applied
+after grouping RTs into time periods (i.e., time intervals or time
+bins).''
 
 Together with the information in sections B and D of the Supplemental
 Material, the distinction between these two approaches should be clear
@@ -541,7 +560,8 @@ Pgs. 8-10 -- Terms such as ``hazard of response'' (pg. 8) and
 definition.
 \end{quote}
 
-Response: We introduce definitions for these terms in a new Glossary.
+Response: We introduce definitions for these terms in a new Glossary
+(section 5, pages 45-47).
 
 \begin{quote}
 Likewise, Figure 1 presents hazard and conditional accuracy equations
@@ -553,8 +573,9 @@ less comfortable with mathematical notation.
 
 Response: We decided to remove the equations for hazard and conditional
 accuracy from the figure (to keep the text equation-light and
-accessible) and now provide accessible explanations in the figure
-legend, main text, and in the new glossary.
+accessible), but provide accessible definitions/explanations in (a) the
+legend of Figure 1, (b) the main text (pages 10-11), and in the new
+glossary (pages 45-47).
 
 \begin{quote}
 Similarly it would be helpful to provide key definitions of ``hazard''
@@ -562,7 +583,7 @@ and ``conditional accuracy estimates'' should also be provided up front,
 rather than deferred to Section 2.1.2.
 \end{quote}
 
-Response: We provide definitions in the new Glossary.
+Response: We provide the definitions in the new Glossary (pages 45-47).
 
 \begin{quote}
 Pg 9 -- in discrete time, there is not instantaneous risk. Please
@@ -579,7 +600,7 @@ supplemental material.
 \end{quote}
 
 Response: We define key EHA elements in the main text, and in the new
-Glossary.
+Glossary (pages 45-47).
 
 \begin{quote}
 Pg 15 -- In my original review I requested that right and left censoring
@@ -590,7 +611,8 @@ recommend including these definitions in the main text rather than the
 supplement.
 \end{quote}
 
-Response: We include definitions for right- and left-censoring in the
-new Glossary.
+Response: Right censoring is now defined on page 9, and we include the
+definitions for right-, left-, and interval-censoring in the new
+Glossary (pages 45-47).
 
 \end{document}
