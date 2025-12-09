@@ -24,7 +24,7 @@ If you want to see and work with the code, then:
 1. Clone or download the project from github (https://github.com/sven-panis/Tutorial_Event_History_Analysis) to your local machine.
 
 Make sure you select the branch "main", which contains the latest version of the manuscript as posted 
-on PsyArXiv: https://doi.org/10.31234/osf.io/57bh6
+on PsyArXiv: https://doi.org/10.31234/osf.io/57bh6_v3
 
 2. Open the Tutorial_EHA.Rproj file and renv() will automatically bootstrap itself.
 3. renv() will then ask if you want use renv::restore() to install all of the packages. Say yes.
